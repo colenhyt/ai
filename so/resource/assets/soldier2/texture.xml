@@ -1,0 +1,32 @@
+<TextureAtlas name="soldier2" imagePath="texture.webp">
+  <SubTexture name="x8" x="113" y="0" width="70" height="62"/>
+  <SubTexture name="x7" x="185" y="0" width="69" height="56"/>
+  <SubTexture name="x6" x="0" y="65" width="67" height="53"/>
+  <SubTexture name="x5" x="185" y="58" width="67" height="57"/>
+  <SubTexture name="x4" x="113" y="64" width="70" height="56"/>
+  <SubTexture name="x3" x="0" y="120" width="63" height="50"/>
+  <SubTexture name="x2" x="0" y="172" width="52" height="45"/>
+  <SubTexture name="x1" x="69" y="65" width="37" height="31"/>
+  <SubTexture name="siwangshou" x="197" y="223" width="19" height="14"/>
+  <SubTexture name="huo2" x="185" y="117" width="50" height="70"/>
+  <SubTexture name="huo1" x="0" y="0" width="111" height="63"/>
+  <SubTexture name="waijianjia" x="77" y="223" width="20" height="14"/>
+  <SubTexture name="waixiaobi" x="169" y="189" width="40" height="17"/>
+  <SubTexture name="waidabi" x="211" y="189" width="24" height="32"/>
+  <SubTexture name="zidan" x="84" y="185" width="48" height="36"/>
+  <SubTexture name="wuqi" x="90" y="155" width="88" height="28"/>
+  <SubTexture name="woqiang" x="97" y="98" width="14" height="12"/>
+  <SubTexture name="tou" x="134" y="213" width="25" height="24"/>
+  <SubTexture name="qugan" x="169" y="208" width="26" height="26"/>
+  <SubTexture name="zhandoutui" x="69" y="98" width="26" height="36"/>
+  <SubTexture name="waidatui" x="237" y="117" width="17" height="27"/>
+  <SubTexture name="kuabu" x="30" y="219" width="21" height="16"/>
+  <SubTexture name="neixiaotui" x="54" y="210" width="21" height="30"/>
+  <SubTexture name="neijianjia" x="218" y="223" width="20" height="12"/>
+  <SubTexture name="neixiaobi" x="0" y="219" width="28" height="17"/>
+  <SubTexture name="neijiao" x="99" y="223" width="24" height="9"/>
+  <SubTexture name="neidatui" x="54" y="176" width="28" height="32"/>
+  <SubTexture name="beibao" x="65" y="136" width="23" height="38"/>
+  <SubTexture name="neidabi" x="134" y="185" width="33" height="26"/>
+  <SubTexture name="shadow" x="97" y="122" width="70" height="31"/>
+</TextureAtlas>
