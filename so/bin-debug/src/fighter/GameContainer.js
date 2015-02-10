@@ -169,7 +169,7 @@ var fighter;
                 tx = Math.min(this.stageW - this.myFighter.width, tx);
                // this.myFighter.x = tx;
                var evt2 = {target:this.player,localX:evt.localX,localY:evt.localY};
-               //this.createBulletHandler(evt2);
+               this.createBulletHandler(evt2);
             }else if (evt.type == egret.TouchEvent.TOUCH_BEGIN) {
 				this.player.start();
 				var evt2 = {target:this.player,localX:evt.localX,localY:evt.localY};
@@ -188,6 +188,8 @@ var fighter;
                     bullet.y = this.player.y - 30;
                     bullet.tx = evt.localX;
                     bullet.ty = evt.localY;
+                    bullet.step = (evt.localY-bullet.y)/(evt.localX-bullet.x);
+                    logg(bullet.step);
                     this.addChildAt(bullet, this.numChildren - 1 - this.enemyFighters.length);
                     this.myBullets.push(bullet);
                 }
@@ -222,10 +224,12 @@ var fighter;
             var bullet;
             var myBulletsCount = this.myBullets.length;
             var delArr = [];
+            var step = 12 * speedOffset;
             for (; i < myBulletsCount; i++) {
                 bullet = this.myBullets[i];
-                bullet.x += 12 * speedOffset;
-                if (bullet.x > 800)
+                bullet.x += step;
+                bullet.y += step*bullet.step;
+                if (bullet.x > 800||bullet.y<0||bullet.y>500)
                     delArr.push(bullet);
             }
             for (i = 0; i < delArr.length; i++) {
