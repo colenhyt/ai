@@ -4,6 +4,15 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+
+function logg(msg,append){
+    var logdiv = document.getElementById('testlog');
+    if (append)
+     logdiv.innerHTML = parseInt(logdiv.innerHTML)+msg;
+    else
+     logdiv.innerHTML = msg;
+}
+
 var fighter;
 (function (fighter) {
     /**
@@ -123,6 +132,7 @@ var fighter;
             this.touchEnabled = true;
             this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
             this.addEventListener(egret.TouchEvent.TOUCH_END, this.touchHandler, this);
+            this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
             this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
 
 		//armature.animation.play();
@@ -158,9 +168,12 @@ var fighter;
                 tx = Math.max(0, tx);
                 tx = Math.min(this.stageW - this.myFighter.width, tx);
                // this.myFighter.x = tx;
+               var evt2 = {target:this.player,localX:evt.localX,localY:evt.localY};
+               //this.createBulletHandler(evt2);
             }else if (evt.type == egret.TouchEvent.TOUCH_BEGIN) {
 				this.player.start();
-				//this.player.createBullet();
+				var evt2 = {target:this.player,localX:evt.localX,localY:evt.localY};
+				this.createBulletHandler(evt2);
 			}else if (evt.type == egret.TouchEvent.TOUCH_END) {
 				this.player.stop();
 			}
@@ -173,6 +186,8 @@ var fighter;
                     bullet = fighter.Bullet.produce("b1");
                     bullet.x = (this.player.x + 22);
                     bullet.y = this.player.y - 30;
+                    bullet.tx = evt.localX;
+                    bullet.ty = evt.localY;
                     this.addChildAt(bullet, this.numChildren - 1 - this.enemyFighters.length);
                     this.myBullets.push(bullet);
                 }
@@ -276,11 +291,12 @@ var fighter;
                         else
                          theFighter.blood -= 2;
                         if (delBullets.indexOf(bullet) == -1)
-                            delBullets.push(bullet);
-                            if (theFighter.blood <= 0)
-                             theFighter.death(isShotHead);
-                        if (theFighter.blood <= 0 && delFighters.indexOf(theFighter) == -1)
+                          delBullets.push(bullet);
+                        if (theFighter.blood <= 0){
+                          theFighter.death(isShotHead);
+                        if (delFighters.indexOf(theFighter) == -1)
                             delFighters.push(theFighter);
+                        }
                     }
                 }
             }

@@ -59,7 +59,7 @@ var fighter;
         };
         /**开始*/
         Monster.prototype.start = function () {
-            this.fireTimer.start();
+            //this.fireTimer.start();
             this.armature.animation.gotoAndPlay("fire");
         };
         /*动作播放*/
@@ -73,6 +73,8 @@ var fighter;
         };
         /**停火*/
         Monster.prototype.stop = function () {
+        	if (this.blood <= 0) return;
+        	
             this.fireTimer.stop();
             if (!this.isMe)
             this.armature.animation.gotoAndPlay("move");
