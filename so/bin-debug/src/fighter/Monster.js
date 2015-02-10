@@ -14,9 +14,10 @@ var fighter;
      */
     var Monster = (function (_super) {
         __extends(Monster, _super);
-        function Monster(resName, fireDelay,factory) {
+        function Monster(resName, fireDelay,factory,isMe) {
             _super.call(this);
             this.tick = 0;
+            this.isMe = isMe;
             /**飞机生命值*/
             this.blood = 10;
             this.actionType = -1;
@@ -25,14 +26,16 @@ var fighter;
 			var armature = factory.buildArmature(resName);
 			this.armature = armature;
 			var armatureDisplay = armature.getDisplay();
-			this.armatureDisplay = armatureDisplay;
 			this.addChild(armatureDisplay);
 			dragonBones.WorldClock.clock.add(armature);
             this.fireTimer = new egret.Timer(fireDelay);
+            this.armature.aa = 43;
+            this.armature.addEventListener(dragonBones.AnimationEvent.LOOP_COMPLETE, this.loopComplete, this);
+            
             this.fireTimer.addEventListener(egret.TimerEvent.TIMER, this.createBullet, this);
         }
         /**生产*/
-        Monster.produce = function (resName, fireDelay,factory) {
+        Monster.produce = function (resName, fireDelay,factory,isMe) {
             if (fighter.Monster.cacheDict[resName] == null)
                 fighter.Monster.cacheDict[resName] = [];
             var dict = fighter.Monster.cacheDict[resName];
@@ -41,7 +44,7 @@ var fighter;
                 theFighter = dict.pop();
             }
             else {
-                theFighter = new fighter.Monster(resName, fireDelay,factory);
+                theFighter = new fighter.Monster(resName, fireDelay,factory,isMe);
             }
             theFighter.blood = 10;
             return theFighter;
@@ -57,21 +60,40 @@ var fighter;
         /**开始*/
         Monster.prototype.start = function () {
             this.fireTimer.start();
+            this.armature.animation.gotoAndPlay("fire");
         };
         /*动作播放*/
         Monster.prototype.gotoAndPlay = function (actionName) {
             this.armature.animation.gotoAndPlay(actionName);
-            //if (actionName=="death")
             // dragonBones.WorldClock.clock.remove(this.armature);
         };
         /**行走*/
         Monster.prototype.move = function () {
-            //this.fireTimer.start();
             this.armature.animation.gotoAndPlay("move");
         };
         /**停火*/
         Monster.prototype.stop = function () {
             this.fireTimer.stop();
+            if (!this.isMe)
+            this.armature.animation.gotoAndPlay("move");
+            else
+            this.armature.animation.gotoAndPlay("daiji");
+        };
+        /**停火*/
+        Monster.prototype.death = function (isShotHead) {
+            this.fireTimer.stop();
+            if (isShotHead)
+             this.armature.animation.gotoAndPlay("shothead",-1,-1,1);
+            else
+             this.armature.animation.gotoAndPlay("death",-1,-1,1);
+        };
+        /**开始*/
+        Monster.prototype.loopComplete = function (evt) {
+        //alert('this'+evt.target.aa);
+        	if (this.isDeath==1){
+         alert('dddhee');
+        	}
+             dragonBones.WorldClock.clock.remove(this.armature);
         };
         /**monster ai*/
         Monster.prototype.update = function (evt,fps) {
@@ -86,17 +108,17 @@ var fighter;
          	 this.actionType = Math.random()*10;
         	if (this.actionType<=6)
         	{
-            this.armature.animation.gotoAndPlay("move");
+            this.stop();
         	}else
         	{
-        	 this.armature.animation.gotoAndPlay("fire");
+        	 this.start();
         	}  
         	
            // this.dispatchEventWith("createBullet");
         };
         /**创建子弹*/
         Monster.prototype.createBullet = function (evt) {
-           // this.dispatchEventWith("createBullet");
+            this.dispatchEventWith("createBullet");
         };
         Monster.cacheDict = {};
         return Monster;

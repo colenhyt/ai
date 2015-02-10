@@ -107,26 +107,25 @@ var fighter;
 			//bones[i].origin.skewX = 90;
 			//bones[i].origin.y = 0-bones[i].origin.y;
 		}
-		var bone = armature.getBone("tou");
-		bone.origin.pivotX = -1;
+//		var bone = armature.getBone("tou");
+//		bone.origin.pivotX = -1;
 		//bone.origin.skewX = -90;
 		//bone.origin.rotation = 180;
        //  bone.origin.rotation = 180;//origin BoneTransfo
 
-		this.armature = armature;
-
-        var armatureDisplay = armature.getDisplay();
-        dragonBones.WorldClock.clock.add(armature);
-       // this.addChild(armatureDisplay);
-        armatureDisplay.x = 100;
-        armatureDisplay.y = 250;
-
+		var player = fighter.Monster.produce("soldier1", 1000,this.factory,true);
+		this.addChild(player);
+        player.x = 100;
+        player.y = 250;
+		this.player = player;
+		//this.player.addEventListener("createBullet", this.createBulletHandler, this);
+		
             this.touchEnabled = true;
             this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
             this.addEventListener(egret.TouchEvent.TOUCH_END, this.touchHandler, this);
 
 		//armature.animation.play();
-        armature.animation.gotoAndPlay("daiji");
+       // armature.animation.gotoAndPlay("shothead",-1,-1,1);
 
         egret.Ticker.getInstance().register(function (advancedTime) {
             dragonBones.WorldClock.clock.advanceTime(advancedTime / 1000);
@@ -141,7 +140,8 @@ var fighter;
             this.touchEnabled = true;
             this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
             this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
-            this.myFighter.x = (this.stageW - this.myFighter.width) / 2;
+            //this.myFighter.x = (this.stageW - this.myFighter.width) / 2;
+            this.myFighter.x = 700;
             this.myFighter.fire(); //开火
             this.myFighter.blood = 10;
             this.myFighter.addEventListener("createBullet", this.createBulletHandler, this);
@@ -157,21 +157,22 @@ var fighter;
                 var tx = evt.localX;
                 tx = Math.max(0, tx);
                 tx = Math.min(this.stageW - this.myFighter.width, tx);
-                this.myFighter.x = tx;
+               // this.myFighter.x = tx;
             }else if (evt.type == egret.TouchEvent.TOUCH_BEGIN) {
-				this.armature.animation.gotoAndPlay("fire");
+				this.player.start();
+				//this.player.createBullet();
 			}else if (evt.type == egret.TouchEvent.TOUCH_END) {
-				this.armature.animation.gotoAndPlay("daiji");
+				this.player.stop();
 			}
         };
         /**创建子弹(包括我的子弹和敌机的子弹)*/
         GameContainer.prototype.createBulletHandler = function (evt) {
             var bullet;
             if (evt.target == this.myFighter) {
-                for (var i = 0; i < 2; i++) {
+                for (var i = 0; i < 1; i++) {
                     bullet = fighter.Bullet.produce("b1");
-                    bullet.x = i == 0 ? (this.myFighter.x + 10) : (this.myFighter.x + this.myFighter.width - 22);
-                    bullet.y = this.myFighter.y + 30;
+                    bullet.x = (this.myFighter.x + this.myFighter.width + 22);
+                    bullet.y = this.myFighter.y - 30;
                     this.addChildAt(bullet, this.numChildren - 1 - this.enemyFighters.length);
                     this.myBullets.push(bullet);
                 }
@@ -179,21 +180,21 @@ var fighter;
             else {
                 var theFighter = evt.target;
                 bullet = fighter.Bullet.produce("b2");
-                bullet.x = theFighter.x + 28;
-                bullet.y = theFighter.y + 10;
+                bullet.x = theFighter.x - 28;
+                bullet.y = theFighter.y;
                 this.addChildAt(bullet, this.numChildren - 1 - this.enemyFighters.length);
                 this.enemyBullets.push(bullet);
             }
         };
         /**创建敌机*/
         GameContainer.prototype.createEnemyFighter = function (evt) {
-            var enemyFighter = fighter.Monster.produce("enemy_01", 1000,this.factory);
+            var enemyFighter = fighter.Monster.produce("enemy_01", 300,this.factory);
             //enemyFighter.x = Math.random() * (this.stageW - enemyFighter.width);
             //enemyFighter.y = -enemyFighter.height - Math.random() * 300;
             enemyFighter.x = enemyFighter.width + 700;
             enemyFighter.y = Math.random() * (this.stageH - enemyFighter.height)+100;            
             enemyFighter.addEventListener("createBullet", this.createBulletHandler, this);
-            enemyFighter.start();
+            //enemyFighter.start();
             this.addChildAt(enemyFighter, this.numChildren - 1);
             this.enemyFighters.push(enemyFighter);
         };
@@ -211,8 +212,8 @@ var fighter;
             var delArr = [];
             for (; i < myBulletsCount; i++) {
                 bullet = this.myBullets[i];
-                bullet.y -= 12 * speedOffset;
-                if (bullet.y < -bullet.height)
+                bullet.x -= 12 * speedOffset;
+                if (bullet.x > 800)
                     delArr.push(bullet);
             }
             for (i = 0; i < delArr.length; i++) {
@@ -244,8 +245,8 @@ var fighter;
             var enemyBulletsCount = this.enemyBullets.length;
             for (i = 0; i < enemyBulletsCount; i++) {
                 bullet = this.enemyBullets[i];
-                bullet.y += 8 * speedOffset;
-                if (bullet.y > this.stageH)
+                bullet.x -= 8 * speedOffset;
+                if (bullet.x < 0 )
                     delArr.push(bullet);
             }
             for (i = 0; i < delArr.length; i++) {
@@ -272,11 +273,15 @@ var fighter;
                 for (j = 0; j < enemyFighterCount; j++) {
                     theFighter = this.enemyFighters[j];
                     if (fighter.GameUtil.hitTest(theFighter, bullet)) {
-                        theFighter.blood -= 2;
+                    	var isShotHead = (Math.random()<0.4);
+                    	if (isShotHead)
+                         theFighter.blood -= 10;
+                        else
+                         theFighter.blood -= 2;
                         if (delBullets.indexOf(bullet) == -1)
                             delBullets.push(bullet);
                             if (theFighter.blood <= 0)
-                             theFighter.gotoAndPlay("death");
+                             theFighter.death(isShotHead);
                         if (theFighter.blood <= 0 && delFighters.indexOf(theFighter) == -1)
                             delFighters.push(theFighter);
                     }
@@ -313,10 +318,10 @@ var fighter;
                 while (delFighters.length > 0) {
                     theFighter = delFighters.pop();
                     theFighter.stop();
-                    theFighter.removeEventListener("createBullet", this.createBulletHandler, this);
-                    this.removeChild(theFighter);
+                    //theFighter.removeEventListener("createBullet", this.createBulletHandler, this);
+                    //this.removeChild(theFighter);
                     this.enemyFighters.splice(this.enemyFighters.indexOf(theFighter), 1);
-                    fighter.Airplane.reclaim(theFighter, "f2");
+                    //fighter.Monster.reclaim(theFighter);
                 }
             }
         };
@@ -350,7 +355,7 @@ var fighter;
                 theFighter.stopFire();
                 theFighter.removeEventListener("createBullet", this.createBulletHandler, this);
                 this.removeChild(theFighter);
-                fighter.Airplane.reclaim(theFighter, "f2");
+                fighter.Monster.reclaim(theFighter);
             }
             //显示成绩
             this.scorePanel.showScore(this.myScore);

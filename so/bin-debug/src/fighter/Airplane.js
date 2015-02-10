@@ -52,12 +52,12 @@ var fighter;
             this.fireTimer.start();
         };
         /**停火*/
-        Airplane.prototype.stopFire = function () {
+        Airplane.prototype.stop = function () {
             this.fireTimer.stop();
         };
         /**创建子弹*/
         Airplane.prototype.createBullet = function (evt) {
-            this.dispatchEventWith("createBullet");
+           // this.dispatchEventWith("createBullet");
         };
         Airplane.cacheDict = {};
         return Airplane;
