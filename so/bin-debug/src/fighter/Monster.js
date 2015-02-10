@@ -32,7 +32,11 @@ var fighter;
             this.fireDelay = fireDelay;
 			var armature = factory.buildArmature(resName);
 			this.armature = armature;
+			 
 			var armatureDisplay = armature.getDisplay();
+			if (isMe)
+			 armatureDisplay.scaleX = -1;
+			 
 			this.addChild(armatureDisplay);
 			dragonBones.WorldClock.clock.add(armature);
             this.fireTimer = new egret.Timer(fireDelay);

@@ -118,22 +118,29 @@ var fighter;
         factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
         factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
 
-        var armature = factory.buildArmature("soldier1");
-		
-		var bones = armature.getBones();
-		for (var i=0;i<bones.length ;i++ )
-		{
-			//bones[i].origin.rotation = 90;//origin BoneTransfo
-			//bones[i].origin.x = 0- bones[i].origin.x;
-			//bones[i].origin.skewX = 90;
-			//bones[i].origin.y = 0-bones[i].origin.y;
-		}
-		var bone = armature.getBone("tou");
-		logg(bone.origin.toString());
-//		bone.origin.pivotX = -1;
-		//bone.origin.skewX = -90;
+//        var armature = factory.buildArmature("soldier1");
+//		
+//        var armatureDisplay = armature.getDisplay();
+//        dragonBones.WorldClock.clock.add(armature);
+//        this.addChild(armatureDisplay);
+//        armatureDisplay.x = 100;
+//        armatureDisplay.y = 250;	
+//        armatureDisplay.scaleX = -1;	
+//        		
+//		armature.animation.gotoAndPlay("fire");
+//		
+//        armature = factory.buildArmature("soldier1");
+//		
+//        armatureDisplay = armature.getDisplay();
+//        dragonBones.WorldClock.clock.add(armature);
+//        this.addChild(armatureDisplay);
+//        armatureDisplay.x = 150;
+//        armatureDisplay.y = 150;	
+//        armature.animation.gotoAndPlay("fire");
+        		
+		//bone.origin.skewX = -180;
 		//bone.origin.rotation = 180;
-       //  bone.origin.rotation = 180;//origin BoneTransfo
+        // bone.origin.rotation = 180;//origin BoneTransfo
 
 		var player = fighter.Monster.produce(0, 150,this.factory,true);
 		this.addChild(player);
