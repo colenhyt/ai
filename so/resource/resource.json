@@ -7,6 +7,15 @@
 		{"name":"e1_png","type":"image","url":"assets/enemy_01/texture.webp"},
 		{"name":"e1_json","type":"json","url":"assets/enemy_01/texture.json"},
 		{"name":"e1_skeleton_json","type":"json","url":"assets/enemy_01/skeleton.json"},
+		{"name":"e3_png","type":"image","url":"assets/enemy_03/texture.webp"},
+		{"name":"e3_json","type":"json","url":"assets/enemy_03/texture.json"},
+		{"name":"e3_skeleton_json","type":"json","url":"assets/enemy_03/skeleton.json"},
+		{"name":"e4_png","type":"image","url":"assets/enemy04/texture.webp"},
+		{"name":"e4_json","type":"json","url":"assets/enemy04/texture.json"},
+		{"name":"e4_skeleton_json","type":"json","url":"assets/enemy04/skeleton.json"},
+		{"name":"b1_png","type":"image","url":"assets/boss1/texture.webp"},
+		{"name":"b1_json","type":"json","url":"assets/boss1/texture.json"},
+		{"name":"b1_skeleton_json","type":"json","url":"assets/boss1/skeleton.json"},
 		{"name":"bgImage","type":"image","url":"assets/map.webp"},
 		{"name":"btnStart","type":"image","url":"assets/btn_start.png"},
 		{"name":"f1","type":"image","url":"assets/f1.png"},
@@ -17,6 +26,6 @@
 
 "groups":
 	[
-        {"name":"preload","keys":"bgImage,btnStart,f1,f2,b1,b2,texture_png,texture_json,skeleton_json,e1_png,e1_json,e1_skeleton_json"}
+        {"name":"preload","keys":"bgImage,btnStart,f1,f2,b1,b2,texture_png,texture_json,skeleton_json,e1_png,e1_json,e1_skeleton_json,e3_png,e3_json,e3_skeleton_json,e4_png,e4_json,e4_skeleton_json,b1_png,b1_json,b1_skeleton_json"}
 	]
 }
