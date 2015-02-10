@@ -34,10 +34,13 @@ var fighter;
 			this.armature = armature;
 			 
 			var armatureDisplay = armature.getDisplay();
-			if (isMe)
+			if (isMe){
 			 armatureDisplay.scaleX = -1;
-			 
+			 armature.animation.gotoAndPlay("daiji");
+			}
+			 armatureDisplay.rotate = 90;
 			this.addChild(armatureDisplay);
+			
 			dragonBones.WorldClock.clock.add(armature);
             this.fireTimer = new egret.Timer(fireDelay);
             this.armature.aa = 43;

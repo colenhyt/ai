@@ -27,7 +27,9 @@ var fighter;
                 bullet = dict.pop();
             }
             else {
-                bullet = new fighter.Bullet(RES.getRes(textureName));
+            	var tt = RES.getRes(textureName);
+                bullet = new fighter.Bullet(tt);
+                bullet.rotate = -90;
             }
             bullet.textureName = textureName;
             return bullet;
