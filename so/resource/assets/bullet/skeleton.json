@@ -1,0 +1,355 @@
+{ "name":"Bullet03","frameRate":24,"version":2.3, "armature": [ 
+    { 
+    "name":"Bullet03",
+    "bone": [ 
+        { 
+         "name":"Bullet03_7","transform": { 
+          "x":463.05,
+          "y":0,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"Bullet03_6","transform": { 
+          "x":469,
+          "y":0,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"Bullet03_5","transform": { 
+          "x":468.75,
+          "y":0.35,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"Bullet03_4","transform": { 
+          "x":464.05,
+          "y":0.35,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"Bullet03_3","transform": { 
+          "x":462,
+          "y":0.25,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"Bullet03_2","transform": { 
+          "x":46.1,
+          "y":-0.15,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"Bullet03_1","transform": { 
+          "x":34.35,
+          "y":0.25,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        }
+    ], 
+    "skin": [ 
+     { 
+      "slot": [ 
+        { 
+         "name":"Bullet03_1","parent":"Bullet03_1","z":0,
+         "display": [ 
+            { 
+            "name":"Bullet03_1","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":38,
+              "pY":15
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"Bullet03_2","parent":"Bullet03_2","z":1,
+         "display": [ 
+            { 
+            "name":"Bullet03_2","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":50.5,
+              "pY":31
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"Bullet03_3","parent":"Bullet03_3","z":2,
+         "display": [ 
+            { 
+            "name":"Bullet03_3","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":466,
+              "pY":21.5
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"Bullet03_4","parent":"Bullet03_4","z":3,
+         "display": [ 
+            { 
+            "name":"Bullet03_4","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":469,
+              "pY":8
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"Bullet03_5","parent":"Bullet03_5","z":4,
+         "display": [ 
+            { 
+            "name":"Bullet03_5","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":469,
+              "pY":5.5
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"Bullet03_6","parent":"Bullet03_6","z":5,
+         "display": [ 
+            { 
+            "name":"Bullet03_6","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":469,
+              "pY":6
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"Bullet03_7","parent":"Bullet03_7","z":6,
+         "display": [ 
+            { 
+            "name":"Bullet03_7","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":469,
+              "pY":4.5
+          } 
+          } 
+         ] 
+       }
+       ] 
+      } 
+    ], 
+    "animation": [ 
+    { 
+      "name":"fire","fadeInTime":0,"duration":9,"scale":1,"loop":0,"tweenEasing":"NaN","timeline":[
+        { 
+         "name":"Bullet03_1","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":0,"duration":1,"transform": { 
+              "x":34.35,
+              "y":0.25,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":8,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"Bullet03_2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":1,"duration":1,"transform": { 
+              "x":46.1,
+              "y":-0.15,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":7,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"Bullet03_3","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":2,"displayIndex":-1         },
+         { 
+            "z":2,"duration":1,"transform": { 
+              "x":462,
+              "y":0.25,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":6,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"Bullet03_4","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":3,"tweenEasing":0,"duration":5,"transform": { 
+              "x":464.05,
+              "y":0.35,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":3,"duration":1,"transform": { 
+              "x":464.05,
+              "y":0.35,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       }
+      ] 
+    },
+    { 
+      "name":"gone","fadeInTime":0,"duration":3,"scale":1,"loop":0,"tweenEasing":"NaN","timeline":[
+        { 
+         "name":"Bullet03_5","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":4,"duration":1,"transform": { 
+              "x":468.75,
+              "y":0.35,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":2,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"Bullet03_6","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":5,"duration":1,"transform": { 
+              "x":469,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"Bullet03_7","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":2,"displayIndex":-1         },
+         { 
+            "z":6,"duration":1,"transform": { 
+              "x":463.05,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       }
+      ] 
+    }
+    ] 
+} ] }
