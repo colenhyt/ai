@@ -113,16 +113,17 @@ var fighter;
 		//bone.origin.rotation = 180;
        //  bone.origin.rotation = 180;//origin BoneTransfo
 
-		var player = fighter.Monster.produce("soldier1", 1000,this.factory,true);
+		var player = fighter.Monster.produce("soldier1", 300,this.factory,true);
 		this.addChild(player);
         player.x = 100;
         player.y = 250;
 		this.player = player;
-		//this.player.addEventListener("createBullet", this.createBulletHandler, this);
+		this.player.addEventListener("createBullet", this.createBulletHandler, this);
 		
             this.touchEnabled = true;
             this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
             this.addEventListener(egret.TouchEvent.TOUCH_END, this.touchHandler, this);
+            this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
 
 		//armature.animation.play();
        // armature.animation.gotoAndPlay("shothead",-1,-1,1);
@@ -136,7 +137,6 @@ var fighter;
         GameContainer.prototype.gameStart = function () {
             this.myScore = 0;
             this.removeChild(this.btnStart);
-            //this.bg.start();
             this.touchEnabled = true;
             this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
             this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
@@ -168,11 +168,11 @@ var fighter;
         /**创建子弹(包括我的子弹和敌机的子弹)*/
         GameContainer.prototype.createBulletHandler = function (evt) {
             var bullet;
-            if (evt.target == this.myFighter) {
+            if (evt.target == this.player) {
                 for (var i = 0; i < 1; i++) {
                     bullet = fighter.Bullet.produce("b1");
-                    bullet.x = (this.myFighter.x + this.myFighter.width + 22);
-                    bullet.y = this.myFighter.y - 30;
+                    bullet.x = (this.player.x + 22);
+                    bullet.y = this.player.y - 30;
                     this.addChildAt(bullet, this.numChildren - 1 - this.enemyFighters.length);
                     this.myBullets.push(bullet);
                 }
@@ -189,12 +189,9 @@ var fighter;
         /**创建敌机*/
         GameContainer.prototype.createEnemyFighter = function (evt) {
             var enemyFighter = fighter.Monster.produce("enemy_01", 300,this.factory);
-            //enemyFighter.x = Math.random() * (this.stageW - enemyFighter.width);
-            //enemyFighter.y = -enemyFighter.height - Math.random() * 300;
             enemyFighter.x = enemyFighter.width + 700;
             enemyFighter.y = Math.random() * (this.stageH - enemyFighter.height)+100;            
             enemyFighter.addEventListener("createBullet", this.createBulletHandler, this);
-            //enemyFighter.start();
             this.addChildAt(enemyFighter, this.numChildren - 1);
             this.enemyFighters.push(enemyFighter);
         };
@@ -212,7 +209,7 @@ var fighter;
             var delArr = [];
             for (; i < myBulletsCount; i++) {
                 bullet = this.myBullets[i];
-                bullet.x -= 12 * speedOffset;
+                bullet.x += 12 * speedOffset;
                 if (bullet.x > 800)
                     delArr.push(bullet);
             }
