@@ -129,6 +129,8 @@ var fighter;
 		this.player = player;
 		this.player.addEventListener("createBullet", this.createBulletHandler, this);
 		
+		logg(this.hashCode);
+		
             this.touchEnabled = true;
             this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
             this.addEventListener(egret.TouchEvent.TOUCH_END, this.touchHandler, this);
@@ -168,12 +170,12 @@ var fighter;
                 tx = Math.max(0, tx);
                 tx = Math.min(this.stageW - this.myFighter.width, tx);
                // this.myFighter.x = tx;
-               var evt2 = {target:this.player,localX:evt.localX,localY:evt.localY};
-               this.createBulletHandler(evt2);
+              // var evt2 = {target:this.player,localX:evt.localX,localY:evt.localY};
+               //this.createBulletHandler(evt2);
             }else if (evt.type == egret.TouchEvent.TOUCH_BEGIN) {
-				this.player.start();
 				var evt2 = {target:this.player,localX:evt.localX,localY:evt.localY};
-				this.createBulletHandler(evt2);
+				this.player.start(evt2);
+				//this.createBulletHandler(evt2);
 			}else if (evt.type == egret.TouchEvent.TOUCH_END) {
 				this.player.stop();
 			}
