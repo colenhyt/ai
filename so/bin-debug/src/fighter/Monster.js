@@ -121,7 +121,7 @@ var fighter;
         };
         /**创建子弹*/
         Monster.prototype.createBullet = function (evt) {
-            //this.dispatchEventWith("createBullet");
+            this.dispatchEventWith("createBullet");
             this.parent.createBulletHandler(this.evt);
         };
         Monster.cacheDict = {};

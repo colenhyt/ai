@@ -116,20 +116,19 @@ var fighter;
 			//bones[i].origin.skewX = 90;
 			//bones[i].origin.y = 0-bones[i].origin.y;
 		}
-//		var bone = armature.getBone("tou");
+		var bone = armature.getBone("tou");
+		logg(bone.origin.toString());
 //		bone.origin.pivotX = -1;
 		//bone.origin.skewX = -90;
 		//bone.origin.rotation = 180;
        //  bone.origin.rotation = 180;//origin BoneTransfo
 
-		var player = fighter.Monster.produce("soldier1", 300,this.factory,true);
+		var player = fighter.Monster.produce("soldier1", 150,this.factory,true);
 		this.addChild(player);
         player.x = 100;
         player.y = 250;
 		this.player = player;
 		this.player.addEventListener("createBullet", this.createBulletHandler, this);
-		
-		logg(this.hashCode);
 		
             this.touchEnabled = true;
             this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
