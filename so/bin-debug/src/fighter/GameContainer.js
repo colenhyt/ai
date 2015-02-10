@@ -117,7 +117,7 @@ var fighter;
 
         var armatureDisplay = armature.getDisplay();
         dragonBones.WorldClock.clock.add(armature);
-        //this.addChild(armatureDisplay);
+       // this.addChild(armatureDisplay);
         armatureDisplay.x = 100;
         armatureDisplay.y = 250;
 
@@ -127,17 +127,6 @@ var fighter;
 
 		//armature.animation.play();
         armature.animation.gotoAndPlay("daiji");
-
-//		for (var i=0;i<5 ;i++ )
-//		{
-//        var armature2 = factory.buildArmature("enemy_01");
-//        armatureDisplay = armature2.getDisplay();
-//        dragonBones.WorldClock.clock.add(armature2);
-//        this.addChild(armatureDisplay);
-//        armatureDisplay.x = 750;
-//        armatureDisplay.y = 200+i*60;
-//		armature2.animation.gotoAndPlay("move");
-//		}
 
         egret.Ticker.getInstance().register(function (advancedTime) {
             dragonBones.WorldClock.clock.advanceTime(advancedTime / 1000);
@@ -239,16 +228,15 @@ var fighter;
             for (i = 0; i < enemyFighterCount; i++) {
                 theFighter = this.enemyFighters[i];
                 theFighter.update(evt,fps);
-               // theFighter.x -= 4 * speedOffset/2;
-               // if (theFighter.x > this.stageW)
-               //     delArr.push(theFighter);
+                if (theFighter.x <0)
+                    delArr.push(theFighter);
             }
             for (i = 0; i < delArr.length; i++) {
                 theFighter = delArr[i];
                 this.removeChild(theFighter);
                 fighter.Monster.reclaim(theFighter);
                 theFighter.removeEventListener("createBullet", this.createBulletHandler, this);
-                theFighter.stopFire();
+                theFighter.stop();
                 this.enemyFighters.splice(this.enemyFighters.indexOf(theFighter), 1);
             }
             delArr = [];
@@ -287,6 +275,8 @@ var fighter;
                         theFighter.blood -= 2;
                         if (delBullets.indexOf(bullet) == -1)
                             delBullets.push(bullet);
+                            if (theFighter.blood <= 0)
+                             theFighter.gotoAndPlay("death");
                         if (theFighter.blood <= 0 && delFighters.indexOf(theFighter) == -1)
                             delFighters.push(theFighter);
                     }
@@ -322,7 +312,7 @@ var fighter;
                 this.myScore += delFighters.length;
                 while (delFighters.length > 0) {
                     theFighter = delFighters.pop();
-                    theFighter.stopFire();
+                    theFighter.stop();
                     theFighter.removeEventListener("createBullet", this.createBulletHandler, this);
                     this.removeChild(theFighter);
                     this.enemyFighters.splice(this.enemyFighters.indexOf(theFighter), 1);
@@ -336,7 +326,7 @@ var fighter;
             this.bg.pause();
             this.removeEventListener(egret.Event.ENTER_FRAME, this.update, this);
             this.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
-            this.myFighter.stopFire();
+            this.myFighter.stop();
             this.myFighter.removeEventListener("createBullet", this.createBulletHandler, this);
             this.enemyFightersTimer.removeEventListener(egret.TimerEvent.TIMER, this.createEnemyFighter, this);
             this.enemyFightersTimer.stop();

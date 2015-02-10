@@ -18,13 +18,14 @@ var fighter;
             _super.call(this);
             this.tick = 0;
             /**飞机生命值*/
-            this.blood = 100;
+            this.blood = 10;
             this.actionType = -1;
             this.resName = resName;
             this.fireDelay = fireDelay;
 			var armature = factory.buildArmature(resName);
 			this.armature = armature;
 			var armatureDisplay = armature.getDisplay();
+			this.armatureDisplay = armatureDisplay;
 			this.addChild(armatureDisplay);
 			dragonBones.WorldClock.clock.add(armature);
             this.fireTimer = new egret.Timer(fireDelay);
@@ -42,7 +43,7 @@ var fighter;
             else {
                 theFighter = new fighter.Monster(resName, fireDelay,factory);
             }
-            theFighter.blood = 100;
+            theFighter.blood = 10;
             return theFighter;
         };
         /**回收*/
@@ -57,15 +58,11 @@ var fighter;
         Monster.prototype.start = function () {
             this.fireTimer.start();
         };
-        /**开火*/
+        /*动作播放*/
         Monster.prototype.gotoAndPlay = function (actionName) {
-        	if (atype==1)
-        	{
-        	 this.gotoAndPlay("fire");
-        	}else
-        	{
-            this.armature.animation.gotoAndPlay("move");
-        	}        
+            this.armature.animation.gotoAndPlay(actionName);
+            //if (actionName=="death")
+            // dragonBones.WorldClock.clock.remove(this.armature);
         };
         /**行走*/
         Monster.prototype.move = function () {
@@ -79,6 +76,8 @@ var fighter;
         /**monster ai*/
         Monster.prototype.update = function (evt,fps) {
         	this.tick++;
+        	if (this.blood <= 0) return;
+        	
         	if (this.actionType<=6)
         	 this.x -= 4 * 30/fps;
         	 
