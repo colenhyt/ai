@@ -38,7 +38,6 @@ var fighter;
 			 armatureDisplay.scaleX = -1;
 			 armature.animation.gotoAndPlay("daiji");
 			}
-			 armatureDisplay.rotate = 90;
 			this.addChild(armatureDisplay);
 			
 			dragonBones.WorldClock.clock.add(armature);

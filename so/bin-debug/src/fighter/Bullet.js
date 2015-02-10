@@ -29,7 +29,8 @@ var fighter;
             else {
             	var tt = RES.getRes(textureName);
                 bullet = new fighter.Bullet(tt);
-                bullet.rotate = -90;
+                bullet._getMatrix().rotate(90);
+
             }
             bullet.textureName = textureName;
             return bullet;
