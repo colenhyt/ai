@@ -4,6 +4,13 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+
+var  g_textures = [];
+g_textures.push("soldier1");
+g_textures.push("enemy_01");
+g_textures.push("enemy_03");
+g_textures.push("enemy04");
+
 /**
  * Created by shaorui on 14-6-7.
  */
@@ -35,7 +42,8 @@ var fighter;
             this.fireTimer.addEventListener(egret.TimerEvent.TIMER, this.createBullet, this);
         }
         /**生产*/
-        Monster.produce = function (resName, fireDelay,factory,isMe) {
+        Monster.produce = function (resType, fireDelay,factory,isMe) {
+        	var resName = g_textures[resType];
             if (fighter.Monster.cacheDict[resName] == null)
                 fighter.Monster.cacheDict[resName] = [];
             var dict = fighter.Monster.cacheDict[resName];
@@ -85,7 +93,7 @@ var fighter;
         /**停火*/
         Monster.prototype.death = function (isShotHead) {
             this.fireTimer.stop();
-            if (isShotHead)
+            if (isShotHead&&this.armature.animation.hasAnimation("shothead"))
              this.armature.animation.gotoAndPlay("shothead",-1,-1,1);
             else
              this.armature.animation.gotoAndPlay("death",-1,-1,1);
@@ -121,8 +129,10 @@ var fighter;
         };
         /**创建子弹*/
         Monster.prototype.createBullet = function (evt) {
-            this.dispatchEventWith("createBullet");
-            this.parent.createBulletHandler(this.evt);
+            if (this.evt)
+             this.parent.createBulletHandler(this.evt);
+            else
+             this.dispatchEventWith("createBullet");
         };
         Monster.cacheDict = {};
         return Monster;

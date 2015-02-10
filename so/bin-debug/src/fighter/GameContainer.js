@@ -106,6 +106,18 @@ var fighter;
         factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
         factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
 
+        skeletonData = RES.getRes("e3_skeleton_json");
+        textureData = RES.getRes("e3_json");
+        texture = RES.getRes("e3_png");
+        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
+        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
+
+        skeletonData = RES.getRes("e4_skeleton_json");
+        textureData = RES.getRes("e4_json");
+        texture = RES.getRes("e4_png");
+        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
+        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
+
         var armature = factory.buildArmature("soldier1");
 		
 		var bones = armature.getBones();
@@ -123,7 +135,7 @@ var fighter;
 		//bone.origin.rotation = 180;
        //  bone.origin.rotation = 180;//origin BoneTransfo
 
-		var player = fighter.Monster.produce("soldier1", 150,this.factory,true);
+		var player = fighter.Monster.produce(0, 150,this.factory,true);
 		this.addChild(player);
         player.x = 100;
         player.y = 250;
@@ -182,7 +194,7 @@ var fighter;
         /**创建子弹(包括我的子弹和敌机的子弹)*/
         GameContainer.prototype.createBulletHandler = function (evt) {
             var bullet;
-            if (evt.target == this.player) {
+            if (evt.target!=null&&evt.target == this.player) {
                 for (var i = 0; i < 1; i++) {
                     bullet = fighter.Bullet.produce("b1");
                     bullet.x = (this.player.x + 22);
@@ -206,7 +218,8 @@ var fighter;
         };
         /**创建敌机*/
         GameContainer.prototype.createEnemyFighter = function (evt) {
-            var enemyFighter = fighter.Monster.produce("enemy_01", 300,this.factory);
+        	var resType = Math.floor(Math.random() * 3 + 1);
+            var enemyFighter = fighter.Monster.produce(resType, 300,this.factory);
             enemyFighter.x = enemyFighter.width + 700;
             enemyFighter.y = Math.random() * (this.stageH - enemyFighter.height)+100;            
             enemyFighter.addEventListener("createBullet", this.createBulletHandler, this);
