@@ -81,14 +81,76 @@ var fighter;
                 enemyFighter = objArr.pop();
                 fighter.Airplane.reclaim(enemyFighter, "f2");
             }
+
+        var factory = new dragonBones.EgretFactory();
+        this.factory = factory;
+
+        var skeletonData = RES.getRes("skeleton_json");
+        var textureData = RES.getRes("texture_json");
+        var texture = RES.getRes("texture_png");
+        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
+        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
+
+        skeletonData = RES.getRes("e1_skeleton_json");
+        textureData = RES.getRes("e1_json");
+        texture = RES.getRes("e1_png");
+        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
+        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
+
+        var armature = factory.buildArmature("soldier1");
+		
+		var bones = armature.getBones();
+		for (var i=0;i<bones.length ;i++ )
+		{
+			//bones[i].origin.rotation = 90;//origin BoneTransfo
+			//bones[i].origin.x = 0- bones[i].origin.x;
+			//bones[i].origin.skewX = 90;
+			//bones[i].origin.y = 0-bones[i].origin.y;
+		}
+		var bone = armature.getBone("tou");
+		bone.origin.pivotX = -1;
+		//bone.origin.skewX = -90;
+		//bone.origin.rotation = 180;
+       //  bone.origin.rotation = 180;//origin BoneTransfo
+
+		this.armature = armature;
+
+        var armatureDisplay = armature.getDisplay();
+        dragonBones.WorldClock.clock.add(armature);
+        //this.addChild(armatureDisplay);
+        armatureDisplay.x = 100;
+        armatureDisplay.y = 250;
+
+            this.touchEnabled = true;
+            this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
+            this.addEventListener(egret.TouchEvent.TOUCH_END, this.touchHandler, this);
+
+		//armature.animation.play();
+        armature.animation.gotoAndPlay("daiji");
+
+//		for (var i=0;i<5 ;i++ )
+//		{
+//        var armature2 = factory.buildArmature("enemy_01");
+//        armatureDisplay = armature2.getDisplay();
+//        dragonBones.WorldClock.clock.add(armature2);
+//        this.addChild(armatureDisplay);
+//        armatureDisplay.x = 750;
+//        armatureDisplay.y = 200+i*60;
+//		armature2.animation.gotoAndPlay("move");
+//		}
+
+        egret.Ticker.getInstance().register(function (advancedTime) {
+            dragonBones.WorldClock.clock.advanceTime(advancedTime / 1000);
+        }, this);
+
         };
         /**游戏开始*/
         GameContainer.prototype.gameStart = function () {
             this.myScore = 0;
             this.removeChild(this.btnStart);
-            this.bg.start();
+            //this.bg.start();
             this.touchEnabled = true;
-            this.addEventListener(egret.Event.ENTER_FRAME, this.gameViewUpdate, this);
+            this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
             this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
             this.myFighter.x = (this.stageW - this.myFighter.width) / 2;
             this.myFighter.fire(); //开火
@@ -98,6 +160,7 @@ var fighter;
             this.enemyFightersTimer.start();
             if (this.scorePanel.parent == this)
                 this.removeChild(this.scorePanel);
+
         };
         /**响应Touch*/
         GameContainer.prototype.touchHandler = function (evt) {
@@ -106,7 +169,11 @@ var fighter;
                 tx = Math.max(0, tx);
                 tx = Math.min(this.stageW - this.myFighter.width, tx);
                 this.myFighter.x = tx;
-            }
+            }else if (evt.type == egret.TouchEvent.TOUCH_BEGIN) {
+				this.armature.animation.gotoAndPlay("fire");
+			}else if (evt.type == egret.TouchEvent.TOUCH_END) {
+				this.armature.animation.gotoAndPlay("daiji");
+			}
         };
         /**创建子弹(包括我的子弹和敌机的子弹)*/
         GameContainer.prototype.createBulletHandler = function (evt) {
@@ -131,16 +198,18 @@ var fighter;
         };
         /**创建敌机*/
         GameContainer.prototype.createEnemyFighter = function (evt) {
-            var enemyFighter = fighter.Airplane.produce("f2", 1000);
-            enemyFighter.x = Math.random() * (this.stageW - enemyFighter.width);
-            enemyFighter.y = -enemyFighter.height - Math.random() * 300;
+            var enemyFighter = fighter.Monster.produce("enemy_01", 1000,this.factory);
+            //enemyFighter.x = Math.random() * (this.stageW - enemyFighter.width);
+            //enemyFighter.y = -enemyFighter.height - Math.random() * 300;
+            enemyFighter.x = enemyFighter.width + 700;
+            enemyFighter.y = Math.random() * (this.stageH - enemyFighter.height)+100;            
             enemyFighter.addEventListener("createBullet", this.createBulletHandler, this);
-            enemyFighter.fire();
+            enemyFighter.start();
             this.addChildAt(enemyFighter, this.numChildren - 1);
             this.enemyFighters.push(enemyFighter);
         };
         /**游戏画面更新*/
-        GameContainer.prototype.gameViewUpdate = function (evt) {
+        GameContainer.prototype.update = function (evt) {
             //为了防止FPS下降造成回收慢，生成快，进而导致DRAW数量失控，需要计算一个系数，当FPS下降的时候，让运动速度加快
             var nowTime = egret.getTimer();
             var fps = 1000 / (nowTime - this._lastTime);
@@ -169,14 +238,15 @@ var fighter;
             var enemyFighterCount = this.enemyFighters.length;
             for (i = 0; i < enemyFighterCount; i++) {
                 theFighter = this.enemyFighters[i];
-                theFighter.y += 4 * speedOffset;
-                if (theFighter.y > this.stageH)
-                    delArr.push(theFighter);
+                theFighter.update(evt,fps);
+               // theFighter.x -= 4 * speedOffset/2;
+               // if (theFighter.x > this.stageW)
+               //     delArr.push(theFighter);
             }
             for (i = 0; i < delArr.length; i++) {
                 theFighter = delArr[i];
                 this.removeChild(theFighter);
-                fighter.Airplane.reclaim(theFighter, "f2");
+                fighter.Monster.reclaim(theFighter);
                 theFighter.removeEventListener("createBullet", this.createBulletHandler, this);
                 theFighter.stopFire();
                 this.enemyFighters.splice(this.enemyFighters.indexOf(theFighter), 1);
@@ -224,17 +294,17 @@ var fighter;
             }
             for (i = 0; i < enemyBulletsCount; i++) {
                 bullet = this.enemyBullets[i];
-                if (fighter.GameUtil.hitTest(this.myFighter, bullet)) {
-                    this.myFighter.blood -= 1;
-                    if (delBullets.indexOf(bullet) == -1)
-                        delBullets.push(bullet);
-                }
+//                if (fighter.GameUtil.hitTest(this.myFighter, bullet)) {
+//                    this.myFighter.blood -= 1;
+//                    if (delBullets.indexOf(bullet) == -1)
+//                        delBullets.push(bullet);
+//                }
             }
             for (i = 0; i < enemyFighterCount; i++) {
                 theFighter = this.enemyFighters[i];
-                if (fighter.GameUtil.hitTest(this.myFighter, theFighter)) {
-                    this.myFighter.blood -= 10;
-                }
+//                if (fighter.GameUtil.hitTest(this.myFighter, theFighter)) {
+//                    this.myFighter.blood -= 10;
+//                }
             }
             if (this.myFighter.blood <= 0) {
                 this.gameStop();
@@ -264,7 +334,7 @@ var fighter;
         GameContainer.prototype.gameStop = function () {
             this.addChild(this.btnStart);
             this.bg.pause();
-            this.removeEventListener(egret.Event.ENTER_FRAME, this.gameViewUpdate, this);
+            this.removeEventListener(egret.Event.ENTER_FRAME, this.update, this);
             this.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
             this.myFighter.stopFire();
             this.myFighter.removeEventListener("createBullet", this.createBulletHandler, this);
