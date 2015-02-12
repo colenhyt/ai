@@ -1,0 +1,28 @@
+<TextureAtlas name="soldier1" imagePath="texture.webp">
+  <SubTexture name="x8" x="83" y="0" width="70" height="62"/>
+  <SubTexture name="x7" x="155" y="58" width="69" height="56"/>
+  <SubTexture name="x6" x="0" y="67" width="67" height="53"/>
+  <SubTexture name="x5" x="83" y="64" width="67" height="57"/>
+  <SubTexture name="x4" x="155" y="0" width="70" height="56"/>
+  <SubTexture name="x3" x="152" y="116" width="63" height="50"/>
+  <SubTexture name="x2" x="0" y="155" width="52" height="45"/>
+  <SubTexture name="x1" x="54" y="158" width="37" height="31"/>
+  <SubTexture name="huoyan" x="0" y="0" width="81" height="65"/>
+  <SubTexture name="waijianjia" x="162" y="187" width="20" height="14"/>
+  <SubTexture name="tou" x="135" y="168" width="25" height="24"/>
+  <SubTexture name="waixiaobi" x="93" y="158" width="40" height="17"/>
+  <SubTexture name="waidabi" x="227" y="38" width="24" height="32"/>
+  <SubTexture name="woqiang" x="116" y="194" width="19" height="14"/>
+  <SubTexture name="buqiang" x="72" y="123" width="66" height="33"/>
+  <SubTexture name="qugan" x="226" y="106" width="26" height="26"/>
+  <SubTexture name="neixiaobi" x="162" y="168" width="28" height="17"/>
+  <SubTexture name="neijianjia" x="137" y="194" width="20" height="12"/>
+  <SubTexture name="zhandoutui" x="227" y="0" width="26" height="36"/>
+  <SubTexture name="waidatui" x="192" y="168" width="17" height="27"/>
+  <SubTexture name="neidabi" x="217" y="134" width="37" height="31"/>
+  <SubTexture name="kua" x="93" y="177" width="21" height="16"/>
+  <SubTexture name="neixiaotui" x="217" y="167" width="21" height="30"/>
+  <SubTexture name="neijiao" x="54" y="191" width="24" height="9"/>
+  <SubTexture name="neidatui" x="226" y="72" width="28" height="32"/>
+  <SubTexture name="shadow" x="0" y="122" width="70" height="31"/>
+</TextureAtlas>

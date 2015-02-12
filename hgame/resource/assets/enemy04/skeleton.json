@@ -1,0 +1,8060 @@
+{ "name":"enemy04","frameRate":24,"version":2.3, "armature": [ 
+    { 
+    "name":"enemy04",
+    "bone": [ 
+        { 
+         "name":"骨头","transform": { 
+          "x":34.33,
+          "y":-106.68,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"眼镜","transform": { 
+          "x":8.92,
+          "y":-111.65,
+          "skX":-75,
+          "skY":-75,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"肉2","transform": { 
+          "x":28.77,
+          "y":-49.59,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"肉1","transform": { 
+          "x":29.43,
+          "y":-68.74,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"死亡腿2","transform": { 
+          "x":36.3,
+          "y":-25.09,
+          "skX":-32.2,
+          "skY":-32.2,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"死亡腿","transform": { 
+          "x":-5.04,
+          "y":-35.87,
+          "skX":112.05,
+          "skY":112.05,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"死亡肠子","transform": { 
+          "x":10.92,
+          "y":-49.59,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"眼珠","transform": { 
+          "x":-12.39,
+          "y":-66.67,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"死亡手1 复制","transform": { 
+          "x":-21.07,
+          "y":-53.34,
+          "skX":-135,
+          "skY":-135,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"死亡手1","transform": { 
+          "x":52.18,
+          "y":-70.84,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"死亡头","transform": { 
+          "x":6.69,
+          "y":-71.89,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"死亡7","transform": { 
+          "x":17.04,
+          "y":3.29,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1.41
+          }
+        },
+        { 
+         "name":"死亡6","transform": { 
+          "x":18.83,
+          "y":2.73,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1.4
+          }
+        },
+        { 
+         "name":"死亡5","transform": { 
+          "x":20.2,
+          "y":-1.82,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1.57
+          }
+        },
+        { 
+         "name":"死亡4","transform": { 
+          "x":20.93,
+          "y":-2.27,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1.62
+          }
+        },
+        { 
+         "name":"死亡3","transform": { 
+          "x":20.23,
+          "y":4.59,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1.54
+          }
+        },
+        { 
+         "name":"死亡2","transform": { 
+          "x":18.83,
+          "y":5.74,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1.75
+          }
+        },
+        { 
+         "name":"死亡 ","transform": { 
+          "x":17.08,
+          "y":6.13,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1.95
+          }
+        },
+        { 
+         "name":"火13","transform": { 
+          "x":44.48,
+          "y":-197.99,
+          "skX":0,
+          "skY":0,
+          "scX":3.51,
+          "scY":3.51
+          }
+        },
+        { 
+         "name":"火12","transform": { 
+          "x":52.08,
+          "y":-186.48,
+          "skX":0,
+          "skY":0,
+          "scX":2.58,
+          "scY":2.58
+          }
+        },
+        { 
+         "name":"火11","transform": { 
+          "x":73.82,
+          "y":-203.24,
+          "skX":0,
+          "skY":0,
+          "scX":2.21,
+          "scY":2.21
+          }
+        },
+        { 
+         "name":"火10","transform": { 
+          "x":68.99,
+          "y":-150.57,
+          "skX":0,
+          "skY":0,
+          "scX":2.25,
+          "scY":2.25
+          }
+        },
+        { 
+         "name":"火9","transform": { 
+          "x":66.47,
+          "y":-149.97,
+          "skX":0,
+          "skY":0,
+          "scX":2.24,
+          "scY":2.24
+          }
+        },
+        { 
+         "name":"火8","transform": { 
+          "x":70.28,
+          "y":-152.32,
+          "skX":0,
+          "skY":0,
+          "scX":2.21,
+          "scY":2.21
+          }
+        },
+        { 
+         "name":"火7","transform": { 
+          "x":34.37,
+          "y":-150.67,
+          "skX":0,
+          "skY":0,
+          "scX":2.22,
+          "scY":2.22
+          }
+        },
+        { 
+         "name":"火6","transform": { 
+          "x":3.15,
+          "y":-144.41,
+          "skX":0,
+          "skY":0,
+          "scX":2.14,
+          "scY":2.14
+          }
+        },
+        { 
+         "name":"火5","transform": { 
+          "x":2.1,
+          "y":-140.63,
+          "skX":-1,
+          "skY":-1,
+          "scX":2.11,
+          "scY":2.11
+          }
+        },
+        { 
+         "name":"火4","transform": { 
+          "x":-4.48,
+          "y":-130.83,
+          "skX":-1.23,
+          "skY":-1.23,
+          "scX":2.03,
+          "scY":2.03
+          }
+        },
+        { 
+         "name":"火3 ","transform": { 
+          "x":-2.24,
+          "y":-104.16,
+          "skX":-2.98,
+          "skY":-2.98,
+          "scX":1.92,
+          "scY":1.92
+          }
+        },
+        { 
+         "name":"火2","transform": { 
+          "x":-0.03,
+          "y":-86.73,
+          "skX":0,
+          "skY":0,
+          "scX":1.81,
+          "scY":1.81
+          }
+        },
+        { 
+         "name":"火1","transform": { 
+          "x":5.36,
+          "y":-79.13,
+          "skX":0,
+          "skY":0,
+          "scX":1.62,
+          "scY":1.62
+          }
+        },
+        { 
+         "name":"头部","transform": { 
+          "x":-18.72,
+          "y":-83.51,
+          "skX":-5,
+          "skY":-5,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"火焰","transform": { 
+          "x":11.9,
+          "y":-86.55,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"烟4","transform": { 
+          "x":38.39,
+          "y":-94.46,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"烟3","transform": { 
+          "x":38.6,
+          "y":-94.36,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"烟2","transform": { 
+          "x":40.28,
+          "y":-95.51,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"烟1","transform": { 
+          "x":38.08,
+          "y":-95.48,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"外手","transform": { 
+          "x":8.4,
+          "y":-70.98,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"躯干2","transform": { 
+          "x":-7.52,
+          "y":-63.31,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"躯干","transform": { 
+          "x":-7.98,
+          "y":-63.07,
+          "skX":-5,
+          "skY":-5,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"内手","transform": { 
+          "x":-13.44,
+          "y":-65.56,
+          "skX":-30,
+          "skY":-30,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"外膝盖","transform": { 
+          "x":2.2,
+          "y":-24.32,
+          "skX":-20,
+          "skY":-20,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"外大腿","transform": { 
+          "x":4.23,
+          "y":-36.5,
+          "skX":-6.18,
+          "skY":-6.18,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"外小腿","transform": { 
+          "x":14.07,
+          "y":-14.1,
+          "skX":-23.76,
+          "skY":-23.76,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"外鞋1","transform": { 
+          "x":19.6,
+          "y":-15.33,
+          "skX":-90,
+          "skY":-90,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"外鞋2","transform": { 
+          "x":18.2,
+          "y":-4.2,
+          "skX":-1.53,
+          "skY":-1.53,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"胯","transform": { 
+          "x":-2.97,
+          "y":-46.13,
+          "skX":-5,
+          "skY":-5,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"内膝盖","transform": { 
+          "x":-30.66,
+          "y":-37.73,
+          "skX":10.01,
+          "skY":10.01,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"内大腿","transform": { 
+          "x":-15.43,
+          "y":-42.56,
+          "skX":78.99,
+          "skY":78.99,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"内小腿","transform": { 
+          "x":-20.37,
+          "y":-29.26,
+          "skX":-35,
+          "skY":-35,
+          "scX":0.92,
+          "scY":0.92
+          }
+        },
+        { 
+         "name":"内鞋2","transform": { 
+          "x":14.98,
+          "y":-7.03,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"内鞋","transform": { 
+          "x":-14.59,
+          "y":-19.74,
+          "skX":-65,
+          "skY":-65,
+          "scX":0.92,
+          "scY":0.92
+          }
+        },
+        { 
+         "name":"内小臂","transform": { 
+          "x":-16.38,
+          "y":-51.2,
+          "skX":-39.21,
+          "skY":-39.21,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带12","transform": { 
+          "x":3.04,
+          "y":-87.22,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带11","transform": { 
+          "x":2.49,
+          "y":-84.87,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带10","transform": { 
+          "x":2.31,
+          "y":-78.61,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带9","transform": { 
+          "x":1.85,
+          "y":-76.47,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带8","transform": { 
+          "x":1.05,
+          "y":-75.35,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带7","transform": { 
+          "x":2.34,
+          "y":-75.49,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带6","transform": { 
+          "x":2.66,
+          "y":-75.77,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带5","transform": { 
+          "x":2.52,
+          "y":-76.75,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带4","transform": { 
+          "x":3.01,
+          "y":-78.71,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带3","transform": { 
+          "x":3.64,
+          "y":-81.93,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带2","transform": { 
+          "x":2.77,
+          "y":-85.99,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"飘带1","transform": { 
+          "x":2.7,
+          "y":-87.6,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        },
+        { 
+         "name":"影子","transform": { 
+          "x":0.14,
+          "y":0.45,
+          "skX":0,
+          "skY":0,
+          "scX":1,
+          "scY":1
+          }
+        }
+    ], 
+    "skin": [ 
+     { 
+      "slot": [ 
+        { 
+         "name":"影子","parent":"影子","z":0,
+         "display": [ 
+            { 
+            "name":"影子","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":34.65,
+              "pY":15.05
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带1","parent":"飘带1","z":1,
+         "display": [ 
+            { 
+            "name":"飘带1","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.25,
+              "pY":7.7
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带2","parent":"飘带2","z":2,
+         "display": [ 
+            { 
+            "name":"飘带2","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.25,
+              "pY":7
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带3","parent":"飘带3","z":3,
+         "display": [ 
+            { 
+            "name":"飘带3","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.6,
+              "pY":4.9
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带4","parent":"飘带4","z":4,
+         "display": [ 
+            { 
+            "name":"飘带4","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.6,
+              "pY":4.9
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带5","parent":"飘带5","z":5,
+         "display": [ 
+            { 
+            "name":"飘带5","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.6,
+              "pY":6.65
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带6","parent":"飘带6","z":6,
+         "display": [ 
+            { 
+            "name":"飘带6","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.6,
+              "pY":8.75
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带7","parent":"飘带7","z":7,
+         "display": [ 
+            { 
+            "name":"飘带7","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.25,
+              "pY":9.8
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带8","parent":"飘带8","z":8,
+         "display": [ 
+            { 
+            "name":"飘带8","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":11.9,
+              "pY":10.85
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带9","parent":"飘带9","z":9,
+         "display": [ 
+            { 
+            "name":"飘带9","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.6,
+              "pY":9.8
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带10","parent":"飘带10","z":10,
+         "display": [ 
+            { 
+            "name":"飘带10","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":13.65,
+              "pY":9.45
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带11","parent":"飘带11","z":11,
+         "display": [ 
+            { 
+            "name":"飘带11","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":14,
+              "pY":7.7
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"飘带12","parent":"飘带12","z":12,
+         "display": [ 
+            { 
+            "name":"飘带12","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":14.35,
+              "pY":7.7
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"内小臂","parent":"内小臂","z":13,
+         "display": [ 
+            { 
+            "name":"内小臂","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":13.65,
+              "pY":7
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"内鞋","parent":"内鞋","z":14,
+         "display": [ 
+            { 
+            "name":"内鞋","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":10.85,
+              "pY":5.25
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"内鞋2","parent":"内鞋2","z":15,
+         "display": [ 
+            { 
+            "name":"内鞋2","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":10.15,
+              "pY":5.95
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"内小腿","parent":"内小腿","z":16,
+         "display": [ 
+            { 
+            "name":"内小腿","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":8.4,
+              "pY":12.95
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"内大腿","parent":"内大腿","z":17,
+         "display": [ 
+            { 
+            "name":"内大腿","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":9.8,
+              "pY":14.35
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"内膝盖","parent":"内膝盖","z":18,
+         "display": [ 
+            { 
+            "name":"内膝盖","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":5.25,
+              "pY":7.35
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"胯","parent":"胯","z":19,
+         "display": [ 
+            { 
+            "name":"胯","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":11.2,
+              "pY":8.05
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"外鞋2","parent":"外鞋2","z":20,
+         "display": [ 
+            { 
+            "name":"外鞋2","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":10.15,
+              "pY":5.95
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"外鞋1","parent":"外鞋1","z":21,
+         "display": [ 
+            { 
+            "name":"外鞋1","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":10.5,
+              "pY":4.9
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"外小腿","parent":"外小腿","z":22,
+         "display": [ 
+            { 
+            "name":"外小腿","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":8.4,
+              "pY":12.95
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"外大腿","parent":"外大腿","z":23,
+         "display": [ 
+            { 
+            "name":"外大腿","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":10.5,
+              "pY":14.7
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"外膝盖","parent":"外膝盖","z":24,
+         "display": [ 
+            { 
+            "name":"外膝盖","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":5.25,
+              "pY":7.35
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"内手","parent":"内手","z":25,
+         "display": [ 
+            { 
+            "name":"内大臂","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":8.75,
+              "pY":11.9
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"躯干","parent":"躯干","z":26,
+         "display": [ 
+            { 
+            "name":"躯干","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":15.4,
+              "pY":16.45
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"躯干2","parent":"躯干2","z":27,
+         "display": [ 
+            { 
+            "name":"躯干2","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":16.76,
+              "pY":17.71
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"外手","parent":"外手","z":28,
+         "display": [ 
+            { 
+            "name":"外手","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":8.4,
+              "pY":9.8
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"烟1","parent":"烟1","z":29,
+         "display": [ 
+            { 
+            "name":"烟雾1","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":32.55,
+              "pY":21
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"烟2","parent":"烟2","z":30,
+         "display": [ 
+            { 
+            "name":"烟2","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":35,
+              "pY":22.4
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"烟3","parent":"烟3","z":31,
+         "display": [ 
+            { 
+            "name":"烟雾3","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":33.25,
+              "pY":19.95
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"烟4","parent":"烟4","z":32,
+         "display": [ 
+            { 
+            "name":"烟雾4","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":33.6,
+              "pY":20.65
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火焰","parent":"火焰","z":33,
+         "display": [ 
+            { 
+            "name":"火焰","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":4.9,
+              "pY":13.3
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"头部","parent":"头部","z":34,
+         "display": [ 
+            { 
+            "name":"头部","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":10.85,
+              "pY":12.6
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火1","parent":"火1","z":35,
+         "display": [ 
+            { 
+            "name":"火1","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":103.95,
+              "pY":54.6
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火2","parent":"火2","z":36,
+         "display": [ 
+            { 
+            "name":"火2","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":101.15,
+              "pY":54.6
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火3 ","parent":"火3 ","z":37,
+         "display": [ 
+            { 
+            "name":"火3","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":104.3,
+              "pY":63.35
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火4","parent":"火4","z":38,
+         "display": [ 
+            { 
+            "name":"火4","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":98.7,
+              "pY":72.1
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火5","parent":"火5","z":39,
+         "display": [ 
+            { 
+            "name":"火5","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":94.5,
+              "pY":72.1
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火6","parent":"火6","z":40,
+         "display": [ 
+            { 
+            "name":"火6","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":92.4,
+              "pY":71.75
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火7","parent":"火7","z":41,
+         "display": [ 
+            { 
+            "name":"火7","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":75.25,
+              "pY":71.75
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火8","parent":"火8","z":42,
+         "display": [ 
+            { 
+            "name":"火8","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":55.65,
+              "pY":69.65
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火9","parent":"火9","z":43,
+         "display": [ 
+            { 
+            "name":"火9","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":54.25,
+              "pY":67.9
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火10","parent":"火10","z":44,
+         "display": [ 
+            { 
+            "name":"火10","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":52.5,
+              "pY":66.15
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火11","parent":"火11","z":45,
+         "display": [ 
+            { 
+            "name":"火11","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":50.75,
+              "pY":40.6
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火12","parent":"火12","z":46,
+         "display": [ 
+            { 
+            "name":"火12","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":38.5,
+              "pY":39.55
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"火13","parent":"火13","z":47,
+         "display": [ 
+            { 
+            "name":"火13","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":26.25,
+              "pY":23.45
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡 ","parent":"死亡 ","z":48,
+         "display": [ 
+            { 
+            "name":"死亡1","type":"image",    "transform": { 
+              "x":0,
+              "y":-35.1,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":43.4,
+              "pY":33.95
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡2","parent":"死亡2","z":49,
+         "display": [ 
+            { 
+            "name":"死亡2","type":"image",    "transform": { 
+              "x":0,
+              "y":-37.8,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":47.95,
+              "pY":37.8
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡3","parent":"死亡3","z":50,
+         "display": [ 
+            { 
+            "name":"死亡3","type":"image",    "transform": { 
+              "x":0,
+              "y":-43.4,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":51.8,
+              "pY":43.4
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡4","parent":"死亡4","z":51,
+         "display": [ 
+            { 
+            "name":"死亡4","type":"image",    "transform": { 
+              "x":0,
+              "y":-41.65,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":58.1,
+              "pY":41.65
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡5","parent":"死亡5","z":52,
+         "display": [ 
+            { 
+            "name":"死亡5","type":"image",    "transform": { 
+              "x":0,
+              "y":-45.15,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":63.7,
+              "pY":45.15
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡6","parent":"死亡6","z":53,
+         "display": [ 
+            { 
+            "name":"死亡6","type":"image",    "transform": { 
+              "x":0,
+              "y":-47.95,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":68.95,
+              "pY":47.95
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡7","parent":"死亡7","z":54,
+         "display": [ 
+            { 
+            "name":"enemy-death_07.png","type":"image",    "transform": { 
+              "x":-71.05,
+              "y":-95.9,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡头","parent":"死亡头","z":55,
+         "display": [ 
+            { 
+            "name":"死亡头","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":11.2,
+              "pY":13.3
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡手1","parent":"死亡手1","z":56,
+         "display": [ 
+            { 
+            "name":"死亡手1","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.95,
+              "pY":14.35
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡手1 复制","parent":"死亡手1 复制","z":57,
+         "display": [ 
+            { 
+            "name":"死亡手1","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.95,
+              "pY":14.35
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"眼珠","parent":"眼珠","z":58,
+         "display": [ 
+            { 
+            "name":"眼珠","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":2.8,
+              "pY":4.55
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡肠子","parent":"死亡肠子","z":59,
+         "display": [ 
+            { 
+            "name":"肠子","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":12.6,
+              "pY":13.3
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡腿","parent":"死亡腿","z":60,
+         "display": [ 
+            { 
+            "name":"死亡腿","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":16.45,
+              "pY":10.15
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"死亡腿2","parent":"死亡腿2","z":61,
+         "display": [ 
+            { 
+            "name":"死亡腿","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":16.45,
+              "pY":10.15
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"肉1","parent":"肉1","z":62,
+         "display": [ 
+            { 
+            "name":"肉1","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":8.75,
+              "pY":10.15
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"肉2","parent":"肉2","z":63,
+         "display": [ 
+            { 
+            "name":"肉2","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":5.25,
+              "pY":8.05
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"眼镜","parent":"眼镜","z":64,
+         "display": [ 
+            { 
+            "name":"眼镜","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":5.6,
+              "pY":5.25
+          } 
+          } 
+         ] 
+       },
+        { 
+         "name":"骨头","parent":"骨头","z":65,
+         "display": [ 
+            { 
+            "name":"骨头","type":"image",    "transform": { 
+              "x":0,
+              "y":0,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":4.9,
+              "pY":9.1
+          } 
+          } 
+         ] 
+       }
+       ] 
+      } 
+    ], 
+    "animation": [ 
+    { 
+      "name":"move","fadeInTime":0,"duration":13,"scale":1,"loop":0,"tweenEasing":"NaN","timeline":[
+        { 
+         "name":"影子","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":0,"duration":13,"transform": { 
+              "x":0.14,
+              "y":0.45,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"飘带1","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":1,"duration":1,"transform": { 
+              "x":2.7,
+              "y":-87.6,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":12,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":2,"duration":1,"transform": { 
+              "x":2.77,
+              "y":-85.99,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":11,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带3","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":2,"displayIndex":-1         },
+         { 
+            "z":3,"duration":1,"transform": { 
+              "x":3.64,
+              "y":-81.93,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":10,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带4","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":4,"duration":1,"transform": { 
+              "x":3.01,
+              "y":-78.71,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":9,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带5","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":4,"displayIndex":-1         },
+         { 
+            "z":5,"duration":1,"transform": { 
+              "x":2.52,
+              "y":-76.75,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":8,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带6","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":5,"displayIndex":-1         },
+         { 
+            "z":6,"duration":1,"transform": { 
+              "x":2.66,
+              "y":-75.77,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":7,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带7","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":6,"displayIndex":-1         },
+         { 
+            "z":7,"duration":1,"transform": { 
+              "x":2.34,
+              "y":-75.49,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":6,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带8","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":7,"displayIndex":-1         },
+         { 
+            "z":8,"duration":1,"transform": { 
+              "x":1.05,
+              "y":-75.35,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":5,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带9","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":8,"displayIndex":-1         },
+         { 
+            "z":9,"duration":1,"transform": { 
+              "x":1.85,
+              "y":-76.47,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":4,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带10","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":9,"displayIndex":-1         },
+         { 
+            "z":10,"duration":1,"transform": { 
+              "x":2.31,
+              "y":-78.61,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带11","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":10,"displayIndex":-1         },
+         { 
+            "z":11,"duration":1,"transform": { 
+              "x":2.49,
+              "y":-84.87,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":2,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"飘带12","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":11,"displayIndex":-1         },
+         { 
+            "z":12,"duration":1,"transform": { 
+              "x":3.04,
+              "y":-87.22,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":12,"duration":1,"transform": { 
+              "x":3.04,
+              "y":-88.2,
+              "skX":-5.49,
+              "skY":-5.49,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"内小臂","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-16.38,
+              "y":-51.2,
+              "skX":-39.21,
+              "skY":-39.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-14.84,
+              "y":-51.2,
+              "skX":-39.21,
+              "skY":-39.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-17.5,
+              "y":-48.82,
+              "skX":-24.21,
+              "skY":-24.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-19.74,
+              "y":-48.82,
+              "skX":-24.21,
+              "skY":-24.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-25.02,
+              "y":-49,
+              "skX":-9.21,
+              "skY":-9.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-30.69,
+              "y":-50.26,
+              "skX":-9.21,
+              "skY":-9.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-34.75,
+              "y":-54.6,
+              "skX":-2.47,
+              "skY":-2.47,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-38.67,
+              "y":-58.38,
+              "skX":12.53,
+              "skY":12.53,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-37.83,
+              "y":-62.02,
+              "skX":27.52,
+              "skY":27.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-32.02,
+              "y":-57.12,
+              "skX":12.53,
+              "skY":12.53,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-29.61,
+              "y":-55.16,
+              "skX":12.53,
+              "skY":12.53,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-24.01,
+              "y":-52.22,
+              "skX":12.53,
+              "skY":12.53,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":13,"duration":1,"transform": { 
+              "x":-17.71,
+              "y":-49.98,
+              "skX":-2.47,
+              "skY":-2.47,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"内鞋","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":14,"duration":1,"transform": { 
+              "x":-14.59,
+              "y":-19.74,
+              "skX":-65,
+              "skY":-65,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":14,"duration":1,"transform": { 
+              "x":-24.92,
+              "y":-14.56,
+              "skX":-35,
+              "skY":-35,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":14,"duration":1,"transform": { 
+              "x":-25.3,
+              "y":-9.27,
+              "skX":10,
+              "skY":10,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":14,"duration":1,"transform": { 
+              "x":-14,
+              "y":-5.39,
+              "skX":0.22,
+              "skY":0.22,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":14,"duration":1,"transform": { 
+              "x":-8.75,
+              "y":-5.6,
+              "skX":0.22,
+              "skY":0.22,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":14,"duration":1,"transform": { 
+              "x":-1.89,
+              "y":-5.6,
+              "skX":0.22,
+              "skY":0.22,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":14,"duration":1,"transform": { 
+              "x":5.81,
+              "y":-5.6,
+              "skX":0.22,
+              "skY":0.22,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":6,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"内鞋2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":7,"displayIndex":-1         },
+         { 
+            "z":15,"duration":1,"transform": { 
+              "x":14.98,
+              "y":-7.03,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":15,"duration":1,"transform": { 
+              "x":18.2,
+              "y":-6.79,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":15,"duration":1,"transform": { 
+              "x":18.38,
+              "y":-8.61,
+              "skX":-15,
+              "skY":-15,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":15,"duration":1,"transform": { 
+              "x":11.13,
+              "y":-17.04,
+              "skX":-105,
+              "skY":-105,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":15,"duration":1,"transform": { 
+              "x":-3.39,
+              "y":-21.14,
+              "skX":-105,
+              "skY":-105,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":15,"duration":1,"transform": { 
+              "x":-10.15,
+              "y":-14.59,
+              "skX":-79.52,
+              "skY":-79.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"内小腿","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":-20.37,
+              "y":-29.26,
+              "skX":-35,
+              "skY":-35,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":-25.51,
+              "y":-26.32,
+              "skX":-5,
+              "skY":-5,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":-21.73,
+              "y":-20.12,
+              "skX":10,
+              "skY":10,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":-13.05,
+              "y":-15.43,
+              "skX":-5,
+              "skY":-5,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":-8.5,
+              "y":-15.64,
+              "skX":-5,
+              "skY":-5,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":-2.34,
+              "y":-15.64,
+              "skX":-12.44,
+              "skY":-12.44,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":5.36,
+              "y":-15.64,
+              "skX":-12.44,
+              "skY":-12.44,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":10.99,
+              "y":-16.06,
+              "skX":-27.44,
+              "skY":-27.44,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":12.7,
+              "y":-15.96,
+              "skX":-42.44,
+              "skY":-42.44,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":12.18,
+              "y":-16.13,
+              "skX":-42.44,
+              "skY":-42.44,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":0.39,
+              "y":-20.02,
+              "skX":-72.44,
+              "skY":-72.44,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":-16.41,
+              "y":-23.17,
+              "skX":-72.44,
+              "skY":-72.44,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":16,"duration":1,"transform": { 
+              "x":-17.71,
+              "y":-22.19,
+              "skX":-38.97,
+              "skY":-38.97,
+              "scX":0.92,
+              "scY":0.92,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"内大腿","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-15.43,
+              "y":-42.56,
+              "skX":78.99,
+              "skY":78.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-15.61,
+              "y":-42.35,
+              "skX":82.49,
+              "skY":82.49,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-14.38,
+              "y":-37.73,
+              "skX":52.49,
+              "skY":52.49,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-10.71,
+              "y":-34.75,
+              "skX":28.73,
+              "skY":28.73,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-8.89,
+              "y":-35.98,
+              "skX":13.73,
+              "skY":13.73,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-6.89,
+              "y":-35.98,
+              "skX":5.78,
+              "skY":5.78,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":0.28,
+              "y":-35.98,
+              "skX":-9.16,
+              "skY":-9.16,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-0.38,
+              "y":-36.4,
+              "skX":-15.85,
+              "skY":-15.85,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-0.24,
+              "y":-33.88,
+              "skX":-15.85,
+              "skY":-15.85,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-0.77,
+              "y":-34.72,
+              "skX":-15.85,
+              "skY":-15.85,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-10.36,
+              "y":-35.98,
+              "skX":19.14,
+              "skY":19.14,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-14.14,
+              "y":-37.31,
+              "skX":53.68,
+              "skY":53.68,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":17,"duration":1,"transform": { 
+              "x":-13.82,
+              "y":-39.48,
+              "skX":68.68,
+              "skY":68.68,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"内膝盖","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-30.66,
+              "y":-37.73,
+              "skX":10.01,
+              "skY":10.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-30.73,
+              "y":-37.62,
+              "skX":25,
+              "skY":25,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-27.72,
+              "y":-30.9,
+              "skX":25,
+              "skY":25,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-20.79,
+              "y":-26.49,
+              "skX":10.01,
+              "skY":10.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-15.99,
+              "y":-26.21,
+              "skX":10.01,
+              "skY":10.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-9.66,
+              "y":-26.21,
+              "skX":10.01,
+              "skY":10.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-3.88,
+              "y":-23.94,
+              "skX":-19.99,
+              "skY":-19.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-1.75,
+              "y":-23.31,
+              "skX":-19.99,
+              "skY":-19.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-0.98,
+              "y":-21.42,
+              "skX":-19.99,
+              "skY":-19.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-2.13,
+              "y":-21.45,
+              "skX":-19.99,
+              "skY":-19.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-13.68,
+              "y":-22.01,
+              "skX":-19.99,
+              "skY":-19.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-26.07,
+              "y":-25.69,
+              "skX":-4.99,
+              "skY":-4.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":18,"duration":1,"transform": { 
+              "x":-28,
+              "y":-31.43,
+              "skX":10,
+              "skY":10,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"胯","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-2.97,
+              "y":-46.13,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-2.13,
+              "y":-46.76,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-2.41,
+              "y":-45.95,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-2.87,
+              "y":-45.25,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-3.43,
+              "y":-45.18,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-4.79,
+              "y":-45.71,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-5,
+              "y":-46.37,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-5.63,
+              "y":-47,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-5.63,
+              "y":-46.58,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-5.32,
+              "y":-45.85,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-5.21,
+              "y":-44.76,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-5.21,
+              "y":-44.31,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":19,"duration":1,"transform": { 
+              "x":-4.69,
+              "y":-44.9,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"外鞋2","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":20,"duration":1,"transform": { 
+              "x":18.2,
+              "y":-4.2,
+              "skX":-1.53,
+              "skY":-1.53,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":20,"duration":1,"transform": { 
+              "x":20.83,
+              "y":-4.23,
+              "skX":-6.47,
+              "skY":-6.47,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":20,"duration":1,"transform": { 
+              "x":27.97,
+              "y":-9.87,
+              "skX":-51.47,
+              "skY":-51.47,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":20,"duration":1,"transform": { 
+              "x":23.77,
+              "y":-17.78,
+              "skX":-89.95,
+              "skY":-89.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":8,"displayIndex":-1         },
+         { 
+            "z":20,"duration":1,"transform": { 
+              "x":15.58,
+              "y":-2.41,
+              "skX":0.05,
+              "skY":0.05,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"外鞋1","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":4,"displayIndex":-1         },
+         { 
+            "z":21,"duration":1,"transform": { 
+              "x":19.6,
+              "y":-15.33,
+              "skX":-90,
+              "skY":-90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":21,"duration":1,"transform": { 
+              "x":7.46,
+              "y":-15.85,
+              "skX":-90,
+              "skY":-90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":21,"duration":1,"transform": { 
+              "x":-2.34,
+              "y":-15.64,
+              "skX":-90,
+              "skY":-90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":21,"duration":1,"transform": { 
+              "x":-14,
+              "y":-13.23,
+              "skX":-45,
+              "skY":-45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":21,"duration":1,"transform": { 
+              "x":-26.6,
+              "y":-10.39,
+              "skX":16.76,
+              "skY":16.76,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":21,"duration":1,"transform": { 
+              "x":-21.49,
+              "y":-4.13,
+              "skX":15,
+              "skY":15,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":21,"duration":1,"transform": { 
+              "x":-9.03,
+              "y":-1.36,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":21,"duration":1,"transform": { 
+              "x":1.92,
+              "y":-0.84,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"外小腿","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":14.07,
+              "y":-14.1,
+              "skX":-23.76,
+              "skY":-23.76,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":15.09,
+              "y":-14.91,
+              "skX":-33.42,
+              "skY":-33.42,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":18.62,
+              "y":-16.94,
+              "skX":-49.94,
+              "skY":-49.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":11.73,
+              "y":-21.17,
+              "skX":-70.91,
+              "skY":-70.91,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":8.26,
+              "y":-21.98,
+              "skX":-64.94,
+              "skY":-64.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":-3.08,
+              "y":-21.98,
+              "skX":-64.94,
+              "skY":-64.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":-12.04,
+              "y":-25.48,
+              "skX":-49.94,
+              "skY":-49.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":-18.16,
+              "y":-24.32,
+              "skX":-27.4,
+              "skY":-27.4,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":-21.63,
+              "y":-20.75,
+              "skX":11.91,
+              "skY":11.91,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":-16.27,
+              "y":-15.22,
+              "skX":18.59,
+              "skY":18.59,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":-6.96,
+              "y":-12.28,
+              "skX":3.6,
+              "skY":3.6,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":1.47,
+              "y":-10.92,
+              "skX":-17.64,
+              "skY":-17.64,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":22,"duration":1,"transform": { 
+              "x":11.24,
+              "y":-12.95,
+              "skX":-25.17,
+              "skY":-25.17,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"外大腿","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":4.23,
+              "y":-36.5,
+              "skX":-6.18,
+              "skY":-6.18,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":4.59,
+              "y":-35.49,
+              "skX":-2.75,
+              "skY":-2.75,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":4.48,
+              "y":-35.24,
+              "skX":-3.97,
+              "skY":-3.97,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":1.09,
+              "y":-35.98,
+              "skX":8.69,
+              "skY":8.69,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":-1.99,
+              "y":-38.11,
+              "skX":23.69,
+              "skY":23.69,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":-6.75,
+              "y":-38.11,
+              "skX":46.39,
+              "skY":46.39,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":-8.85,
+              "y":-39.34,
+              "skX":61.39,
+              "skY":61.39,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":-10.46,
+              "y":-41.47,
+              "skX":79.07,
+              "skY":79.07,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":-10.6,
+              "y":-40.32,
+              "skX":73.36,
+              "skY":73.36,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":-9.1,
+              "y":-36.29,
+              "skX":52.34,
+              "skY":52.34,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":-4.37,
+              "y":-33.7,
+              "skX":24.65,
+              "skY":24.65,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":-1.22,
+              "y":-32.06,
+              "skX":10.16,
+              "skY":10.16,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":23,"duration":1,"transform": { 
+              "x":1.82,
+              "y":-35.7,
+              "skX":-4.81,
+              "skY":-4.81,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"外膝盖","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":2.2,
+              "y":-24.32,
+              "skX":-20,
+              "skY":-20,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":1.92,
+              "y":-20.65,
+              "skX":-24.94,
+              "skY":-24.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":2.1,
+              "y":-20.96,
+              "skX":-24.94,
+              "skY":-24.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-1.71,
+              "y":-21.94,
+              "skX":-24.94,
+              "skY":-24.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-7.52,
+              "y":-23.48,
+              "skX":-24.94,
+              "skY":-24.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-17.99,
+              "y":-27.33,
+              "skX":-3.45,
+              "skY":-3.45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-23.24,
+              "y":-32.23,
+              "skX":11.55,
+              "skY":11.55,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-27.86,
+              "y":-35.66,
+              "skX":11.55,
+              "skY":11.55,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-26.91,
+              "y":-34.05,
+              "skX":19.5,
+              "skY":19.5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-22.29,
+              "y":-29.22,
+              "skX":11.55,
+              "skY":11.55,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-14.07,
+              "y":-21.28,
+              "skX":-3.45,
+              "skY":-3.45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":-7.84,
+              "y":-19.91,
+              "skX":-9.49,
+              "skY":-9.49,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":24,"duration":1,"transform": { 
+              "x":0.11,
+              "y":-20.93,
+              "skX":-18.45,
+              "skY":-18.45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"内手","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-13.44,
+              "y":-65.56,
+              "skX":-30,
+              "skY":-30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-13.44,
+              "y":-65.56,
+              "skX":-30,
+              "skY":-30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-14.56,
+              "y":-64.15,
+              "skX":-15,
+              "skY":-15,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-15.96,
+              "y":-63.03,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-16.8,
+              "y":-62.47,
+              "skX":15,
+              "skY":15,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-19.04,
+              "y":-62.33,
+              "skX":22.95,
+              "skY":22.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-21.42,
+              "y":-62.89,
+              "skX":37.95,
+              "skY":37.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-23.66,
+              "y":-63.03,
+              "skX":48.14,
+              "skY":48.14,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-23.38,
+              "y":-63.31,
+              "skX":49.64,
+              "skY":49.64,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-20.02,
+              "y":-62.75,
+              "skX":25.41,
+              "skY":25.41,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-19.46,
+              "y":-62.05,
+              "skX":19.43,
+              "skY":19.43,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-18.2,
+              "y":-61.63,
+              "skX":11.95,
+              "skY":11.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":25,"duration":1,"transform": { 
+              "x":-16.94,
+              "y":-62.33,
+              "skX":-2.02,
+              "skY":-2.02,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"躯干","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":26,"duration":1,"transform": { 
+              "x":-7.98,
+              "y":-63.07,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":26,"duration":1,"transform": { 
+              "x":-7.56,
+              "y":-62.65,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":26,"duration":1,"transform": { 
+              "x":-7.56,
+              "y":-61.67,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":26,"duration":1,"transform": { 
+              "x":-8.54,
+              "y":-63.49,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":26,"duration":1,"transform": { 
+              "x":-9.24,
+              "y":-63.63,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":26,"duration":1,"transform": { 
+              "x":-9.24,
+              "y":-61.95,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":26,"duration":1,"transform": { 
+              "x":-9.24,
+              "y":-62.51,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"躯干2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":27,"duration":1,"transform": { 
+              "x":-7.52,
+              "y":-63.31,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":27,"duration":1,"transform": { 
+              "x":-7.31,
+              "y":-61.98,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":27,"duration":1,"transform": { 
+              "x":-7.73,
+              "y":-61.7,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":27,"duration":1,"transform": { 
+              "x":-9.13,
+              "y":-63.52,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":27,"duration":1,"transform": { 
+              "x":-8.57,
+              "y":-62.4,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":27,"duration":1,"transform": { 
+              "x":-8.57,
+              "y":-61.14,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"外手","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":8.4,
+              "y":-70.98,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":8.4,
+              "y":-70.42,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":8.4,
+              "y":-70.98,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":8.4,
+              "y":-71.54,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":8.4,
+              "y":-70.98,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":8.4,
+              "y":-70.42,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":8.4,
+              "y":-70.42,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":7.28,
+              "y":-70.98,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":7.28,
+              "y":-70.42,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":7.56,
+              "y":-70.42,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":7,
+              "y":-69.58,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":7.28,
+              "y":-68.46,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":28,"duration":1,"transform": { 
+              "x":7.28,
+              "y":-69.3,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"烟1","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":29,"duration":1,"transform": { 
+              "x":38.08,
+              "y":-95.48,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":29,"duration":1,"transform": { 
+              "x":38.08,
+              "y":-95.48,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":29,"duration":1,"transform": { 
+              "x":38.08,
+              "y":-95.48,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":4,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"烟2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":30,"duration":1,"transform": { 
+              "x":40.28,
+              "y":-95.51,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":30,"duration":1,"transform": { 
+              "x":40.28,
+              "y":-95.51,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":30,"duration":1,"transform": { 
+              "x":40.28,
+              "y":-95.51,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":2,"displayIndex":-1         },
+         { 
+            "z":30,"duration":1,"transform": { 
+              "x":40.28,
+              "y":-95.51,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"烟3","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":2,"displayIndex":-1         },
+         { 
+            "z":31,"duration":1,"transform": { 
+              "x":38.6,
+              "y":-94.36,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":31,"duration":1,"transform": { 
+              "x":38.6,
+              "y":-94.36,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":31,"duration":1,"transform": { 
+              "x":38.6,
+              "y":-94.36,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":2,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"烟4","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":32,"duration":1,"transform": { 
+              "x":38.39,
+              "y":-94.46,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":32,"duration":1,"transform": { 
+              "x":38.39,
+              "y":-94.46,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":32,"duration":1,"transform": { 
+              "x":38.39,
+              "y":-94.46,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火焰","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":11.9,
+              "y":-86.55,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":11.62,
+              "y":-83.75,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":0.85,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":11.9,
+              "y":-86.55,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":11.62,
+              "y":-84.59,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":0.81,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":11.9,
+              "y":-86.55,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":11.9,
+              "y":-82.91,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":0.81,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":11.9,
+              "y":-85.71,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":10.5,
+              "y":-84.59,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":0.85,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":10.5,
+              "y":-85.43,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":11.06,
+              "y":-83.47,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":0.85,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":10.5,
+              "y":-84.31,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":10.78,
+              "y":-81.51,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":0.83,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":33,"duration":1,"transform": { 
+              "x":10.78,
+              "y":-80.39,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":0.6,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       },
+        { 
+         "name":"头部","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-18.72,
+              "y":-83.51,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-18.16,
+              "y":-84.21,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-18.16,
+              "y":-83.37,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-18.16,
+              "y":-82.11,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-18.16,
+              "y":-81.69,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-18.72,
+              "y":-82.39,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-19.14,
+              "y":-83.51,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-19.84,
+              "y":-84.21,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-19.84,
+              "y":-83.93,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-19.84,
+              "y":-83.23,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-19.84,
+              "y":-81.97,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-19.84,
+              "y":-81.41,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":34,"duration":1,"transform": { 
+              "x":-19.84,
+              "y":-82.25,
+              "skX":-5,
+              "skY":-5,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         }
+       ] 
+       }
+      ] 
+    },
+    { 
+      "name":"death","fadeInTime":0,"duration":28,"scale":1,"loop":0,"tweenEasing":"NaN","timeline":[
+        { 
+         "name":"火1","scale":1,"offset":0,"frame": [ 
+         { 
+            "z":35,"event":"bomb","duration":1,"transform": { 
+              "x":5.36,
+              "y":-79.13,
+              "skX":0,
+              "skY":0,
+              "scX":1.62,
+              "scY":1.62,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":27,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":1,"displayIndex":-1         },
+         { 
+            "z":36,"duration":1,"transform": { 
+              "x":-0.03,
+              "y":-86.73,
+              "skX":0,
+              "skY":0,
+              "scX":1.81,
+              "scY":1.81,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":26,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火3 ","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":2,"displayIndex":-1         },
+         { 
+            "z":37,"duration":1,"transform": { 
+              "x":-2.24,
+              "y":-104.16,
+              "skX":-2.98,
+              "skY":-2.98,
+              "scX":1.92,
+              "scY":1.92,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":25,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火4","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":38,"duration":1,"transform": { 
+              "x":-4.48,
+              "y":-130.83,
+              "skX":-1.23,
+              "skY":-1.23,
+              "scX":2.03,
+              "scY":2.03,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":24,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火5","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":4,"displayIndex":-1         },
+         { 
+            "z":39,"duration":1,"transform": { 
+              "x":2.1,
+              "y":-140.63,
+              "skX":-1,
+              "skY":-1,
+              "scX":2.11,
+              "scY":2.11,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":23,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火6","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":5,"displayIndex":-1         },
+         { 
+            "z":40,"duration":1,"transform": { 
+              "x":3.15,
+              "y":-144.41,
+              "skX":0,
+              "skY":0,
+              "scX":2.14,
+              "scY":2.14,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":22,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火7","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":6,"displayIndex":-1         },
+         { 
+            "z":41,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-150.67,
+              "skX":0,
+              "skY":0,
+              "scX":2.22,
+              "scY":2.22,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":21,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火8","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":7,"displayIndex":-1         },
+         { 
+            "z":42,"duration":1,"transform": { 
+              "x":70.28,
+              "y":-152.32,
+              "skX":0,
+              "skY":0,
+              "scX":2.21,
+              "scY":2.21,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":20,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火9","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":8,"displayIndex":-1         },
+         { 
+            "z":43,"duration":1,"transform": { 
+              "x":66.47,
+              "y":-149.97,
+              "skX":0,
+              "skY":0,
+              "scX":2.24,
+              "scY":2.24,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":19,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火10","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":9,"displayIndex":-1         },
+         { 
+            "z":44,"duration":1,"transform": { 
+              "x":68.99,
+              "y":-150.57,
+              "skX":0,
+              "skY":0,
+              "scX":2.25,
+              "scY":2.25,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":18,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火11","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":10,"displayIndex":-1         },
+         { 
+            "z":45,"duration":1,"transform": { 
+              "x":73.82,
+              "y":-203.24,
+              "skX":0,
+              "skY":0,
+              "scX":2.21,
+              "scY":2.21,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":17,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火12","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":11,"displayIndex":-1         },
+         { 
+            "z":46,"duration":1,"transform": { 
+              "x":52.08,
+              "y":-186.48,
+              "skX":0,
+              "skY":0,
+              "scX":2.58,
+              "scY":2.58,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":16,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"火13","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":12,"displayIndex":-1         },
+         { 
+            "z":47,"duration":1,"transform": { 
+              "x":44.48,
+              "y":-197.99,
+              "skX":0,
+              "skY":0,
+              "scX":3.51,
+              "scY":3.51,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":15,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡 ","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":48,"duration":1,"transform": { 
+              "x":17.08,
+              "y":6.13,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1.95,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":24,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":4,"displayIndex":-1         },
+         { 
+            "z":49,"duration":1,"transform": { 
+              "x":18.83,
+              "y":5.74,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1.75,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":23,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡3","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":5,"displayIndex":-1         },
+         { 
+            "z":50,"duration":1,"transform": { 
+              "x":20.23,
+              "y":4.59,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1.54,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":22,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡4","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":6,"displayIndex":-1         },
+         { 
+            "z":51,"duration":1,"transform": { 
+              "x":20.93,
+              "y":-2.27,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1.62,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":21,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡5","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":7,"displayIndex":-1         },
+         { 
+            "z":52,"duration":1,"transform": { 
+              "x":20.2,
+              "y":-1.82,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1.57,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":20,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡6","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":8,"displayIndex":-1         },
+         { 
+            "z":53,"duration":1,"transform": { 
+              "x":18.83,
+              "y":2.73,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1.4,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":19,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡7","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":9,"displayIndex":-1         },
+         { 
+            "z":54,"duration":1,"transform": { 
+              "x":17.04,
+              "y":3.29,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1.41,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":18,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡头","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":6.69,
+              "y":-71.89,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":2.66,
+              "y":-74.51,
+              "skX":-45,
+              "skY":-45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-1.01,
+              "y":-76.79,
+              "skX":-75,
+              "skY":-75,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-4.2,
+              "y":-78.54,
+              "skX":-105,
+              "skY":-105,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-7.56,
+              "y":-78.54,
+              "skX":-135,
+              "skY":-135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-11.23,
+              "y":-76.09,
+              "skX":-165,
+              "skY":-165,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-14.73,
+              "y":-70.84,
+              "skX":165,
+              "skY":165,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-17.88,
+              "y":-65.59,
+              "skX":135.01,
+              "skY":135.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-20.51,
+              "y":-62.26,
+              "skX":105.01,
+              "skY":105.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-21.73,
+              "y":-59.81,
+              "skX":75.01,
+              "skY":75.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-22.96,
+              "y":-56.66,
+              "skX":45.01,
+              "skY":45.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-24.18,
+              "y":-51.76,
+              "skX":0.01,
+              "skY":0.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-25.93,
+              "y":-49.14,
+              "skX":-29.99,
+              "skY":-29.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-30.66,
+              "y":-40.91,
+              "skX":-74.99,
+              "skY":-74.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-32.76,
+              "y":-35.66,
+              "skX":-104.99,
+              "skY":-104.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-33.46,
+              "y":-31.81,
+              "skX":-134.99,
+              "skY":-134.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-33.63,
+              "y":-27.09,
+              "skX":-179.99,
+              "skY":-179.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-35.03,
+              "y":-19.18,
+              "skX":135.01,
+              "skY":135.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-32.76,
+              "y":-10.08,
+              "skX":68.28,
+              "skY":68.28,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-32.41,
+              "y":-7.1,
+              "skX":8.28,
+              "skY":8.28,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-37.69,
+              "y":-15.01,
+              "skX":-66.72,
+              "skY":-66.72,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-43.47,
+              "y":-22.71,
+              "skX":-111.72,
+              "skY":-111.72,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-45.57,
+              "y":-24.29,
+              "skX":-156.72,
+              "skY":-156.72,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":55,"duration":1,"transform": { 
+              "x":-49.07,
+              "y":-24.29,
+              "skX":158.28,
+              "skY":158.28,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡手1","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":30,
+              "skY":30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":60,
+              "skY":60,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":90,
+              "skY":90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":135,
+              "skY":135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":165,
+              "skY":165,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":-159.52,
+              "skY":-159.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":-129.52,
+              "skY":-129.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":52.18,
+              "y":-70.84,
+              "skX":-99.52,
+              "skY":-99.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":54.64,
+              "y":-67.51,
+              "skX":-69.52,
+              "skY":-69.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":56.04,
+              "y":-63.8,
+              "skX":-39.52,
+              "skY":-39.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":58.31,
+              "y":-59.25,
+              "skX":-9.52,
+              "skY":-9.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":58.31,
+              "y":-56.45,
+              "skX":20.48,
+              "skY":20.48,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":58.31,
+              "y":-52.95,
+              "skX":35.48,
+              "skY":35.48,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":59.54,
+              "y":-49.1,
+              "skX":65.48,
+              "skY":65.48,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":60.76,
+              "y":-45.25,
+              "skX":80.48,
+              "skY":80.48,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":62.86,
+              "y":-40.7,
+              "skX":110.48,
+              "skY":110.48,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":64.61,
+              "y":-34.54,
+              "skX":140.48,
+              "skY":140.48,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":65.66,
+              "y":-29.64,
+              "skX":170.48,
+              "skY":170.48,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":68.29,
+              "y":-22.82,
+              "skX":-159.52,
+              "skY":-159.52,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":68.29,
+              "y":-18.62,
+              "skX":-137.07,
+              "skY":-137.07,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":68.29,
+              "y":-15.99,
+              "skX":-101.86,
+              "skY":-101.86,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":68.29,
+              "y":-11.97,
+              "skX":-71.86,
+              "skY":-71.86,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":56,"duration":1,"transform": { 
+              "x":68.29,
+              "y":-6.51,
+              "skX":-50.13,
+              "skY":-50.13,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡手1 复制","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-53.34,
+              "skX":-135,
+              "skY":-135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-53.34,
+              "skX":-180,
+              "skY":-180,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-53.34,
+              "skX":150,
+              "skY":150,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-53.34,
+              "skX":120,
+              "skY":120,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-56.14,
+              "skX":90,
+              "skY":90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-57.54,
+              "skX":51.04,
+              "skY":51.04,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-58.94,
+              "skX":6.04,
+              "skY":6.04,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-60.16,
+              "skX":-32.95,
+              "skY":-32.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-59.99,
+              "skX":-62.95,
+              "skY":-62.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-62.26,
+              "skX":-92.95,
+              "skY":-92.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-63.84,
+              "skX":-122.95,
+              "skY":-122.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-64.54,
+              "skX":-152.95,
+              "skY":-152.95,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-69.96,
+              "skX":177.05,
+              "skY":177.05,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-66.29,
+              "skX":147.05,
+              "skY":147.05,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-61.39,
+              "skX":117.05,
+              "skY":117.05,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-21.07,
+              "y":-60.69,
+              "skX":87.05,
+              "skY":87.05,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-23.52,
+              "y":-56.35,
+              "skX":57.05,
+              "skY":57.05,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-23.52,
+              "y":-52.46,
+              "skX":27.06,
+              "skY":27.06,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-24.74,
+              "y":-48.96,
+              "skX":-2.94,
+              "skY":-2.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-24.92,
+              "y":-41.96,
+              "skX":-32.94,
+              "skY":-32.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-24.92,
+              "y":-39.34,
+              "skX":-62.94,
+              "skY":-62.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-24.92,
+              "y":-33.74,
+              "skX":-107.94,
+              "skY":-107.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-24.92,
+              "y":-23.94,
+              "skX":-137.94,
+              "skY":-137.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":57,"duration":1,"transform": { 
+              "x":-24.92,
+              "y":-13.26,
+              "skX":-167.94,
+              "skY":-167.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"眼珠","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.67,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.67,
+              "skX":-45,
+              "skY":-45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":-105,
+              "skY":-105,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":165,
+              "skY":165,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":120,
+              "skY":120,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":60,
+              "skY":60,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":-60,
+              "skY":-60,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":-120,
+              "skY":-120,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":135,
+              "skY":135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":90,
+              "skY":90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":30,
+              "skY":30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-12.39,
+              "y":-66.64,
+              "skX":-45,
+              "skY":-45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-13.44,
+              "y":-63.66,
+              "skX":-75,
+              "skY":-75,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-59.08,
+              "skX":-135,
+              "skY":-134.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-56.1,
+              "skX":150,
+              "skY":150.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-53.3,
+              "skX":75,
+              "skY":75.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-49.8,
+              "skX":30,
+              "skY":30.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-46.13,
+              "skX":0.01,
+              "skY":0.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-42.45,
+              "skX":-44.99,
+              "skY":-44.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-38.92,
+              "skX":-104.99,
+              "skY":-104.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-33.14,
+              "skX":-164.99,
+              "skY":-164.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-29.26,
+              "skX":135.01,
+              "skY":135.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":58,"duration":1,"transform": { 
+              "x":-14.49,
+              "y":-24.88,
+              "skX":60.01,
+              "skY":60.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡肠子","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-49.59,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-52.04,
+              "skX":-30,
+              "skY":-30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-55.16,
+              "skX":-60,
+              "skY":-60,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-59.39,
+              "skX":-90,
+              "skY":-90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-63.56,
+              "skX":-120,
+              "skY":-120,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-67.79,
+              "skX":-165,
+              "skY":-165,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-70.94,
+              "skX":180,
+              "skY":180,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-74.44,
+              "skX":150,
+              "skY":150,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-74.44,
+              "skX":105,
+              "skY":105,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-74.44,
+              "skX":60,
+              "skY":60,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-74.41,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-71.61,
+              "skX":-45,
+              "skY":-45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-62.86,
+              "skX":-90,
+              "skY":-90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-55.51,
+              "skX":-135,
+              "skY":-135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-49.56,
+              "skX":-179.99,
+              "skY":-179.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-42.91,
+              "skX":135.01,
+              "skY":135.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-36.26,
+              "skX":90.01,
+              "skY":90.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-30.31,
+              "skX":60.01,
+              "skY":60.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-24.01,
+              "skX":30.01,
+              "skY":30.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-17.71,
+              "skX":0.01,
+              "skY":0.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-14.56,
+              "skX":-44.99,
+              "skY":-44.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-11.76,
+              "skX":-74.99,
+              "skY":-74.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-7.21,
+              "skX":-119.99,
+              "skY":-119.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":59,"duration":1,"transform": { 
+              "x":10.92,
+              "y":-3.71,
+              "skX":-164.99,
+              "skY":-164.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡腿","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-35.87,
+              "skX":112.05,
+              "skY":112.05,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-38.85,
+              "skX":67.06,
+              "skY":67.06,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-39.2,
+              "skX":22.06,
+              "skY":22.06,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-38.32,
+              "skX":-7.94,
+              "skY":-7.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-39.72,
+              "skX":-37.94,
+              "skY":-37.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-42.52,
+              "skX":-67.94,
+              "skY":-67.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-42.17,
+              "skX":-97.94,
+              "skY":-97.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-44.97,
+              "skX":-127.94,
+              "skY":-127.94,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-46.72,
+              "skX":-148.17,
+              "skY":-148.17,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-40.42,
+              "skX":-172.65,
+              "skY":-172.65,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-35.87,
+              "skX":157.35,
+              "skY":157.35,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-33.6,
+              "skX":132.87,
+              "skY":132.87,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-32.02,
+              "skX":102.87,
+              "skY":102.87,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-26.6,
+              "skX":72.87,
+              "skY":72.87,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-21.17,
+              "skX":42.88,
+              "skY":42.88,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.21,
+              "y":-20.82,
+              "skX":12.88,
+              "skY":12.88,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-4.16,
+              "y":-10.46,
+              "skX":-17.12,
+              "skY":-17.12,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-4.86,
+              "skX":-47.12,
+              "skY":-47.12,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-6.96,
+              "y":-10.11,
+              "skX":-77.12,
+              "skY":-77.12,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-14.31,
+              "skX":-107.12,
+              "skY":-107.12,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-19.91,
+              "skX":-137.12,
+              "skY":-137.12,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-21.66,
+              "skX":-167.12,
+              "skY":-167.12,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-22.19,
+              "skX":162.88,
+              "skY":162.88,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":60,"duration":1,"transform": { 
+              "x":-5.04,
+              "y":-23.27,
+              "skX":132.88,
+              "skY":132.88,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"死亡腿2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":-32.2,
+              "skY":-32.2,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-31.04,
+              "skX":-2.2,
+              "skY":-2.2,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-38.74,
+              "skX":27.8,
+              "skY":27.8,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-45.39,
+              "skX":42.79,
+              "skY":42.79,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-50.29,
+              "skX":72.79,
+              "skY":72.79,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-46.09,
+              "skX":102.79,
+              "skY":102.79,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-40.49,
+              "skX":132.79,
+              "skY":132.79,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":162.79,
+              "skY":162.79,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":-167.21,
+              "skY":-167.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":-137.21,
+              "skY":-137.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":-107.21,
+              "skY":-107.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":40.49,
+              "y":-33.14,
+              "skX":-77.21,
+              "skY":-77.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":45.04,
+              "y":-32.69,
+              "skX":-47.21,
+              "skY":-47.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":-17.21,
+              "skY":-17.21,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":12.78,
+              "skY":12.78,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":42.78,
+              "skY":42.78,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":36.3,
+              "y":-25.09,
+              "skX":72.78,
+              "skY":72.78,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":40.85,
+              "y":-28.24,
+              "skX":102.78,
+              "skY":102.78,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":45.04,
+              "y":-29.29,
+              "skX":132.78,
+              "skY":132.78,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":47.84,
+              "y":-30.69,
+              "skX":162.78,
+              "skY":162.78,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":57.64,
+              "y":-30.34,
+              "skX":-152.22,
+              "skY":-152.22,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":60.09,
+              "y":-25.09,
+              "skX":-122.22,
+              "skY":-122.22,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":58.69,
+              "y":-10.74,
+              "skX":-92.22,
+              "skY":-92.22,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":61,"duration":1,"transform": { 
+              "x":57.64,
+              "y":-3.39,
+              "skX":-62.22,
+              "skY":-62.22,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"肉1","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-68.74,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-72.24,
+              "skX":45,
+              "skY":45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-79.94,
+              "skX":75,
+              "skY":75,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-85.89,
+              "skX":105,
+              "skY":105,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-93.24,
+              "skX":150,
+              "skY":150,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-98.14,
+              "skX":180,
+              "skY":180,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-101.64,
+              "skX":-135,
+              "skY":-135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-104.79,
+              "skX":-90,
+              "skY":-90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-101.81,
+              "skX":-60,
+              "skY":-60,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-100.06,
+              "skX":-30,
+              "skY":-30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-93.24,
+              "skX":-0.01,
+              "skY":-0.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-85.89,
+              "skX":29.99,
+              "skY":29.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-77.49,
+              "skX":59.99,
+              "skY":59.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.43,
+              "y":-69.44,
+              "skX":89.99,
+              "skY":89.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-63.49,
+              "skX":149.99,
+              "skY":149.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-57.54,
+              "skX":-165.01,
+              "skY":-165.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-51.94,
+              "skX":-120.01,
+              "skY":-120.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-46.69,
+              "skX":-75.01,
+              "skY":-75.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-40.04,
+              "skX":-15.01,
+              "skY":-15.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-33.39,
+              "skX":29.99,
+              "skY":29.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-27.79,
+              "skX":89.99,
+              "skY":89.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-20.79,
+              "skX":134.99,
+              "skY":134.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-12.39,
+              "skX":-165.01,
+              "skY":-165.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":62,"duration":1,"transform": { 
+              "x":29.47,
+              "y":-7.14,
+              "skX":-105.01,
+              "skY":-105.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":1,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"肉2","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":28.77,
+              "y":-49.59,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":33.81,
+              "y":-51.94,
+              "skX":45,
+              "skY":45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":39.41,
+              "y":-55.79,
+              "skX":-63.43,
+              "skY":-63.43,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":45.89,
+              "y":-59.04,
+              "skX":135,
+              "skY":135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":53.23,
+              "y":-59.04,
+              "skX":180,
+              "skY":180,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":53.23,
+              "y":-59.04,
+              "skX":-135,
+              "skY":-135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":59.18,
+              "y":-55.19,
+              "skX":-90,
+              "skY":-90,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":66.18,
+              "y":-48.19,
+              "skX":-45,
+              "skY":-45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":71.43,
+              "y":-42.24,
+              "skX":-0.01,
+              "skY":-0.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":75.29,
+              "y":-33.84,
+              "skX":44.99,
+              "skY":44.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":75.29,
+              "y":-27.19,
+              "skX":74.99,
+              "skY":74.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":75.29,
+              "y":-21.59,
+              "skX":119.99,
+              "skY":119.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":77.38,
+              "y":-16.34,
+              "skX":164.99,
+              "skY":164.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":79.52,
+              "y":-8.26,
+              "skX":-135.01,
+              "skY":-135.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":81.97,
+              "y":-1.61,
+              "skX":-90.01,
+              "skY":-90.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":63,"duration":1,"transform": { 
+              "x":81.97,
+              "y":-6.89,
+              "skX":-45.01,
+              "skY":-45.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":9,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"眼镜","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.92,
+              "y":-111.65,
+              "skX":-75,
+              "skY":-75,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.92,
+              "y":-116.55,
+              "skX":-30,
+              "skY":-30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.96,
+              "y":-119.35,
+              "skX":30,
+              "skY":30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.96,
+              "y":-111.65,
+              "skX":30,
+              "skY":30,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.96,
+              "y":-106.71,
+              "skX":75,
+              "skY":75,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.96,
+              "y":-97.93,
+              "skX":120,
+              "skY":120,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.96,
+              "y":-89.88,
+              "skX":180,
+              "skY":180,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.96,
+              "y":-82.84,
+              "skX":-120,
+              "skY":-120,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":64,"duration":1,"transform": { 
+              "x":8.96,
+              "y":-75.11,
+              "skX":-75,
+              "skY":-75,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":16,"displayIndex":-1         }
+       ] 
+       },
+        { 
+         "name":"骨头","scale":1,"offset":0,"frame": [ 
+         { 
+            "duration":3,"displayIndex":-1         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.33,
+              "y":-106.68,
+              "skX":0,
+              "skY":0,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.33,
+              "y":-111.23,
+              "skX":45,
+              "skY":45,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-116.83,
+              "skX":105,
+              "skY":105,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-119.98,
+              "skX":135,
+              "skY":135,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-121.73,
+              "skX":165,
+              "skY":165,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-121.73,
+              "skX":-150,
+              "skY":-150,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-121.73,
+              "skX":-120,
+              "skY":-120,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-121.73,
+              "skX":-90.01,
+              "skY":-90.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-115.08,
+              "skX":-60.01,
+              "skY":-60.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-109.83,
+              "skX":-30.01,
+              "skY":-30.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-98.98,
+              "skX":14.99,
+              "skY":14.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-91.24,
+              "skX":59.99,
+              "skY":59.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-83.54,
+              "skX":104.99,
+              "skY":104.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-73.36,
+              "skX":149.99,
+              "skY":149.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-63.91,
+              "skX":-165.01,
+              "skY":-165.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-54.11,
+              "skX":-120.01,
+              "skY":-120.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-47.77,
+              "skX":-75.01,
+              "skY":-75.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-41.12,
+              "skX":-30.01,
+              "skY":-30.01,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-32.02,
+              "skX":44.99,
+              "skY":44.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-23.24,
+              "skX":74.99,
+              "skY":74.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "z":65,"duration":1,"transform": { 
+              "x":34.37,
+              "y":-13.79,
+              "skX":134.99,
+              "skY":134.99,
+              "scX":1,
+              "scY":1,
+              "pX":0,
+              "pY":0
+             }
+         },
+         { 
+            "duration":4,"displayIndex":-1         }
+       ] 
+       }
+      ] 
+    }
+    ] 
+} ] }
