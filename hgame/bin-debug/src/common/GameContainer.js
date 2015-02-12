@@ -55,7 +55,6 @@ var common;
         factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
        		
              this.startupPage = new common.StartupPage();
-             this.startupPage.addEventListener(egret.TouchEvent.TOUCH_TAP, this.gameStart, this); //点击按钮开始游戏
            this.addChild(this.startupPage);
 
             //this.addChild(this.myFighter);

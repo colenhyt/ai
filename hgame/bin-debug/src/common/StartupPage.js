@@ -27,8 +27,17 @@ var common;
             this.y = 240;
            this.touchChildren = false;
             this.touchEnabled = true;
-        }
+           this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.startUpAnimation, this);
+        };
+		/**页面动画*/
+		StartupPage.prototype.startUpAnimation = function (evt) {
+			alert('ddd');
+			this.armature.animation.gotoAndPlay("kaiqi");
+		};
 
+        StartupPage.prototype.touchHandler = function (evt) {
+			g_game.gameStart();
+        };
         StartupPage.prototype.showScore = function (value) {
             var msg = "您的成绩是:\n" + value + "\n再来一次吧";
             this.txt.text = msg;
