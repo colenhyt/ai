@@ -44,19 +44,20 @@ var common;
         GameContainer.prototype.createGameScene = function () {
             this.stageW = this.stage.stageWidth;
             this.stageH = this.stage.stageHeight;
-            //背景
-            this.bg = new fighter.BgMap(); //创建可滚动的背景
-            this.addChild(this.bg);
-            //开始按钮
-            this.btnStart = fighter.createBitmapByName("btnStart"); //开始按钮
-            this.btnStart.x = (this.stageW - this.btnStart.width) / 2; //居中定位
-            this.btnStart.y = (this.stageH - this.btnStart.height) / 2; //居中定位
-            this.btnStart.touchEnabled = true; //开启触碰
-            this.btnStart.addEventListener(egret.TouchEvent.TOUCH_TAP, this.gameStart, this); //点击按钮开始游戏
-            this.addChild(this.btnStart);
-            //我的飞机
-            this.myFighter = new fighter.Airplane(RES.getRes("f1"), 100);
-            this.myFighter.y = this.stageH - this.myFighter.height - 50;
+
+        var factory = new dragonBones.EgretFactory();
+        this.factory = factory;
+ 
+        var skeletonData = RES.getRes("fm_skeleton_json");
+        var textureData = RES.getRes("fm_json");
+        var texture = RES.getRes("fm_png");
+        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
+        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
+       		
+             this.startupPage = new common.StartupPage();
+             this.startupPage.addEventListener(egret.TouchEvent.TOUCH_TAP, this.gameStart, this); //点击按钮开始游戏
+           this.addChild(this.startupPage);
+
             //this.addChild(this.myFighter);
             //预创建
             this.preCreatedInstance();
@@ -90,8 +91,8 @@ var common;
                 fighter.Airplane.reclaim(enemyFighter, "f2");
             }
 
-        var factory = new dragonBones.EgretFactory();
-        this.factory = factory;
+
+		var factory = this.factory;
 
         var skeletonData = RES.getRes("skeleton_json");
         var textureData = RES.getRes("texture_json");
@@ -116,12 +117,6 @@ var common;
         texture = RES.getRes("e4_png");
         factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
         factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
-
-        skeletonData = RES.getRes("fm_skeleton_json");
-        textureData = RES.getRes("fm_json");
-        texture = RES.getRes("fm_png");
-        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
-        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
 		
         var data = RES.getRes("monkey_json");
         var texture = RES.getRes("monkey_png");
@@ -133,9 +128,6 @@ var common;
        // this.addChild(monkey);
         monkey.frameRate = 24;
         monkey.gotoAndPlay("attack");
-        		
-             this.startupPage = new common.StartupPage(factory);
-            this.addChild(this.startupPage);
 
 		var bullet = fighter.Bullet.produce("b1");
 		bullet.x = 360;
@@ -143,24 +135,7 @@ var common;
 		bullet.anchorOffsetY = 30;
 		//bullet.rotation += 90;
 		this.addChild(bullet);
-
-		var player = fighter.Monster.produce(0, 150,this.factory,true);
-		this.addChild(player);
-        player.x = 60;
-        player.y = 250;
-		this.player = player;
-		this.player.addEventListener("createBullet", this.createBulletHandler, this);
 		
-            this.touchEnabled = true;
-            this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
-            this.addEventListener(egret.TouchEvent.TOUCH_END, this.touchHandler, this);
-            this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
-			this.addEventListener(egret.TouchEvent.TOUCH_OVER, this.touchHandler, this);
-            this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
-
-		//armature.animation.play();
-       // armature.animation.gotoAndPlay("shothead",-1,-1,1);
-
         egret.Ticker.getInstance().register(function (advancedTime) {
             dragonBones.WorldClock.clock.advanceTime(advancedTime / 1000);
         }, this);
@@ -168,20 +143,29 @@ var common;
         };
         /**游戏开始*/
         GameContainer.prototype.gameStart = function () {
+            //背景
+            this.bg = new fighter.BgMap(); //创建可滚动的背景
+            this.addChild(this.bg);
+
             this.myScore = 0;
-            this.removeChild(this.btnStart);
+			this.removeChild(this.startupPage);
             this.touchEnabled = true;
             this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
+            this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
+            this.addEventListener(egret.TouchEvent.TOUCH_END, this.touchHandler, this);
             this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
+			this.addEventListener(egret.TouchEvent.TOUCH_OVER, this.touchHandler, this);
+
+		var player = fighter.Monster.produce(0, 150,this.factory,true);
+		this.addChild(player);
+        player.x = 60;
+        player.y = 250;
+		this.player = player;
+		this.player.addEventListener("createBullet", this.createBulletHandler, this);
+
             //this.myFighter.x = (this.stageW - this.myFighter.width) / 2;
-            this.myFighter.x = 700;
-            this.myFighter.fire(); //开火
-            this.myFighter.blood = 10;
-            this.myFighter.addEventListener("createBullet", this.createBulletHandler, this);
             this.enemyFightersTimer.addEventListener(egret.TimerEvent.TIMER, this.createEnemyFighter, this);
             this.enemyFightersTimer.start();
-            if (this.scorePanel.parent == this)
-                this.removeChild(this.scorePanel);
 
         };
         /**响应Touch*/
@@ -348,7 +332,7 @@ var common;
 //                    this.myFighter.blood -= 10;
 //                }
             }
-            if (this.myFighter.blood <= 0) {
+            if (this.player.blood <= 0) {
                 this.gameStop();
             }
             else {

@@ -14,10 +14,10 @@ var common;
      */
     var StartupPage = (function (_super) {
         __extends(StartupPage, _super);
-        function StartupPage(factory) {
+        function StartupPage() {
             _super.call(this);
            
-            var armature = factory.buildArmature("fengmian");
+            var armature = g_game.factory.buildArmature("fengmian");
 			this.armature = armature;
 			var armatureDisplay = armature.getDisplay();
 			this.addChild(armatureDisplay);
@@ -25,17 +25,10 @@ var common;
 			this.height=400;
             this.x =400;
             this.y = 240;
-           this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);
            this.touchChildren = false;
             this.touchEnabled = true;
         }
 
-        /**响应Touch*/
-        StartupPage.prototype.touchHandler = function (evt) {
-            if (evt.type == egret.TouchEvent.TOUCH_BEGIN) {
-				alert('start');
-			}
-        };
         StartupPage.prototype.showScore = function (value) {
             var msg = "您的成绩是:\n" + value + "\n再来一次吧";
             this.txt.text = msg;
