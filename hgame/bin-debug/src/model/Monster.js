@@ -5,69 +5,94 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 
-var  g_textures = [];
-g_textures.push("soldier1");
-g_textures.push("enemy_01");
-g_textures.push("enemy_03");
-g_textures.push("enemy04");
-
 /**
  * Created by shaorui on 14-6-7.
  */
-var fighter;
-(function (fighter) {
+var model;
+(function (model) {
     /**
      * 飞机，利用对象池
      */
     var Monster = (function (_super) {
         __extends(Monster, _super);
-        function Monster(resName, fireDelay,factory,isMe) {
+        function Monster(cfg,factory) {
             _super.call(this);
             this.tick = 0;
-            this.isMe = isMe;
             /**飞机生命值*/
             this.blood = 10;
             this.actionType = -1;
-            this.resName = resName;
-            this.fireDelay = fireDelay;
-			var armature = factory.buildArmature(resName);
-			this.armature = armature;
-			var armatureDisplay = armature.getDisplay();
-			this.addChild(armatureDisplay);
-			if (isMe)
-			{
-			 armatureDisplay.scaleX = -1;
-			 //armatureDisplay._anchorX = 90;
-			 //armatureDisplay.rotation = 90;
-			 armature.animation.gotoAndPlay("daiji");
-			}
+
+			var sname = cfg.name;
+            this.resName = sname;
+			var sprite;
+		 if (cfg.type==0)
+		  {
+			 var skename = sname+"_skeleton";
+			 var skeletonData = factory.getSkeletonData(skename);
+			 if (!skeletonData)
+			 {
+			  skeletonData = RES.getRes(skename);
+			  var textureData = RES.getRes(sname+"_texture");
+			  var texture = RES.getRes(sname+"_png");
+			  factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
+			  factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
+			 }
+
+
+			var armature = factory.buildArmature(sname);
+			armature.animation.play();			
 			dragonBones.WorldClock.clock.add(armature);
+
+			sprite = armature.getDisplay();
+		  }else if(cfg.type==1)
+		  {
+           var data = RES.getRes(sname+"_json");
+           var texture = RES.getRes(sname+"_png");
+           sprite = new egret.MovieClip(data, texture);
+		   if (cfg.frameRate)
+		   {
+		   sprite.frameRate = cfg.frameRate;
+		   }
+		   sprite.gotoAndPlay("attack");
+		  }
+
+			var pos = cfg.pos;
+			this.x = pos.x?pos.x:0;
+			this.y = pos.y?pos.y:0;
+
+			this.addChild(sprite);
+			if (cfg.scaleX!=null)
+			{
+			 sprite.scaleX = -1;
+			 //armature.animation.gotoAndPlay("daiji");
+			}
+
+            var fireDelay = cfg.fireDelay?cfg.fireDelay:150;
             this.fireTimer = new egret.Timer(fireDelay);
-            this.armature.addEventListener(dragonBones.AnimationEvent.LOOP_COMPLETE, this.loopComplete, this);
             
             this.fireTimer.addEventListener(egret.TimerEvent.TIMER, this.createBullet, this);
         }
         /**生产*/
-        Monster.produce = function (resType, fireDelay,factory,isMe) {
-        	var resName = g_textures[resType];
-            if (fighter.Monster.cacheDict[resName] == null)
-                fighter.Monster.cacheDict[resName] = [];
-            var dict = fighter.Monster.cacheDict[resName];
+        Monster.produce = function (cfg,factory) {
+			var resName = cfg.name;
+            if (model.Monster.cacheDict[resName] == null)
+                model.Monster.cacheDict[resName] = [];
+            var dict = model.Monster.cacheDict[resName];
             var theFighter;
             if (dict.length > 0) {
                 theFighter = dict.pop();
             }
             else {
-                theFighter = new fighter.Monster(resName, fireDelay,factory,isMe);
+                theFighter = new model.Monster(cfg,factory);
             }
             theFighter.blood = 10;
             return theFighter;
         };
         /**回收*/
         Monster.reclaim = function (theFighter) {
-            if (fighter.Monster.cacheDict[theFighter.resName] == null)
-                fighter.Monster.cacheDict[theFighter.resName] = [];
-            var dict = fighter.Monster.cacheDict[theFighter.resName];
+            if (model.Monster.cacheDict[theFighter.resName] == null)
+                model.Monster.cacheDict[theFighter.resName] = [];
+            var dict = model.Monster.cacheDict[theFighter.resName];
             if (dict.indexOf(theFighter) == -1)
                 dict.push(theFighter);
         };
@@ -91,10 +116,7 @@ var fighter;
         	if (this.blood <= 0) return;
         	
             this.fireTimer.stop();
-            if (!this.isMe)
             this.armature.animation.gotoAndPlay("move");
-            else
-            this.armature.animation.gotoAndPlay("daiji");
         };
         /**停火*/
         Monster.prototype.death = function (isShotHead) {
@@ -143,6 +165,6 @@ var fighter;
         Monster.cacheDict = {};
         return Monster;
     })(egret.DisplayObjectContainer);
-    fighter.Monster = Monster;
-    Monster.prototype.__class__ = "fighter.Monster";
-})(fighter || (fighter = {}));
+    model.Monster = Monster;
+    Monster.prototype.__class__ = "model.Monster";
+})(model || (model = {}));

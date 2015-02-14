@@ -21,7 +21,7 @@ var common;
         };
 		/**页面动画*/
 		StartupPage.prototype.startUpAnimation = function (evt) {
-			this.armature.animation.gotoAndPlay("kaiqi");
+			this.armature.animation.gotoAndPlay("kaiqi",-1,-1,1);
 		};
 
         StartupPage.prototype.touchHandler = function (evt) {

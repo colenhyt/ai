@@ -33,10 +33,17 @@ var fighter;
 })(fighter || (fighter = {}));
 
 function CreatePage(factory,pageName){
- var pname = pageName?pageName:g_config.FirstPage;
- var cfg = g_config.Pages[pname];
+ var pname = pageName?pageName:g_page.FirstPage;
+ var cfg = g_page.Pages[pname];
  
  var page = eval("new "+cfg.path+"."+pname+"()");
  page.init(cfg,factory);
  return page;
+}
+
+function CreateMap(sceneName){
+ var name = sceneName?sceneName:g_scene.First;
+ var cfg = g_scene["Data"][name];
+ var map = eval("new "+cfg.map+"()");
+ return map;
 }

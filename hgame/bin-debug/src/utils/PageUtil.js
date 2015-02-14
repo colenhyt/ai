@@ -48,6 +48,7 @@ var utils;
 			this.armature = armature;
 			var armatureDisplay = armature.getDisplay();
 			this.addChild(armatureDisplay);
+			dragonBones.WorldClock.clock.add(armature);
 			this.armature.animation.play();			
 			}
 		};

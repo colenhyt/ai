@@ -49,8 +49,8 @@ var common;
         this.factory = factory;
  
 			//首个页面加载:
-			var startupPage = CreatePage(factory);
-           this.addChild(startupPage);
+			this.startupPage = CreatePage(factory);
+           this.addChild(this.startupPage);
 
             this.preCreatedInstance();
         };
@@ -86,41 +86,6 @@ var common;
 
 		var factory = this.factory;
 
-        var skeletonData = RES.getRes("skeleton_json");
-        var textureData = RES.getRes("texture_json");
-        var texture = RES.getRes("texture_png");
-        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
-        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
-
-        skeletonData = RES.getRes("e1_skeleton_json");
-        textureData = RES.getRes("e1_json");
-        texture = RES.getRes("e1_png");
-        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
-        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
-
-        skeletonData = RES.getRes("e3_skeleton_json");
-        textureData = RES.getRes("e3_json");
-        texture = RES.getRes("e3_png");
-        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
-        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
-
-        skeletonData = RES.getRes("e4_skeleton_json");
-        textureData = RES.getRes("e4_json");
-        texture = RES.getRes("e4_png");
-        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
-        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
-		
-        var data = RES.getRes("monkey_json");
-        var texture = RES.getRes("monkey_png");
-        var monkey = new egret.MovieClip(data, texture);
-        monkey.x = 600;
-        monkey.y = 200;
-        monkey.scaleX = -1;
-		monkey.rotation = 30;
-       // this.addChild(monkey);
-        monkey.frameRate = 24;
-        monkey.gotoAndPlay("attack");
-
 		var bullet = fighter.Bullet.produce("b1");
 		bullet.x = 360;
 		bullet.y = 185;
@@ -136,7 +101,7 @@ var common;
         /**游戏开始*/
         GameContainer.prototype.gameStart = function () {
             //背景
-            this.bg = new fighter.BgMap(); //创建可滚动的背景
+            this.bg = CreateMap(); //创建可滚动的背景
             this.addChild(this.bg);
 
             this.myScore = 0;
@@ -148,16 +113,16 @@ var common;
             this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
 			this.addEventListener(egret.TouchEvent.TOUCH_OVER, this.touchHandler, this);
 
-		var player = fighter.Monster.produce(0, 150,this.factory,true);
+		var player = model.Monster.produce(g_sprite["monkey"],this.factory);
 		this.addChild(player);
-        player.x = 60;
-        player.y = 250;
 		this.player = player;
-		this.player.addEventListener("createBullet", this.createBulletHandler, this);
+
+
+		//this.player.addEventListener("createBullet", this.createBulletHandler, this);
 
             //this.myFighter.x = (this.stageW - this.myFighter.width) / 2;
-            this.enemyFightersTimer.addEventListener(egret.TimerEvent.TIMER, this.createEnemyFighter, this);
-            this.enemyFightersTimer.start();
+           // this.enemyFightersTimer.addEventListener(egret.TimerEvent.TIMER, this.createEnemyFighter, this);
+          //  this.enemyFightersTimer.start();
 
         };
         /**响应Touch*/
