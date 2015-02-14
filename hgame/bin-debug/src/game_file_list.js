@@ -3,6 +3,7 @@ var game_file_list = [
     "utils/GameUtil.js",
     "utils/PageUtil.js",
     "common/StartupPage.js",
+    "common/GameScene.js",
     "model/Monster.js",
     "fighter/Airplane.js",
     "fighter/Monster.js",

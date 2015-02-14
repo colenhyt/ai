@@ -147,9 +147,6 @@ var utils;
 		 var page = cfg.page;
 		 page.doTarget(cfg.target);
         };
-        PageUtil.prototype.touchHandler = function (evt) {
-			g_game.gameStart();
-        };
         return PageUtil;
     })(egret.Sprite);
     utils.PageUtil = PageUtil;

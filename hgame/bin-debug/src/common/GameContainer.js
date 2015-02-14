@@ -48,9 +48,13 @@ var common;
         var factory = new dragonBones.EgretFactory();
         this.factory = factory;
  
-			//首个页面加载:
-			this.startupPage = CreatePage(factory);
-           this.addChild(this.startupPage);
+			//场景加载:
+			var scene = new common.GameScene(factory,g_scene.first);
+			if (scene)
+			{
+			 this.currScene = scene;
+             this.addChild(this.currScene);
+			}
 
             this.preCreatedInstance();
         };
@@ -99,13 +103,20 @@ var common;
 
         };
         /**游戏开始*/
-        GameContainer.prototype.gameStart = function () {
-            //背景
-            this.bg = CreateMap(); //创建可滚动的背景
-            this.addChild(this.bg);
+        GameContainer.prototype.enterScene = function (sceneName) {
+			if (this.contains(this.currScene))
+			{
+			 this.removeChild(this.currScene);
+			}
+
+			var scene = new common.GameScene(this.factory,sceneName);
+			if (scene)
+			{
+			 this.currScene = scene;
+             this.addChild(this.currScene);
+			}
 
             this.myScore = 0;
-			this.removeChild(this.startupPage);
             this.touchEnabled = true;
             this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
             this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchHandler, this);

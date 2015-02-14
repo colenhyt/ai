@@ -12,28 +12,30 @@ var common;
     /**
      * 成绩显示
      */
-    var StartupPage = (function (_super) {
-        __extends(StartupPage, _super);
-        function StartupPage() {
+    var GameScene = (function (_super) {
+        __extends(GameScene, _super);
+        function GameScene(factory,sceneName) {
             _super.call(this);
+			var cfg = g_scene["data"][sceneName];
+			if (!cfg)
+			{
+			 return false;
+			}
+			if (cfg.page)
+			{
+			  var page = CreatePage(factory,cfg.page);
+			  this.addChild(page);
+			}
+			if (cfg.map)
+			{
+			  var map = eval("new "+cfg.map+"()");
+			  this.addChild(map);
+			}
+			return this;
            
-           this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touchTAP, this);
         };
-		/**页面动画*/
-		StartupPage.prototype.touchTAP = function (evt) {
-			this.armature.animation.gotoAndPlay("kaiqi",-1,-1,1);
-			g_game.gameStart();
-		};
-
-        StartupPage.prototype.touchHandler = function (evt) {
-			g_game.gameStart();
-        };
-        StartupPage.prototype.showScore = function (value) {
-            var msg = "您的成绩是:\n" + value + "\n再来一次吧";
-            this.txt.text = msg;
-        };
-        return StartupPage;
-    })(utils.PageUtil);
-    common.StartupPage = StartupPage;
-    StartupPage.prototype.__class__ = "common.StartupPage";
+        return GameScene;
+    })(egret.Sprite);
+    common.GameScene = GameScene;
+    GameScene.prototype.__class__ = "common.GameScene";
 })(common || (common = {}));

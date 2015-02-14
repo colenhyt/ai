@@ -32,22 +32,21 @@ var fighter;
     fighter.createBitmapByName = createBitmapByName;
 })(fighter || (fighter = {}));
 
+//创建页面:
 function CreatePage(factory,pageName){
- var pname = pageName?pageName:g_page.FirstPage;
- var cfg = g_page.Pages[pname];
- 
+ var cfg = g_page.Pages[pageName];
  var page = eval("new "+cfg.path+"()");
  page.init(cfg,factory);
  return page;
 }
-
+//创建场景:
 function CreateMap(sceneName){
  var name = sceneName?sceneName:g_scene.First;
  var cfg = g_scene["Data"][name];
  var map = eval("new "+cfg.map+"()");
  return map;
 }
-
+//创建动画
 function CreateAnimation(factory,armaName,reUse)
 {
  var skeletonData = factory.getSkeletonData(armaName);

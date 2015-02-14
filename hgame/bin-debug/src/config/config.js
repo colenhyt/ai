@@ -1,7 +1,6 @@
 var g_res = ["preload","soldier","enemy","fm"];
 
 var g_page = {
-  "FirstPage":"StartupPage",
   "Pages":{
     "StartupPage":{
 		path:"common.StartupPage",
@@ -22,9 +21,12 @@ var g_sprite = {
 };
 
 var g_scene = {
-  "First":"MainScene",
-  "Data":{
-    "MainScene":{
+  "first":"start",
+  "data":{
+    "start":{
+	  "page":"StartupPage",
+	},
+    "main":{
 	  "map":"fighter.BgMap",
 	  "sprites":["s1","e1","e2","e3","monkey",]
 	},

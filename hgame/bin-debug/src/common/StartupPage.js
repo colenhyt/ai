@@ -21,7 +21,7 @@ var common;
 		/**关闭页面*/
 		StartupPage.prototype.close = function () {
 			_super.prototype.close.call(this);
-			g_game.gameStart();
+			g_game.enterScene("main");
 		};
         return StartupPage;
     })(utils.PageUtil);
