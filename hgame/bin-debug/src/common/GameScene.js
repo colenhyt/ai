@@ -17,7 +17,13 @@ var common;
         function StartupPage() {
             _super.call(this);
            
+           this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touchTAP, this);
         };
+		/**页面动画*/
+		StartupPage.prototype.touchTAP = function (evt) {
+			this.armature.animation.gotoAndPlay("kaiqi",-1,-1,1);
+			g_game.gameStart();
+		};
 
         StartupPage.prototype.touchHandler = function (evt) {
 			g_game.gameStart();

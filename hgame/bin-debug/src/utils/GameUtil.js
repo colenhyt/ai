@@ -36,7 +36,7 @@ function CreatePage(factory,pageName){
  var pname = pageName?pageName:g_page.FirstPage;
  var cfg = g_page.Pages[pname];
  
- var page = eval("new "+cfg.path+"."+pname+"()");
+ var page = eval("new "+cfg.path+"()");
  page.init(cfg,factory);
  return page;
 }
@@ -46,4 +46,22 @@ function CreateMap(sceneName){
  var cfg = g_scene["Data"][name];
  var map = eval("new "+cfg.map+"()");
  return map;
+}
+
+function CreateAnimation(factory,armaName,reUse)
+{
+ var skeletonData = factory.getSkeletonData(armaName);
+ if (!skeletonData)
+  {
+   skeletonData = RES.getRes(armaName+"_skeleton");
+   var textureData = RES.getRes(armaName+"_texture");
+   var texture = RES.getRes(armaName+"_png");
+   factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
+   factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
+  }
+
+ var armature = factory.buildArmature(armaName);
+ var armatureDisplay = armature.getDisplay();
+ dragonBones.WorldClock.clock.add(armature);
+ return armature;
 }

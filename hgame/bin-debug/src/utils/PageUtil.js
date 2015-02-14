@@ -17,47 +17,112 @@ var utils;
         function PageUtil() {
             _super.call(this);
 
-           this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.startUpAnimation, this);
         };
 
 		//页面初始化:cfg:config/config.js页面配置, factory:armature资源工厂
 		PageUtil.prototype.init = function (cfg,factory) {
 			var pos = cfg.pos?cfg.pos:{x:0,y:0,width:640,height:480};
+			this.cfg = cfg;
+			this.factory = factory;
 			this.width=pos.width;
 			this.height=pos.height;
             this.x = pos.x;
             this.y = pos.y;
-			var touches = cfg.touches;
-           this.touchChildren = touches.touchChildren;
-            this.touchEnabled = touches.touchEnabled;
+ 
+			this.onOpen();
 
-			if (cfg.armature&&cfg.armature.length>0&&factory)
+		  var touches = cfg.touch;
+		  if (touches&&touches.target)
+		  {
+			  if (touches.touchChild&&touches.touchChild.length>0)
+			  {
+            this.touchChildren = true;
+            this.touchEnabled = false;
+			  }else
+			  {
+            this.touchChildren = false;
+            this.touchEnabled = true;
+			  }
+
+           this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touchTAP, this);
+		  }
+
+		};
+
+		/**打开页面*/
+		PageUtil.prototype.onOpen = function () {
+ 			this.doCfg(this.cfg.onOpen);
+
+		};
+
+		/**关闭页面*/
+		PageUtil.prototype.onClose = function () {
+ 			this.doCfg(this.cfg.onClose);
+
+		};
+
+		/**配置执行*/
+		PageUtil.prototype.doCfg = function (cfg) {
+			if (!cfg)
 			{
-				var skename = cfg.armature+"_skeleton";
-			var skeletonData = factory.getSkeletonData(skename);
-				if (!skeletonData)
-				{
-			skeletonData = RES.getRes(skename);
-			var textureData = RES.getRes(cfg.armature+"_texture");
-			var texture = RES.getRes(cfg.armature+"_png");
-			factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
-			factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
-				}
+				return;
+			}
+			//remove last sprite:
+			if (this.contains(this.lastSprite))
+			{
+			 this.removeChild(this.lastSprite);
+			}
 
-            var armature = factory.buildArmature(cfg.armature);
-			this.armature = armature;
-			var armatureDisplay = armature.getDisplay();
-			this.addChild(armatureDisplay);
-			dragonBones.WorldClock.clock.add(armature);
-			this.armature.animation.play();			
+			var sprite;
+
+			//armature cfg:
+			var arma = cfg.armature;
+			if (arma&&arma.length>0&&this.factory)
+			{
+			 var armature = CreateAnimation(this.factory,arma);
+			 if (cfg.play)
+			 {
+			  armature.animation.gotoAndPlay(cfg.play.name,-1,-1,cfg.play.loop);
+			   armature.target='ddd';
+               armature.addEventListener(dragonBones.AnimationEvent.COMPLETE, this.anicomplete, this);
+			 }
+			 sprite = armature.getDisplay();
+			 this.lastSprite = sprite;
+			}
+
+			if (sprite)
+			{
+			 var pos = cfg.pos;
+			 if (pos)
+			 {
+			  sprite.x = pos.x?pos.x:0;
+			  sprite.y = pos.y?pos.y:0;
+			  sprite.width = pos.width?pos.width:0;
+			  sprite.height = pos.height?pos.height:0;
+			 }
+			 this.addChild(sprite);
+			}
+			return sprite;
+
+		};
+
+		/**页面点击*/
+		PageUtil.prototype.touchTAP = function (evt) {
+			var touch = this.cfg.touch;
+			if (touch&&touch.target)
+			{
+				if (touch.target=="onClose")
+				{
+					this.onClose();
+				}
+				return;
 			}
 		};
-
-		/**页面动画*/
-		PageUtil.prototype.startUpAnimation = function (evt) {
-			this.armature.animation.gotoAndPlay("kaiqi");
-		};
-
+        /**播放结束*/
+        PageUtil.prototype.anicomplete = function (evt) {
+        alert('this:'+evt.target.ddd);
+           dragonBones.WorldClock.clock.remove(this.armature);
+        };
         PageUtil.prototype.touchHandler = function (evt) {
 			g_game.gameStart();
         };
