@@ -40,9 +40,6 @@
 
 "groups":
 	[
-        {"name":"preload","keys":"bgImage,btnStart,f1,f2,b1,b2"},
-	 {"name":"soldier","keys":"soldier1_png,soldier1_texture,soldier1_skeleton"},
-	 {"name":"enemy","keys":"enemy_01_png,enemy_01_texture,enemy_01_skeleton,e3_png,e3_json,e3_skeleton_json,e4_png,e4_json,e4_skeleton_json,b1_png,b1_json,b1_skeleton_json"},
-	 {"name":"fm","keys":"fengmian_skeleton,fengmian_png,fengmian_texture"}
+	 {"name":"preload","keys":"fengmian_skeleton,fengmian_png,fengmian_texture"}
 	]
 }

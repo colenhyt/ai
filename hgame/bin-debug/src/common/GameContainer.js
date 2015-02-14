@@ -124,10 +124,6 @@ var common;
             this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchHandler, this);
 			this.addEventListener(egret.TouchEvent.TOUCH_OVER, this.touchHandler, this);
 
-		var player = model.Monster.produce(g_sprite["monkey"],this.factory);
-		this.addChild(player);
-		this.player = player;
-
 
 		//this.player.addEventListener("createBullet", this.createBulletHandler, this);
 
@@ -300,7 +296,7 @@ var common;
 //                    this.myFighter.blood -= 10;
 //                }
             }
-            if (this.player.blood <= 0) {
+            if (0==1) {
                 this.gameStop();
             }
             else {

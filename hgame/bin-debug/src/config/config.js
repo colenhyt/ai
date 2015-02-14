@@ -1,4 +1,4 @@
-var g_res = ["preload","soldier","enemy","fm"];
+var g_res = ["preload","fm"];
 
 var g_page = {
   "Pages":{
@@ -24,11 +24,13 @@ var g_scene = {
   "first":"start",
   "data":{
     "start":{
+	  "config":"scene0.json",
 	  "page":"StartupPage",
 	},
     "main":{
+	  "config":"scene1.json",
 	  "map":"fighter.BgMap",
-	  "sprites":["s1","e1","e2","e3","monkey",]
+	  "sprites":["s1","monkey",]
 	},
   }
 }
