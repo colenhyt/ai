@@ -31,3 +31,12 @@ var fighter;
     }
     fighter.createBitmapByName = createBitmapByName;
 })(fighter || (fighter = {}));
+
+function CreatePage(factory,pageName){
+ var pname = pageName?pageName:g_config.FirstPage;
+ var cfg = g_config.Pages[pname];
+ 
+ var page = eval("new "+cfg.path+"."+pname+"()");
+ page.init(cfg,factory);
+ return page;
+}

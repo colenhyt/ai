@@ -48,17 +48,9 @@ var common;
         var factory = new dragonBones.EgretFactory();
         this.factory = factory;
  
-        var skeletonData = RES.getRes("fm_skeleton_json");
-        var textureData = RES.getRes("fm_json");
-        var texture = RES.getRes("fm_png");
-        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
-        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
-       		
-             this.startupPage = new common.StartupPage();
-           this.addChild(this.startupPage);
+			var startupPage = CreatePage(factory);
+           this.addChild(startupPage);
 
-            //this.addChild(this.myFighter);
-            //预创建
             this.preCreatedInstance();
         };
         /**预创建一些对象，减少游戏时的创建消耗*/

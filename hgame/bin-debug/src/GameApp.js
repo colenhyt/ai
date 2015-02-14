@@ -41,8 +41,8 @@ var GameApp = (function (_super) {
             RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
             RES.removeEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
             //游戏的主类开始实例化
-            var gameContainer = new common.GameContainer();
-            this.addChild(gameContainer);
+            g_game = new common.GameContainer();
+            this.addChild(g_game);
             //FPS
             egret.Profiler.getInstance().run();
         }
@@ -56,3 +56,4 @@ var GameApp = (function (_super) {
     return GameApp;
 })(egret.DisplayObjectContainer);
 GameApp.prototype.__class__ = "GameApp";
+var g_game;

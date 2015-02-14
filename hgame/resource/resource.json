@@ -13,9 +13,9 @@
 		{"name":"e4_png","type":"image","url":"assets/enemy04/texture.webp"},
 		{"name":"e4_json","type":"json","url":"assets/enemy04/texture.json"},
 		{"name":"e4_skeleton_json","type":"json","url":"assets/enemy04/skeleton.json"},
-		{"name":"fm_png","type":"image","url":"assets/fengmian/texture.webp"},
-		{"name":"fm_json","type":"json","url":"assets/fengmian/texture.json"},
-		{"name":"fm_skeleton_json","type":"json","url":"assets/fengmian/skeleton.json"},
+		{"name":"fengmian_png","type":"image","url":"assets/fengmian/texture.webp"},
+		{"name":"fengmian_texture","type":"json","url":"assets/fengmian/texture.json"},
+		{"name":"fengmian_skeleton","type":"json","url":"assets/fengmian/skeleton.json"},
 		{"name":"b1_png","type":"image","url":"assets/boss1/texture.webp"},
 		{"name":"b1_json","type":"json","url":"assets/boss1/texture.json"},
 		{"name":"b1_skeleton_json","type":"json","url":"assets/boss1/skeleton.json"},
@@ -43,6 +43,6 @@
         {"name":"preload","keys":"bgImage,btnStart,f1,f2,b1,b2,monkey_png,monkey_json"},
 	 {"name":"soldier","keys":"texture_png,texture_json,skeleton_json"},
 	 {"name":"enemy","keys":"e1_png,e1_json,e1_skeleton_json,e3_png,e3_json,e3_skeleton_json,e4_png,e4_json,e4_skeleton_json,b1_png,b1_json,b1_skeleton_json"},
-	 {"name":"fm","keys":"fm_skeleton_json,fm_png,fm_json"}
+	 {"name":"fm","keys":"fengmian_skeleton,fengmian_png,fengmian_texture"}
 	]
 }
