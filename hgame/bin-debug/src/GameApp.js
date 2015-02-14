@@ -24,12 +24,10 @@ var GameApp = (function (_super) {
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
 		this.resTick = 0;
-		var aa = RES.getGroupByName("soldier");
-		var groups = ["preload","soldier","enemy","fm"];
-		this.resCount = groups.length;
-		for (var i=0;i<groups.length ;i++ )
+		this.resCount = g_res.length;
+		for (var i=0;i<g_res.length ;i++ )
 		{
-			RES.loadGroup(groups[i]);
+			RES.loadGroup(g_res[i]);
 		}
         
     };

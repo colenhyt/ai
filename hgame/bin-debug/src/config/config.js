@@ -1,3 +1,5 @@
+var g_res = ["preload","soldier","enemy","fm"];
+
 var g_config = {
   "FirstPage":"StartupPage",
   "Pages":{

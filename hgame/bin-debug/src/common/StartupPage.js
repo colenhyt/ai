@@ -17,17 +17,6 @@ var common;
         function StartupPage() {
             _super.call(this);
            
-//            var armature = g_game.factory.buildArmature("fengmian");
-//			this.armature = armature;
-//			var armatureDisplay = armature.getDisplay();
-//			this.addChild(armatureDisplay);
-//			this.width=600;
-//			this.height=400;
-//            this.x =400;
-//            this.y = 240;
-//           this.touchChildren = false;
-//            this.touchEnabled = true;
-//			this.armature.animation.gotoAndPlay("kaiqi");
            this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.startUpAnimation, this);
         };
 		/**页面动画*/

@@ -48,6 +48,7 @@ var common;
         var factory = new dragonBones.EgretFactory();
         this.factory = factory;
  
+			//首个页面加载:
 			var startupPage = CreatePage(factory);
            this.addChild(startupPage);
 
