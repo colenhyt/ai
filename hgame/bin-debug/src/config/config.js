@@ -6,7 +6,7 @@ var g_page = {
     "StartupPage":{
 		path:"common.StartupPage",
 		onOpen:{armature:"fengmian",pos:{}},
-		onClose:{armature:"fengmian",play:{name:"kaiqi",loop:1},},
+		onClose:{armature:"fengmian",play:{name:"kaiqi",loop:1}},
 		touch:{target:"onClose",touchChild:""},
 		pos:{x:400,y:240,width:600,height:400},
 	},

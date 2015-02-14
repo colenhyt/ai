@@ -55,12 +55,27 @@ var utils;
 
 		};
 
-		/**关闭页面*/
+		/**关闭页面动作*/
 		PageUtil.prototype.onClose = function () {
+			var target = "close";
+			if (this.cfg.onClose)
+			{
+			 this.cfg.onClose.target=target;
  			this.doCfg(this.cfg.onClose);
+			}else
+			{
+			 this.doTarget(target);
+			}
+		};
+		/**关闭页面*/
+		PageUtil.prototype.close = function () {
+			//remove last sprite:
+			if (this.contains(this.lastSprite))
+			{
+			 this.removeChild(this.lastSprite);
+			}
 
 		};
-
 		/**配置执行*/
 		PageUtil.prototype.doCfg = function (cfg) {
 			if (!cfg)
@@ -83,7 +98,7 @@ var utils;
 			 if (cfg.play)
 			 {
 			  armature.animation.gotoAndPlay(cfg.play.name,-1,-1,cfg.play.loop);
-			   armature.target='ddd';
+			  armature.cfg = {page:this,target:cfg.target};
                armature.addEventListener(dragonBones.AnimationEvent.COMPLETE, this.anicomplete, this);
 			 }
 			 sprite = armature.getDisplay();
@@ -105,30 +120,35 @@ var utils;
 			return sprite;
 
 		};
+		/**target执行*/
+		PageUtil.prototype.doTarget = function (target) {
+			if (this[target])
+			{
+				this[target]();
+			}
+		};
 
 		/**页面点击*/
 		PageUtil.prototype.touchTAP = function (evt) {
 			var touch = this.cfg.touch;
-			if (touch&&touch.target)
+			if (touch.armature)
 			{
-				if (touch.target=="onClose")
-				{
-					this.onClose();
-				}
-				return;
+			 this.doCfg(touch);
+			}else
+			{
+			 this.doTarget(touch.target);
 			}
 		};
         /**播放结束*/
         PageUtil.prototype.anicomplete = function (evt) {
-        alert('this:'+evt.target.ddd);
-           dragonBones.WorldClock.clock.remove(this.armature);
+         dragonBones.WorldClock.clock.remove(evt.target);
+
+		 var cfg = evt.target.cfg;
+		 var page = cfg.page;
+		 page.doTarget(cfg.target);
         };
         PageUtil.prototype.touchHandler = function (evt) {
 			g_game.gameStart();
-        };
-        PageUtil.prototype.showScore = function (value) {
-            var msg = "您的成绩是:\n" + value + "\n再来一次吧";
-            this.txt.text = msg;
         };
         return PageUtil;
     })(egret.Sprite);

@@ -18,14 +18,11 @@ var common;
             _super.call(this);
            
         };
-
-        StartupPage.prototype.touchHandler = function (evt) {
+		/**关闭页面*/
+		StartupPage.prototype.close = function () {
+			_super.prototype.close.call(this);
 			g_game.gameStart();
-        };
-        StartupPage.prototype.showScore = function (value) {
-            var msg = "您的成绩是:\n" + value + "\n再来一次吧";
-            this.txt.text = msg;
-        };
+		};
         return StartupPage;
     })(utils.PageUtil);
     common.StartupPage = StartupPage;
