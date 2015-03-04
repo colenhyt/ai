@@ -1,0 +1,14 @@
+<TextureAtlas name="zhandoukaishi" imagePath="texture.webp">
+ <SubTexture name="zi12" x="0" y="78" width="358" height="70"/>
+ <SubTexture name="zi11" x="0" y="482" width="348" height="60"/>
+ <SubTexture name="zi10" x="0" y="417" width="349" height="63"/>
+ <SubTexture name="zi9" x="0" y="287" width="349" height="63"/>
+ <SubTexture name="zi8" x="0" y="0" width="363" height="76"/>
+ <SubTexture name="zi7" x="0" y="352" width="349" height="63"/>
+ <SubTexture name="zi6" x="0" y="150" width="352" height="65"/>
+ <SubTexture name="zi5" x="0" y="217" width="349" height="68"/>
+ <SubTexture name="zi4" x="0" y="544" width="327" height="68"/>
+ <SubTexture name="zi3" x="0" y="614" width="250" height="68"/>
+ <SubTexture name="zi2" x="365" y="0" width="83" height="58"/>
+ <SubTexture name="zi1" x="450" y="0" width="36" height="29"/>
+</TextureAtlas>

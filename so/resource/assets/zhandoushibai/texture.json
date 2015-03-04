@@ -1,0 +1,9 @@
+{ "name":"zhandoushibai", "imagePath":"texture.webp",  "SubTexture": [ 
+     { 
+          "name":"zi15",
+          "x":0,
+          "y":0,
+          "width":363,
+          "height":69
+     }
+] }

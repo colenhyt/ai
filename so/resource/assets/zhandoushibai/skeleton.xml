@@ -1,0 +1,38 @@
+<dragonBones name="zhandoushibai" frameRate="24" version="2.3">
+  <armature name="zhandoushibai">
+    <bone name="zi1">
+      <transform x="0" y="0.08" skX="0" skY="0" scX="0.16" scY="0.16"/>
+    </bone>
+    <skin name="">
+      <slot name="zi1" parent="zi1" z="0">
+        <display name="zi15" type="image">
+          <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="181.2" pY="34.4"/>
+        </display>
+      </slot>
+    </skin>
+    <animation name="chuxian" fadeInTime="0" duration="55" scale="1" loop="0" tweenEasing="NaN">
+      <timeline name="zi1" scale="1" offset="0">
+        <frame z="0" tweenEasing="0" duration="14">
+          <transform x="0" y="0.08" skX="0" skY="0" scX="0.16" scY="0.16" pX="0" pY="0"/>
+          <colorTransform aO="0" rO="0" gO="0" bO="0" aM="0" rM="100" gM="100" bM="100"/>
+        </frame>
+        <frame z="0" duration="1">
+          <transform x="0" y="0.08" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </frame>
+        <frame z="0" tweenEasing="0" duration="9">
+          <transform x="0" y="0.08" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+        </frame>
+        <frame z="0" duration="1">
+          <transform x="0" y="0.08" skX="0" skY="0" scX="1.16" scY="1.16" pX="0" pY="0"/>
+        </frame>
+        <frame z="0" tweenEasing="0" duration="29">
+          <transform x="0" y="0.08" skX="0" skY="0" scX="1.16" scY="1.16" pX="0" pY="0"/>
+        </frame>
+        <frame z="0" duration="1">
+          <transform x="0" y="0.08" skX="0" skY="0" scX="1.92" scY="1.92" pX="0" pY="0"/>
+          <colorTransform aO="0" rO="0" gO="0" bO="0" aM="0" rM="100" gM="100" bM="100"/>
+        </frame>
+      </timeline>
+    </animation>
+  </armature>
+</dragonBones>

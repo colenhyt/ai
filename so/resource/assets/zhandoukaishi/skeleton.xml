@@ -1,0 +1,199 @@
+<dragonBones name="zhandoukaishi" frameRate="24" version="2.3">
+ <armature name="zhandoukaishi">
+  <bone name="zi12">
+   <transform x="1.6" y="-1.2" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi11">
+   <transform x="1.6" y="-1.8" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi10">
+   <transform x="1.2" y="-1.4" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi9">
+   <transform x="1.2" y="-1.4" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi8">
+   <transform x="1.6" y="-0.8" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi7">
+   <transform x="1.08" y="-1.2" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi6">
+   <transform x="2.88" y="-2.4" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi5">
+   <transform x="1.2" y="-1" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi4">
+   <transform x="-10" y="-0.72" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi3">
+   <transform x="-48.4" y="-0.72" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi2">
+   <transform x="-131.92" y="4.4" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <bone name="zi1">
+   <transform x="-156.32" y="17.2" skX="0" skY="0" scX="1" scY="1"/>
+  </bone>
+  <skin name="">
+   <slot name="zi1" parent="zi1" z="0">
+    <display name="zi1" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="17.6" pY="14.4"/>
+    </display>
+   </slot>
+   <slot name="zi2" parent="zi2" z="1">
+    <display name="zi2" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="41.2" pY="28.8"/>
+    </display>
+   </slot>
+   <slot name="zi3" parent="zi3" z="2">
+    <display name="zi3" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="124.8" pY="34"/>
+    </display>
+   </slot>
+   <slot name="zi4" parent="zi4" z="3">
+    <display name="zi4" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="163.2" pY="34"/>
+    </display>
+   </slot>
+   <slot name="zi5" parent="zi5" z="4">
+    <display name="zi5" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="174.4" pY="34"/>
+    </display>
+   </slot>
+   <slot name="zi6" parent="zi6" z="5">
+    <display name="zi6" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="176" pY="32.4"/>
+    </display>
+   </slot>
+   <slot name="zi7" parent="zi7" z="6">
+    <display name="zi7" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="174.4" pY="31.2"/>
+    </display>
+   </slot>
+   <slot name="zi8" parent="zi8" z="7">
+    <display name="zi8" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="181.2" pY="38"/>
+    </display>
+   </slot>
+   <slot name="zi9" parent="zi9" z="8">
+    <display name="zi9" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="174.4" pY="31.2"/>
+    </display>
+   </slot>
+   <slot name="zi10" parent="zi10" z="9">
+    <display name="zi10" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="174.4" pY="31.2"/>
+    </display>
+   </slot>
+   <slot name="zi11" parent="zi11" z="10">
+    <display name="zi11" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="174" pY="29.6"/>
+    </display>
+   </slot>
+   <slot name="zi12" parent="zi12" z="11">
+    <display name="zi12" type="image">
+     <transform x="0" y="0" skX="0" skY="0" scX="1" scY="1" pX="178.8" pY="34.8"/>
+    </display>
+   </slot>
+  </skin>
+  <animation name="chuxian" fadeInTime="0" duration="31" scale="1" loop="1" tweenEasing="NaN">
+   <timeline name="zi1" scale="1" offset="0">
+    <frame z="0" duration="1">
+     <transform x="-156.32" y="17.2" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="30" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi2" scale="1" offset="0">
+    <frame duration="1" displayIndex="-1"/>
+    <frame z="1" duration="1">
+     <transform x="-131.92" y="4.4" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="29" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi3" scale="1" offset="0">
+    <frame duration="2" displayIndex="-1"/>
+    <frame z="2" duration="1">
+     <transform x="-48.4" y="-0.72" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="28" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi4" scale="1" offset="0">
+    <frame duration="3" displayIndex="-1"/>
+    <frame z="3" duration="1">
+     <transform x="-10" y="-0.72" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="27" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi5" scale="1" offset="0">
+    <frame duration="4" displayIndex="-1"/>
+    <frame z="4" duration="1">
+     <transform x="1.2" y="-1" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="26" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi6" scale="1" offset="0">
+    <frame duration="5" displayIndex="-1"/>
+    <frame z="5" duration="1">
+     <transform x="2.88" y="-2.4" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="25" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi7" scale="1" offset="0">
+    <frame duration="6" displayIndex="-1"/>
+    <frame z="6" duration="1">
+     <transform x="1.08" y="-1.2" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="24" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi8" scale="1" offset="0">
+    <frame duration="7" displayIndex="-1"/>
+    <frame z="7" duration="1">
+     <transform x="1.6" y="-0.8" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="23" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi9" scale="1" offset="0">
+    <frame duration="8" displayIndex="-1"/>
+    <frame z="8" duration="1">
+     <transform x="1.2" y="-1.4" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="22" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi10" scale="1" offset="0">
+    <frame duration="9" displayIndex="-1"/>
+    <frame z="9" duration="1">
+     <transform x="1.2" y="-1.4" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="21" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi11" scale="1" offset="0">
+    <frame duration="10" displayIndex="-1"/>
+    <frame z="10" duration="1">
+     <transform x="1.6" y="-1.8" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame duration="20" displayIndex="-1"/>
+   </timeline>
+   <timeline name="zi12" scale="1" offset="0">
+    <frame duration="11" displayIndex="-1"/>
+    <frame z="11" duration="1">
+     <transform x="1.6" y="-1.2" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="11" tweenEasing="0" duration="12">
+     <transform x="1.6" y="-1.2" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="11" duration="1">
+     <transform x="1.6" y="-1.2" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="11" tweenEasing="0" duration="5">
+     <transform x="1.6" y="-1.2" skX="0" skY="0" scX="1" scY="1" pX="0" pY="0"/>
+    </frame>
+    <frame z="11" duration="1">
+     <transform x="1.6" y="-1.2" skX="0" skY="0" scX="1.32" scY="1.32" pX="0" pY="0"/>
+     <colorTransform aO="0" rO="0" gO="0" bO="0" aM="0" rM="100" gM="100" bM="100"/>
+    </frame>
+   </timeline>
+  </animation>
+ </armature>
+</dragonBones>
