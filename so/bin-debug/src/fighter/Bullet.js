@@ -31,6 +31,7 @@ var fighter;
                 bullet = new fighter.Bullet(tt);
                 bullet._getMatrix().rotate(90);
 
+                bullet.rotation = 90;
             }
             bullet.textureName = textureName;
             return bullet;
