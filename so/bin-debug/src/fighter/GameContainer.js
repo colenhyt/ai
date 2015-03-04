@@ -113,32 +113,45 @@ var fighter;
         factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
 
         skeletonData = RES.getRes("e4_skeleton_json");
+		console.log("ddd");
         textureData = RES.getRes("e4_json");
         texture = RES.getRes("e4_png");
         factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
         factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
 
-//        var armature = factory.buildArmature("soldier1");
-//		
-//        var armatureDisplay = armature.getDisplay();
-//        dragonBones.WorldClock.clock.add(armature);
-//        this.addChild(armatureDisplay);
-//        armatureDisplay.x = 100;
-//        armatureDisplay.y = 250;	
-//        armatureDisplay.scaleX = -1;	
-//        		
-//		armature.animation.gotoAndPlay("fire");
-//		
-//        armature = factory.buildArmature("soldier1");
-//		
-//        armatureDisplay = armature.getDisplay();
-//        dragonBones.WorldClock.clock.add(armature);
-//        this.addChild(armatureDisplay);
-//        armatureDisplay.x = 150;
-//        armatureDisplay.y = 150;	
-//        armature.animation.gotoAndPlay("fire");
+        skeletonData = RES.getRes("fm_skeleton_json");
+        textureData = RES.getRes("fm_json");
+        texture = RES.getRes("fm_png");
+        factory.addSkeletonData(dragonBones.DataParser.parseDragonBonesData(skeletonData));
+        factory.addTextureAtlas(new dragonBones.EgretTextureAtlas(texture, textureData));
+
+        var armature = factory.buildArmature("soldier1");
+		
+		var bones = armature.getBones();
+		for (var i=0;i<bones.length ;i++ )
+		{
+			//bones[i].origin.rotation = 90;//origin BoneTransfo
+			//bones[i].origin.x = 0- bones[i].origin.x;
+			//bones[i].origin.skewX = 90;
+			//bones[i].origin.y = 0-bones[i].origin.y;
+		}
+		
+        var data = RES.getRes("monkey_json");
+        var texture = RES.getRes("monkey_png");
+        var monkey = new egret.MovieClip(data, texture);
+        monkey.x = 600;
+        monkey.y = 200;
+        monkey.scaleX = -1;
+		monkey.rotation = 30;
+        this.addChild(monkey);
+        monkey.frameRate = 24;
+        monkey.gotoAndPlay("attack");
         		
-		//bone.origin.skewX = -180;
+		var bone = armature.getBone("tou");
+		logg(bone.origin.toString());
+//		bone.origin.pivotX = -1;
+		//bone.origin.skewX = -90;
+
 		//bone.origin.rotation = 180;
         // bone.origin.rotation = 180;//origin BoneTransfo
 

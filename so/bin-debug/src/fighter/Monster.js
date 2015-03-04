@@ -39,7 +39,6 @@ var fighter;
 			 armature.animation.gotoAndPlay("daiji");
 			}
 			this.addChild(armatureDisplay);
-			
 			dragonBones.WorldClock.clock.add(armature);
             this.fireTimer = new egret.Timer(fireDelay);
             this.armature.aa = 43;
