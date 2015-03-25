@@ -7,12 +7,12 @@
 package box.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import box.sites.JDPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import es.download.DownloadAfterDealer;
-import es.download.NewOriginalPagesSaver;
 import es.webref.model.PageRef;
 
 
@@ -23,18 +23,17 @@ import es.webref.model.PageRef;
  * 
  * created on 2006-6-10
  */
-public class PageDealing extends NewOriginalPagesSaver{
+public class PageDealing{
 	private Map<String,IPageDealer>		mapDealers;
 	
 	 DownloadAfterDealer dealder=new DownloadAfterDealer();
 	 int perCount=100;
 	 
-    public PageDealing(String sId,int pageType) {
-		this(sId, pageType,-2,50);
+    public PageDealing() {
+		this(null, 0,-2,50);
 	}
     
     public PageDealing(String sId, int pageType,int pageActionType, int perCount) {
-		super(sId, pageType,pageActionType,perCount);
 		
 		mapDealers = new HashMap<String,IPageDealer>();
 		
@@ -44,10 +43,15 @@ public class PageDealing extends NewOriginalPagesSaver{
 		mapDealers.put(dealer.getSiteId(), dealer);
 	}
 
-	public void add(Object newPage){
+    public String getFirstUrl(String siteId)
+    {
+		IPageDealer dealer = mapDealers.get(siteId);
+		return dealer.getFirstUrl();
+    }
+	public List<PageRef> add(Object newPage){
 		OriHttpPage pp = (OriHttpPage)newPage;
 		IPageDealer dealer = mapDealers.get(pp.getSiteId());
-		dealer.deal(pp);
+		return dealer.deal(pp);
     }
 
 	public void setDoDeal(boolean save) {

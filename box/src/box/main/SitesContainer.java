@@ -9,15 +9,15 @@ package box.main;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
+import box.util.TSite;
 import box.util.UrlsFinder;
-import es.download.flow.APagesDownloader;
-import es.simple.TAction;
 import es.simple.TDownloadSite;
 import es.simple.TPageTypes;
 import es.simple.TSingleSpecieStage;
@@ -29,12 +29,12 @@ import es.simple.TSingleSpecieStage;
  * 
  * created on 2006-7-14
  */
-public class SitesContainer extends APagesDownloader {
+public class SitesContainer extends Observable implements Observer {
     static Logger log = Logger.getLogger(SitesContainer.class
             .getName());
     private int perCount=0, fullActiveCount=5000;
     private List targetSites;
-    private TSingleSpecieStage[] siteActions;
+    private TSite[] siteActions;
     private int siteRunning=0,sites=0;
     private HttpClient httpClient;
     
@@ -51,25 +51,25 @@ public class SitesContainer extends APagesDownloader {
     private int maxConnPerHost=2;
     private int timeOut=6000;
     private int maxTotalConn=20;
-    public SitesContainer(TAction tc) {
-        super(tc);
+
+    public SitesContainer(int[] _types,String[] siteUrls){
       	httpClient = new HttpClient(connectionManager);
         httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
       	connectionManager.getParams().setConnectionTimeout(6000);
       	connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnPerHost);
       	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);
-//        downloadSites=stage.getDownloadSites();
       	
-    }
-
-    public SitesContainer(int[] _types,String[] siteIds){
-    	super(siteIds);
-    	TPageTypes types=new TPageTypes();
+      	TPageTypes types=new TPageTypes();
     	for (int i=0;i<_types.length;i++){
     		types.add(String.valueOf(_types[i]));
     	}    	
+		siteActions=new TSite[siteUrls.length];
+		for (int i=0;i<siteActions.length;i++){
+			siteActions[i]=new TSite(types,siteUrls[i]);
+			siteActions[i].setThreads(1);
+		}
     }
-    public void goToReady4Urls(){
+    public void runningUrls(){
         for (Iterator it=targetSites.iterator();it.hasNext();){
             TDownloadSite dSite=(TDownloadSite)it.next();
             UrlsFinder downloader=new UrlsFinder(dSite);
@@ -81,18 +81,15 @@ public class SitesContainer extends APagesDownloader {
         }
     }
     
-    public void goToReady(){
-    	if (siteActions!=null&&siteActions.length>0){
-            for (int i=0;i<siteActions.length;i++){
-        	bStartThreads(siteActions[i],siteActions[i].getTypes(),siteActions[i].getSpecId(),null,i);            
-            }
+    public void runningPages(){
+        for (int i=0;i<siteActions.length;i++){
+    		PagesThread thread=new PagesThread(siteActions[i],siteActions[i].getSpecId(),null,group,THREAD_GROUP_NAME +i);
+    		thread.inHttpClient(httpClient);
+    		thread.start();
+    	    siteRunning++;    
+    	    sites++;            	
         }
-        run();  
-    }
-    
-    public boolean spidersSetOut(){
-        
-        return true;
+       // run();  
     }
 
     public void update(Observable o, Object arg) {
@@ -104,14 +101,6 @@ public class SitesContainer extends APagesDownloader {
             notifyObservers();            
         }
     }
-
-	private void bStartThreads(TSingleSpecieStage siteAction,TPageTypes types,String specId,String oriStore,int id){
-		PagesThread downloader=new PagesThread(this,siteAction,siteAction.getTypes(),specId,null,group,THREAD_GROUP_NAME +id);
-	    downloader.inHttpClient(httpClient);
-	    downloader.start();
-	    siteRunning++;    
-	    sites++;
-	}
 
 	private void run(){
 		while (true) {

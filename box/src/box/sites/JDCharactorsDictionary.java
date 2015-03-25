@@ -112,6 +112,12 @@ public class JDCharactorsDictionary implements ICharactorsDictionary {
 	    
 	    return false;
 	}
+    
+    public boolean isSearchCat(String url)
+    {
+    	return url.indexOf("search.jd.com/Search?")>0;
+    }
+    
 	public boolean isCatalog2(String url) {
         if (StringHelper.contains1atLeast(url, catalogChas))
             return true;
@@ -134,31 +140,49 @@ public class JDCharactorsDictionary implements ICharactorsDictionary {
      * @see com.microsky.shopping.spider.links.IPageCharactorsDictionary#isItem(java.lang.String)
      */
     private String[] itemChas={"/info.asp","/foreigninfo.asp"};
-    public final static String itemKeyReg = "[\\d]{4,}";
+    public final static String itemKeyReg = "[\\d]{4,20}";
     public boolean isItem(String url) {
 
         if (isGeneral(url)||isUseLessURL(url))
             return false;
 
+		String reg = "item.jd.com/";
+		boolean isItemUrl = url.indexOf(reg)>=0;
+		if (!isItemUrl) return false;
+		
         String ikey = getItemKey(url);
 
         boolean containKey = (ikey != null && ikey.trim().length() > 0&&Pattern.matches(itemKeyReg,ikey));
 
-        if (containKey && StringHelper.contains1atLeast(url, itemChas))
-            return true;
 
-        return false;
+        
+        return containKey;
 
     }
 
     public String getItemKey(String url) {
-		String key=null;
-	    key=URLStrHelper.getParamValue(url, "id");
-	    if (key != null && Pattern.matches("[\\d]*", key))
-	    	return key;
+		String url2 = cutHttpPre(url);
+		String[] strs = url2.split("/");
+		if (strs.length>2)
+			return null;
+		String itemStr = strs[strs.length-1];
+	    if (Pattern.matches("[\\d]*.html", itemStr))
+	    {
+	    	return itemStr.substring(0,itemStr.indexOf("."));
+	    }
 	    return null;
 	}
 
+    static String cutHttpPre(String url)
+    {
+    	String pre = URLStrHelper.URL_HTTP_PREFIX;
+    	int index = url.indexOf(pre);
+    	if (index==0)
+    	return url.substring(pre.length());
+    	else
+    		return url;
+    }
+    
 	public String getCatKey(String url) {
     	String key=null;
         key=URLStrHelper.getParamValue(url, "typeid");

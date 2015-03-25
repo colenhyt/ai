@@ -73,7 +73,7 @@ public class PageThreadWorker implements Runnable, Constants{
     
     private OriginalsHelper saveHelper;
     
-    private INewOriginalPagesDealer dealer;
+    private PageDealing dealer;
     
     private int threadCount;
     
@@ -107,7 +107,6 @@ public class PageThreadWorker implements Runnable, Constants{
     public void setParams(String sId,int pType,int tCount,int downloadType,int pageActionType,int perCount){
 		siteId = sId;
 		pageType = pType;
-		urlStore=TSiteConfigs.getSiteConfig(siteId).getStore(pageType);
         dealer=new PageDealing(sId,pType,pageActionType,perCount);
         this.pageActionType=pageActionType;
         dealer.setDoDeal(true);
@@ -171,9 +170,9 @@ public class PageThreadWorker implements Runnable, Constants{
 	            	obj.setPageActionType(pageActionType);
 	            	obj.setRelWord(nextURL.getRelWord());
 	            	obj.setRefId(nextURL.getRefId());
-	            	obj.setSaveFile(saveFile);
 	            	log.debug("get a page....");
-	            	dealer.add(obj);
+	            	List<PageRef> newUrls = dealer.add(obj);
+	            	addUrls(newUrls);
 	            }
 	            else{
 	            	obj.setClassId(pageType);
@@ -231,7 +230,6 @@ public class PageThreadWorker implements Runnable, Constants{
 			}
 			
 			if (noMoreFetcherThread) {
-				dealer.validate();
             	log.error("labeling error pages, count="+getMissingURLs().size());
 				new OriginalsHelper().labelMissingURLs(getMissingURLs(),
 						TSiteConfigs.getSiteConfig(siteId)

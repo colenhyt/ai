@@ -14,9 +14,9 @@ import java.util.Set;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.log4j.Logger;
 
+import box.util.PageDealing;
 import box.util.PageThreadWorker;
-import easyshop.model.StatusConstants;
-import es.download.flow.APagesDownloader;
+import box.util.TSite;
 import es.download.flow.DownloadContext;
 import es.download.helper.OriginalsHelper;
 import es.simple.ICircleDoJudger;
@@ -24,8 +24,9 @@ import es.simple.TAction;
 import es.simple.TDownloadSite;
 import es.simple.TPageTypes;
 import es.simple.TSiteConfig;
-import es.simple.TStage;
 import es.simple.Tracy;
+import es.util.url.URLStrFormattor;
+import es.webref.model.PageRef;
 
 /**
  * @author Allenhuang
@@ -36,6 +37,8 @@ public class PagesThread extends Thread implements Runnable{
     static Logger log = Logger.getLogger(PagesThread.class
             .getName());
 
+    PageDealing pageDealing = new PageDealing();
+    
      OriginalsHelper helper=new OriginalsHelper();
      private int perCount=1000, fullActiveCount=0,threadCount=0,maxUrlCount=0;
     private int currentPageType=-1;
@@ -48,8 +51,7 @@ public class PagesThread extends Thread implements Runnable{
     private final String specId,siteId;
     private boolean saveFile=false;
     final String oriStore,column;
-    private final TStage siteAction;
-    APagesDownloader parent;
+    private final TSite siteAction;
     ICircleDoJudger continueJudger;
     int[] biztypes;
 	boolean quit=false;
@@ -159,10 +161,10 @@ public class PagesThread extends Thread implements Runnable{
     	PageThreadWorker spider=new PageThreadWorker(DownloadContext.getSpiderContext());
         spider.setHttpClient(httpClient);
         spider.setParams(siteId,dType,threadCount,downloadType,pageActionType,insertCount);
-        //select distinct urlstr from urlstore where status=-1
         List newurls= new ArrayList();
-        
-        spider.isSaveFile(saveFile);
+        String firstUrl = pageDealing.getFirstUrl(siteAction.getSiteId());
+        PageRef ref = new PageRef(URLStrFormattor.decode(firstUrl),"first");
+        newurls.add(ref);
         spider.pushInitUrls(newurls);
         
         newurls.clear();
@@ -176,7 +178,7 @@ public class PagesThread extends Thread implements Runnable{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        b1Setup(dType);
+       // b1Setup(dType);
     }
 
     public void run() {
@@ -204,44 +206,46 @@ public class PagesThread extends Thread implements Runnable{
 		boolean notContinue=false;
 	    int count=0,aCount=0,urlCount;
 	
-	    String store=oriStore;
-	    if (store==null){
-	    	log.info("download for "+siteConfig.getStoreDesc(currentType));
-	    	store=siteConfig.getStore(currentType);
-	    }
-	     
-	        count=helper.findNewURLsCount(store,column,storeStatus);
+	    b2RunSpiders(currentType);
 	    
-	    aCount=helper.findPageCount(store,StatusConstants.ITEM_STATUS_NORMAL);
-	    urlCount=helper.findPageCount(store,StatusConstants.ITEM_STATUS_NORMAL);
-	    
-	    if (quit) notContinue=true;
-	    
-	    if (count<=0||aCount>=fullActiveCount||urlCount>=maxUrlCount||(continueJudger!=null&&continueJudger.goHere())) notContinue=true;
-	    
-	    
-	    long currentTime=System.currentTimeMillis();
-	    if (duration>0&&((currentTime-startTime)>=duration)){
-	    	log.info("已运行至规定时间段,停止!");
-	    	notContinue=true;
-	    }
-	    
-	    //select count(*) as c from "+pStore+" where status=2 or status=3
-	    if (notContinue){
-	        
-	        if ((types!=null&&!types.hasNext())||aCount>=fullActiveCount){
-	        	log.info("current site download pages finish!!!!, now new count is "+count+", and active pages count is "+aCount);
-	        	quit=true;
-	        	return;
-	        }else{
-	            //找下一个类型的下载
-	        	if (types!=null)
-	        		b2RunSpiders(types.pushPageType());
-	        }
-	            
-	    }else{
-	    	b2RunSpiders(currentType);
-	    }           
+//	    String store=oriStore;
+//	    if (store==null){
+//	    	log.info("download for "+siteConfig.getStoreDesc(currentType));
+//	    	store=siteConfig.getStore(currentType);
+//	    }
+//	     
+//	        count=helper.findNewURLsCount(store,column,storeStatus);
+//	    
+//	    aCount=helper.findPageCount(store,StatusConstants.ITEM_STATUS_NORMAL);
+//	    urlCount=helper.findPageCount(store,StatusConstants.ITEM_STATUS_NORMAL);
+//	    
+//	    if (quit) notContinue=true;
+//	    
+//	    if (count<=0||aCount>=fullActiveCount||urlCount>=maxUrlCount||(continueJudger!=null&&continueJudger.goHere())) notContinue=true;
+//	    
+//	    
+//	    long currentTime=System.currentTimeMillis();
+//	    if (duration>0&&((currentTime-startTime)>=duration)){
+//	    	log.info("已运行至规定时间段,停止!");
+//	    	notContinue=true;
+//	    }
+//	    
+//	    //select count(*) as c from "+pStore+" where status=2 or status=3
+//	    if (notContinue){
+//	        
+//	        if ((types!=null&&!types.hasNext())||aCount>=fullActiveCount){
+//	        	log.info("current site download pages finish!!!!, now new count is "+count+", and active pages count is "+aCount);
+//	        	quit=true;
+//	        	return;
+//	        }else{
+//	            //找下一个类型的下载
+//	        	if (types!=null)
+//	        		b2RunSpiders(types.pushPageType());
+//	        }
+//	            
+//	    }else{
+//	    	b2RunSpiders(currentType);
+//	    }           
 	}
 	public boolean spidersSetOut(){
 	    if (types!=null&&!types.hasNext()){
@@ -257,9 +261,8 @@ public class PagesThread extends Thread implements Runnable{
 	    b1Setup(cpType);
 	    return true;
 	}
-	public PagesThread(APagesDownloader _parent,TStage _siteAction,TPageTypes _types,String _specId,String _oriStore,ThreadGroup group,String nameId){
+	public PagesThread(TSite _siteAction,String _specId,String _oriStore,ThreadGroup group,String nameId){
 		super(group,nameId);
-		parent=_parent;
 	    specId=_specId;
 		siteAction=_siteAction;
 	    siteId=_siteAction.getSiteId();
@@ -278,7 +281,6 @@ public class PagesThread extends Thread implements Runnable{
 	    
 	    fullActiveCount=((Integer)_siteAction.getParamValue(Tracy.P_N_MAXCOUNT)).intValue();
 	    maxUrlCount=((Integer)_siteAction.getParamValue(Tracy.P_N_MAX_URLS_COUNT)).intValue();
-	    types=_types;
 	    oriStore=_oriStore;
 	    bInit();
 	}

@@ -16,11 +16,16 @@ public class Main {
     
 	public void processSites(Set<String> startUrls)
 	{
-		
+
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		int[] a = new int[1]; 
+		String[] sites= new String[1];
+		sites[0]= "jd";
+//		sites[1]= "http://www.t.com";
+		SitesContainer con = new SitesContainer(a,sites);
+		con.runningPages();
 	}
 
 }
