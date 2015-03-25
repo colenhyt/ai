@@ -22,14 +22,14 @@ import es.util.url.URLStrHelper;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Style - Code Templates
  */
-public class USAmazonCharactorsDictionary implements ICharactorsDictionary {
+public class JDCharactorsDictionary implements ICharactorsDictionary {
 
 
-    private static USAmazonCharactorsDictionary pageChas;
+    private static JDCharactorsDictionary pageChas;
 
-    public static USAmazonCharactorsDictionary getInstance() {
+    public static JDCharactorsDictionary getInstance() {
         if (pageChas == null)
-            pageChas = new USAmazonCharactorsDictionary();
+            pageChas = new JDCharactorsDictionary();
         return pageChas;
     }
 
@@ -40,7 +40,7 @@ public class USAmazonCharactorsDictionary implements ICharactorsDictionary {
 
     private final static Set catKeyset=new HashSet();
     private final static List<String> endKeys=new ArrayList<String>();
-   public USAmazonCharactorsDictionary(){
+   public JDCharactorsDictionary(){
 	   
     	catKeyset.add(catKeys2);
     	catKeyset.add(catKeys3);

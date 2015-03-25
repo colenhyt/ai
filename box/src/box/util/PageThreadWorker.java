@@ -4,7 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package box.main;
+package box.util;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +30,8 @@ import es.webref.model.PageRef;
  *
  * created on 2005-10-11
  */
-public class SpiderWorker implements Runnable, Constants{
-	static Logger log=Logger.getLogger(SpiderWorker.class.getName());
+public class PageThreadWorker implements Runnable, Constants{
+	static Logger log=Logger.getLogger(PageThreadWorker.class.getName());
     private SpiderContext context;
     URLsConverter urlConver=new URLsConverter();
     /**
@@ -82,7 +82,7 @@ public class SpiderWorker implements Runnable, Constants{
 	private static final String THREAD_GROUP_NAME = "downloadspider";
 
 	private ThreadGroup group = new ThreadGroup(THREAD_GROUP_NAME); // our group
-    public SpiderWorker(SpiderContext context){
+    public PageThreadWorker(SpiderContext context){
         //设置网络连接超时和数据读取超时为半分钟:
         System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
         System.setProperty("sun.net.client.defaultReadTimeout", "30000");        
@@ -108,7 +108,7 @@ public class SpiderWorker implements Runnable, Constants{
 		siteId = sId;
 		pageType = pType;
 		urlStore=TSiteConfigs.getSiteConfig(siteId).getStore(pageType);
-        dealer=new NewOriginalPagesCommonSaver(sId,pType,pageActionType,perCount);
+        dealer=new PageDealing(sId,pType,pageActionType,perCount);
         this.pageActionType=pageActionType;
         dealer.setDoDeal(true);
         threadCount=tCount;
@@ -120,7 +120,7 @@ public class SpiderWorker implements Runnable, Constants{
     	httpClient=_httpClient;
     }
    
-    public void loadURLs(List urls){
+    public void pushInitUrls(List urls){
         missingURLs.clear();
         queue.clearAll();
         if (urls.size()==0){
@@ -133,6 +133,14 @@ public class SpiderWorker implements Runnable, Constants{
         queue.queueURLs(urls);        
     }
 
+    public void addUrls(List<PageRef> urls)
+    {
+    	synchronized(queue)
+    	{
+    		queue.queueURLs(urls);
+    	}
+    }
+    
     class SpiderThread extends Thread{
 		public SpiderThread(String name) {
 			super(group, name);

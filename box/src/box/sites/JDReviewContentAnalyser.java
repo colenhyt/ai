@@ -34,7 +34,7 @@ import es.webref.model.PageRef;
  *
  * created on 2005-10-5
  */
-public class USAmazonReviewContentAnalyser {
+public class JDReviewContentAnalyser {
     public static final String VIP_PRICE = "PVIPPrice";
     
     public static Logger log = Logger.getLogger("CPReviewContentAnalyser");

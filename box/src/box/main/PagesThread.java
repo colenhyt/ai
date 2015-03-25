@@ -6,6 +6,7 @@
  */
 package box.main;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,8 +14,8 @@ import java.util.Set;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.log4j.Logger;
 
+import box.util.PageThreadWorker;
 import easyshop.model.StatusConstants;
-import es.download.SingleWorkStraightSpider;
 import es.download.flow.APagesDownloader;
 import es.download.flow.DownloadContext;
 import es.download.helper.OriginalsHelper;
@@ -153,19 +154,16 @@ public class PagesThread extends Thread implements Runnable{
 //        
 //    }
 
-    private void b2StartSpiders(int dType){
+    private void b2RunSpiders(int dType){
         
-        SingleWorkStraightSpider spider=new SingleWorkStraightSpider(DownloadContext.getSpiderContext());
+    	PageThreadWorker spider=new PageThreadWorker(DownloadContext.getSpiderContext());
         spider.setHttpClient(httpClient);
         spider.setParams(siteId,dType,threadCount,downloadType,pageActionType,insertCount);
         //select distinct urlstr from urlstore where status=-1
-        String store=null;
-        List newurls=null;
-        store=siteConfig.getStore(dType);
-        newurls=helper.getNewURLs(perCount,store,siteId,column,storeStatus);
+        List newurls= new ArrayList();
         
         spider.isSaveFile(saveFile);
-        spider.loadURLs(newurls);
+        spider.pushInitUrls(newurls);
         
         newurls.clear();
         log.info("download pages start for site:"+siteId);
@@ -178,7 +176,7 @@ public class PagesThread extends Thread implements Runnable{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        b1SetOut(dType);
+        b1Setup(dType);
     }
 
     public void run() {
@@ -194,7 +192,7 @@ public class PagesThread extends Thread implements Runnable{
             if (types!=null&&oriStore==null)
             	cpType=types.pushPageType();
             
-            b1SetOut(cpType);
+            b1Setup(cpType);
     	}
     }
 
@@ -202,7 +200,7 @@ public class PagesThread extends Thread implements Runnable{
 		siteConfig=new TSiteConfig(siteId);
 	}
 
-	private void b1SetOut(int currentType) {    
+	private void b1Setup(int currentType) {    
 		boolean notContinue=false;
 	    int count=0,aCount=0,urlCount;
 	
@@ -238,11 +236,11 @@ public class PagesThread extends Thread implements Runnable{
 	        }else{
 	            //找下一个类型的下载
 	        	if (types!=null)
-	        		b2StartSpiders(types.pushPageType());
+	        		b2RunSpiders(types.pushPageType());
 	        }
 	            
 	    }else{
-	    	b2StartSpiders(currentType);
+	    	b2RunSpiders(currentType);
 	    }           
 	}
 	public boolean spidersSetOut(){
@@ -256,7 +254,7 @@ public class PagesThread extends Thread implements Runnable{
 	    if (types!=null&&oriStore==null)
 	    	cpType=types.pushPageType();
 	    
-	    b1SetOut(cpType);
+	    b1Setup(cpType);
 	    return true;
 	}
 	public PagesThread(APagesDownloader _parent,TStage _siteAction,TPageTypes _types,String _specId,String _oriStore,ThreadGroup group,String nameId){

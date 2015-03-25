@@ -15,9 +15,8 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
-import es.download.finditemurls.StraightUrlStrsFinder;
+import box.util.UrlsFinder;
 import es.download.flow.APagesDownloader;
-import es.download.flow.StraightPagesDownloader;
 import es.simple.TAction;
 import es.simple.TDownloadSite;
 import es.simple.TPageTypes;
@@ -30,11 +29,11 @@ import es.simple.TSingleSpecieStage;
  * 
  * created on 2006-7-14
  */
-public class SitesPageProcessor extends APagesDownloader {
-    static Logger log = Logger.getLogger(SitesPageProcessor.class
+public class SitesContainer extends APagesDownloader {
+    static Logger log = Logger.getLogger(SitesContainer.class
             .getName());
     private int perCount=0, fullActiveCount=5000;
-    private List downloadSites;
+    private List targetSites;
     private TSingleSpecieStage[] siteActions;
     private int siteRunning=0,sites=0;
     private HttpClient httpClient;
@@ -52,9 +51,8 @@ public class SitesPageProcessor extends APagesDownloader {
     private int maxConnPerHost=2;
     private int timeOut=6000;
     private int maxTotalConn=20;
-    public SitesPageProcessor(TAction tc) {
+    public SitesContainer(TAction tc) {
         super(tc);
-//        TMultiSiteStage stage=(TMultiSiteStage)ac.getStage();
       	httpClient = new HttpClient(connectionManager);
         httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
       	connectionManager.getParams().setConnectionTimeout(6000);
@@ -62,27 +60,19 @@ public class SitesPageProcessor extends APagesDownloader {
       	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);
 //        downloadSites=stage.getDownloadSites();
       	
-      	if (action.getStages()!=null)
-      		siteActions=(TSingleSpecieStage[])action.getStages();        
     }
 
-    public SitesPageProcessor(int[] _types,String[] siteIds){
+    public SitesContainer(int[] _types,String[] siteIds){
     	super(siteIds);
     	TPageTypes types=new TPageTypes();
     	for (int i=0;i<_types.length;i++){
     		types.add(String.valueOf(_types[i]));
     	}    	
-    	if (siteIds!=null&&siteIds.length>0){
-    		siteActions=new TSingleSpecieStage[siteIds.length];
-    		for (int i=0;i<siteActions.length;i++){
-    			siteActions[i]=new TSingleSpecieStage(types,"-1",siteIds[i],null);
-    		}
-    	}
     }
     public void goToReady4Urls(){
-        for (Iterator it=downloadSites.iterator();it.hasNext();){
+        for (Iterator it=targetSites.iterator();it.hasNext();){
             TDownloadSite dSite=(TDownloadSite)it.next();
-            StraightUrlStrsFinder downloader=new StraightUrlStrsFinder(ac,dSite);
+            UrlsFinder downloader=new UrlsFinder(dSite);
             downloader.addObserver(this);
             Thread t=new Thread(downloader);
             t.start();
@@ -94,7 +84,7 @@ public class SitesPageProcessor extends APagesDownloader {
     public void goToReady(){
     	if (siteActions!=null&&siteActions.length>0){
             for (int i=0;i<siteActions.length;i++){
-        	bStartUpStraightDownloader(siteActions[i],siteActions[i].getTypes(),siteActions[i].getSpecId(),null,i);            
+        	bStartThreads(siteActions[i],siteActions[i].getTypes(),siteActions[i].getSpecId(),null,i);            
             }
         }
         run();  
@@ -103,10 +93,6 @@ public class SitesPageProcessor extends APagesDownloader {
     public boolean spidersSetOut(){
         
         return true;
-    }
-
-    public TAction getAction(){
-        return ac;
     }
 
     public void update(Observable o, Object arg) {
@@ -119,8 +105,8 @@ public class SitesPageProcessor extends APagesDownloader {
         }
     }
 
-	private void bStartUpStraightDownloader(TSingleSpecieStage siteAction,TPageTypes types,String specId,String oriStore,int id){
-	    StraightPagesDownloader downloader=new StraightPagesDownloader(this,siteAction,siteAction.getTypes(),specId,null,group,THREAD_GROUP_NAME +id);
+	private void bStartThreads(TSingleSpecieStage siteAction,TPageTypes types,String specId,String oriStore,int id){
+		PagesThread downloader=new PagesThread(this,siteAction,siteAction.getTypes(),specId,null,group,THREAD_GROUP_NAME +id);
 	    downloader.inHttpClient(httpClient);
 	    downloader.start();
 	    siteRunning++;    

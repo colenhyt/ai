@@ -44,7 +44,7 @@ import es.webref.model.PageRef;
  *
  * created on 2006-2-26
  */
-public class USAmazonProductContentAnalyser implements PageContentAnalyser {
+public class JDGoodsAnalyser implements PageContentAnalyser {
 	public static Logger log = Logger.getLogger("ChinaPubProductContentAnalyser");
 	
 	ContentInfo info;
@@ -66,7 +66,7 @@ public class USAmazonProductContentAnalyser implements PageContentAnalyser {
     String[] vipPsKeywords = {"4-5星会员：","校园特惠价："};;
 	String cPsKeyword,psKeyword,vipPskeyword;
     String div1;
-    USAmazonCharactorsDictionary pageCha=USAmazonCharactorsDictionary.getInstance();
+    JDCharactorsDictionary pageCha=JDCharactorsDictionary.getInstance();
     ProductItem item;
     public void sendContentInfo(ContentInfo page) {   
     	item=new ProductItem();
@@ -86,7 +86,7 @@ public class USAmazonProductContentAnalyser implements PageContentAnalyser {
 
 	public ICharactorsDictionary getDictionary() {
 		// TODO Auto-generated method stub
-		return USAmazonCharactorsDictionary.getInstance();
+		return JDCharactorsDictionary.getInstance();
 	}
 
 	private void b1FindPsAndStock(){
@@ -137,7 +137,7 @@ public class USAmazonProductContentAnalyser implements PageContentAnalyser {
 			item.setReviews(new ArrayList<ReviewItem>(mFindReviews()));
 	}
 
-	USAmazonReviewContentAnalyser analyser=new USAmazonReviewContentAnalyser();
+	JDReviewContentAnalyser analyser=new JDReviewContentAnalyser();
 	
 	private void b1AllFindAllReviews(){
 	    //reviews:
