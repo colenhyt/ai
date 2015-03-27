@@ -1,0 +1,14 @@
+{
+  "name": "cf",
+  "title": "CF",
+  "version": "0.8",
+  "description": "小型财富游戏",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "haidao.com",
+  "builds": {
+
+    }
+}

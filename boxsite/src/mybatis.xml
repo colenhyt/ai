@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration 
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="db.properties"></properties>
+
+	<settings>
+		<setting name="defaultExecutorType" value="REUSE" />
+		<setting name="cacheEnabled" value="true"/>
+		<setting name="defaultStatementTimeout" value="300000" />
+	</settings>
+
+	<!-- <plugins>
+		<plugin interceptor="cn.freeteam.util.OffsetLimitInterceptor"> -->
+			<!-- <property name="dialectClass" value="cn.freeteam.util.SQLServerDialect"/> -->
+		<!--</plugin>
+	</plugins> -->
+	<environments default="${environment}">
+		<environment id="mssql">
+			<transactionManager type="JDBC" ></transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="${mssql.driver}" />
+				<property name="url" value="${mssql.url}" />
+				<property name="username" value="${mssql.username}" />
+				<property name="password" value="${mssql.password}" />
+				<property name="poolMaximumIdleConnections" value="0" />
+				<property name="poolMaximumActiveConnections" value="100" />
+			</dataSource>
+		</environment>
+		<environment id="mysql">
+			<transactionManager type="JDBC" ></transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="${mysql.driver}" />
+				<property name="url" value="${mysql.url}" />
+				<property name="username" value="${mysql.username}" />
+				<property name="password" value="${mysql.password}" />
+				<property name="poolMaximumIdleConnections" value="0" />
+				<property name="poolMaximumActiveConnections" value="100" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+				<mapper resource="box/db/WxtitleMapper.xml"/>
+																							</mappers>
+</configuration>
