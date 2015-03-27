@@ -4,13 +4,14 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package box.util;
+package box.dianshang;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import box.sites.JDPageDealer;
+import box.util.IPageDealer;
+import box.util.IPageDealing;
 import easyshop.downloadhelper.OriHttpPage;
 import es.download.DownloadAfterDealer;
 import es.webref.model.PageRef;
@@ -23,17 +24,17 @@ import es.webref.model.PageRef;
  * 
  * created on 2006-6-10
  */
-public class PageDealing{
+public class DsPageDealing implements IPageDealing{
 	private Map<String,IPageDealer>		mapDealers;
 	
 	 DownloadAfterDealer dealder=new DownloadAfterDealer();
 	 int perCount=100;
 	 
-    public PageDealing() {
+    public DsPageDealing() {
 		this(null, 0,-2,50);
 	}
     
-    public PageDealing(String sId, int pageType,int pageActionType, int perCount) {
+    public DsPageDealing(String sId, int pageType,int pageActionType, int perCount) {
 		
 		mapDealers = new HashMap<String,IPageDealer>();
 		
@@ -43,6 +44,13 @@ public class PageDealing{
 		mapDealers.put(dealer.getSiteId(), dealer);
 	}
 
+    public String[] getSetupSites()
+    {
+    	String[] sites = new String[1];
+    	sites[0] = "jd";
+    	return sites;
+    }
+    
     public String getFirstUrl(String siteId)
     {
 		IPageDealer dealer = mapDealers.get(siteId);
@@ -54,9 +62,4 @@ public class PageDealing{
 		return dealer.deal(pp);
     }
 
-	public void setDoDeal(boolean save) {
-		// TODO Auto-generated method stub
-		
-	}
-    
 }

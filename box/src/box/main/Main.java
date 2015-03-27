@@ -4,6 +4,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import box.util.IPageDealing;
+import box.weixin.WxPageDealing;
 import es.download.finditemurls.StraightUrlStrsFinder;
 import es.download.helper.OriginalsHelper;
 
@@ -21,10 +23,12 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		int[] a = new int[1]; 
+		IPageDealing dealing = new WxPageDealing();
+		
 		String[] sites= new String[1];
 		sites[0]= "jd";
 //		sites[1]= "http://www.t.com";
-		SitesContainer con = new SitesContainer(a,sites);
+		SitesContainer con = new SitesContainer(a,dealing);
 		con.runningPages();
 	}
 

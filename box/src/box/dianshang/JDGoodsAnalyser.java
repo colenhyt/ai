@@ -1,4 +1,4 @@
-package box.sites;
+package box.dianshang;
 /*
  * Created on 2006-2-26
  *

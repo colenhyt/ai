@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.log4j.Logger;
 
+import box.dianshang.DsPageDealing;
 import easyshop.downloadhelper.HttpPageGetter;
 import easyshop.downloadhelper.OriHttpPage;
 import es.Constants;
@@ -73,7 +74,7 @@ public class PageThreadWorker implements Runnable, Constants{
     
     private OriginalsHelper saveHelper;
     
-    private PageDealing dealer;
+    private IPageDealing dealer;
     
     private int threadCount;
     
@@ -104,15 +105,12 @@ public class PageThreadWorker implements Runnable, Constants{
 	public void isSaveFile(boolean save){
 		saveFile=save;
 	}
-    public void setParams(String sId,int pType,int tCount,int downloadType,int pageActionType,int perCount){
+    public void setParams(String sId,int pType,int tCount,int downloadType,int pageActionType,int perCount,IPageDealing _pageDealing){
 		siteId = sId;
 		pageType = pType;
-        dealer=new PageDealing(sId,pType,pageActionType,perCount);
+        dealer=_pageDealing;
         this.pageActionType=pageActionType;
-        dealer.setDoDeal(true);
         threadCount=tCount;
-        
-        
     }
     private HttpClient httpClient;
     public void setHttpClient(HttpClient _httpClient){

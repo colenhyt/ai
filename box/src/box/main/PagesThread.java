@@ -14,7 +14,8 @@ import java.util.Set;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.log4j.Logger;
 
-import box.util.PageDealing;
+import box.dianshang.DsPageDealing;
+import box.util.IPageDealing;
 import box.util.PageThreadWorker;
 import box.util.TSite;
 import es.download.flow.DownloadContext;
@@ -37,8 +38,6 @@ public class PagesThread extends Thread implements Runnable{
     static Logger log = Logger.getLogger(PagesThread.class
             .getName());
 
-    PageDealing pageDealing = new PageDealing();
-    
      OriginalsHelper helper=new OriginalsHelper();
      private int perCount=1000, fullActiveCount=0,threadCount=0,maxUrlCount=0;
     private int currentPageType=-1;
@@ -46,6 +45,7 @@ public class PagesThread extends Thread implements Runnable{
     TSiteConfig siteConfig;
     TPageTypes types;
     TDownloadSite dSite;
+    IPageDealing pageDealing;
     private int insertCount=Tracy.DEFAULT_INSERT_COUNT;
     private int downloadType=-1,biztype=-1;
     private final String specId,siteId;
@@ -160,7 +160,7 @@ public class PagesThread extends Thread implements Runnable{
         
     	PageThreadWorker spider=new PageThreadWorker(DownloadContext.getSpiderContext());
         spider.setHttpClient(httpClient);
-        spider.setParams(siteId,dType,threadCount,downloadType,pageActionType,insertCount);
+        spider.setParams(siteId,dType,threadCount,downloadType,pageActionType,insertCount,pageDealing);
         List newurls= new ArrayList();
         String firstUrl = pageDealing.getFirstUrl(siteAction.getSiteId());
         PageRef ref = new PageRef(URLStrFormattor.decode(firstUrl),"first");
@@ -261,9 +261,10 @@ public class PagesThread extends Thread implements Runnable{
 	    b1Setup(cpType);
 	    return true;
 	}
-	public PagesThread(TSite _siteAction,String _specId,String _oriStore,ThreadGroup group,String nameId){
+	public PagesThread(TSite _siteAction,String _specId,String _oriStore,ThreadGroup group,String nameId,IPageDealing _pageDealing){
 		super(group,nameId);
-	    specId=_specId;
+		pageDealing = _pageDealing;
+		    specId=_specId;
 		siteAction=_siteAction;
 	    siteId=_siteAction.getSiteId();
 	    perCount=_siteAction.getPerDownloadCount();

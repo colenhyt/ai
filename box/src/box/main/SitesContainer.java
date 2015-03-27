@@ -16,11 +16,11 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
+import box.util.IPageDealing;
 import box.util.TSite;
 import box.util.UrlsFinder;
 import es.simple.TDownloadSite;
 import es.simple.TPageTypes;
-import es.simple.TSingleSpecieStage;
 
 /**
  * Tracy&Allen.EasyShop 1.0
@@ -37,6 +37,7 @@ public class SitesContainer extends Observable implements Observer {
     private TSite[] siteActions;
     private int siteRunning=0,sites=0;
     private HttpClient httpClient;
+    private IPageDealing pageDealing;
     
   	MultiThreadedHttpConnectionManager connectionManager = 
   		new MultiThreadedHttpConnectionManager();
@@ -52,20 +53,22 @@ public class SitesContainer extends Observable implements Observer {
     private int timeOut=6000;
     private int maxTotalConn=20;
 
-    public SitesContainer(int[] _types,String[] siteUrls){
+    public SitesContainer(int[] _types,IPageDealing _pageDealing){
       	httpClient = new HttpClient(connectionManager);
         httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
       	connectionManager.getParams().setConnectionTimeout(6000);
       	connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnPerHost);
       	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);
       	
+      	pageDealing = _pageDealing;
+      	
       	TPageTypes types=new TPageTypes();
     	for (int i=0;i<_types.length;i++){
     		types.add(String.valueOf(_types[i]));
     	}    	
-		siteActions=new TSite[siteUrls.length];
+		siteActions=new TSite[pageDealing.getSetupSites().length];
 		for (int i=0;i<siteActions.length;i++){
-			siteActions[i]=new TSite(types,siteUrls[i]);
+			siteActions[i]=new TSite(types,pageDealing.getSetupSites()[i]);
 			siteActions[i].setThreads(1);
 		}
     }
@@ -83,7 +86,7 @@ public class SitesContainer extends Observable implements Observer {
     
     public void runningPages(){
         for (int i=0;i<siteActions.length;i++){
-    		PagesThread thread=new PagesThread(siteActions[i],siteActions[i].getSpecId(),null,group,THREAD_GROUP_NAME +i);
+    		PagesThread thread=new PagesThread(siteActions[i],siteActions[i].getSpecId(),null,group,THREAD_GROUP_NAME +i,pageDealing);
     		thread.inHttpClient(httpClient);
     		thread.start();
     	    siteRunning++;    
