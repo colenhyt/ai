@@ -22,6 +22,8 @@ public class WxPageDealing implements IPageDealing {
 		dealers.put(dealer.getSiteId(), dealer);
 		dealer = new A5118PageDealer();
 		dealers.put(dealer.getSiteId(), dealer);
+		dealer = new SougouPageDealer();
+		dealers.put(dealer.getSiteId(), dealer);		
 	}
 	
 	@Override

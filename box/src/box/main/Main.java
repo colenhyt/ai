@@ -1,9 +1,11 @@
 package box.main;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import box.util.DateHelper;
 import box.util.IPageDealing;
 import box.weixin.WxPageDealing;
 import es.download.finditemurls.StraightUrlStrsFinder;
@@ -25,6 +27,7 @@ public class Main {
 		int[] a = new int[1]; 
 		IPageDealing dealing = new WxPageDealing();
 		
+		//Date dd = DateHelper.formatDate("3", "23", "19:10:10");
 		String[] sites= new String[1];
 		sites[0]= "jd";
 //		sites[1]= "http://www.t.com";
