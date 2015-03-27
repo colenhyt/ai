@@ -47,7 +47,7 @@ public class SougouPageDealer implements IPageDealer{
 		return newurls;
 	}
 
-	public List<PageRef> buildSearchWxpublicUrls()
+	private List<PageRef> buildSearchWxpublicUrls()
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
 		List<String> keys = new ArrayList<String>();
@@ -64,7 +64,7 @@ public class SougouPageDealer implements IPageDealer{
 		return refs;
 	}
 	
-	public List<PageRef> buildWxpublicUrls()
+	private List<PageRef> buildWxpublicUrls()
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
 		List<Wxpublic> wxps = wxService.findpublics(page.getSiteId());
@@ -77,7 +77,7 @@ public class SougouPageDealer implements IPageDealer{
 		return refs;
 	}
 	
-	public void findPublicNames()
+	private void findPublicNames()
 	{
 		List<Wxpublic> wxps = new ArrayList<Wxpublic>();
 		htmlHelper.init(page.getContent());
@@ -94,11 +94,17 @@ public class SougouPageDealer implements IPageDealer{
 			htmlHelper.init(div.getBytes());
 			String nameStr = htmlHelper.getBlock("h3");
 			String haoStr = htmlHelper.getBlock("h4");
+			htmlHelper.init(haoStr.getBytes());
+			haoStr = htmlHelper.getBlock("span");
+			haoStr = haoStr.replaceAll("微信号：", "");
+			
+			Wxpublic wp = new Wxpublic();
+			wp.setWxhao(haoStr);
 		}
 		wxService.addWxpublic(wxps);
 	}
 	
-	public void dealPublicTitles()
+	private void dealPublicTitles()
 	{
 		List<Wxtitle> newtitles = new ArrayList<Wxtitle>();
 		

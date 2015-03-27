@@ -28,9 +28,6 @@ public class Main {
 		IPageDealing dealing = new WxPageDealing();
 		
 		//Date dd = DateHelper.formatDate("3", "23", "19:10:10");
-		String[] sites= new String[1];
-		sites[0]= "jd";
-//		sites[1]= "http://www.t.com";
 		SitesContainer con = new SitesContainer(a,dealing);
 		con.runningPages();
 	}
