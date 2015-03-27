@@ -1,9 +1,10 @@
 package box.weixin;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
-import box.db.WxService;
 import box.db.Wxpublic;
 import box.db.WxpublicService;
 import box.db.Wxtitle;
@@ -150,6 +151,7 @@ public class A5118PageDealer implements IPageDealer{
 			String titleUrl = e.getAttributes().getValue("href");
 			wt.setTitleurl(titleUrl);
 			wt.setTitle(e.getContentText());
+			wt.setPubdate(new Date());
 			
 			String[] spans = htmlHelper.getBlocksByTagName("span");
 			if (spans.length==4)
@@ -159,12 +161,12 @@ public class A5118PageDealer implements IPageDealer{
 				String strViewcount = spans[3].substring(3,spans[3].indexOf("）"));
 				
 				if (strYear!=null&&strMonth!=null&&strDay!=null&&strTime!=null)
-				wt.setCrdate(DateHelper.formatDate(strYear, strMonth, strDay, strTime));
+				wt.setPubdate(DateHelper.formatDate(strYear, strMonth, strDay, strTime));
 				
-/*				if (Pattern.matches("[\\d]*", strZancount))
+				if (Pattern.matches("[\\d]*", strZancount))
 				 wt.setZancount(Integer.valueOf(strZancount));
 				if (Pattern.matches("[\\d]*", strViewcount))
-					 wt.setViewcount(Integer.valueOf(strViewcount));*/			
+					 wt.setViewcount(Integer.valueOf(strViewcount));		
 			}
 			newtitles.add(wt);
 		}
