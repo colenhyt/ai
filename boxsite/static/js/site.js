@@ -22,14 +22,14 @@ function gettitles(wxhao)
   var item = obj[i];
   content += "<tr>"
   content += "<td><a href='"+item.titleurl+"' target=_blank>"+item.title+"</a></td>"
-  content += "<td>"+item.pubdate+"</td>"
-  content += "<td>"+item.viewcount+"</td>"
-  content += "<td>"+item.zancount+"</td>"
-  content += "<td><a href='http://www.5118.com/weixin/officials/search/"+item.wxname+"' target=_blank>"+item.wxname+"</a></td>"
+  content += "<td width=100>"+item.pubdate+"</td>"
+  content += "<td width=100>"+item.viewcount+"</td>"
+  content += "<td width=100>"+item.zancount+"</td>"
+  content += "<td width=100><a href='http://www.5118.com/weixin/officials/search/"+item.wxname+"' target=_blank>"+item.wxname+"</a></td>"
   if (item.srcflag==1)
-   content += "<td><input type='button' value='移出素材库' onclick='changeTitle("+item.id+",1,0)'></td>"
+   content += "<td><input type='button' value='移出素材库' onclick='changeTitle("+item.id+",1,0)' id='bb"+item.id+"'></td>"
   else
-   content += "<td><input type='button' value='加入素材库' onclick='changeTitle("+item.id+",1,1)'></td>"
+   content += "<td><input type='button' value='加入素材库' onclick='changeTitle("+item.id+",1,1)' id='bb"+item.id+"'></td>"
   content += "<td>"+item.useflag+","+item.status+"</td>"
   content += "</tr>"
  }
@@ -46,10 +46,27 @@ function changeTitle(id,flag,flagValue)
  var dataParam = "wxtitle.id="+id+"&wxtitle."+flagname+"="+flagValue;
  var data = $.ajax({type:"post",url:"/boxsite/show_updatetitle.do",data:dataParam,async:false});
 var obj = cfeval(data.responseText);
+ var tag = document.getElementById("bb"+id);
+if (obj.code)
+{
+alert(tag.value);
+ if (flagValue==1)
+ {
+ tag.value = "移出素材库"
+ tag.onclick="changeTitle("+id+",1,0)"; 
+ }else
+ {
+ tag.value = "加入素材库"
+ tag.onclick="changeTitle("+id+",1,1)"; 
+ }
+}
 }
 
 function loadwps(type)
 {
+ var tagtitle = document.getElementById("titles");
+ tagtitle.innerHTML = "";
+ 
 var dataParam="wxpublic.status=1&wxpublic.type="+type;
 var data = $.ajax({type:"post",url:"/boxsite/show_wps.do",data:dataParam,async:false});
 var obj = cfeval(data.responseText);
@@ -92,3 +109,4 @@ function loadtypes()
 }
 
 loadtypes();
+loadwps(1);

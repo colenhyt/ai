@@ -26,8 +26,8 @@ public class WxtitleService extends BaseService {
 	
 	public void updatetitle(Wxtitle wxtitle)
 	{
-		WxtitleExample example = new WxtitleExample();
-		wxtitleMapper.updateByExampleSelective(wxtitle, example);	
+		wxtitleMapper.updateByPrimaryKeySelective(wxtitle);	
+		DBCommit();
 	}
 	
 	public List<Wxtitle> findWxTitle(int type,String wxhao)
