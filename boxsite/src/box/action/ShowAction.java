@@ -62,7 +62,7 @@ public class ShowAction extends BaseAction{
 	
 	public String wps()
 	{
-		List<Wxpublic> data = wpService.findActiveWP(wxpublic.getType(),wxpublic.getWxhao());
+		List<Wxpublic> data = wpService.findActiveWP(wxpublic.getType(),wxpublic.getWxhao(),wxpublic.getStatus());
 		JSONArray jsonObject = JSONArray.fromObject(data);
 		write(jsonObject.toString(),"utf-8");		
 		return null;
@@ -70,7 +70,7 @@ public class ShowAction extends BaseAction{
 	
 	public String titles()
 	{
-		
+		System.out.println(wxtitle.getType()+" 1111111:"+wxtitle.getWxhao());
 		List<Wxtitle> data = wtService.findWxTitle(wxtitle.getType(),wxtitle.getWxhao());
 		
 		System.out.println(data.size()+"fdafdhhhhhhhh"+wxtitle.getStatus());

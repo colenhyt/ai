@@ -33,14 +33,15 @@ public class WxpublicService extends BaseService {
 	
 	public List<Wxpublic> findActiveWP()
 	{
-		return findActiveWP(-1,null);
+		return findActiveWP(-1,null,0);
 	}
 	
-	public List<Wxpublic> findActiveWP(int type,String wxhao)
+	public List<Wxpublic> findActiveWP(int type,String wxhao,int status)
 	{
 		WxpublicExample example = new WxpublicExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andStatusEqualTo(0);
+		if (status>=0)
+		 criteria.andStatusEqualTo(status);
 		if (type>0)
 			criteria.andTypeEqualTo(type);
 		if (wxhao!=null&&wxhao.length()>0)
@@ -88,7 +89,7 @@ public class WxpublicService extends BaseService {
 	public void init()
 	{
 		wxhaokeys = new HashMap<String,Boolean>();
-		List<Wxpublic> wxps = findActiveWP(-1,null);
+		List<Wxpublic> wxps = findActiveWP(-1,null,-1);
 		for (int i=0;i<wxps.size();i++)
 		{
 			wxhaokeys.put(wxps.get(i).getWxhao().toLowerCase(), true);

@@ -1,18 +1,8 @@
-function gettitles()
+function gettitles(wxhao)
 {
-    var dataParam = "wxtitle.status=1";
-	try    {
-		$.ajax({type:"post",url:"/boxsite/show_titles.do",data:dataParam,success:function(data){
-		 getcallback(data);
-		}});
-	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataParam);
-	}	
-}
-
-function getcallback(data)
-{
- var obj = cfeval(data);
+    var dataParam = "wxtitle.type=-1&wxtitle.wxhao="+wxhao;
+	var data =	$.ajax({type:"post",url:"/boxsite/show_titles.do",data:dataParam,async:false});
+ var obj = cfeval(data.responseText);
  var tag = document.getElementById("titles");
  var content = ""
   content += "         <thead><tr>"
@@ -25,7 +15,8 @@ function getcallback(data)
   content += "        <td>状态</td>"
   content += "        </tr>"
   content += "        </thead>"
- 
+ if (obj.length<=0)
+  content += "收集推文数量为零";
  for (var i=0;i<obj.length;i++)
  {
   var item = obj[i];
@@ -59,7 +50,7 @@ var obj = cfeval(data.responseText);
 
 function loadwps(type)
 {
-var dataParam="wxpublic.type="+type;
+var dataParam="wxpublic.status=1&wxpublic.type="+type;
 var data = $.ajax({type:"post",url:"/boxsite/show_wps.do",data:dataParam,async:false});
 var obj = cfeval(data.responseText);
  var content = ""
@@ -68,17 +59,19 @@ var obj = cfeval(data.responseText);
   content += "        <td>公众号</td>"
   content += "        <td>openid</td>"
   content += "        <td>阅读数</td>"
+  content += "        <td>收集推文</td>"
   content += "        <td>查看</td>"
   content += "        </tr>"
   content += "        </thead>"
  for (var i=0;i<obj.length;i++)
  {
    content += "<tr>"
-  content += "<td><a href='javascript:loadwps("+obj[i].id+")'>"+obj[i].wxname+"</a></td> "
+  content += "<td><a href='http://www.5118.com/weixin/detail?name="+obj[i].wxname+"' target=_blank>"+obj[i].wxname+"</a></td> "
   content += "<td>"+obj[i].wxhao+"</td> "
   content += "<td>"+obj[i].openid+"</td> "
   content += "<td>"+obj[i].viewcount+"</td> "
-  content += "<td>"+obj[i].status+"</td> "
+  content += "<td>0</td> "
+  content += "<td><input type='button' value='查看推文' onclick=\"gettitles('"+obj[i].wxhao+"')\"></td> "
   content += "</tr>"  
  }
  var tag = document.getElementById("wps");
