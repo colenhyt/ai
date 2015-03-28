@@ -41,6 +41,10 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		</environment>
 	</environments>
 	<mappers>
+		<mapper resource="box/db/GoodsitemMapper.xml"/>	    
+				<mapper resource="box/db/WxpublicMapper.xml"/>
+				<mapper resource="box/db/WxsiteMapper.xml"/>
 				<mapper resource="box/db/WxtitleMapper.xml"/>
+				<mapper resource="box/db/WxtypeMapper.xml"/>
 																							</mappers>
 </configuration>

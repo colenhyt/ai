@@ -70,5 +70,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/tomcat-7.0.57/lib/jsp-api.jar"/>
 	<classpathentry kind="lib" path="C:/tomcat-7.0.57/lib/servlet-api.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/easyshop"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jso-common"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>
