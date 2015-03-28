@@ -21,7 +21,7 @@ public class WxtitleService extends BaseService {
 
 	public List<Wxtitle> findWxTitle()
 	{
-		return findWxTitle(-1,null);
+		return findWxTitle(-1,null,-1);
 	}
 	
 	public void updatetitle(Wxtitle wxtitle)
@@ -30,7 +30,7 @@ public class WxtitleService extends BaseService {
 		DBCommit();
 	}
 	
-	public List<Wxtitle> findWxTitle(int type,String wxhao)
+	public List<Wxtitle> findWxTitle(int type,String wxhao,int srcflag)
 	{
 		WxtitleExample example = new WxtitleExample();
 		Criteria criteria = example.createCriteria();
@@ -39,6 +39,8 @@ public class WxtitleService extends BaseService {
 			criteria.andWxhaoEqualTo(wxhao);
 		if (type>0)
 			criteria.andTypeEqualTo(type);
+		if (srcflag>=0)
+			criteria.andSrcflagEqualTo(srcflag);
 		example.setOrderByClause("pubdate desc,viewcount desc");
 		return wxtitleMapper.selectByExample(example);
 	}	

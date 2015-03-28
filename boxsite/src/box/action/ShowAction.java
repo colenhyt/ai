@@ -70,11 +70,11 @@ public class ShowAction extends BaseAction{
 	
 	public String titles()
 	{
-		List<Wxtitle> data = wtService.findWxTitle(wxtitle.getType(),wxtitle.getWxhao());
+		List<Wxtitle> data = wtService.findWxTitle(wxtitle.getType(),wxtitle.getWxhao(),wxtitle.getSrcflag());
 		
 		//System.out.println(data.size()+"fdafdhhhhhhhh"+wxtitle.getStatus());
 		JSONArray jsonObject = JSONArray.fromObject(data);
-	//	System.out.println("ss "+jsonObject.toString());
+		System.out.println("ss "+jsonObject.toString());
 		
 		write(jsonObject.toString(),"utf-8");	
 		

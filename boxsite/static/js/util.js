@@ -379,6 +379,11 @@ randomItems = function(items,existItems,count){
 	return ritems;
 }
 
+function strtime(jsontime)
+{
+ return (1900+jsontime.year)+"-"+(jsontime.month+1)+"-"+jsontime.date+" "+jsontime.hours+":"+jsontime.minutes+":"+jsontime.seconds;
+}
+
 function sleep(numberMillis) { 
    var now = new Date();
    var exitTime = now.getTime() + numberMillis;  

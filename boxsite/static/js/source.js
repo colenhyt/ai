@@ -4,11 +4,19 @@ function getcon(id,srcflag)
 	if (srcflag==1)
 	 cont =  "<input type='button' style='background:blue' value='移出素材库' onclick='changeTitle("+id+",1,0)'>"
 	return cont;
-	
 }
-function gettitles(wxhao)
+
+function getconUse(id,useflag)
 {
-    var dataParam = "wxtitle.srcflag=-1&wxtitle.type=-1&wxtitle.wxhao="+wxhao;
+	var cont =  "<input type='button' value='选用' onclick='changeTitle("+id+",2,1)'>"
+	if (useflag==1)
+	 cont =  "<input type='button' style='background:blue' value='未选用' onclick='changeTitle("+id+",2,0)'>"
+	return cont;
+}
+
+function gettitles(type)
+{
+    var dataParam = "wxtitle.srcflag=1&wxtitle.type="+type;
 	var data =	$.ajax({type:"post",url:"/boxsite/show_titles.do",data:dataParam,async:false});
  var obj = cfeval(data.responseText);
  var tag = document.getElementById("titles");
@@ -20,6 +28,7 @@ function gettitles(wxhao)
   content += "        <td>赞数</td>"
   content += "        <td>推文公众号</td>"
   content += "        <td>操作</td>"
+  content += "        <td>标记</td>"
   content += "        </tr>"
   content += "        </thead>"
  if (obj.length<=0)
@@ -29,12 +38,15 @@ function gettitles(wxhao)
   var item = obj[i];
   content += "<tr style='font-size:18px;border:2px solid'>"
   content += "<td><a href='"+item.titleurl+"' target=_blank>"+item.title+"</a></td>"
-  content += "<td width=160>"+strtime(item.pubdate)+"</td>"
-  content += "<td width=100>"+item.viewcount+"</td>"
-  content += "<td width=30>"+item.zancount+"</td>"
+  content += "<td width=200>"+strtime(item.pubdate)+"</td>"
+  content += "<td width=130>"+item.viewcount+"</td>"
+  content += "<td width=40>"+item.zancount+"</td>"
   content += "<td width=100><a href='http://www.5118.com/weixin/officials/search/"+item.wxname+"' target=_blank>"+item.wxname+"</a></td>"
   content += "<td><div id='bb"+item.id+"'>"
   content += getcon(item.id,item.srcflag);
+  content += "</div></td>"
+  content += "<td><div id='usebb"+item.id+"'>"
+  content += getconUse(item.id,item.useflag);
   content += "</div></td>"
   content += "</tr>"
  }
@@ -46,50 +58,22 @@ function gettitles(wxhao)
 function changeTitle(id,flag,flagValue)
 {
  var flagname = "srcflag"
- if (flag==2)
+ var tagid = "bb"+id;
+ var tagvalue = getcon(id,flagValue);
+ if (flag==2) {
   flagname = "useflag"
+  tagid = "usebb"+id;
+  tagvalue = getconUse(id,flagValue);
+ }
  var dataParam = "wxtitle.id="+id+"&wxtitle."+flagname+"="+flagValue;
  var data = $.ajax({type:"post",url:"/boxsite/show_updatetitle.do",data:dataParam,async:false});
 var obj = cfeval(data.responseText);
 if (obj.code==0)
 {
- var tag = document.getElementById("bb"+id);
- 	tag.innerHTML = getcon(id,flagValue);
+ var tag = document.getElementById(tagid);
+ 	tag.innerHTML = tagvalue;
 }
 
-}
-
-function loadwps(type)
-{
- var tagtitle = document.getElementById("titles");
- tagtitle.innerHTML = "";
- 
-var dataParam="wxpublic.status=1&wxpublic.type="+type;
-var data = $.ajax({type:"post",url:"/boxsite/show_wps.do",data:dataParam,async:false});
-var obj = cfeval(data.responseText);
- var content = ""
-   content += "         <thead><tr style='background:#128171;color:#ffffff;font-size:20px'>"
-  content += "        <td>公众名称</td>"
-  content += "        <td>公众号</td>"
-  content += "        <td>openid</td>"
-  content += "        <td>阅读数</td>"
-  content += "        <td>收集推文</td>"
-  content += "        <td>查看</td>"
-  content += "        </tr>"
-  content += "        </thead>"
- for (var i=0;i<obj.length;i++)
- {
-   content += "<tr style='font-size:18px;border:2px solid'>"
-  content += "<td><a href='http://www.5118.com/weixin/detail?name="+obj[i].wxname+"' target=_blank>"+obj[i].wxname+"</a></td> "
-  content += "<td>"+obj[i].wxhao+"</td> "
-  content += "<td>"+obj[i].openid+"</td> "
-  content += "<td>"+obj[i].viewcount+"</td> "
-  content += "<td>0</td> "
-  content += "<td><input type='button' value='查看推文' onclick=\"gettitles('"+obj[i].wxhao+"')\"></td> "
-  content += "</tr>"  
- }
- var tag = document.getElementById("wps");
-  tag.innerHTML=content;
 }
 
 function loadtypes()
@@ -99,11 +83,10 @@ function loadtypes()
  var content = ""
  for (var i=0;i<obj.length;i++)
  {
-  content += "<input type='button' style='font-size:20px' value='"+obj[i].name+"' onclick='loadwps("+obj[i].type+")'> "
+  content += "<input type='button' style='font-size:20px' value='"+obj[i].name+"' onclick='gettitles("+obj[i].type+")'> "
  }
  var tag = document.getElementById("wptype");
   tag.innerHTML=content;
 }
 
 loadtypes();
-loadwps(1);
