@@ -30,7 +30,7 @@ function gettitles(wxhao)
   content += "<tr style='font-size:18px;border:2px solid'>"
   content += "<td><a href='"+item.titleurl+"' target=_blank>"+item.title+"</a></td>"
   content += "<td width=160>"+strtime(item.pubdate)+"</td>"
-  content += "<td width=100>"+item.viewcount+"</td>"
+  content += "<td width=120>"+item.viewcount+"</td>"
   content += "<td width=30>"+item.zancount+"</td>"
   content += "<td width=100><a href='http://www.5118.com/weixin/officials/search/"+item.wxname+"' target=_blank>"+item.wxname+"</a></td>"
   content += "<td><div id='bb"+item.id+"'>"

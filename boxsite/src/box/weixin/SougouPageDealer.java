@@ -69,7 +69,7 @@ public class SougouPageDealer implements IPageDealer{
 	private List<PageRef> buildWxpublicUrls()
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
-		List<Wxpublic> wxps = wpService.findActiveWP();
+		List<Wxpublic> wxps = wpService.findNotSearchWp();
 		for (int i=0;i<wxps.size();i++)
 		{
 			String url = ""+wxps.get(i).getWxname();

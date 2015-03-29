@@ -31,9 +31,9 @@ public class WxpublicService extends BaseService {
 		return wxtypeMapper.selectByExample(example);		
 	}
 	
-	public List<Wxpublic> findActiveWP()
+	public List<Wxpublic> findNotSearchWp()
 	{
-		return findActiveWP(-1,null,0);
+		return findActiveWP(-1,null,3);
 	}
 	
 	public List<Wxpublic> findActiveWP(int type,String wxhao,int status)

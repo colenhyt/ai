@@ -74,7 +74,7 @@ public class A5118PageDealer implements IPageDealer{
 	{
 		WxpublicService  wpService = new WxpublicService();
 		List<PageRef> refs = new ArrayList<PageRef>();
-		List<Wxpublic> wxps = wpService.findActiveWP();
+		List<Wxpublic> wxps = wpService.findNotSearchWp();
 		for (int i=0;i<wxps.size();i++)
 		{
 			Wxpublic wp = wxps.get(i);
@@ -222,7 +222,7 @@ public class A5118PageDealer implements IPageDealer{
 
 		wpService22.updateStatusByHao(page.getUrlKey(), 1);
 		wtService.addNewwxtitle(newtitles);
-		System.out.println("增加推文:"+newtitles.size());
+		System.out.println("类型"+page.getRefId()+",公众号"+page.getRelWord()+" 增加推文:"+newtitles.size());
 	}
 	
 	@Override

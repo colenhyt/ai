@@ -74,7 +74,7 @@ public class ShowAction extends BaseAction{
 		
 		//System.out.println(data.size()+"fdafdhhhhhhhh"+wxtitle.getStatus());
 		JSONArray jsonObject = JSONArray.fromObject(data);
-		System.out.println("ss "+jsonObject.toString());
+		System.out.println("找到推文: "+jsonObject.size());
 		
 		write(jsonObject.toString(),"utf-8");	
 		

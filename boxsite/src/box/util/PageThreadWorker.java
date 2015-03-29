@@ -181,6 +181,13 @@ public class PageThreadWorker implements Runnable, Constants{
 	                missingURLs.add(obj);
 	            }
 	            
+	            try {
+					sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            
 	            hasPageDownloaded=true;
 	        }
 	    
