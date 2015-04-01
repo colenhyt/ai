@@ -1,5 +1,6 @@
 package box.weixin;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,9 +36,9 @@ public class A5118PageDealer implements IPageDealer{
 			
 			//findPublicNames();
 			List<PageRef> refs = new ArrayList<PageRef>();
-			//refs = buildSearchWxpublicUrls();
-			newurls.addAll(refs);
-			refs = buildWxpublicUrls();
+			refs = buildSearchWxpublicUrls();
+			//newurls.addAll(refs);
+			//refs = buildWxpublicUrls();
 			newurls.addAll(refs);
 		}else if (page.getRefWord().indexOf("findwpname")>=0)		//find wp name
 		{
@@ -57,13 +58,19 @@ public class A5118PageDealer implements IPageDealer{
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
 		List<String> keys = new ArrayList<String>();
-		//keys.add("%E6%B7%B1%E5%9C%B3");
+		try {
+			keys.add(new String("beijing".getBytes("utf-8"),"utf-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//htmlHelper.init(page.getUrlStr(), page.getContent(), "utf-8");
 		
 		for (int i=0; i<keys.size();i++)
 		{
 			String url = "http://www.5118.com/weixin/officials/search/"+keys.get(i);
 			PageRef ref = new PageRef(url,"findwpname");
+			ref.setRefId(11);
 			refs.add(ref);
 		}
 		
@@ -123,6 +130,7 @@ public class A5118PageDealer implements IPageDealer{
 			wp.setViewcount(counts[0]);
 			wp.setZancount(counts[1]);
 			wp.setTopcount(counts[2]);
+			wp.setType(page.getRefId());
 			wp.setWxhao(haoStr);
 			wp.setWpdesc(desc);
 			

@@ -33,7 +33,7 @@ public class WxpublicService extends BaseService {
 	
 	public List<Wxpublic> findNotSearchWp()
 	{
-		return findActiveWP(-1,null,3);
+		return findActiveWP(-1,null,4);
 	}
 	
 	public List<Wxpublic> findActiveWP(int type,String wxhao,int status)
