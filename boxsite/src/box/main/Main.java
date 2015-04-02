@@ -25,6 +25,8 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		int[] a = new int[1]; 
+		int t = 190;
+		t = t%10;
 		IPageDealing dealing = new WxPageDealing();
 		
 		//Date dd = DateHelper.formatDate("3", "23", "19:10:10");

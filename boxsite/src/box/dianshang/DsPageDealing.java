@@ -6,6 +6,7 @@
  */
 package box.dianshang;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import box.util.IPageDealer;
 import box.util.IPageDealing;
 import easyshop.downloadhelper.OriHttpPage;
 import es.download.DownloadAfterDealer;
+import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
 
@@ -61,5 +63,10 @@ public class DsPageDealing implements IPageDealing{
 		IPageDealer dealer = mapDealers.get(pp.getSiteId());
 		return dealer.deal(pp);
     }
+
+	@Override
+	public List<PageRef> getFirstRefs(String siteId) {
+		return mapDealers.get(siteId).getFirstRefs();
+	}
 
 }

@@ -58,19 +58,15 @@ public class A5118PageDealer implements IPageDealer{
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
 		List<String> keys = new ArrayList<String>();
-		try {
-			keys.add(new String("beijing".getBytes("utf-8"),"utf-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		keys.add("深圳");
 		//htmlHelper.init(page.getUrlStr(), page.getContent(), "utf-8");
 		
 		for (int i=0; i<keys.size();i++)
 		{
-			String url = "http://www.5118.com/weixin/officials/search/"+keys.get(i);
+			String strKey = URLStrHelper.toUtf8String(keys.get(i));
+			String url = "http://www.5118.com/weixin/officials/search/"+strKey;
 			PageRef ref = new PageRef(url,"findwpname");
-			ref.setRefId(11);
+			ref.setRefId(10);
 			refs.add(ref);
 		}
 		
@@ -98,8 +94,6 @@ public class A5118PageDealer implements IPageDealer{
 	
 	public void findPublicNames()
 	{
-		WxpublicService  wpService = new WxpublicService();
-		wpService.init();
 		List<Wxpublic> wxps = new ArrayList<Wxpublic>();
 		htmlHelper.init(page.getContent());
 		String[] namesContent = htmlHelper.getDivsByClassValue("weixin-officialslist-info clearfix");
@@ -108,13 +102,19 @@ public class A5118PageDealer implements IPageDealer{
 			htmlHelper.init(namesContent[i].getBytes());
 			String desc = htmlHelper.getBlock("p");
 			String div = htmlHelper.getBlock("h5");
+			if (div==null) continue;
 			String[] spans = htmlHelper.getBlocksByTagName("span");
 			htmlHelper.init(div.getBytes());
 			
 			String key1 = "</span>";
 			String key2 = "<small>";
 			String name0 = htmlHelper.getBlock("span");
-			String name = name0 + div.substring(div.indexOf(key1)+key1.length(),div.indexOf(key2));
+			String name = null;
+			if (div.indexOf("<span")>0)
+			 name = div.substring(0,div.indexOf("<span"));
+			name += name0 + div.substring(div.indexOf(key1)+key1.length(),div.indexOf(key2));
+			name = name.replace("\"", "");
+			name = name.replace("null", "");
 			String haoStr = htmlHelper.getBlock("small");
 			
 			int[] counts = new int[3];
@@ -130,12 +130,16 @@ public class A5118PageDealer implements IPageDealer{
 			wp.setViewcount(counts[0]);
 			wp.setZancount(counts[1]);
 			wp.setTopcount(counts[2]);
+			wp.setStatus(0);
+			wp.setCrdate(new Date());
 			wp.setType(page.getRefId());
 			wp.setWxhao(haoStr);
 			wp.setWpdesc(desc);
 			
 			wxps.add(wp);
 		}
+		WxpublicService  wpService = new WxpublicService();
+		wpService.init();
 		wpService.addWxpublic(wxps);
 	}
 	
@@ -245,4 +249,20 @@ public class A5118PageDealer implements IPageDealer{
 		return "http://www.5118.com/weixin/officials/search/%E6%B7%B1%E5%9C%B3";
 	}
 
+	@Override
+	public List<PageRef> getFirstRefs() {
+		List<PageRef> refs = new ArrayList<PageRef>();
+		List<String> keys = new ArrayList<String>();
+		keys.add("深圳");		
+		
+		for (int i=0; i<keys.size();i++)
+		{
+			String strUrl = "http://www.5118.com/weixin/officials/search/"+URLStrHelper.toUtf8String(keys.get(i));
+			PageRef ref = new PageRef(strUrl,"first");
+			ref.setRefId(10);
+			refs.add(ref);
+		}
+		// TODO Auto-generated method stub
+		return refs;
+	}
 }

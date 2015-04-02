@@ -11,4 +11,6 @@ public interface IPageDealing {
 	public List<PageRef> add(Object newPage);
 	
 	public String getFirstUrl(String siteId);
+	
+	public List<PageRef> getFirstRefs(String siteId);
 }

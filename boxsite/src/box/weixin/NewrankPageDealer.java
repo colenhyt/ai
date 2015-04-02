@@ -10,6 +10,7 @@ import box.db.WxtitleService;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
 public class NewrankPageDealer implements IPageDealer{
@@ -107,6 +108,23 @@ public class NewrankPageDealer implements IPageDealer{
 	public String getFirstUrl() {
 		// TODO Auto-generated method stub
 		return "http://www.newrank.cn";
+	}
+
+	@Override
+	public List<PageRef> getFirstRefs() {
+		List<PageRef> refs = new ArrayList<PageRef>();
+		List<String> keys = new ArrayList<String>();
+		keys.add("深圳");		
+		
+		for (int i=0; i<keys.size();i++)
+		{
+			String strUrl = "http://www.newrank.cn/public/info/search.html?value="+URLStrHelper.toUtf8String(keys.get(i));
+			PageRef ref = new PageRef(strUrl,"first");
+			ref.setRefId(10);
+			refs.add(ref);
+		}
+		// TODO Auto-generated method stub
+		return refs;
 	}
 
 }

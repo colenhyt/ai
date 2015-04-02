@@ -14,4 +14,7 @@ public interface IPageDealer {
 	public String getSiteId();
 	
 	public String getFirstUrl();
+	
+	public List<PageRef> getFirstRefs();
+	
 }

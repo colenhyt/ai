@@ -162,9 +162,8 @@ public class PagesThread extends Thread implements Runnable{
         spider.setHttpClient(httpClient);
         spider.setParams(siteId,dType,threadCount,downloadType,pageActionType,insertCount,pageDealing);
         List newurls= new ArrayList();
-        String firstUrl = pageDealing.getFirstUrl(siteAction.getSiteId());
-        PageRef ref = new PageRef(URLStrFormattor.decode(firstUrl),"first");
-        newurls.add(ref);
+        List<PageRef> refs = pageDealing.getFirstRefs(siteAction.getSiteId());
+        newurls.addAll(refs);
         spider.pushInitUrls(newurls);
         
         newurls.clear();

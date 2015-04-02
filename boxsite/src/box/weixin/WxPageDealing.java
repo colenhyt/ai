@@ -39,7 +39,7 @@ public class WxPageDealing implements IPageDealing {
 		}
 		//直接设:
 		siteStrs = new String[1];
-		siteStrs[0] = "5118";
+		siteStrs[0] = "sougou";
 		return siteStrs;
 	}
 
@@ -54,4 +54,8 @@ public class WxPageDealing implements IPageDealing {
 		return dealers.get(siteId).getFirstUrl();
 	}
 
+	@Override
+	public List<PageRef> getFirstRefs(String siteId) {
+		return dealers.get(siteId).getFirstRefs();
+	}
 }

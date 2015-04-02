@@ -13,6 +13,7 @@ import easyshop.html.nutch.NutchHTMLProxy;
 import easyshop.model.ProductItem;
 import es.model.ItemPage;
 import es.util.url.URLStrFormattor;
+import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
 public class JDPageDealer implements IPageDealer{
@@ -132,6 +133,22 @@ public class JDPageDealer implements IPageDealer{
 	public String getFirstUrl() {
 		// TODO Auto-generated method stub
 		return strFirstUrl;
+	}
+	@Override
+	public List<PageRef> getFirstRefs() {
+		List<PageRef> refs = new ArrayList<PageRef>();
+		List<String> keys = new ArrayList<String>();
+		keys.add("深圳");		
+		
+		for (int i=0; i<keys.size();i++)
+		{
+			String strUrl = "xxx"+URLStrHelper.toUtf8String(keys.get(i));
+			PageRef ref = new PageRef(strUrl,"first");
+			ref.setRefId(10);
+			refs.add(ref);
+		}
+		// TODO Auto-generated method stub
+		return refs;
 	}
 
 }
