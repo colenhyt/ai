@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<easy-configuration>
+<siteconfigs>
+<config spec="portalsites">
+<map tempStore="ptempurls" hssStore="hssuppliers" hsbStore="" itemStore=""/>
+<pagetypes>
+<pagetype id="1" type="branch" urlStore="psites"/>
+<pagetype id="2" type="catalog" urlStore="pcatalogurls"/>
+<pagetype id="4" type="item" urlStore="pitemurls"/>
+<pagetype id="6" type="other" urlStore="potherurls"/>
+</pagetypes>
+</config>
+</siteconfigs>
+
+<services>
+<service name="portalsites" site="portalsites.com">
+<classify-analyser class="specs.basic.ClassifyviaURLAnalyser"/>
+<direct-analyser class="specs.basic.BasicURLDirectoryAnalyser"/>
+<variety-analyser class="dd.variety.DDProductVarietyAnalyser"/>
+<content-analyser class="dd.datamodel.DDProductContentAnalyser"/>
+<revise-analyser class="dd.revise.DDBasicReviseAnalyser"/>
+</service>
+</services>
+</easy-configuration>

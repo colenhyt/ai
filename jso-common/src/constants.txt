@@ -1,0 +1,23 @@
+    public static final int BRANCH_PAGE_ID=1;
+    public static final int INDEX_PAGE_ID=0;
+    public static final int CATALOG_PAGE_ID=2;
+    public static final int SPECIAL_CATALOG_PAGE_ID=3;
+    public static final int PRODUCT_PAGE_ID=4;
+    public static final int GENERAL_PAGE_ID=5;
+    public static final int COMMON_PAGE_ID=6;
+    public static final int DIRECTORY_PAGE_ID=7;
+    public static final int PRODUCT_INFO_PAGE_ID=8;
+    public static final int OTHERS_ID=-2; 
+    public static final int USELESS_ID=-3;
+    
+    public static final int PAGE_TYPE_UNKNOWN=-2;
+    public static final int PAGE_TYPE_NOT_RESOLVE=-1;
+    public static final int PAGE_TYPE_JPG=0;
+    public static final int PAGE_TYPE_GIF=1;
+    public static final int PAGE_TYPE_ASP=2;
+    public static final int PAGE_TYPE_HTML=3;
+    public static final int PAGE_TYPE_XML=4;
+    public static final int PAGE_TYPE_JSP=5;
+    public static final int PAGE_TYPE_DLL=6;
+    public static final int PAGE_TYPE_PHP=7;
+    public static final int PAGE_TYPE_DIRECTORY=8;
