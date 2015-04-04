@@ -35,20 +35,20 @@ public class SougouPageDealer implements IPageDealer{
 		List<PageRef> newurls = new ArrayList<PageRef>();
 		if (page.getRefWord().indexOf("first")>=0){
 			List<PageRef> refs = new ArrayList<PageRef>();
-//			htmlHelper.init(page.getContent());
-//			String[] mm = htmlHelper.getBlocksByOneProp("resnum", "id", "scd_num");
-//			findPublicNames();
-//			if (mm.length>0&&StringHelper.isNumber(mm[0]))
-//			{
-//				int paging = Integer.valueOf(mm[0]);
-//				if (paging%10>0)
-//				 paging = paging/10+1;
-//				else
-//				 paging = paging/10;
-//				refs.addAll(buildPagingWxpublicUrls(page.getUrlStr(),paging,page.getRefId()));
-//			}
+			htmlHelper.init(page.getContent());
+			String[] mm = htmlHelper.getBlocksByOneProp("resnum", "id", "scd_num");
+			findPublicNames();
+			if (mm.length>0&&StringHelper.isNumber(mm[0]))
+			{
+				int paging = Integer.valueOf(mm[0]);
+				if (paging%10>0)
+				 paging = paging/10+1;
+				else
+				 paging = paging/10;
+				refs.addAll(buildPagingWxpublicUrls(page.getUrlStr(),paging,page.getRefId()));
+			}
 			
-			refs.addAll(buildWxpublicUrls());
+			//refs.addAll(buildWxpublicUrls());
 			
 			newurls.addAll(refs);
 		}else if (page.getRefWord().indexOf("findwpname")>=0)		//find wp name
@@ -247,9 +247,9 @@ public class SougouPageDealer implements IPageDealer{
 //			ref.setRefId(20);
 //			refs.add(ref);
 			
-			strUrl = searchUrl + URLStrHelper.toUtf8String("购物");
+			strUrl = searchUrl + URLStrHelper.toUtf8String("育儿宝典");
 			ref = new PageRef(strUrl,"first");
-			ref.setRefId(21);
+			ref.setRefId(12);
 			refs.add(ref);
 		// TODO Auto-generated method stub
 		return refs;

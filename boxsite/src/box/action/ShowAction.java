@@ -85,7 +85,7 @@ public class ShowAction extends BaseAction{
 	{
 		wtService.updatetitle(wxtitle);
 		writeMsg(0);
-		System.out.println(wxtitle.getId()+":状态更新:"+wxtitle.getSrcflag());
+		System.out.println(wxtitle.getId()+":状态更新:"+wxtitle.getSrcflag()+",status="+wxtitle.getStatus());
 		return null;
 	}
 }

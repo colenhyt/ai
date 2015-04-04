@@ -36,9 +36,9 @@ public class A5118PageDealer implements IPageDealer{
 			
 			//findPublicNames();
 			List<PageRef> refs = new ArrayList<PageRef>();
-			refs = buildSearchWxpublicUrls();
+			//refs = buildSearchWxpublicUrls();
 			//newurls.addAll(refs);
-			//refs = buildWxpublicUrls();
+			refs = buildWxpublicUrls();
 			newurls.addAll(refs);
 		}else if (page.getRefWord().indexOf("findwpname")>=0)		//find wp name
 		{
@@ -150,8 +150,31 @@ public class A5118PageDealer implements IPageDealer{
 		WxpublicService  wpService22 = new WxpublicService();
 		List<Wxtitle> newtitles = new ArrayList<Wxtitle>();
 		htmlHelper.init(page.getContent());
+		String wpContent = htmlHelper.getDivByClassValue("weixin-officials-info clearfix");
 		String strYear = htmlHelper.getBlockByOneProp("li", "class", "active");
 		String strList = htmlHelper.getBlockByOneProp("ul", "class", "weixin-officials-article-tmtimeline");
+		if (wpContent!=null)
+		{
+			htmlHelper.init(wpContent.getBytes());
+			String desc = htmlHelper.getBlock("p");
+			if (desc!=null)
+			{
+				Wxpublic wp = new Wxpublic();
+				wp.setWpdesc(desc);
+				String[] spans = htmlHelper.getBlocksByTagName("span");
+				if (spans.length>0)
+				{
+					wp.setViewcount(Integer.valueOf(spans[1]));
+					wp.setZancount(Integer.valueOf(spans[3]));
+					if (spans[5].indexOf("100000")>=0){
+					 wp.setTopcount(100000);
+					}else
+					 wp.setTopcount(Integer.valueOf(spans[5]));
+				}		
+				System.out.println("更新公众号:"+page.getUrlKey());
+				wpService22.updateByHao(page.getUrlKey(),wp);
+			}
+		}
 		if (strList==null)
 		{
 			System.out.println("该公众号没在5118找到:"+page.getUrlKey()+",名称:"+page.getRelWord());
@@ -197,9 +220,8 @@ public class A5118PageDealer implements IPageDealer{
 			wt.setStatus(0);
 			wt.setTitle(e.getContentText());
 			wt.setPubdate(new Date());
-
-			int maxcount = 100000;
 			
+			int maxcount = 100000;
 			String[] spans = htmlHelper.getBlocksByTagName("span");
 			if (spans.length==4)
 			{
@@ -210,22 +232,24 @@ public class A5118PageDealer implements IPageDealer{
 				if (strYear!=null&&strMonth!=null&&strDay!=null&&strTime!=null)
 				wt.setPubdate(DateHelper.formatDate(strYear, strMonth, strDay, strTime));
 				
-				
-				if (Pattern.matches("[\\d]*", strZancount))
-				 wt.setZancount(Integer.valueOf(strZancount));
-				else if (strZancount.indexOf("100000")>=0){
-					wt.setZancount(maxcount);
-				}else
-				{
-					System.out.println("错误点赞数:"+strZancount);
-				}
-				if (Pattern.matches("[\\d]*", strViewcount))
-					 wt.setViewcount(Integer.valueOf(strViewcount));
-				else if (strViewcount.indexOf("100000")>=0){
-					wt.setViewcount(maxcount);
-				}else {
-					System.out.println("错误阅读数:"+strViewcount);
-				}
+				if (strYear!=null&&strMonth!=null&&strDay!=null&&strTime!=null)
+					wt.setPubdate(DateHelper.formatDate(strYear, strMonth, strDay, strTime));
+					
+					if (Pattern.matches("[\\d]*", strZancount))
+					 wt.setZancount(Integer.valueOf(strZancount));
+					else if (strZancount.indexOf("100000")>=0){
+						wt.setZancount(maxcount);
+					}else
+					{
+						System.out.println("错误点赞数:"+strZancount);
+					}
+					if (Pattern.matches("[\\d]*", strViewcount))
+						 wt.setViewcount(Integer.valueOf(strViewcount));
+					else if (strViewcount.indexOf("100000")>=0){
+						wt.setViewcount(maxcount);
+					}else {
+						System.out.println("错误阅读数:"+strViewcount);
+					}
 			}
 			
 			wtService.addTitlekey(key);

@@ -33,7 +33,7 @@ public class WxpublicService extends BaseService {
 	
 	public List<Wxpublic> findNotSearchWp()
 	{
-		return findActiveWP(21,null,0);
+		return findActiveWP(12,null,0);
 	}
 	
 	public List<Wxpublic> findActiveWP(int type,String wxhao,int status)
@@ -74,6 +74,17 @@ public class WxpublicService extends BaseService {
 		//init();
 	}
 	
+	public void updateByHao(String wxHao,Wxpublic record)
+	{
+		WxpublicExample example = new WxpublicExample();
+		Criteria criteria = example.createCriteria();	
+		criteria.andWxhaoEqualTo(wxHao);
+		record.setWxhao(wxHao);
+		record.setUdate(new Date());
+		wxpublicMapper.updateByExampleSelective(record, example);
+		DBCommit();
+	}	
+	
 	public void updateStatusByHao(String wxHao,int status)
 	{
 		WxpublicExample example = new WxpublicExample();
@@ -86,6 +97,7 @@ public class WxpublicService extends BaseService {
 		wxpublicMapper.updateByExampleSelective(record, example);
 		DBCommit();
 	}
+	
 	public void init()
 	{
 		wxhaokeys = new HashMap<String,Boolean>();

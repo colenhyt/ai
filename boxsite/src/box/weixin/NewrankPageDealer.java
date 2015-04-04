@@ -10,6 +10,7 @@ import box.db.WxtitleService;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import easyshop.html.jericho.Element;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
@@ -29,9 +30,9 @@ public class NewrankPageDealer implements IPageDealer{
 		page = _page;
 		List<PageRef> newurls = new ArrayList<PageRef>();
 		if (page.getRefWord().indexOf("first")>=0){
-			List<PageRef> refs = buildSearchWxpublicUrls();
-			newurls.addAll(refs);
-			refs = buildWxpublicUrls();
+			List<PageRef> refs = new ArrayList<PageRef>();
+//			refs.addAll(buildSearchWxpublicUrls());
+			refs.addAll(buildWxpublicUrls());
 			newurls.addAll(refs);
 		}else if (page.getRefWord().indexOf("findwpname")>=0)		//find wp name
 		{
@@ -70,7 +71,7 @@ public class NewrankPageDealer implements IPageDealer{
 		List<Wxpublic> wxps = wpService.findNotSearchWp();
 		for (int i=0;i<wxps.size();i++)
 		{
-			String url = ""+wxps.get(i).getWxname();
+			String url = "http://www.newrank.cn/public/info/detail.html?account="+wxps.get(i).getWxhao();
 			PageRef ref = new PageRef(url,"findwptitle");
 			refs.add(ref);
 		}
@@ -93,8 +94,23 @@ public class NewrankPageDealer implements IPageDealer{
 	
 	public void dealPublicTitles()
 	{
+		WxtitleService  wtService = new WxtitleService();
+		wtService.init();
+		WxpublicService  wpService22 = new WxpublicService();
 		List<Wxtitle> newtitles = new ArrayList<Wxtitle>();
-		
+		String str = new String(page.getContent());
+		System.out.println(str);
+		htmlHelper.init(page.getContent());
+		String[] list = htmlHelper.getBlocksByOneProp("ul", "class", "article_list");
+		for (int i=0;i<list.length;i++)
+		{
+			htmlHelper.init(list[i].getBytes());
+			Element e = htmlHelper.getElementByKey("a",null);
+			if (e!=null){
+				Wxtitle wt = new Wxtitle();
+				newtitles.add(wt);
+			}
+		}
 		wtService.addNewwxtitle(newtitles);
 	}
 	
@@ -118,9 +134,9 @@ public class NewrankPageDealer implements IPageDealer{
 		
 		for (int i=0; i<keys.size();i++)
 		{
-			String strUrl = "http://www.newrank.cn/public/info/search.html?value="+URLStrHelper.toUtf8String(keys.get(i));
+			String strUrl = "http://www.newrank.cn/public/info/detail.html?account=YBSJ55";
 			PageRef ref = new PageRef(strUrl,"first");
-			ref.setRefId(10);
+			ref.setRefId(12);
 			refs.add(ref);
 		}
 		// TODO Auto-generated method stub
