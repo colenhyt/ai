@@ -1,8 +1,8 @@
 function getcon(id,srcflag)
 {
-	var cont =  "<input type='button' value='加入素材库' onclick='changeTitle("+id+",1,1)'>"
+	var cont =  "<input type='button' value='加入' onclick='changeTitle("+id+",1,1)'>"
 	if (srcflag==1)
-	 cont =  "<input type='button' style='background:blue' value='移出素材库' onclick='changeTitle("+id+",1,0)'>"
+	 cont =  "<input type='button' style='background:blue' value='移出' onclick='changeTitle("+id+",1,0)'>"
 	return cont;
 	
 }
@@ -27,7 +27,7 @@ function gettitles(wxhao)
  for (var i=0;i<obj.length;i++)
  {
   var item = obj[i];
-  content += "<tr style='font-size:18px;border:2px solid'>"
+  content += "<tr style='font-size:18px;border:2px solid' id='tr"+item.id+"'>"
   content += "<td><a href='"+item.titleurl+"' target=_blank>"+item.title+"</a></td>"
   content += "<td width=160>"+strtime(item.pubdate)+"</td>"
   content += "<td width=120>"+item.viewcount+"</td>"
@@ -35,6 +35,7 @@ function gettitles(wxhao)
   content += "<td width=100><a href='http://www.5118.com/weixin/officials/search/"+item.wxname+"' target=_blank>"+item.wxname+"</a></td>"
   content += "<td><div id='bb"+item.id+"'>"
   content += getcon(item.id,item.srcflag);
+  content += "<input type='button' value='删除' onclick='changeTitle("+item.id+",1,"+item.srcflag+",-1)'>"
   content += "</div></td>"
   content += "</tr>"
  }
@@ -43,28 +44,36 @@ function gettitles(wxhao)
 
 }
 
-function changeTitle(id,flag,flagValue)
+function changeTitle(id,flag,flagValue,status)
 {
  var flagname = "srcflag"
  if (flag==2)
   flagname = "useflag"
  var dataParam = "wxtitle.id="+id+"&wxtitle."+flagname+"="+flagValue;
+ if (status!=null)
+  dataParam += "&wxtitle.status="+status;
  var data = $.ajax({type:"post",url:"/boxsite/show_updatetitle.do",data:dataParam,async:false});
 var obj = cfeval(data.responseText);
-if (obj.code==0)
+if (obj.code==0&&status==null)
 {
  var tag = document.getElementById("bb"+id);
  	tag.innerHTML = getcon(id,flagValue);
+}else{
+ //flush
+	$('#tr'+id).remove();
+}
 }
 
-}
-
-function loadwps(type)
+function loadwps(type,status)
 {
  var tagtitle = document.getElementById("titles");
  tagtitle.innerHTML = "";
  
-var dataParam="wxpublic.status=1&wxpublic.type="+type;
+ var ss = 1;
+ if (status!=null)
+  ss = status;
+  
+var dataParam="wxpublic.status="+ss+"&wxpublic.type="+type;
 var data = $.ajax({type:"post",url:"/boxsite/show_wps.do",data:dataParam,async:false});
 var obj = cfeval(data.responseText);
  var content = ""
@@ -73,6 +82,7 @@ var obj = cfeval(data.responseText);
   content += "        <td>公众号</td>"
   content += "        <td>openid</td>"
   content += "        <td>阅读数</td>"
+  content += "        <td>排名估计</td>"
   content += "        <td>收集推文</td>"
   content += "        <td>查看</td>"
   content += "        </tr>"
@@ -81,9 +91,10 @@ var obj = cfeval(data.responseText);
  {
    content += "<tr style='font-size:18px;border:2px solid'>"
   content += "<td><a href='http://www.5118.com/weixin/detail?name="+obj[i].wxname+"' target=_blank>"+obj[i].wxname+"</a></td> "
-  content += "<td>"+obj[i].wxhao+"</td> "
-  content += "<td>"+obj[i].openid+"</td> "
+  content += "<td><a href='http://www.newrank.cn/public/info/detail.html?account="+obj[i].wxhao+"' target=_blank>"+obj[i].wxhao+"</a></td> "
+  content += "<td><a href='http://weixin.sogou.com/gzh?openid="+obj[i].openid+"' target=_blank>"+obj[i].openid+"</a></td>";
   content += "<td>"+obj[i].viewcount+"</td> "
+  content += "<td>"+obj[i].topcount+"</td> "
   content += "<td>0</td> "
   content += "<td><input type='button' value='查看推文' onclick=\"gettitles('"+obj[i].wxhao+"')\"></td> "
   content += "</tr>"  
@@ -92,18 +103,30 @@ var obj = cfeval(data.responseText);
   tag.innerHTML=content;
 }
 
-function loadtypes()
+function loadtypes(status)
 {
 	var data = $.ajax({type:"post",url:"/boxsite/show_types.do",async:false});
 	var obj = cfeval(data.responseText);
  var content = ""
  for (var i=0;i<obj.length;i++)
  {
-  content += "<input type='button' style='font-size:20px' value='"+obj[i].name+"' onclick='loadwps("+obj[i].type+")'> "
+  content += "<input type='button' style='font-size:20px' value='"+obj[i].name+"' onclick='loadwps("+obj[i].type;
+  if (status!=null)
+   content += ","+status;
+  content += ")'> "
  }
+ 
  var tag = document.getElementById("wptype");
+ if (status!=null)
+  tag = document.getElementById("wptypenotsearch");
   tag.innerHTML=content;
 }
 
 loadtypes();
+loadtypes(0);
 loadwps(1);
+
+function testajax()
+{
+
+}

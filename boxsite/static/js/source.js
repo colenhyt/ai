@@ -1,8 +1,8 @@
 function getcon(id,srcflag)
 {
-	var cont =  "<input type='button' value='加入素材库' onclick='changeTitle("+id+",1,1)'>"
+	var cont =  "<input type='button' value='加入' onclick='changeTitle("+id+",1,1)'>"
 	if (srcflag==1)
-	 cont =  "<input type='button' style='background:blue' value='移出素材库' onclick='changeTitle("+id+",1,0)'>"
+	 cont =  "<input type='button' style='background:blue' value='移出' onclick='changeTitle("+id+",1,0)'>"
 	return cont;
 }
 
@@ -36,7 +36,7 @@ function gettitles(type)
  for (var i=0;i<obj.length;i++)
  {
   var item = obj[i];
-  content += "<tr style='font-size:18px;border:2px solid'>"
+  content += "<tr style='font-size:18px;border:2px solid' id='tr"+item.id+"'>"
   content += "<td><a href='"+item.titleurl+"' target=_blank>"+item.title+"</a></td>"
   content += "<td width=200>"+strtime(item.pubdate)+"</td>"
   content += "<td width=130>"+item.viewcount+"</td>"
@@ -47,6 +47,7 @@ function gettitles(type)
   content += "</div></td>"
   content += "<td><div id='usebb"+item.id+"'>"
   content += getconUse(item.id,item.useflag);
+  content += "<input type='button' value='删除' onclick='changeTitle("+item.id+",2,"+item.useflag+",-1)'>"
   content += "</div></td>"
   content += "</tr>"
  }
@@ -55,7 +56,7 @@ function gettitles(type)
 
 }
 
-function changeTitle(id,flag,flagValue)
+function changeTitle(id,flag,flagValue,status)
 {
  var flagname = "srcflag"
  var tagid = "bb"+id;
@@ -66,12 +67,17 @@ function changeTitle(id,flag,flagValue)
   tagvalue = getconUse(id,flagValue);
  }
  var dataParam = "wxtitle.id="+id+"&wxtitle."+flagname+"="+flagValue;
+  if (status!=null)
+  dataParam += "&wxtitle.status="+status;
  var data = $.ajax({type:"post",url:"/boxsite/show_updatetitle.do",data:dataParam,async:false});
 var obj = cfeval(data.responseText);
-if (obj.code==0)
+if (obj.code==0&&status==null)
 {
- var tag = document.getElementById(tagid);
- 	tag.innerHTML = tagvalue;
+ var tag = document.getElementById("bb"+id);
+ 	tag.innerHTML = getcon(id,flagValue);
+}else{
+ //flush
+	$('#tr'+id).remove();
 }
 
 }
@@ -90,3 +96,4 @@ function loadtypes()
 }
 
 loadtypes();
+gettitles(1);
