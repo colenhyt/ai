@@ -81,6 +81,15 @@ public class ShowAction extends BaseAction{
 		return null;
 	}
 
+	
+	public String updatewp()
+	{
+		wpService.updateByHao(wxpublic.getWxhao(),wxpublic);
+		writeMsg(0);
+		System.out.println("公众号:"+wxpublic.getWxhao()+":状态更新:status="+wxpublic.getStatus());
+		return null;
+	}
+	
 	public String updatetitle()
 	{
 		wtService.updatetitle(wxtitle);

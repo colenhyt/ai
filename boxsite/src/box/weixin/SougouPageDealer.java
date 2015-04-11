@@ -83,7 +83,7 @@ public class SougouPageDealer implements IPageDealer{
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
 		WxpublicService  wpService = new WxpublicService();
-		List<Wxpublic> wxps = wpService.findNotSearchWp();
+		List<Wxpublic> wxps = wpService.findAllNotSearchWp();
 		for (int i=0;i<wxps.size();i++)
 		{
 			String url = "http://weixin.sogou.com/gzh?openid="+wxps.get(i).getOpenid();

@@ -8,6 +8,8 @@ function getcon(id,srcflag)
 }
 function gettitles(wxhao)
 {
+$('#tr'+wxhao).css("backgroundColor","pink");
+
     var dataParam = "wxtitle.srcflag=-1&wxtitle.type=-1&wxtitle.wxhao="+wxhao;
 	var data =	$.ajax({type:"post",url:"/boxsite/show_titles.do",data:dataParam,async:false});
  var obj = cfeval(data.responseText);
@@ -42,6 +44,14 @@ function gettitles(wxhao)
  
  tag.innerHTML=content;
 
+}
+
+function changePublic(wxHao,status)
+{
+alert('ddd');
+ var dataParam = "wxpublic.wxhao="+wxHao+"&wxpublic.status="+status;
+ $.ajax({type:"post",url:"/boxsite/show_updatewp.do",data:dataParam,async:false});
+ $('#tr'+wxHao).remove();
 }
 
 function changeTitle(id,flag,flagValue,status)
@@ -80,23 +90,23 @@ var obj = cfeval(data.responseText);
    content += "         <thead><tr style='background:#128171;color:#ffffff;font-size:20px'>"
   content += "        <td>公众名称</td>"
   content += "        <td>公众号</td>"
-  content += "        <td>openid</td>"
+  //content += "        <td>openid</td>"
+  content += "        <td>操作</td>"
   content += "        <td>阅读数</td>"
   content += "        <td>排名估计</td>"
-  content += "        <td>收集推文</td>"
   content += "        <td>查看</td>"
   content += "        </tr>"
   content += "        </thead>"
  for (var i=0;i<obj.length;i++)
  {
-   content += "<tr style='font-size:18px;border:2px solid'>"
+   content += "<tr style='font-size:18px;border:2px solid' id='tr"+obj[i].wxhao+"'>"
   content += "<td><a href='http://www.5118.com/weixin/detail?name="+obj[i].wxname+"' target=_blank>"+obj[i].wxname+"</a></td> "
   content += "<td><a href='http://www.newrank.cn/public/info/detail.html?account="+obj[i].wxhao+"' target=_blank>"+obj[i].wxhao+"</a></td> "
-  content += "<td><a href='http://weixin.sogou.com/gzh?openid="+obj[i].openid+"' target=_blank>"+obj[i].openid+"</a></td>";
+  //content += "<td><a href='http://weixin.sogou.com/gzh?openid="+obj[i].openid+"' target=_blank>"+obj[i].openid+"</a></td>";
+  content += "<td><input type='button' value='删除' onclick=\"changePublic('"+obj[i].wxhao+"',-1)\"></td> "
   content += "<td>"+obj[i].viewcount+"</td> "
   content += "<td>"+obj[i].topcount+"</td> "
-  content += "<td>0</td> "
-  content += "<td><input type='button' value='查看推文' onclick=\"gettitles('"+obj[i].wxhao+"')\"></td> "
+  content += "<td><input type='button' value='查看' onclick=\"gettitles('"+obj[i].wxhao+"')\"></td>"
   content += "</tr>"  
  }
  var tag = document.getElementById("wps");

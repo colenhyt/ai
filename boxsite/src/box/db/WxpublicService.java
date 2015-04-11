@@ -1,5 +1,6 @@
 package box.db;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +32,45 @@ public class WxpublicService extends BaseService {
 		return wxtypeMapper.selectByExample(example);		
 	}
 	
-	public List<Wxpublic> findNotSearchWp()
+	public List<Wxpublic> findAllNotSearchWp()
 	{
-		return findActiveWP(12,null,0);
+		List<Wxtype> types= findtypes();
+		List<Wxpublic> list  = new ArrayList<Wxpublic>();
+		for (int i=0;i<types.size();i++)
+		{
+			List<Wxpublic> ll = findNotSearchWp(types.get(i).getType());
+			if (ll.size()<=0)
+				resetWp(types.get(i).getType());
+			else
+			 list.addAll(ll);
+		}
+		return list;
+	}
+	
+	public List<Wxpublic> findNotSearchWp(int type)
+	{
+		WxpublicExample example = new WxpublicExample();
+		Criteria criteria = example.createCriteria();
+		if (type>0)
+			criteria.andTypeEqualTo(type);
+		 criteria.andStatusEqualTo(0);
+		example.setLimit(5);
+		List<Wxpublic> list = wxpublicMapper.selectByExample(example);
+		return list;
+	}
+	
+	public void resetWp(int type)
+	{
+		WxpublicExample example = new WxpublicExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andStatusEqualTo(1);
+		if (type>0)
+			criteria.andTypeEqualTo(type);
+			
+		Wxpublic record = new Wxpublic();
+		record.setStatus(0);
+		wxpublicMapper.updateByExampleSelective(record, example);
+		DBCommit();
 	}
 	
 	public List<Wxpublic> findActiveWP(int type,String wxhao,int status)
@@ -46,6 +83,8 @@ public class WxpublicService extends BaseService {
 			criteria.andTypeEqualTo(type);
 		if (wxhao!=null&&wxhao.length()>0)
 			criteria.andWxhaoEqualTo(wxhao);
+		example.setLimit(null);
+		example.setOrderByClause(" udate desc ");
 		return wxpublicMapper.selectByExample(example);
 	}
 	

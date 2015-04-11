@@ -68,7 +68,7 @@ public class NewrankPageDealer implements IPageDealer{
 	public List<PageRef> buildWxpublicUrls()
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
-		List<Wxpublic> wxps = wpService.findNotSearchWp();
+		List<Wxpublic> wxps = wpService.findAllNotSearchWp();
 		for (int i=0;i<wxps.size();i++)
 		{
 			String url = "http://www.newrank.cn/public/info/detail.html?account="+wxps.get(i).getWxhao();

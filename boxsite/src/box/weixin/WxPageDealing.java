@@ -39,7 +39,7 @@ public class WxPageDealing implements IPageDealing {
 		}
 		//直接设:
 		siteStrs = new String[1];
-		siteStrs[0] = "newrank";
+		siteStrs[0] = "5118";
 		return siteStrs;
 	}
 

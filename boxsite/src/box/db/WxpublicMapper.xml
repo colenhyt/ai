@@ -116,7 +116,10 @@
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
-  </select>
+    <if test="limit != null">
+      limit ${limit}
+    </if>
+    </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
       WARNING - @mbggenerated

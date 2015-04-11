@@ -77,7 +77,7 @@ public class A5118PageDealer implements IPageDealer{
 	{
 		WxpublicService  wpService = new WxpublicService();
 		List<PageRef> refs = new ArrayList<PageRef>();
-		List<Wxpublic> wxps = wpService.findNotSearchWp();
+		List<Wxpublic> wxps = wpService.findAllNotSearchWp();
 		for (int i=0;i<wxps.size();i++)
 		{
 			Wxpublic wp = wxps.get(i);
@@ -279,13 +279,18 @@ public class A5118PageDealer implements IPageDealer{
 		List<String> keys = new ArrayList<String>();
 		keys.add("深圳");		
 		
-		for (int i=0; i<keys.size();i++)
-		{
-			String strUrl = "http://www.5118.com/weixin/officials/search/"+URLStrHelper.toUtf8String(keys.get(i));
-			PageRef ref = new PageRef(strUrl,"first");
-			ref.setRefId(10);
-			refs.add(ref);
-		}
+//		for (int i=0; i<keys.size();i++)
+//		{
+//			String strUrl = "http://www.5118.com/weixin/officials/search/"+URLStrHelper.toUtf8String(keys.get(i));
+//			PageRef ref = new PageRef(strUrl,"first");
+//			ref.setRefId(10);
+//			refs.add(ref);
+//		}
+		String strUrl = "http://www.5118.com/weixin/officials";
+		PageRef ref = new PageRef(strUrl,"first");
+		ref.setRefId(10);
+		refs.add(ref);		
+		
 		// TODO Auto-generated method stub
 		return refs;
 	}
