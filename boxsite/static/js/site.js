@@ -90,7 +90,7 @@ var obj = cfeval(data.responseText);
    content += "         <thead><tr style='background:#128171;color:#ffffff;font-size:20px'>"
   content += "        <td>公众名称</td>"
   content += "        <td>公众号</td>"
-  //content += "        <td>openid</td>"
+  content += "        <td>搜狗查看</td>"
   content += "        <td>操作</td>"
   content += "        <td>阅读数</td>"
   content += "        <td>排名估计</td>"
@@ -102,7 +102,7 @@ var obj = cfeval(data.responseText);
    content += "<tr style='font-size:18px;border:2px solid' id='tr"+obj[i].wxhao+"'>"
   content += "<td><a href='http://www.5118.com/weixin/detail?name="+obj[i].wxname+"' target=_blank>"+obj[i].wxname+"</a></td> "
   content += "<td><a href='http://www.newrank.cn/public/info/detail.html?account="+obj[i].wxhao+"' target=_blank>"+obj[i].wxhao+"</a></td> "
-  //content += "<td><a href='http://weixin.sogou.com/gzh?openid="+obj[i].openid+"' target=_blank>"+obj[i].openid+"</a></td>";
+  content += "<td><a href='http://weixin.sogou.com/weixin?fr=sgsearch&type=1&query="+obj[i].wxname+"' target=_blank>"+obj[i].wxhao+"</a></td>";
   content += "<td><input type='button' value='删除' onclick=\"changePublic('"+obj[i].wxhao+"',-1)\"></td> "
   content += "<td>"+obj[i].viewcount+"</td> "
   content += "<td>"+obj[i].topcount+"</td> "
