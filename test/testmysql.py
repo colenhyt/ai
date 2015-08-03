@@ -2,11 +2,11 @@
 import MySQLdb
 
 # Connect
-conn = MySQLdb.connect(host="localhost", port=3306, user="root", passwd="", db="bigsite")
+conn = MySQLdb.connect(host="localhost", port=3306, user="root", passwd="123a123@", db="box")
 cursor = conn.cursor()
 
 # Execute statement
-stmt = "SELECT * FROM bsite"
+stmt = "SELECT * FROM wxpublic"
 cursor.execute(stmt)
 
 # Fetch and output the result
