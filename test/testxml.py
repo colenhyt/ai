@@ -42,5 +42,6 @@ def parse_url(base_url):
      print urlparse.urljoin(base_url, i.get('href'))
      print lxml.etree.tostring(i, encoding='utf-8')
 
-parse_url('http://finance.ce.cn/stock/')
+
+# parse_url('http://finance.ce.cn/stock/')
 
