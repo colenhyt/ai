@@ -29,27 +29,30 @@ public class SougouPageDealer implements IPageDealer{
 		
 	}
 	
+	public List<PageRef> buildSearchWxpublicUrls(){
+		List<PageRef> refs = new ArrayList<PageRef>();
+		htmlHelper.init(page.getContent());
+		String[] mm = htmlHelper.getBlocksByOneProp("resnum", "id", "scd_num");
+		findPublicNames();
+		if (mm.length>0&&StringHelper.isNumber(mm[0]))
+		{
+			int paging = Integer.valueOf(mm[0]);
+			if (paging%10>0)
+			 paging = paging/10+1;
+			else
+			 paging = paging/10;
+			refs.addAll(buildPagingWxpublicUrls(page.getUrlStr(),paging,page.getRefId()));
+		}	
+		return refs;
+	}
+	
 	@Override
 	public List<PageRef> deal(OriHttpPage _page) {
 		page = _page;
 		List<PageRef> newurls = new ArrayList<PageRef>();
 		if (page.getRefWord().indexOf("first")>=0){
 			List<PageRef> refs = new ArrayList<PageRef>();
-			htmlHelper.init(page.getContent());
-			String[] mm = htmlHelper.getBlocksByOneProp("resnum", "id", "scd_num");
-			findPublicNames();
-			if (mm.length>0&&StringHelper.isNumber(mm[0]))
-			{
-				int paging = Integer.valueOf(mm[0]);
-				if (paging%10>0)
-				 paging = paging/10+1;
-				else
-				 paging = paging/10;
-				refs.addAll(buildPagingWxpublicUrls(page.getUrlStr(),paging,page.getRefId()));
-			}
-			
-			//refs.addAll(buildWxpublicUrls());
-			
+			refs = buildWxpublicUrls();
 			newurls.addAll(refs);
 		}else if (page.getRefWord().indexOf("findwpname")>=0)		//find wp name
 		{
@@ -65,6 +68,7 @@ public class SougouPageDealer implements IPageDealer{
 		return newurls;
 	}
 
+	//查找公众号分页
 	private List<PageRef> buildPagingWxpublicUrls(String strUrl,int page,int type)
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
@@ -79,6 +83,7 @@ public class SougouPageDealer implements IPageDealer{
 		return refs;
 	}
 	
+	//组装未抓取公众号文章url:
 	private List<PageRef> buildWxpublicUrls()
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
@@ -86,8 +91,13 @@ public class SougouPageDealer implements IPageDealer{
 		List<Wxpublic> wxps = wpService.findAllNotSearchWp();
 		for (int i=0;i<wxps.size();i++)
 		{
+			Wxpublic wp = wxps.get(i);
+			String wxhao = wp.getWxhao();			
 			String url = "http://weixin.sogou.com/gzh?openid="+wxps.get(i).getOpenid();
 			PageRef ref = new PageRef(url,"findwptitle");
+			ref.setUrlKey(wxhao);
+			ref.setRelWord(wp.getWxname());
+			ref.setRefId(wp.getType());			
 			refs.add(ref);
 		}
 		return refs;
@@ -247,7 +257,7 @@ public class SougouPageDealer implements IPageDealer{
 //			ref.setRefId(20);
 //			refs.add(ref);
 			
-			strUrl = searchUrl + URLStrHelper.toUtf8String("育儿宝典");
+			strUrl = searchUrl + URLStrHelper.toUtf8String("深圳");
 			ref = new PageRef(strUrl,"first");
 			ref.setRefId(12);
 			refs.add(ref);

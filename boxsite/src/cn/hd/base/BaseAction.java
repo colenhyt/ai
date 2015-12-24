@@ -80,6 +80,11 @@ public class BaseAction extends BaseService{
 		String basePath = getHttpRequest().getScheme()+"://"+getHttpRequest().getServerName()+":"+getHttpRequest().getServerPort()+path+"/";
 		return basePath;
 	}
+	
+	public void write(String content){
+		write(content,"utf-8");
+	}
+	
 	public void write(String content,String charset){
 		getHttpResponse().setCharacterEncoding(charset);
 		getHttpResponse().setContentType("text/html;charset="+charset);

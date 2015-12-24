@@ -21,6 +21,7 @@ import es.webref.model.PageRef;
 
 public class A5118PageDealer implements IPageDealer{
 	private OriHttpPage page;
+	private static final String siteId = "5118";
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 
 	public A5118PageDealer()
@@ -53,7 +54,8 @@ public class A5118PageDealer implements IPageDealer{
 		}
 		return newurls;
 	}
-
+	
+	//查找公众号:
 	public List<PageRef> buildSearchWxpublicUrls()
 	{
 		List<PageRef> refs = new ArrayList<PageRef>();
@@ -73,6 +75,7 @@ public class A5118PageDealer implements IPageDealer{
 		return refs;
 	}
 	
+	//组装未抓取公众号文章url:
 	public List<PageRef> buildWxpublicUrls()
 	{
 		WxpublicService  wpService = new WxpublicService();
@@ -142,7 +145,7 @@ public class A5118PageDealer implements IPageDealer{
 		wpService.init();
 		wpService.addWxpublic(wxps);
 	}
-	
+	//找到公众号文章,
 	public void dealPublicTitles()
 	{
 		WxtitleService  wtService = new WxtitleService();
@@ -177,7 +180,7 @@ public class A5118PageDealer implements IPageDealer{
 		}
 		if (strList==null)
 		{
-			System.out.println("该公众号没在5118找到:"+page.getUrlKey()+",名称:"+page.getRelWord());
+			System.out.println("该公众号没在["+this.getSiteId()+"]找到:"+page.getUrlKey()+",名称:"+page.getRelWord());
 			wpService22.updateStatusByHao(page.getUrlKey(), -1);
 			return;
 		}
@@ -264,7 +267,7 @@ public class A5118PageDealer implements IPageDealer{
 	@Override
 	public String getSiteId() {
 		// TODO Auto-generated method stub
-		return "5118";
+		return siteId;
 	}
 
 	@Override

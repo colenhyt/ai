@@ -1,6 +1,7 @@
 package box.weixin;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import box.db.Wxpublic;
@@ -109,9 +110,26 @@ public class NewrankPageDealer implements IPageDealer{
 			if (e!=null){
 				Wxtitle wt = new Wxtitle();
 				newtitles.add(wt);
+//				wt.setTitlekey(key);
+//				wt.setTitleurl(titleUrl);
+				wt.setWxhao(page.getUrlKey());
+				wt.setWxname(page.getRelWord());
+				wt.setType(page.getRefId());
+				wt.setSrcflag(0);
+				wt.setUseflag(0);
+				wt.setStatus(0);
+				wt.setTitle(e.getContentText());
+				wt.setPubdate(new Date());				
 			}
 		}
+		if (newtitles.size()<=0)
+		{
+			System.out.println("该公众号没在["+this.getSiteId()+"]找到:"+page.getUrlKey()+",名称:"+page.getRelWord());
+			wpService22.updateStatusByHao(page.getUrlKey(), -1);
+			return;
+		}		
 		wtService.addNewwxtitle(newtitles);
+		System.out.println("类型"+page.getRefId()+",公众号"+page.getRelWord()+" 增加推文:"+newtitles.size());
 	}
 	
 	@Override
