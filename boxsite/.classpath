@@ -72,5 +72,7 @@
 	<classpathentry kind="lib" path="C:/tomcat-7.0.57/lib/servlet-api.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/easyshop"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jso-common"/>
+	<classpathentry kind="lib" path="C:/boxsite/ojdbc7.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/pinyin4j-2.5.0.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>
