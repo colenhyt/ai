@@ -1,8 +1,14 @@
 package box.site.db;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
+import box.site.model.Searchurl;
+import box.site.model.SearchurlExample;
+import box.site.model.SearchurlMapper;
 import box.site.model.Website;
 import box.site.model.WebsiteExample;
 import box.site.model.WebsiteExample.Criteria;
@@ -31,14 +37,50 @@ public class SiteService extends BaseService{
 
 	private WebsiteMapper websiteMapper;
 	private WebsitekeysMapper websitekeysMapper;
+	private SearchurlMapper searchurlMapper;
+	private Set<String>		searchUrlSet;
 	
+	public SearchurlMapper getSearchurlMapper() {
+		return searchurlMapper;
+	}
+
+	public void setSearchurlMapper(SearchurlMapper searchurlMapper) {
+		this.searchurlMapper = searchurlMapper;
+	}
+
 	public SiteService()
 	{
-		initMapper("websiteMapper","websitekeysMapper");
+		initMapper("websiteMapper","websitekeysMapper","searchurlMapper");
+		searchUrlSet = new HashSet<String>();
+		
+		SearchurlExample  example = new SearchurlExample();
+		List<Searchurl> list = searchurlMapper.selectByExample(example);
+		for (Searchurl url:list){
+			searchUrlSet.add(url.getUrl());
+		}
 	}
 	
-	public int addSite(Website record){
-		return websiteMapper.insertSelective(record);
+	public boolean containsSearchUrl(String url){
+		return searchUrlSet.contains(url);
+	}
+	
+	public boolean addSearchUrl(String url){
+		if (searchUrlSet.contains(url))
+			return false;
+		
+		searchUrlSet.add(url);
+		Searchurl record = new Searchurl();
+		record.setUrl(url);
+		searchurlMapper.insert(record);
+		return true;
+	}
+	
+	public int addSites(Vector<Website> records){
+		for (Website record:records){
+			websiteMapper.insertSelective(record);
+		}
+		this.DBCommit();
+		return 0;
 	}
 	
 	public int addSitekey(Websitekeys record){

@@ -53,12 +53,16 @@ public class SitesContainer extends Observable implements Observer {
     private int timeOut=6000;
     private int maxTotalConn=20;
 
-    public SitesContainer(int[] _types,IPageDealing _pageDealing){
+    public SitesContainer(){
       	httpClient = new HttpClient(connectionManager);
         httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
       	connectionManager.getParams().setConnectionTimeout(6000);
       	connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnPerHost);
-      	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);
+      	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);    	
+    }
+    
+    public SitesContainer(int[] _types,IPageDealing _pageDealing){
+    	super();
       	
       	pageDealing = _pageDealing;
       	
@@ -82,6 +86,11 @@ public class SitesContainer extends Observable implements Observer {
             siteRunning++;
             
         }
+    }
+    
+    public void findBaiduPages(String word){
+//		PagesThread thread=new PagesThread(siteActions[i],siteActions[i].getSpecId(),null,group,THREAD_GROUP_NAME +i,pageDealing);
+    	
     }
     
     public void runningPages(){
