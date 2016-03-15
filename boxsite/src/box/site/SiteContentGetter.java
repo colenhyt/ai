@@ -19,7 +19,6 @@ public class SiteContentGetter extends Thread {
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	private String siteId;
 	private Map<String,String> classKeys = new HashMap<String,String>();
-	SiteService siteService = new SiteService();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
 	
 	public void setSiteId(String site){
@@ -43,6 +42,7 @@ public class SiteContentGetter extends Thread {
 	
 	public synchronized void genWebSites(OriHttpPage page){
 		Vector<Website> sites = findWebSites(page);
+		SiteService siteService = new SiteService();
 		
 		siteService.addSites(sites);
 	}
@@ -52,10 +52,10 @@ public class SiteContentGetter extends Thread {
 		Vector<Website> sites = new Vector<Website>();
 		
 		String classkey = classKeys.get(siteId);
+		Vector<String> keys = new Vector<String>();
+		keys.add("link?");
+		keys.add("百度快照");
 		if (classkey==null){
-			Vector<String> keys = new Vector<String>();
-			keys.add("link?");
-			keys.add("百度快照");
 			Vector<String> vv2 = new Vector<String>();
 			classkey = htmlHelper.findMaxSizeDivClassValue(keys, vv2);
 			classKeys.put(siteId, classkey);
@@ -69,7 +69,7 @@ public class SiteContentGetter extends Thread {
 		for (String itemstr:itemsContent){
 			Website site = new Website();
 			htmlHelper.init(itemstr.getBytes());
-			List<String> urls =htmlHelper.getUrlStrsByLinkKey("link");
+			List<String> urls =htmlHelper.getUrlStrsByLinkKey(keys.get(0));
 			if (urls.size()<=0) continue;
 			site.setUrl(urls.get(0));
 			site.setAlexa(this.getAlexa(site.getUrl()));
