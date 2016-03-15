@@ -11,11 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import org.xml.sax.SAXException;
 
 import cl.html.helper.NekoHTMLDelegate;
+import cl.util.FileUtil;
 import easyshop.html.jericho.Attribute;
 import easyshop.html.jericho.Attributes;
 import easyshop.html.jericho.Element;
@@ -23,7 +25,6 @@ import easyshop.html.jericho.Source;
 import easyshop.html.jericho.StartTag;
 import es.Constants;
 import es.util.CollectionComparator;
-import es.util.FileUtil;
 import es.util.html.HTMLContentHelper;
 import es.util.pattern.ESPattern;
 import es.util.string.StringHelper;
@@ -1120,7 +1121,7 @@ public class HTMLInfoSupplier {
 		return maxSizeKey;
 	}
 	
-	public List<Element> getDivElementsByClassValue(String strClassValue)
+	public List<Element> getDivElementsByPropValueLike(String strPropName,String strPropValue)
 	{
 		ArrayList<Element> tags=new ArrayList();
         List list = totalJerio.findAllStartTags("div");
@@ -1129,7 +1130,7 @@ public class HTMLInfoSupplier {
             Attributes attrs=tag.getAttributes();
             for (Iterator it2=attrs.iterator();it2.hasNext();){
             	Attribute attr=(Attribute)it2.next();
-            	if (attr!=null&&attr.getName().equalsIgnoreCase("class")&&attr.getValue().equalsIgnoreCase(strClassValue)){
+            	if (attr!=null&&attr.getName().equalsIgnoreCase(strPropName)&&attr.getValue().indexOf(strPropValue)>=0){
             		tags.add(tag.getElement());
             	}
             }
@@ -1641,6 +1642,23 @@ public class HTMLInfoSupplier {
 	        }			
 		return (String[])tags.toArray(new String[tags.size()]);
 		
+	}
+
+	public List<Element> getDivElementsByClassValue(String strClassValue)
+	{
+		ArrayList<Element> tags=new ArrayList();
+	    List list = totalJerio.findAllStartTags("div");
+	    for (Iterator it=list.iterator();it.hasNext();) {
+	        StartTag tag = (StartTag) it.next();
+	        Attributes attrs=tag.getAttributes();
+	        for (Iterator it2=attrs.iterator();it2.hasNext();){
+	        	Attribute attr=(Attribute)it2.next();
+	        	if (attr!=null&&attr.getName().equalsIgnoreCase("class")&&attr.getValue().equalsIgnoreCase(strClassValue)){
+	        		tags.add(tag.getElement());
+	        	}
+	        }
+	    }			
+	    return tags;
 	}
 
 }
