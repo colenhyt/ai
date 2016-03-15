@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.Vector;
 
 import org.xml.sax.SAXException;
 
@@ -23,6 +23,7 @@ import easyshop.html.jericho.Source;
 import easyshop.html.jericho.StartTag;
 import es.Constants;
 import es.util.CollectionComparator;
+import es.util.FileUtil;
 import es.util.html.HTMLContentHelper;
 import es.util.pattern.ESPattern;
 import es.util.string.StringHelper;
@@ -44,6 +45,24 @@ public class HTMLInfoSupplier {
 	public HTMLInfoSupplier()
 	{
 		
+	}
+	
+	public static void main(String[] args){
+		String s = FileUtil.readFile("c:/boxsite/test/1.html");
+		HTMLInfoSupplier helper = new HTMLInfoSupplier(null,s);
+		Vector<String> vv = new Vector<String>();
+		vv.add("link?");
+		vv.add("百度快照");
+		Vector<String> vv2 = new Vector<String>();
+		String kk = helper.findMaxSizeDivClassValue(vv,vv2);
+		List<Element> divs = null;
+		System.out.println(kk);
+		long start = System.currentTimeMillis();
+		for (int i=0;i<1;i++){
+			List<Element> els = helper.getDivElementsByClassValue(kk);
+			System.out.println(els.toString());
+		}
+		System.out.println(System.currentTimeMillis()-start);
 	}
 	
 	public HTMLInfoSupplier(String _urlstr,String context){
@@ -1049,6 +1068,56 @@ public class HTMLInfoSupplier {
 		}
 		
 		return elements;
+	}
+	
+	private static boolean containsKeys(String content,Vector<String> keys,Vector<String> nowords){
+		if (keys!=null) {
+			for (String key:keys){
+				if (!content.contains(key))return false;
+			}
+		}
+		
+		if (nowords!=null){
+			for (String key:nowords){
+				if (content.contains(key))return false;
+			}		
+		}
+		
+		return true;
+	}
+	//找到页面中元素最多的div的class Value:
+	public String findMaxSizeDivClassValue(Vector<String> keywords,Vector<String> nowords){
+		ArrayList tags=new ArrayList();
+        List<StartTag> list = totalJerio.findAllStartTags("div");
+		Map<String,Integer> classValues = new HashMap<String,Integer>();
+		for (StartTag tag:list){
+			String content = tag.getElement().getContentText();
+			if (content==null||!containsKeys(content,keywords,nowords)) continue;
+			
+            Attributes attrs=tag.getAttributes();
+            for (Iterator it2=attrs.iterator();it2.hasNext();){
+            	Attribute attr=(Attribute)it2.next();
+            	if (attr!=null&&attr.getName().equalsIgnoreCase("class")&&attr.getValue()!=null&&attr.getValue().trim().length()>0){
+            		int cc = 0;
+            		if (classValues.containsKey(attr.getValue())){
+            			Integer in = classValues.get(attr.getValue());
+            			cc = in.intValue()+1;
+            		}
+            		classValues.put(attr.getValue(),cc);
+            	}
+            }
+		}
+		Object[] keys = classValues.keySet().toArray();
+		if (keys.length<=0)
+			return null;
+		
+		String maxSizeKey = (String)keys[0];
+		for (Object k:keys){
+			String kk = (String)k;
+			if (classValues.get(maxSizeKey).intValue()<classValues.get(kk).intValue())
+				maxSizeKey = kk;
+		}
+		return maxSizeKey;
 	}
 	
 	public List<Element> getDivElementsByClassValue(String strClassValue)
