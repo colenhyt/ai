@@ -7,13 +7,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+
 import box.site.db.SiteService;
 import box.site.model.Website;
+import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import es.util.http.PostPageGetter;
+import es.webref.model.PageRef;
 
 public class SiteContentGetter extends Thread {
-	private String alexaapi = "http://data.alexa.com/data?cli=10&url=%s";
+  	MultiThreadedHttpConnectionManager connectionManager = 
+  	  		new MultiThreadedHttpConnectionManager();	
+    private HttpClient httpClient = null;
+    private int maxConnPerHost=2;
+    private int timeOut=6000;
+    private int maxTotalConn=20;
+    public final static String HTTP_USER_AGENT="Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)";
+  
+    private String alexaapi = "http://data.alexa.com/data?cli=10&url=%s";
 	private String baiduRank = "http://baidurank.aizhan.com/baidu/%s/position/";
 	private String googlePr = "http://toolbarqueries.google.com/search?client=navclient-auto&features=Rank&ch=8&q=info:";
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
@@ -47,7 +62,19 @@ public class SiteContentGetter extends Thread {
 		siteService.addSites(sites);
 	}
 	
+	public void initHttpClient(){
+		if (httpClient==null){
+	      	httpClient = new HttpClient(connectionManager);
+	        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
+	      	connectionManager.getParams().setConnectionTimeout(timeOut);
+	      	connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnPerHost);
+	      	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);   					
+		}
+	}
+	
 	public Vector<Website> findWebSites(OriHttpPage page){
+		initHttpClient();
+		
 		htmlHelper.init(page.getContent());
 		Vector<Website> sites = new Vector<Website>();
 		
@@ -71,6 +98,10 @@ public class SiteContentGetter extends Thread {
 			htmlHelper.init(itemstr.getBytes());
 			List<String> urls =htmlHelper.getUrlStrsByLinkKey(keys.get(0));
 			if (urls.size()<=0) continue;
+			String url = urls.get(0);
+			PageRef dRef=new PageRef(url);
+			HttpPage obj=new PostPageGetter().getHttpPage(url, httpClient);
+			
 			site.setUrl(urls.get(0));
 			site.setAlexa(this.getAlexa(site.getUrl()));
 			site.setBdrank(this.getBdRank(site.getUrl()));	
