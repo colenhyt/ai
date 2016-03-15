@@ -46,5 +46,8 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 				<mapper resource="box/db/WxsiteMapper.xml"/>
 				<mapper resource="box/db/WxtitleMapper.xml"/>
 				<mapper resource="box/db/WxtypeMapper.xml"/>
-																							</mappers>
+		<mapper resource="box/site/model/WebsiteMapper.xml"/>	    
+		<mapper resource="box/site/model/SearchurlMapper.xml"/>	    
+		<mapper resource="box/site/model/WebsitekeysMapper.xml"/>	    
+																															</mappers>
 </configuration>

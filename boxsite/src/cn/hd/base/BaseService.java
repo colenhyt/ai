@@ -2,14 +2,20 @@ package cn.hd.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import redis.clients.jedis.Jedis;
+import cn.hd.util.DataThread;
+import cn.hd.util.FileUtil;
 import cn.hd.util.MybatisSessionFactory;
+import cn.hd.util.RedisClient;
+import cn.hd.util.RedisConfig;
+
+import com.alibaba.fastjson.JSON;
 
 
 /**
@@ -18,10 +24,36 @@ import cn.hd.util.MybatisSessionFactory;
  * 2011-6-14
  */
 public class BaseService extends Base{
-	protected Jedis jedis;
+	public RedisConfig redisCfg;
+	public JSONObject cfgObj;
+	public RedisClient jedis;
+	public DataThread dataThread;
 	public static byte DATA_STATUS_INACTIVE = 0;
 	public static byte DATA_STATUS_ACTIVE = 1;
 	
+	public BaseService(){
+		String path = "/root/";
+		URL  res = Thread.currentThread().getContextClassLoader().getResource("/");
+		String cfgstr = FileUtil.readFile(path + "config.properties");
+		if (cfgstr == null || cfgstr.trim().length() <= 0) {
+			if (res==null){
+				log.warn("game start failed: "+path);
+				return;
+			}
+			cfgstr = FileUtil.readFile(res.getPath() + "config.properties");
+			if (cfgstr==null|| cfgstr.trim().length() <= 0){
+			log.warn("game start failed: "+path);
+			return;
+			}
+		}
+		cfgObj = JSONObject.fromObject(cfgstr);		
+		String cfgstr3 = cfgObj.getString("redisCfg");
+		redisCfg = JSON.parseObject(cfgstr3, RedisConfig.class);
+		jedis = new RedisClient(redisCfg);
+		
+		dataThread = new DataThread(redisCfg);
+		
+	}
 	/**
 	 * 初始化指定变量
 	 * @param objs 需要初始化变量列表

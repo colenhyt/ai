@@ -1,14 +1,11 @@
 package box.main;
 
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import box.db.Wxpublic;
-import box.db.WxpublicService;
+import box.site.SitePageDealing;
 import box.util.IPageDealing;
-import box.weixin.WxPageDealing;
 import es.download.finditemurls.StraightUrlStrsFinder;
 import es.download.helper.OriginalsHelper;
 
@@ -29,7 +26,7 @@ public class Main {
 		int t = 190;
 		t = t%10;
 		
-		IPageDealing dealing = new WxPageDealing();
+		IPageDealing dealing = new SitePageDealing();
 		
 		//Date dd = DateHelper.formatDate("3", "23", "19:10:10");
 		SitesContainer con = new SitesContainer(a,dealing);

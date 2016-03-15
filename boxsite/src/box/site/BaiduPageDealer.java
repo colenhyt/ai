@@ -17,6 +17,7 @@ public class BaiduPageDealer implements IPageDealer {
 	SiteContentGetter siteGetter = new SiteContentGetter();
 	
 	public BaiduPageDealer(){
+		siteGetter.setSiteId(siteId);
 		siteGetter.start();
 	}
 	
@@ -32,7 +33,7 @@ public class BaiduPageDealer implements IPageDealer {
 	private List<PageRef> findPagingRefs(){
 		List<PageRef> newurls = new ArrayList<PageRef>();
 		htmlHelper.init(page.getContent());
-		String[] pagingContent = htmlHelper.getDivsByClassValue("result c-container ");
+		String[] pagingContent = htmlHelper.getDivsByClassValue("xdGcVm UWeZEg Hxgnfk UQfpJC EZLYns");
 		for (int i=0;i<pagingContent.length;i++){
 			String pc = pagingContent[i];
 			htmlHelper.init(pc.getBytes());
@@ -68,7 +69,16 @@ public class BaiduPageDealer implements IPageDealer {
 	@Override
 	public List<PageRef> getFirstRefs() {
 		// TODO Auto-generated method stub
-		return null;
+		List<PageRef> urls = new ArrayList<PageRef>();
+		String key = "http://www.baidu.com/s?wd=";
+		String word = "海淘";
+		for (int i=0;i<20;i++){
+			String url = key+word+"&pn="+i;
+			PageRef ref = new PageRef(url,word);
+			urls.add(ref);
+		}
+		
+		return urls;
 	}
 
 }

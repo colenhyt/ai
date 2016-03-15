@@ -1,6 +1,9 @@
 package box.site;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -14,9 +17,14 @@ public class SiteContentGetter extends Thread {
 	private String baiduRank = "http://baidurank.aizhan.com/baidu/%s/position/";
 	private String googlePr = "http://toolbarqueries.google.com/search?client=navclient-auto&features=Rank&ch=8&q=info:";
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
+	private String siteId;
+	private Map<String,String> classKeys = new HashMap<String,String>();
 	SiteService siteService = new SiteService();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
 	
+	public void setSiteId(String site){
+		siteId = site;
+	}
 	public void run() {
 		while (1==1){
 			synchronized(this){
@@ -25,6 +33,7 @@ public class SiteContentGetter extends Thread {
 				}
 				pages.clear();
 			}
+			
 		}
 	}
 	
@@ -34,6 +43,7 @@ public class SiteContentGetter extends Thread {
 	
 	public synchronized void genWebSites(OriHttpPage page){
 		Vector<Website> sites = findWebSites(page);
+		
 		siteService.addSites(sites);
 	}
 	
@@ -41,12 +51,30 @@ public class SiteContentGetter extends Thread {
 		htmlHelper.init(page.getContent());
 		Vector<Website> sites = new Vector<Website>();
 		
-		String[] itemsContent = htmlHelper.getDivsByClassValue("result c-container ");
+		String classkey = classKeys.get(siteId);
+		if (classkey==null){
+			Vector<String> keys = new Vector<String>();
+			keys.add("link?");
+			keys.add("百度快照");
+			Vector<String> vv2 = new Vector<String>();
+			classkey = htmlHelper.findMaxSizeDivClassValue(keys, vv2);
+			classKeys.put(siteId, classkey);
+		}
+		if (classkey==null){
+			System.out.println("error,没有找到该页面list item");
+			return sites;
+		}
+		
+		String[] itemsContent = htmlHelper.getDivsByClassValue(classkey);
 		for (String itemstr:itemsContent){
 			Website site = new Website();
-			site.setUrl(itemstr);
+			htmlHelper.init(itemstr.getBytes());
+			List<String> urls =htmlHelper.getUrlStrsByLinkKey("link");
+			if (urls.size()<=0) continue;
+			site.setUrl(urls.get(0));
 			site.setAlexa(this.getAlexa(site.getUrl()));
 			site.setBdrank(this.getBdRank(site.getUrl()));	
+			site.setRemark(page.getRefWord());
 			sites.add(site);
 		}
 
