@@ -1,4 +1,11 @@
 package cn.hd.util;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.BaseAnalysis;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -6,7 +13,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
-public class ChineseToEnglish {
+public class ChineseToEnglish { 
 	// 将汉字转换为全拼
 	public static String getPingYin(String src) {
 
@@ -65,8 +72,19 @@ public class ChineseToEnglish {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(getPingYin("孔一帆 孔妍男 孔祥维 孔智育 孔祥颖 孔祥栋 孔祥睿 孔鑫 孔德开 孔令敞 孔令力 孔宁 孔静 孔彬"));
-		System.out.println(getPinYinHeadChar("綦江县"));
-		System.out.println(getCnASCII("綦江县"));
+//		System.out.println(getPingYin("孔一帆 孔妍男 孔祥维 孔智育 孔祥颖 孔祥栋 孔祥睿 孔鑫 孔德开 孔令敞 孔令力 孔宁 孔静 孔彬"));
+//		System.out.println(getPinYinHeadChar("綦江县"));
+//		System.out.println(getCnASCII("綦江县"));
+		List<Term> parse = BaseAnalysis.parse("让战士们过一个欢乐祥和祥和祥和的新春佳节。");
+		Map<String,Integer> map = new HashMap<String,Integer>();
+		for (Term item:parse){
+			int count = 1;
+			if (map.containsKey(item.getName())){
+				int c = map.get(item.getName());
+				count = c+1;
+			}
+			map.put(item.getName(), count);
+		}
+	    System.out.println(map);
 	}
 }
