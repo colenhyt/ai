@@ -1,0 +1,82 @@
+Java 全文搜索框架 Lucene
+Lucene 是apache软件基金会一个开放源代码的全文检索引擎工具包，是一个全文检索引擎的架构，提供了完整的查询引擎和索引引擎，部分文本分析引擎。Lucene的目的是为软件开发人员提供一个简单易用的工具包，以方便的在目标系统中实现全文检索的功能，或者是...
+更多Lucene信息
+ 
+全文检索引擎 Sphinx
+Sphinx是一个基于SQL的全文检索引擎，可以结合MySQL,PostgreSQL做全文搜索，它可以提供比数据库本身更专业的搜索功能，使得应用程序更容易实现专业化的全文检索。Sphinx特别为一些脚本语言设计搜索API接口，如PHP,Python,Perl,Ruby等，同时为MySQL也设计了...
+Sphinx
+更多Sphinx信息
+ 
+搜索引擎 Nutch
+Nutch 是一个开源Java 实现的搜索引擎。它提供了我们运行自己的搜索引擎所需的全部工具。包括全文搜索和Web爬虫。 Nutch的创始人是Doug Cutting，他同时也是Lucene、Hadoop和Avro开源项目的创始人。 Nutch诞生于2002年8月，是Apache旗下的一个用Java实现...
+Nutch
+更多Nutch信息
+ 
+分布式搜索引擎 ElasticSearch
+Elastic Search 是一个基于Lucene构建的开源，分布式，RESTful搜索引擎。设计用于云计算中，能够达到实时搜索，稳定，可靠，快速，安装使用方便。支持通过HTTP使用JSON进行数据索引。 ElasticSearch 提供多种语言的客户端 API： Java API — 1.x —  ...
+ElasticSearch
+更多ElasticSearch信息
+ 
+Lucene索引查看工具 Luke
+Luke 是查询LUCENE索引文件的工具， 而且用 Luke 的Search可以做查询 Luke is a handy development and diagnostic tool, which accesses already existing Lucene indexes and allows you to display and modify their contents in several ways: browse ...
+Luke
+更多Luke信息
+ 
+实时分布式搜索引擎 Solandra
+Solandra (原名为 Lucandra) = Cassandra + Lucene Solandra = Solr + Cassandra Solandra 是一个实时的分布式搜索引擎，基于 Apache Solr 和 Apache Cassandra 构建. 在线PPT演示：https://docs.google.com/present/view?id=d93fq7n_20fnjpp3q2&pli=1...
+更多Solandra信息
+最近更新： Solr + Cassandra = Solandra，实时分布式搜索引擎 发布于 5年前
+MySQL全文搜索引擎 mysqlcft
+MySQL在高并发连接、数据库记录数较多的情况下，SELECT ... WHERE ... LIKE '%...%'的全文搜索方式不仅效率差，而且以通配符%开头作查询时，使用不到索引，需要全表扫描，对数据库的压力也很大。MySQL针对这一问题提供 了一种全文索引解决方案，这不仅仅提...
+mysqlcft
+更多mysqlcft信息
+Solr的PHP接口 Solarium
+Solarium 是 Solr 的 PHP 开发接口，
+Solarium
+更多Solarium信息
+ElasticSearch 管理和监控 Elastic HQ
+ElasticHQ 是一个具有良好体验、直观和功能强大的 ElasticSearch 的管理和监控工具。提供实时监控、全集群管理、搜索和查询，无需额外软件安装。
+Elastic HQ
+更多Elastic HQ信息
+Java的索引-搜索引擎 IndexTank
+IndexTank, 一套基于Java的索引-实时全文搜索引擎实现，Includes features like variables (boosts), categories (facets), faceted search, snippeting, custom scoring functions, suggest, and autocomplete。IndexTank的设计分离了相关性标记和文档内容...
+更多IndexTank信息
+最近更新： IndexTank 1.0 发布，Java搜索引擎 发布于 4年前
+Go 文本索引库 Bleve
+Bleve，发音为 BLEH-vee，是一个现代化的 Go 搜索索引库。Bleve 是使用 Go 编写的现代化文本索引库，支持各种常用的搜索索引，包括过滤，排序和分类。 当使用 Java 和 JVM 的时候使用比较多的是 Lucene，Elasticsearch 和 Solr。但是有时候不想要那么多依赖...
+更多Bleve信息
+ElasticSearch 集群统计 Bigdesk
+Bigdesk 是 ElasticSearch 的一个集群监控工具，可生成 ElasticSearch 集群的即时图表和统计信息。可以通过它来查看es集群的各种状态，如：cpu、内存使用情况，索引数据、搜索情况，http连接数等。版本对应关系表： Bigdesk Elasticsearch 2.4.0 1.0.0.RC...
+Bigdesk
+更多Bigdesk信息
+中文搜索引擎数据库 TngouDB
+TngouDB中文索引数据库是天狗网（tngou.net）开发的中文搜索引擎数据库，用于天狗农业网的农业搜索引擎。 天狗希望基于开源的力量，把TngouDB打造成为一个专门的中文索引NoSQL数据库。 简介 TngouDB是基于JAVA而开发的跨平台数据库，底层采用Lucene（存储引...
+TngouDB
+更多TngouDB信息
+最近更新： TngouDB 0.3 beta 发布，中文搜索引擎数据库 发布于 6个月前
+ElasticSearch 查询构建器 ElasticQuery
+ElasticQuery 是用于 ElasticSearch 的简单查询构建器。可使用 metod 方法调用和相应的参数来生成查询、过滤和聚合对象。输出的 dict/json 可直接传递给 ES。 示例代码： from elasticsearch import Elasticsearch from elasticquery import Elastic...
+更多ElasticQuery信息
+最近更新： ElasticQuery v3 发布，ElasticSearch 查询构建器 发布于 1个月前
+搜索引擎 Compass
+Compass是一个强大的,事务的,高性能的对象/搜索引擎映射(OSEM:object/search engine mapping)与一个Java持久层框架.Compass包括:   * 搜索引擎抽象层(使用Lucene搜索引荐),  * OSEM (Object/Search Engine Mapping) 支持,  * 事务管理,  * 类似于Goo...
+Compass
+更多Compass信息
+ 
+Hibernate搜索框架 Hibernate Search
+Hibernate Search的作用是对数据库中的数据进行检索的。它是hibernate对著名的全文检索系统Lucene的一个集成方案，作用在于对数据表中某些内容庞大的字段（如声明为text的字段）建立全文索引，这样通过hibernate search就可以对这些字段进行全文检索后获得...
+更多Hibernate Search信息
+ 
+全文搜索服务器 Solr
+solr 名称来源 Search On Lucene Replication solr 基本概况 Apache Solr (读音: SOLer) 是一个开源的搜索服务器。Solr 使用 Java 语言开发，主要基于 HTTP 和 Apache Lucene 实现。Apache Solr 中存储的资源是以 Document 为对象进行存储的。每个文档由...
+Solr
+更多Solr信息
+ 
+PHP的Web爬虫和搜索引擎 PhpDig
+PhpDig是一个采用PHP开发的Web爬虫和搜索引擎。通过对动态和静态页面进行索引建立一个词汇表。当搜索查询时，它将按一定的排序规则显示包含关 键字的搜索结果页面。PhpDig包含一个模板系统并能够索引PDF,Word,Excel,和PowerPoint文档。PHPdig适用于专业化更...
+更多PhpDig信息
+C++搜索引擎 CLucene
+CLucene是Lucene的一个C++端口，Lucene是一个基于java的高性能的全文搜索引擎。CLucene因为使用C++编写，所以理论上要比lucene快。
+更多CLucene信息
+内容抽取工具集合 Apache Tika
+Tika是一个内容抽取的工具集合(a toolkit for text extracting)。它集成了POI, Pdfbox 并且为文本抽取工作提供了一个统一的界面。其次，Tika也提供了便利的扩展API，用来丰富其对第三方文件格式的支持。 在当前的0.2-SNAPSHOT版本中， Tika提供了对如下文件...
