@@ -17,7 +17,7 @@ import java.util.Vector;
 import org.xml.sax.SAXException;
 
 import cl.html.helper.NekoHTMLDelegate;
-import cl.util.FileUtil;
+import es.util.FileUtil;
 import easyshop.html.jericho.Attribute;
 import easyshop.html.jericho.Attributes;
 import easyshop.html.jericho.Element;

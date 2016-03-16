@@ -35,15 +35,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import es.Constants;
@@ -82,24 +83,15 @@ public class HttpPageGetter extends PageGetter
 
     }
 
-    public OriHttpPage getAuthPost(String urlStr,String userName,String userValue,String pwdName,String pwdValue){
-    	HttpClient client=this.defaultHttpClient();
-        NameValuePair[] data = {
-                new NameValuePair(userName, userName),
-                new NameValuePair(pwdName, pwdValue),
-              };    
-        return getPost(client,urlStr,data);
-    }
-    
     public OriHttpPage getPost(HttpClient client,String code){
         NameValuePair[] data = {
-                new NameValuePair("username", "jan"),
-                new NameValuePair("password", "197675"),
-                new NameValuePair("returl", "http://www.netsun.com/member/Action.cgi?t=mjk&id=4234123"),
-                new NameValuePair("f", "login"),
-                new NameValuePair("v_id", "161073"),
-                new NameValuePair("v_secret", code),
-                new NameValuePair("v_digest", "6bfd3517e5bd86ed1d24520600f62ff4")
+//                new NameValuePair("username", "jan"),
+//                new NameValuePair("password", "197675"),
+//                new NameValuePair("returl", "http://www.netsun.com/member/Action.cgi?t=mjk&id=4234123"),
+//                new NameValuePair("f", "login"),
+//                new NameValuePair("v_id", "161073"),
+//                new NameValuePair("v_secret", code),
+//                new NameValuePair("v_digest", "6bfd3517e5bd86ed1d24520600f62ff4")
               }; 	
         String urlstr="http://www.netsun.com/member/index.cgi";
         
@@ -110,29 +102,19 @@ public class HttpPageGetter extends PageGetter
     }
     
     public OriHttpPage getPost(HttpClient client,String action,NameValuePair[] data){
-    	PostMethod post=new PostMethod(action);
+    	HttpPost post=new HttpPost(action);
 
-        post.setRequestBody(data);
-        
         try {
         	
-        	int c=client.executeMethod(post);
-        	
-        BufferedInputStream remoteBIS = new BufferedInputStream(post.getResponseBodyAsStream());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(10240);
-        byte[] buf = new byte[1024];
-        int bytesRead = 0;
-        while(bytesRead >= 0)
-        {
-            baos.write(buf, 0, bytesRead);
-            bytesRead = remoteBIS.read(buf);
-        }
-        remoteBIS.close();
-        byte[] content = baos.toByteArray();
+        	HttpResponse rep=client.execute(post);
+            HttpEntity repEntity = rep.getEntity();
+            String context = EntityUtils.toString(repEntity);
+            
+        byte[] content = context.getBytes();
 //        byte[] content=get.getResponseBody();
         
         
-    	ConnResponse conRes=new ConnResponse(post.getResponseHeader("Content-type").getValue(),null,0,0,post.getStatusCode());
+    	ConnResponse conRes=new ConnResponse(null,null,0,0,rep.getStatusLine().getStatusCode());
     	return new OriHttpPage(action,content,conRes,Constants.CHARTSET_DEFAULT);            
         } catch(IOException ioe)
         {
@@ -166,46 +148,25 @@ public class HttpPageGetter extends PageGetter
     }
     
     public HttpPage getHttpPage(PageRef thisRef,HttpClient client,String charSet){
-    	client.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
     	String urlStr=thisRef.getUrlStr();
-//    	try {
-//			urlStr=new String(urlStr.getBytes("utf-8"),"gb2312");
-//		} catch (UnsupportedEncodingException e1) {
-//			// log error here
-//			log.error(e1.getMessage());
-//		}
-//    	System.out.println(urlStr);
- //        get.setRequestHeader("connection","keep-alive");
-    	GetMethod get =null;
+
+    	HttpGet get =null;
             
         try {
             
-            get = new GetMethod(urlStr);
-            get.setFollowRedirects(true); //禁止自动重定??
+            get = new HttpGet(urlStr);
             long startTime = System.currentTimeMillis();
-            int iGetResultCode = client.executeMethod(get);
-            Header[] rheaders=get.getRequestHeaders();
-            Header[] headers=get.getResponseHeaders();
-            boolean is11=get.isHttp11();
-            boolean redirect=get.getFollowRedirects();
+            HttpResponse rep = client.execute(get);
+            HttpEntity repEntity = rep.getEntity();
+            String context = EntityUtils.toString(repEntity);
             
-            if (get.getResponseContentLength()>=2024000){
+            if (context.length()>=2024000){
                 log.info("content is too large, can't download!");
             	ConnResponse conRes=new ConnResponse(null,null,0,0,0);
                 return new OriHttpPage(-1,urlStr, null,null,conRes,null);
             }
                 
-            BufferedInputStream remoteBIS = new BufferedInputStream(get.getResponseBodyAsStream());
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(10240);
-            byte[] buf = new byte[1024];
-            int bytesRead = 0;
-            while(bytesRead >= 0)
-            {
-                baos.write(buf, 0, bytesRead);
-                bytesRead = remoteBIS.read(buf);
-            }
-            remoteBIS.close();
-            byte[] content = baos.toByteArray();
+            byte[] content = context.getBytes();
 //            byte[] content=get.getResponseBody();
             
             
@@ -214,7 +175,7 @@ public class HttpPageGetter extends PageGetter
             int bytesPerSec = (int) ((double) content.length / ((double)timeTaken / 1000.0));
 //            log.info("Downloaded " + content.length + " bytes, " + bytesPerSec + " bytes/sec");
 //            log.info("urlstr:"+urlStr);
-        	ConnResponse conRes=new ConnResponse(get.getResponseHeader("Content-type").getValue(),null,0,0,get.getStatusCode());
+        	ConnResponse conRes=new ConnResponse(null,null,0,0,rep.getStatusLine().getStatusCode());
         	String charset=conRes.getCharSet();
         	if (charset==null){
         		String cc=new String(content);
@@ -335,11 +296,11 @@ public class HttpPageGetter extends PageGetter
     
     public HttpPage getAuthWebPage(String urlStr,HttpClient client,String userName,String password){
     	PageRef ref=new PageRef(urlStr);
-    	if (client!=null){
-    		client.getParams().setAuthenticationPreemptive(true);
-    		Credentials defaultcreds = new UsernamePasswordCredentials(userName, password);
-    		client.getState().setCredentials(new AuthScope("taobao.com", 80, AuthScope.ANY_REALM), defaultcreds);
-    	}
+//    	if (client!=null){
+//    		client.getParams().setAuthenticationPreemptive(true);
+//    		Credentials defaultcreds = new UsernamePasswordCredentials(userName, password);
+//    		client.getState().setCredentials(new AuthScope("taobao.com", 80, AuthScope.ANY_REALM), defaultcreds);
+//    	}
     	return getHttpPage(ref,client);
     }
     

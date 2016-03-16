@@ -1,7 +1,6 @@
 package es.util.http;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
 
@@ -16,15 +15,13 @@ public class PageGetter {
     public static String AGENT_DEFAULT=AGENT_YAHOO;
 	static Logger log = Logger.getLogger("PageGetter.java");
     protected String userAgent;
-  	MultiThreadedHttpConnectionManager connectionManager =new MultiThreadedHttpConnectionManager();
-    HttpClient httpClient=new HttpClient(connectionManager);;
+    HttpClient httpClient= HttpClients.createDefault();
 	
 	public PageGetter(){
         this.userAgent=AGENG_BAIDU;
 	}
 	
 	protected HttpClient defaultHttpClient(){
-        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE     	
         return httpClient;
 	}
 }

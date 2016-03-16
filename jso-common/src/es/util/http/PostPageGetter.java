@@ -1,15 +1,21 @@
 package es.util.http;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import easyshop.downloadhelper.ConnResponse;
@@ -24,13 +30,28 @@ import easyshop.downloadhelper.OriHttpPage;
 public class PostPageGetter extends PageGetter{
 	static Logger log = Logger.getLogger("FormGetter.java");
 	private Map params;
-	private HttpClient httpClient;
+	private CloseableHttpClient  httpClient;
+    private int maxConnPerHost=2;
+    private int timeOut=6000;
+    private int maxTotalConn=20;
+    public final static String HTTP_USER_AGENT="Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)";
 	
 	
 //	public HttpPage getPage(){
 //		
 //	}
 
+	public static void main(String[] args){
+		CloseableHttpClient httpClient = null;
+		if (httpClient==null){
+	      	httpClient = HttpClients.createDefault();
+	     }		
+		
+		PostPageGetter getter = new PostPageGetter();
+		String urlStr = "http://www.baidu.com/link?url=uuN0CrjlJodI_24JBncL7ckR8yMhLQskJV4ykXtZDYhASFtBG9rFyrI0pVMn7xn9";
+		getter.getHttpPage(urlStr, httpClient);
+	}
+	
 	public HttpPage getHttpPage(String urlStr,Map params){
 		return getHttpPage(urlStr,defaultHttpClient(),null,params);
 	}
@@ -40,38 +61,23 @@ public class PostPageGetter extends PageGetter{
 	}
 
 	public HttpPage getHttpPage(String urlStr,HttpClient client){
-	    	client.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
+            HttpGet get= new HttpGet(urlStr);
 	        
-	        GetMethod post = new GetMethod(urlStr);
+            HttpContext httpContext = new BasicHttpContext();
             
 	        try {
-	            
+	            get.addHeader("User-Agent", HTTP_USER_AGENT);
+	            RequestConfig defaultRequestConfig = RequestConfig.custom()
+	                    .setSocketTimeout(10000).build();
+	            get.setConfig(defaultRequestConfig);
+	            CloseableHttpResponse rep = (CloseableHttpResponse)client.execute(get,httpContext);
+	            HttpHost host = (HttpHost) httpContext
+	                    .getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+	            HttpEntity repEntity = rep.getEntity();
+	            String context = EntityUtils.toString(repEntity);
 	            long startTime = System.currentTimeMillis();
-	            int iGetResultCode = client.executeMethod(post);
-	            post.setFollowRedirects(false);
-	            Header locationHeader = post.getResponseHeader("location");
-	        client.getParams().setParameter("http.socket.timeout",new Integer(60000 * 10));
-	        post = new GetMethod(locationHeader.getValue());
-//	        post.setFollowRedirects(true);
-	        iGetResultCode = client.executeMethod(post);
 	        
-	            if (post.getResponseContentLength()>=2024000){
-	                log.info("content is too large, can't download!");
-	            	ConnResponse conRes=new ConnResponse(null,null,0,0,0);
-	                return new OriHttpPage(-1,urlStr, null,null,conRes,null);
-	            }
-	                
-	            BufferedInputStream remoteBIS = new BufferedInputStream(post.getResponseBodyAsStream());
-	            ByteArrayOutputStream baos = new ByteArrayOutputStream(10240);
-	            byte[] buf = new byte[1024];
-	            int bytesRead = 0;
-	            while(bytesRead >= 0)
-	            {
-	                baos.write(buf, 0, bytesRead);
-	                bytesRead = remoteBIS.read(buf);
-	            }
-	            remoteBIS.close();
-	            byte[] content = baos.toByteArray();
+	            byte[] content = context.getBytes();
 	//            byte[] content=get.getResponseBody();
 	            
 	            
@@ -79,7 +85,7 @@ public class PostPageGetter extends PageGetter{
 	           if(timeTaken < 100) timeTaken = 500;
 	            int bytesPerSec = (int) ((double) content.length / ((double)timeTaken / 1000.0));
 	            log.info("Downloaded " + content.length + " bytes, " + bytesPerSec + " bytes/sec");
-	        	ConnResponse conRes=new ConnResponse(post.getResponseHeader("Content-type").getValue(),null,0,0,post.getStatusCode());
+	        	ConnResponse conRes=new ConnResponse(null,null,0,0,rep.getStatusLine().getStatusCode());
 	        	return new HttpPage(urlStr, content,conRes,"gbk");            
 	            
 	        } catch(IOException ioe)
@@ -94,61 +100,44 @@ public class PostPageGetter extends PageGetter{
 	            ConnResponse conRes=new ConnResponse(null,null,0,0,0);
 	            return new OriHttpPage(-1,urlStr, null,null,conRes,null);
 	        }  finally {
-	        	post.releaseConnection();
+	        	get.releaseConnection();
 	        }/**/        
 	    }
 
 	public HttpPage getHttpPage(String urlStr,HttpClient client,String charSet,Map params){
-		    	client.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
 		        
-		        PostMethod post = new PostMethod(urlStr);
+		        HttpPost post = new HttpPost(urlStr);
 		        if (params.size()>0){
 		        Object[] names=params.keySet().toArray();
 		        
 		        NameValuePair[] data=new NameValuePair[names.length];
 		        for (int i=0;i<names.length;i++){
 		        	String value=(String)params.get(names[i]);
-		        	data[i]=new NameValuePair((String)names[i],value);
+		        	post.addHeader((String)names[i], value);
 		        }
-		        post.setRequestBody(data);
 		        }
 		            
 		        try {
 		            
+		            post.addHeader("User-Agent", HTTP_USER_AGENT);
 		            long startTime = System.currentTimeMillis();
-		            int iGetResultCode = client.executeMethod(post);
-		            post.setFollowRedirects(false);
-		            Header locationHeader = post.getResponseHeader("location");
-		        client.getParams().setParameter("http.socket.timeout",new Integer(60000 * 10));
-		        post = new PostMethod(locationHeader.getValue());
-	//	        post.setFollowRedirects(true);
-		        iGetResultCode = client.executeMethod(post);
+		            CloseableHttpResponse rep = (CloseableHttpResponse)client.execute(post);
+		            HttpEntity repEntity = rep.getEntity();
+		            String context = EntityUtils.toString(repEntity);
 		        
-		            if (post.getResponseContentLength()>=2024000){
+		            byte[] content = context.getBytes();
+		            
+		            if (context.length()>=2024000){
 		                log.info("content is too large, can't download!");
 		            	ConnResponse conRes=new ConnResponse(null,null,0,0,0);
 		                return new OriHttpPage(-1,urlStr, null,null,conRes,null);
 		            }
 		                
-		            BufferedInputStream remoteBIS = new BufferedInputStream(post.getResponseBodyAsStream());
-		            ByteArrayOutputStream baos = new ByteArrayOutputStream(10240);
-		            byte[] buf = new byte[1024];
-		            int bytesRead = 0;
-		            while(bytesRead >= 0)
-		            {
-		                baos.write(buf, 0, bytesRead);
-		                bytesRead = remoteBIS.read(buf);
-		            }
-		            remoteBIS.close();
-		            byte[] content = baos.toByteArray();
-		//            byte[] content=get.getResponseBody();
-		            
-		            
 		            long timeTaken = System.currentTimeMillis() - startTime;
 		           if(timeTaken < 100) timeTaken = 500;
 		            int bytesPerSec = (int) ((double) content.length / ((double)timeTaken / 1000.0));
 		            log.info("Downloaded " + content.length + " bytes, " + bytesPerSec + " bytes/sec");
-		        	ConnResponse conRes=new ConnResponse(post.getResponseHeader("Content-type").getValue(),null,0,0,post.getStatusCode());
+		        	ConnResponse conRes=new ConnResponse(null,null,0,0,rep.getStatusLine().getStatusCode());
 		        	return new HttpPage(urlStr, content,conRes,charSet);            
 		            
 		        } catch(IOException ioe)

@@ -9,7 +9,7 @@ package cl.thread;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
 
 import easyshop.downloadhelper.HttpPageGetter;
