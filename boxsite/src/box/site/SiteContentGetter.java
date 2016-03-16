@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import box.site.db.SiteService;
 import box.site.model.Website;
@@ -20,8 +21,6 @@ import es.util.http.PostPageGetter;
 import es.webref.model.PageRef;
 
 public class SiteContentGetter extends Thread {
-  	MultiThreadedHttpConnectionManager connectionManager = 
-  	  		new MultiThreadedHttpConnectionManager();	
     private HttpClient httpClient = null;
     private int maxConnPerHost=2;
     private int timeOut=6000;
@@ -64,11 +63,7 @@ public class SiteContentGetter extends Thread {
 	
 	public void initHttpClient(){
 		if (httpClient==null){
-	      	httpClient = new HttpClient(connectionManager);
-	        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
-	      	connectionManager.getParams().setConnectionTimeout(timeOut);
-	      	connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnPerHost);
-	      	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);   					
+	      	httpClient = HttpClients.createDefault();
 		}
 	}
 	

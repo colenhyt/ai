@@ -9,6 +9,7 @@ import java.util.Queue;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import redis.clients.jedis.Jedis;
 import cn.hd.util.DataThread;
 import cn.hd.util.FileUtil;
 import cn.hd.util.MybatisSessionFactory;
@@ -50,7 +51,7 @@ public class BaseService extends Base{
 		String cfgstr3 = cfgObj.getString("redisCfg");
 		redisCfg = JSON.parseObject(cfgstr3, RedisConfig.class);
 		jedis = new RedisClient(redisCfg);
-		
+		Jedis jj = jedis.getJedis();
 		dataThread = new DataThread(redisCfg);
 		
 	}
