@@ -75,7 +75,8 @@ public class ChineseToEnglish {
 //		System.out.println(getPingYin("孔一帆 孔妍男 孔祥维 孔智育 孔祥颖 孔祥栋 孔祥睿 孔鑫 孔德开 孔令敞 孔令力 孔宁 孔静 孔彬"));
 //		System.out.println(getPinYinHeadChar("綦江县"));
 //		System.out.println(getCnASCII("綦江县"));
-		List<Term> parse = BaseAnalysis.parse("让战士们过一个欢乐祥和祥和祥和的新春佳节。");
+		String content = FileUtil.readFile("d:\\boxsite\\library\\test.txt");
+		List<Term> parse = BaseAnalysis.parse(content);
 		Map<String,Integer> map = new HashMap<String,Integer>();
 		for (Term item:parse){
 			int count = 1;
