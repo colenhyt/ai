@@ -80,17 +80,19 @@ public class SiteService extends BaseService{
 		
 	}
 	
-	public Set<String> getNewwords(){
+	public List<Websitewords> getNewwords(){
 		wordsSet = new HashSet<String>();
-		
+		List<Websitewords>  words = new ArrayList<Websitewords>();
 		WebsitewordsExample e2 = new WebsitewordsExample();
 		List<Websitewords> wordslist = websitewordsMapper.selectByExample(e2);
 		for (Websitewords item:wordslist){
-			if (item.getStatus()==0)
-			wordsSet.add(item.getWord());
+			if (item.getStatus()==0){
+				wordsSet.add(item.getWord());
+				words.add(item);
+			}
 		}
 		
-		return wordsSet;
+		return words;
 	}
 	
 	public void addWord(String word){
@@ -122,6 +124,17 @@ public class SiteService extends BaseService{
 				maxSiteid = item.getSiteid();
 		}
 		return maxSiteid;
+	}
+	
+	public int getMaxWordid(){
+		int maxwordid = 0;
+		WebsitewordsExample e = new WebsitewordsExample();
+		List<Websitewords> list = websitewordsMapper.selectByExample(e);
+		for (Websitewords item:list){
+			if (item.getWordid()>maxwordid)
+				maxwordid = item.getWordid();
+		}
+		return maxwordid;
 	}
 	
 	public boolean containsSearchUrl(String url){
@@ -156,7 +169,6 @@ public class SiteService extends BaseService{
 		for (Website record:records){
 			websiteMapper.insertSelective(record);
 		}
-		this.DBCommit();
 		return 0;
 	}
 	
@@ -165,9 +177,19 @@ public class SiteService extends BaseService{
 	}
 	
 	public List<Websitekeys> getSitekeys(String key){	
+		WebsitewordsExample e2 = new WebsitewordsExample();
+		WebsitewordsExample.Criteria cr2 = e2.createCriteria();
+		cr2.andWordEqualTo(key);
+		List<Websitewords> list = websitewordsMapper.selectByExample(e2);
+		Websitewords worditem = null;
+		if (list.size()>0)
+			worditem = list.get(0);
+		else
+			return null;
+		
 		WebsitekeysExample example = new WebsitekeysExample();
 		WebsitekeysExample.Criteria criteria = example.createCriteria();
-		criteria.andKeywordEqualTo(key);
+		criteria.andWordidEqualTo(worditem.getWordid());
 		return websitekeysMapper.selectByExample(example);
 	}
 	

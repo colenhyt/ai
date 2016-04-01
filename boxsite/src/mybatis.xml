@@ -49,5 +49,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<mapper resource="box/site/model/WebsiteMapper.xml"/>	    
 		<mapper resource="box/site/model/SearchurlMapper.xml"/>	    
 		<mapper resource="box/site/model/WebsitekeysMapper.xml"/>	    
-																															</mappers>
+		<mapper resource="box/site/model/WebsitewordsMapper.xml"/>	
+		<mapper resource="box/site/model/BaiduurlsMapper.xml"/>	    
+																																	</mappers>
 </configuration>

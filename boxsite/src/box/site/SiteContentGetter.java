@@ -1,5 +1,6 @@
 package box.site;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,18 +8,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import box.site.db.SiteService;
 import box.site.model.Website;
+import box.site.model.Websitekeys;
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
 import es.util.http.PostPageGetter;
-import es.webref.model.PageRef;
 
 public class SiteContentGetter extends Thread {
     private HttpClient httpClient = null;
@@ -35,6 +34,7 @@ public class SiteContentGetter extends Thread {
 	private Map<String,String> classKeys = new HashMap<String,String>();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
 	private int nextWebsiteId = 0;
+	private int nextWordId = 0;
 	
 	public SiteContentGetter(){
 		
@@ -51,7 +51,12 @@ public class SiteContentGetter extends Thread {
 				}
 				pages.clear();
 			}
-			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -68,11 +73,35 @@ public class SiteContentGetter extends Thread {
 		return nextWebsiteId;
 	}
 	
+	public synchronized int getNextWordId(){
+		if (nextWordId==0){
+		SiteService siteService = new SiteService();
+		nextWordId = siteService.getMaxWordid();
+		}
+		nextWordId++;
+		return nextWordId;
+	}
+	
 	public synchronized void genWebSites(OriHttpPage page){
 		Vector<Website> sites = findWebSites(page);
 		SiteService siteService = new SiteService();
 		
+		
+		//site insert:
 		siteService.addSites(sites);
+		
+		//site word map:
+		for (Website item:sites){
+			Websitekeys key = new Websitekeys();
+			key.setSiteid(item.getSiteid());
+			key.setWordid(page.getRefId());
+			siteService.addSitekey(key);
+		}
+		
+		//searchurl update:
+		siteService.updateSearchUrl(page.getUrlStr());
+		
+		siteService.DBCommit();
 	}
 	
 	public void initHttpClient(){
@@ -108,11 +137,11 @@ public class SiteContentGetter extends Thread {
 			List<String> urls =htmlHelper.getUrlStrsByLinkKey(keys.get(0));
 			if (urls.size()<=0) continue;
 			String url = urls.get(0);
-		//	HttpPage obj=new PostPageGetter().getHttpPage(url, httpClient);
-			
-		//	site.setUrl(obj.getNewUrlStr());
+			String realurl =new PostPageGetter().getRealUrl(url, httpClient);
+			site.setUrl(realurl);
 			site.setBaiduurl(url);
-			site.setStatus(SiteDataManager.WEBSITE_STATUS_INIT);
+			site.setSiteid(getNextWebisteId());
+			site.setStatus(SiteDataManager.WEBSITE_STATUS_DONEURL);
 			site.setAlexa(this.getAlexa(site.getUrl()));
 			site.setBdrank(this.getBdRank(site.getUrl()));	
 			site.setRemark(page.getRefWord());

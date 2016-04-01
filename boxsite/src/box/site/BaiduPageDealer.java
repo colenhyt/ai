@@ -2,9 +2,9 @@ package box.site;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import box.site.db.SiteService;
+import box.site.model.Websitewords;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
@@ -14,7 +14,6 @@ public class BaiduPageDealer implements IPageDealer {
 	private static final String siteId = "baidu";
 	private OriHttpPage page;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
-	SiteService siteService = new SiteService();
 	SiteContentGetter siteGetter = new SiteContentGetter();
 	
 	public BaiduPageDealer(){
@@ -33,6 +32,7 @@ public class BaiduPageDealer implements IPageDealer {
 	
 	private List<PageRef> findPagingRefs(){
 		List<PageRef> newurls = new ArrayList<PageRef>();
+		SiteService siteService = new SiteService();
 		htmlHelper.init(page.getContent());
 		String[] pagingContent = htmlHelper.getDivsByClassValue("xdGcVm UWeZEg Hxgnfk UQfpJC EZLYns");
 		for (int i=0;i<pagingContent.length;i++){
@@ -79,17 +79,18 @@ public class BaiduPageDealer implements IPageDealer {
 //			urls.add(ref);
 //		}
 		SiteService service = new SiteService();
-		Set<String>  words = service.getNewwords();
-		for (String word:words){
-			String[] warray = word.split(",");
+		List<Websitewords>  words = service.getNewwords();
+		for (Websitewords item:words){
+			String[] warray = item.getWord().split(",");
 			String wordstr = "";
 			for (int i=0;i<warray.length;i++){
-				if (i>1)
-					wordstr += "&";
+				if (i>0)
+					wordstr += "%20";
 				wordstr += warray[i];
 			}
 			String url = key+wordstr;
-			PageRef ref = new PageRef(url,word);
+			PageRef ref = new PageRef(url,item.getWord());
+			ref.setRefId(item.getWordid());
 			urls.add(ref);			
 		}
 		return urls;

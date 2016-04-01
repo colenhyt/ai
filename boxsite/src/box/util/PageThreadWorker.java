@@ -225,23 +225,23 @@ public class PageThreadWorker implements Runnable, Constants{
 			Thread[] list = new Thread[n];
 			group.enumerate(list);
 			boolean noMoreFetcherThread = true; // assumption
-			for (int i = 0; i < n; i++) {
-				// this thread may have gone away in the meantime
-				if (list[i] == null)
-					continue;
-				String tname = list[i].getName();
-				if (tname.startsWith(THREAD_GROUP_NAME)) // prove it
-					noMoreFetcherThread = false;
-			}
-			
-			if (noMoreFetcherThread) {
-            	log.error("labeling error pages, count="+getMissingURLs().size());
-				new OriginalsHelper().labelMissingURLs(getMissingURLs(),
-						TSiteConfigs.getSiteConfig(siteId)
-								.getStore(pageType));
-				getMissingURLs().clear();
-				break;
-			}
+//			for (int i = 0; i < n; i++) {
+//				// this thread may have gone away in the meantime
+//				if (list[i] == null)
+//					continue;
+//				String tname = list[i].getName();
+//				if (tname.startsWith(THREAD_GROUP_NAME)) // prove it
+//					noMoreFetcherThread = false;
+//			}
+//			
+//			if (noMoreFetcherThread) {
+//            	log.error("labeling error pages, count="+getMissingURLs().size());
+//				new OriginalsHelper().labelMissingURLs(getMissingURLs(),
+//						TSiteConfigs.getSiteConfig(siteId)
+//								.getStore(pageType));
+//				getMissingURLs().clear();
+//				break;
+//			}
 		}		
      }
 
