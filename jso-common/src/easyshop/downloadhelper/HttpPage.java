@@ -51,6 +51,10 @@ public class HttpPage {
 	private long serverDate=-1;
 	
 	private String newUrlStr=null;	
+	public void setNewUrlStr(String newUrlStr) {
+		this.newUrlStr = newUrlStr;
+	}
+
 	/**
 	 * @return 返回 urlStr。
 	 */

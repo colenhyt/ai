@@ -48,7 +48,7 @@ public class PostPageGetter extends PageGetter{
 	     }		
 		
 		PostPageGetter getter = new PostPageGetter();
-		String urlStr = "http://www.baidu.com/link?url=uuN0CrjlJodI_24JBncL7ckR8yMhLQskJV4ykXtZDYhASFtBG9rFyrI0pVMn7xn9";
+		String urlStr = "http://www.baidu.com/link?url=g9YsxantDNoKXt0gNo51frJJCP4HOOCzBXs2QDBuUisJoWSfb8vHAkd-s29LGHJ9";
 		getter.getHttpPage(urlStr, httpClient);
 	}
 	
@@ -60,7 +60,7 @@ public class PostPageGetter extends PageGetter{
 		return getHttpPage(urlStr,client,null,params);
 	}
 
-	public HttpPage getHttpPage(String urlStr,HttpClient client){
+	public String getRealUrl(String urlStr,HttpClient client){
             HttpGet get= new HttpGet(urlStr);
 	        
             HttpContext httpContext = new BasicHttpContext();
@@ -73,32 +73,19 @@ public class PostPageGetter extends PageGetter{
 	            CloseableHttpResponse rep = (CloseableHttpResponse)client.execute(get,httpContext);
 	            HttpHost host = (HttpHost) httpContext
 	                    .getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-	            HttpEntity repEntity = rep.getEntity();
-	            String context = EntityUtils.toString(repEntity);
-	            long startTime = System.currentTimeMillis();
-	        
-	            byte[] content = context.getBytes();
-	//            byte[] content=get.getResponseBody();
-	            
-	            
-	            long timeTaken = System.currentTimeMillis() - startTime;
-	           if(timeTaken < 100) timeTaken = 500;
-	            int bytesPerSec = (int) ((double) content.length / ((double)timeTaken / 1000.0));
-	            log.info("Downloaded " + content.length + " bytes, " + bytesPerSec + " bytes/sec");
-	        	ConnResponse conRes=new ConnResponse(null,null,0,0,rep.getStatusLine().getStatusCode());
-	        	return new HttpPage(urlStr, content,conRes,"gbk");            
+	        	return host.getHostName();
 	            
 	        } catch(IOException ioe)
 	        {
 	            log.warn("Caught IO Exception: " + ioe.getMessage(), ioe);
 	            ConnResponse conRes=new ConnResponse(null,null,0,0,0);
-	            return new OriHttpPage(-1,urlStr, null,null,conRes,null);
+	            return null;
 	        }
 	        catch(Exception e)
 	        {
 	            log.warn("Caught Exception: " + e.getMessage(), e);
 	            ConnResponse conRes=new ConnResponse(null,null,0,0,0);
-	            return new OriHttpPage(-1,urlStr, null,null,conRes,null);
+	            return null;
 	        }  finally {
 	        	get.releaseConnection();
 	        }/**/        
@@ -155,6 +142,52 @@ public class PostPageGetter extends PageGetter{
 		        	post.releaseConnection();
 		        }/**/        
 		    }
+
+	public HttpPage getHttpPage(String urlStr,HttpClient client){
+	        HttpGet get= new HttpGet(urlStr);
+	        
+	        HttpContext httpContext = new BasicHttpContext();
+	        
+	        try {
+	            get.addHeader("User-Agent", HTTP_USER_AGENT);
+	            RequestConfig defaultRequestConfig = RequestConfig.custom()
+	                    .setSocketTimeout(10000).build();
+	            get.setConfig(defaultRequestConfig);
+	            CloseableHttpResponse rep = (CloseableHttpResponse)client.execute(get,httpContext);
+	            HttpHost host = (HttpHost) httpContext
+	                    .getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+	            HttpEntity repEntity = rep.getEntity();
+	            String context = EntityUtils.toString(repEntity);
+	            long startTime = System.currentTimeMillis();
+	        
+	            byte[] content = context.getBytes();
+	//            byte[] content=get.getResponseBody();
+	            
+	            
+	            long timeTaken = System.currentTimeMillis() - startTime;
+	           if(timeTaken < 100) timeTaken = 500;
+	            int bytesPerSec = (int) ((double) content.length / ((double)timeTaken / 1000.0));
+	            log.info("Downloaded " + content.length + " bytes, " + bytesPerSec + " bytes/sec");
+	        	ConnResponse conRes=new ConnResponse(null,null,0,0,rep.getStatusLine().getStatusCode());
+	        	HttpPage page = new HttpPage(urlStr, content,conRes,"gbk");
+	        	page.setNewUrlStr(host.getHostName());
+	        	return page;
+	            
+	        } catch(IOException ioe)
+	        {
+	            log.warn("Caught IO Exception: " + ioe.getMessage(), ioe);
+	            ConnResponse conRes=new ConnResponse(null,null,0,0,0);
+	            return new OriHttpPage(-1,urlStr, null,null,conRes,null);
+	        }
+	        catch(Exception e)
+	        {
+	            log.warn("Caught Exception: " + e.getMessage(), e);
+	            ConnResponse conRes=new ConnResponse(null,null,0,0,0);
+	            return new OriHttpPage(-1,urlStr, null,null,conRes,null);
+	        }  finally {
+	        	get.releaseConnection();
+	        }/**/        
+	    }
 	
 }
 
