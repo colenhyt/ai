@@ -29,9 +29,9 @@
  */
 package httpclient;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpVersion;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * <p>A simple HTTP benchmark tool, which implements a subset of AB (Apache Benchmark) interface</p>
@@ -43,10 +43,10 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 public class HttpBenchmark {
 
     private static HttpClient createRequestExecutor() {
-        HttpClient httpclient = new HttpClient();
-        httpclient.getParams().setVersion(HttpVersion.HTTP_1_1);
-        httpclient.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, false);
-        httpclient.getHttpConnectionManager().getParams().setStaleCheckingEnabled(false);
+        HttpClient httpclient = HttpClients.createDefault();
+//        httpclient.getParams().setVersion(HttpVersion.HTTP_1_1);
+//        httpclient.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, false);
+//        httpclient.getHttpConnectionManager().getParams().setStaleCheckingEnabled(false);
         return httpclient;
     }
     

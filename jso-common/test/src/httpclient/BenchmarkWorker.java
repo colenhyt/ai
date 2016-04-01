@@ -32,11 +32,9 @@ package httpclient;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
+import org.apache.http.Header;
+import org.apache.http.HttpException;
+import org.apache.http.client.HttpClient;
 
 /**
  * <p>Benchmark worker that can execute an HTTP method given number of times</p>
@@ -58,63 +56,61 @@ public class BenchmarkWorker {
     }
     
     public Stats execute(
-            final HostConfiguration hostconf,
-            final HttpMethod method, 
             int count,
             boolean keepalive) throws HttpException {
         Stats stats = new Stats();
         stats.start();
-        for (int i = 0; i < count; i++) {
-            try {
-                this.httpexecutor.executeMethod(hostconf, method);
-                if (this.verbosity >= 4) {
-                    System.out.println(">> " + method.getName() + " " + 
-                            method.getURI() + " " + method.getParams().getVersion());
-                    Header[] headers = method.getRequestHeaders();
-                    for (int h = 0; h < headers.length; h++) {
-                        System.out.print(">> " + headers[h].toString());
-                    }
-                    System.out.println();
-                }
-                if (this.verbosity >= 3) {
-                    System.out.println(method.getStatusLine().getStatusCode());
-                }
-                if (this.verbosity >= 4) {
-                    System.out.println("<< " + method.getStatusLine().toString());
-                    Header[] headers = method.getResponseHeaders();
-                    for (int h = 0; h < headers.length; h++) {
-                        System.out.print("<< " + headers[h].toString());
-                    }
-                    System.out.println();
-                }
-                InputStream instream = method.getResponseBodyAsStream();
-                long contentlen = 0;
-                if (instream != null) {
-                    int l = 0;
-                    while ((l = instream.read(this.buffer)) != -1) {
-                        stats.incTotal(l);
-                        contentlen += l;
-                    }
-                }
-                stats.setContentLength(contentlen);
-                stats.incSuccessCount();
-            } catch (IOException ex) {
-                stats.incFailureCount();
-                if (this.verbosity >= 2) {
-                    System.err.println("I/O error: " + ex.getMessage());
-                }
-            } finally {
-                method.releaseConnection();
-            }
-            if (!keepalive) {
-                this.httpexecutor.getHttpConnectionManager().closeIdleConnections(0);
-            }
-        }
-        stats.finish();
-        Header header = method.getResponseHeader("Server");
-        if (header != null) {
-            stats.setServerName(header.getValue());
-        }
+//        for (int i = 0; i < count; i++) {
+//            try {
+//                this.httpexecutor.executeMethod(hostconf, method);
+//                if (this.verbosity >= 4) {
+//                    System.out.println(">> " + method.getName() + " " + 
+//                            method.getURI() + " " + method.getParams().getVersion());
+//                    Header[] headers = method.getRequestHeaders();
+//                    for (int h = 0; h < headers.length; h++) {
+//                        System.out.print(">> " + headers[h].toString());
+//                    }
+//                    System.out.println();
+//                }
+//                if (this.verbosity >= 3) {
+//                    System.out.println(method.getStatusLine().getStatusCode());
+//                }
+//                if (this.verbosity >= 4) {
+//                    System.out.println("<< " + method.getStatusLine().toString());
+//                    Header[] headers = method.getResponseHeaders();
+//                    for (int h = 0; h < headers.length; h++) {
+//                        System.out.print("<< " + headers[h].toString());
+//                    }
+//                    System.out.println();
+//                }
+//                InputStream instream = method.getResponseBodyAsStream();
+//                long contentlen = 0;
+//                if (instream != null) {
+//                    int l = 0;
+//                    while ((l = instream.read(this.buffer)) != -1) {
+//                        stats.incTotal(l);
+//                        contentlen += l;
+//                    }
+//                }
+//                stats.setContentLength(contentlen);
+//                stats.incSuccessCount();
+//            } catch (IOException ex) {
+//                stats.incFailureCount();
+//                if (this.verbosity >= 2) {
+//                    System.err.println("I/O error: " + ex.getMessage());
+//                }
+//            } finally {
+//                method.releaseConnection();
+//            }
+//            if (!keepalive) {
+//                this.httpexecutor.getHttpConnectionManager().closeIdleConnections(0);
+//            }
+//        }
+//        stats.finish();
+//        Header header = method.getResponseHeader("Server");
+//        if (header != null) {
+//            stats.setServerName(header.getValue());
+//        }
         return stats;
     }
 

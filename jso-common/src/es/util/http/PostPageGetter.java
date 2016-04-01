@@ -70,18 +70,13 @@ public class PostPageGetter extends PageGetter{
 	            RequestConfig defaultRequestConfig = RequestConfig.custom()
 	                    .setSocketTimeout(10000).build();
 	            get.setConfig(defaultRequestConfig);
-	            CloseableHttpResponse rep = (CloseableHttpResponse)client.execute(get,httpContext);
 	            HttpHost host = (HttpHost) httpContext
 	                    .getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-	        	return host.getHostName();
-	            
-	        } catch(IOException ioe)
-	        {
-	            log.warn("Caught IO Exception: " + ioe.getMessage(), ioe);
-	            ConnResponse conRes=new ConnResponse(null,null,0,0,0);
+	            if (host!=null)
+	            	return host.getHostName();
 	            return null;
-	        }
-	        catch(Exception e)
+	            
+	        }catch(Exception e)
 	        {
 	            log.warn("Caught Exception: " + e.getMessage(), e);
 	            ConnResponse conRes=new ConnResponse(null,null,0,0,0);
