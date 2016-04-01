@@ -6,6 +6,8 @@ import es.webref.model.PageRef;
 
 public class SiteDataManager {
 	HttpPageGetter pageGetter;
+	public static final int WEBSITE_STATUS_INIT = 0;
+	public static final int WEBSITE_STATUS_DONEURL = 1;
 	String bdSearchUrl =  "http://www.baidu.com/s?wd=%s&pn=%d";
 	
 	private static SiteDataManager uniqueInstance = null;

@@ -34,6 +34,11 @@ public class SiteContentGetter extends Thread {
 	private String siteId;
 	private Map<String,String> classKeys = new HashMap<String,String>();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
+	private int nextWebsiteId = 0;
+	
+	public SiteContentGetter(){
+		
+	}
 	
 	public void setSiteId(String site){
 		siteId = site;
@@ -52,6 +57,15 @@ public class SiteContentGetter extends Thread {
 	
 	public synchronized void pushPage(OriHttpPage page){
 		pages.add(page);
+	}
+	
+	public synchronized int getNextWebisteId(){
+		if (nextWebsiteId==0){
+		SiteService siteService = new SiteService();
+		nextWebsiteId = siteService.getMaxSiteid();
+		}
+		nextWebsiteId++;
+		return nextWebsiteId;
 	}
 	
 	public synchronized void genWebSites(OriHttpPage page){
@@ -94,10 +108,11 @@ public class SiteContentGetter extends Thread {
 			List<String> urls =htmlHelper.getUrlStrsByLinkKey(keys.get(0));
 			if (urls.size()<=0) continue;
 			String url = urls.get(0);
-			PageRef dRef=new PageRef(url);
-			HttpPage obj=new PostPageGetter().getHttpPage(url, httpClient);
+		//	HttpPage obj=new PostPageGetter().getHttpPage(url, httpClient);
 			
-			site.setUrl(urls.get(0));
+		//	site.setUrl(obj.getNewUrlStr());
+			site.setBaiduurl(url);
+			site.setStatus(SiteDataManager.WEBSITE_STATUS_INIT);
 			site.setAlexa(this.getAlexa(site.getUrl()));
 			site.setBdrank(this.getBdRank(site.getUrl()));	
 			site.setRemark(page.getRefWord());

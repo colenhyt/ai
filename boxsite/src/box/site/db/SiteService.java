@@ -1,14 +1,16 @@
 package box.site.db;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import box.site.model.Searchurl;
-import box.site.model.SearchurlExample;
-import box.site.model.SearchurlMapper;
+import box.site.model.Baiduurls;
+import box.site.model.BaiduurlsExample;
+import box.site.model.BaiduurlsMapper;
 import box.site.model.Website;
 import box.site.model.WebsiteExample;
 import box.site.model.WebsiteExample.Criteria;
@@ -16,6 +18,9 @@ import box.site.model.WebsiteMapper;
 import box.site.model.Websitekeys;
 import box.site.model.WebsitekeysExample;
 import box.site.model.WebsitekeysMapper;
+import box.site.model.Websitewords;
+import box.site.model.WebsitewordsExample;
+import box.site.model.WebsitewordsMapper;
 import cn.hd.base.BaseService;
 
 public class SiteService extends BaseService{
@@ -37,41 +42,113 @@ public class SiteService extends BaseService{
 
 	private WebsiteMapper websiteMapper;
 	private WebsitekeysMapper websitekeysMapper;
-	private SearchurlMapper searchurlMapper;
-	private Set<String>		searchUrlSet;
+	private BaiduurlsMapper searchurlMapper;
+	private WebsitewordsMapper websitewordsMapper; 
+	public WebsitewordsMapper getWebsitewordsMapper() {
+		return websitewordsMapper;
+	}
+
+	public void setWebsitewordsMapper(WebsitewordsMapper websitewordsMapper) {
+		this.websitewordsMapper = websitewordsMapper;
+	}
+
+	private Map<String,Baiduurls>		searchUrlMap;
+	private Set<String>		wordsSet;
 	
-	public SearchurlMapper getSearchurlMapper() {
+	public BaiduurlsMapper getSearchurlMapper() {
 		return searchurlMapper;
 	}
 
-	public void setSearchurlMapper(SearchurlMapper searchurlMapper) {
+	public void setSearchurlMapper(BaiduurlsMapper searchurlMapper) {
 		this.searchurlMapper = searchurlMapper;
 	}
 
 	public SiteService()
 	{
-		initMapper("websiteMapper","websitekeysMapper","searchurlMapper");
-		searchUrlSet = new HashSet<String>();
+		initMapper("websiteMapper","websitekeysMapper","searchurlMapper","websitewordsMapper");
+		searchUrlMap = new HashMap<String,Baiduurls>();
 		
-		SearchurlExample  example = new SearchurlExample();
-		List<Searchurl> list = searchurlMapper.selectByExample(example);
-		for (Searchurl url:list){
-			searchUrlSet.add(url.getUrl());
+
+		
+		BaiduurlsExample  example = new BaiduurlsExample();
+//		BaiduurlsExample.Criteria criteria = example.createCriteria();
+//		criteria.andStatusEqualTo(0);
+		List<Baiduurls> list = searchurlMapper.selectByExample(example);
+		for (Baiduurls url:list){
+			searchUrlMap.put(url.getUrl(), url);
 		}
+		
+	}
+	
+	public Set<String> getNewwords(){
+		wordsSet = new HashSet<String>();
+		
+		WebsitewordsExample e2 = new WebsitewordsExample();
+		List<Websitewords> wordslist = websitewordsMapper.selectByExample(e2);
+		for (Websitewords item:wordslist){
+			if (item.getStatus()==0)
+			wordsSet.add(item.getWord());
+		}
+		
+		return wordsSet;
+	}
+	
+	public void addWord(String word){
+		if (wordsSet.contains(word))
+			return;
+		
+		Websitewords  record = new Websitewords();
+		record.setWord(word);
+		record.setStatus(0);
+		websitewordsMapper.insert(record);
+		
+	}
+	public List<String> getNewBaiduurls(){
+		List<String> newurls = new ArrayList<String>();
+		
+		for (Baiduurls item:searchUrlMap.values())		{
+			if (item.getStatus()==0)
+				newurls.add(item.getUrl());
+		}
+		return newurls;
+	}
+	
+	public int getMaxSiteid(){
+		int maxSiteid = 0;
+		WebsiteExample e = new WebsiteExample();
+		List<Website> list = websiteMapper.selectByExample(e);
+		for (Website item:list){
+			if (item.getSiteid()>maxSiteid)
+				maxSiteid = item.getSiteid();
+		}
+		return maxSiteid;
 	}
 	
 	public boolean containsSearchUrl(String url){
-		return searchUrlSet.contains(url);
+		return searchUrlMap.containsKey(url);
+	}
+	
+	public boolean updateSearchUrl(String url){
+		Baiduurls item = searchUrlMap.get(url);
+		if (item!=null)
+			return updateSearchUrl(item);
+		return false;
+	}
+	
+	public boolean updateSearchUrl(Baiduurls record){
+		record.setStatus(1);
+		searchurlMapper.updateByPrimaryKeySelective(record);
+		return true;
 	}
 	
 	public boolean addSearchUrl(String url){
-		if (searchUrlSet.contains(url))
+		if (searchUrlMap.containsKey(url))
 			return false;
 		
-		searchUrlSet.add(url);
-		Searchurl record = new Searchurl();
-		record.setUrl(url);
-		searchurlMapper.insert(record);
+		Baiduurls item = new Baiduurls();
+		item.setUrl(url);
+		searchUrlMap.put(url, item);
+		searchurlMapper.insert(item);
 		return true;
 	}
 	

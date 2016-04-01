@@ -2,6 +2,7 @@ package box.site;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import box.site.db.SiteService;
 import box.util.IPageDealer;
@@ -71,13 +72,26 @@ public class BaiduPageDealer implements IPageDealer {
 		// TODO Auto-generated method stub
 		List<PageRef> urls = new ArrayList<PageRef>();
 		String key = "http://www.baidu.com/s?wd=";
-		String word = "海淘";
-		for (int i=0;i<20;i++){
-			String url = key+word+"&pn="+i;
+//		String word = "海淘";
+//		for (int i=0;i<20;i++){
+//			String url = key+word+"&pn="+i;
+//			PageRef ref = new PageRef(url,word);
+//			urls.add(ref);
+//		}
+		SiteService service = new SiteService();
+		Set<String>  words = service.getNewwords();
+		for (String word:words){
+			String[] warray = word.split(",");
+			String wordstr = "";
+			for (int i=0;i<warray.length;i++){
+				if (i>1)
+					wordstr += "&";
+				wordstr += warray[i];
+			}
+			String url = key+wordstr;
 			PageRef ref = new PageRef(url,word);
-			urls.add(ref);
+			urls.add(ref);			
 		}
-		
 		return urls;
 	}
 
