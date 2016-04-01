@@ -1,6 +1,7 @@
 package box.site.db;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +54,7 @@ public class SiteService extends BaseService{
 	}
 
 	private Map<String,Baiduurls>		searchUrlMap;
+	private Map<String,Website>			siteMap;
 	private Set<String>		wordsSet;
 	
 	public BaiduurlsMapper getSearchurlMapper() {
@@ -68,7 +70,12 @@ public class SiteService extends BaseService{
 		initMapper("websiteMapper","websitekeysMapper","searchurlMapper","websitewordsMapper");
 		searchUrlMap = new HashMap<String,Baiduurls>();
 		
-
+		siteMap = new HashMap<String,Website>();
+		WebsiteExample e2 = new WebsiteExample();
+		List<Website> list2 = websiteMapper.selectByExample(e2);
+		for (Website item:list2){
+			siteMap.put(item.getUrl(), item);
+		}
 		
 		BaiduurlsExample  example = new BaiduurlsExample();
 //		BaiduurlsExample.Criteria criteria = example.createCriteria();
@@ -105,12 +112,12 @@ public class SiteService extends BaseService{
 		websitewordsMapper.insert(record);
 		
 	}
-	public List<String> getNewBaiduurls(){
-		List<String> newurls = new ArrayList<String>();
+	public List<Baiduurls> getNewBaiduurls(){
+		List<Baiduurls> newurls = new ArrayList<Baiduurls>();
 		
 		for (Baiduurls item:searchUrlMap.values())		{
 			if (item.getStatus()==0)
-				newurls.add(item.getUrl());
+				newurls.add(item);
 		}
 		return newurls;
 	}
@@ -154,22 +161,30 @@ public class SiteService extends BaseService{
 		return true;
 	}
 	
-	public boolean addSearchUrl(String url){
+	public boolean addSearchUrl(String url,int wordid){
 		if (searchUrlMap.containsKey(url))
 			return false;
 		
 		Baiduurls item = new Baiduurls();
 		item.setUrl(url);
+		item.setStatus(0);
+		item.setWordid(wordid);
+		item.setCrdate(new Date());
 		searchUrlMap.put(url, item);
 		searchurlMapper.insert(item);
 		return true;
 	}
 	
-	public int addSites(Vector<Website> records){
+	public Vector<Website> addSites(Vector<Website> records){
+		Vector<Website> sites2 = new Vector<Website>();
 		for (Website record:records){
-			websiteMapper.insertSelective(record);
+			if (!siteMap.containsKey(record.getUrl())){
+				sites2.add(record);
+				siteMap.put(record.getUrl(), record);
+				websiteMapper.insertSelective(record);
+			}
 		}
-		return 0;
+		return sites2;
 	}
 	
 	public int addSitekey(Websitekeys record){

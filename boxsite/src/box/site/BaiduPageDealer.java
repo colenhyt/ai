@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import box.site.db.SiteService;
+import box.site.model.Baiduurls;
 import box.site.model.Websitewords;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
@@ -44,7 +45,8 @@ public class BaiduPageDealer implements IPageDealer {
 				String div = htmlHelper.getBlockByOneProp("span", "class", "g");
 				div += "a";
 				String url = div;
-				if (siteService.addSearchUrl(url)){
+				int wordid = page.getRefId();
+				if (siteService.addSearchUrl(url,wordid)){
 					PageRef ref = new PageRef(url);
 					newurls.add(ref);
 				}
@@ -72,26 +74,35 @@ public class BaiduPageDealer implements IPageDealer {
 		// TODO Auto-generated method stub
 		List<PageRef> urls = new ArrayList<PageRef>();
 		String key = "http://www.baidu.com/s?wd=";
-//		String word = "海淘";
-//		for (int i=0;i<20;i++){
-//			String url = key+word+"&pn="+i;
-//			PageRef ref = new PageRef(url,word);
-//			urls.add(ref);
-//		}
 		SiteService service = new SiteService();
 		List<Websitewords>  words = service.getNewwords();
-		for (Websitewords item:words){
-			String[] warray = item.getWord().split(",");
-			String wordstr = "";
-			for (int i=0;i<warray.length;i++){
-				if (i>0)
-					wordstr += "%20";
-				wordstr += warray[i];
+		List<Baiduurls> newurls = service.getNewBaiduurls();
+		for (Baiduurls url:newurls){
+			PageRef ref = new PageRef(url.getUrl(),url.getWord());
+			ref.setRefId(url.getWordid());
+			urls.add(ref);	
+		}
+		
+		if (urls.size()<=0){
+			for (Websitewords item:words){
+				String[] warray = item.getWord().split(",");
+				String wordstr = "";
+				for (int i=0;i<warray.length;i++){
+					if (i>0)
+						wordstr += "%20";
+					wordstr += warray[i];
+				}
+				for (int j=0;j<20;j++){
+					String url = key+wordstr;
+					if (j>0)
+						url += "&pn="+j*10;
+					PageRef ref = new PageRef(url,item.getWord());
+					ref.setRefId(item.getWordid());
+					urls.add(ref);		
+					service.addSearchUrl(url, item.getWordid());
+				}
 			}
-			String url = key+wordstr;
-			PageRef ref = new PageRef(url,item.getWord());
-			ref.setRefId(item.getWordid());
-			urls.add(ref);			
+			service.DBCommit();
 		}
 		return urls;
 	}

@@ -88,7 +88,7 @@ public class SiteContentGetter extends Thread {
 		
 		
 		//site insert:
-		siteService.addSites(sites);
+		Vector<Website> sites2 = siteService.addSites(sites);
 		
 		//site word map:
 		for (Website item:sites){
