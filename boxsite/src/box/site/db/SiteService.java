@@ -22,9 +22,14 @@ import box.site.model.WebsitekeysMapper;
 import box.site.model.Websitewords;
 import box.site.model.WebsitewordsExample;
 import box.site.model.WebsitewordsMapper;
+import box.site.model.Wordrelation;
+import box.site.model.WordrelationExample;
+import box.site.model.WordrelationMapper;
 import cn.hd.base.BaseService;
 
 public class SiteService extends BaseService{
+	private int nextWordId = 0;
+
 	public WebsiteMapper getWebsiteMapper() {
 		return websiteMapper;
 	}
@@ -45,6 +50,15 @@ public class SiteService extends BaseService{
 	private WebsitekeysMapper websitekeysMapper;
 	private BaiduurlsMapper searchurlMapper;
 	private WebsitewordsMapper websitewordsMapper; 
+	private WordrelationMapper wordrelationMapper;
+	public WordrelationMapper getWordrelationMapper() {
+		return wordrelationMapper;
+	}
+
+	public void setWordrelationMapper(WordrelationMapper wordrelationMapper) {
+		this.wordrelationMapper = wordrelationMapper;
+	}
+
 	public WebsitewordsMapper getWebsitewordsMapper() {
 		return websitewordsMapper;
 	}
@@ -55,7 +69,8 @@ public class SiteService extends BaseService{
 
 	private Map<String,Baiduurls>		searchUrlMap;
 	private Map<String,Website>			siteMap;
-	private Set<String>		wordsSet;
+	private Map<String,Websitewords>		wordsMap;
+	private Set<String> 	wordRelationKeys;
 	
 	public BaiduurlsMapper getSearchurlMapper() {
 		return searchurlMapper;
@@ -67,8 +82,18 @@ public class SiteService extends BaseService{
 
 	public SiteService()
 	{
-		initMapper("websiteMapper","websitekeysMapper","searchurlMapper","websitewordsMapper");
+		initMapper("websiteMapper","websitekeysMapper","searchurlMapper","websitewordsMapper","wordrelationMapper");
+		
 		searchUrlMap = new HashMap<String,Baiduurls>();
+		
+		wordRelationKeys = new HashSet<String>();
+		
+		WordrelationExample ee = new WordrelationExample();
+		List<Wordrelation> rls = wordrelationMapper.selectByExample(ee);
+		for (Wordrelation rel:rls){
+			String key = rel.getWordid()+"_"+rel.getRelatewordid()+"_"+rel.getRelatetype();
+			wordRelationKeys.add(key);
+		}
 		
 		siteMap = new HashMap<String,Website>();
 		WebsiteExample e2 = new WebsiteExample();
@@ -88,13 +113,13 @@ public class SiteService extends BaseService{
 	}
 	
 	public List<Websitewords> getNewwords(){
-		wordsSet = new HashSet<String>();
+		wordsMap = new HashMap<String,Websitewords>();
 		List<Websitewords>  words = new ArrayList<Websitewords>();
 		WebsitewordsExample e2 = new WebsitewordsExample();
 		List<Websitewords> wordslist = websitewordsMapper.selectByExample(e2);
 		for (Websitewords item:wordslist){
 			if (item.getStatus()==0){
-				wordsSet.add(item.getWord());
+				wordsMap.put(item.getWord(),item);
 				words.add(item);
 			}
 		}
@@ -102,14 +127,29 @@ public class SiteService extends BaseService{
 		return words;
 	}
 	
-	public void addWord(String word){
-		if (wordsSet.contains(word))
+	public void addWordRelation(int wordid,int relateWordid,int relatetype){
+		String key = wordid+"_"+relateWordid+"_"+relatetype;
+		if (wordRelationKeys.contains(key))
 			return;
+		
+		Wordrelation r = new Wordrelation();
+		r.setWordid(wordid);
+		r.setRelatewordid(relateWordid);
+		r.setRelatetype(relatetype);
+		wordrelationMapper.insert(r);
+	}
+	
+	public int addWord(String word){
+		if (wordsMap.containsKey(word))
+			return wordsMap.get(word).getWordid();
 		
 		Websitewords  record = new Websitewords();
 		record.setWord(word);
+		record.setWordid(this.getNextWordId());
 		record.setStatus(0);
 		websitewordsMapper.insert(record);
+		wordsMap.put(word, record);
+		return record.getWordid();
 		
 	}
 	public List<Baiduurls> getNewBaiduurls(){
@@ -131,6 +171,14 @@ public class SiteService extends BaseService{
 				maxSiteid = item.getSiteid();
 		}
 		return maxSiteid;
+	}
+	
+	public synchronized int getNextWordId(){
+		if (nextWordId==0){
+		nextWordId = getMaxWordid();
+		}
+		nextWordId++;
+		return nextWordId;
 	}
 	
 	public int getMaxWordid(){

@@ -34,7 +34,6 @@ public class SiteContentGetter extends Thread {
 	private Map<String,String> classKeys = new HashMap<String,String>();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
 	private int nextWebsiteId = 0;
-	private int nextWordId = 0;
 	
 	public SiteContentGetter(){
 		
@@ -73,15 +72,6 @@ public class SiteContentGetter extends Thread {
 		return nextWebsiteId;
 	}
 	
-	public synchronized int getNextWordId(){
-		if (nextWordId==0){
-		SiteService siteService = new SiteService();
-		nextWordId = siteService.getMaxWordid();
-		}
-		nextWordId++;
-		return nextWordId;
-	}
-	
 	public synchronized void genWebSites(OriHttpPage page){
 		Vector<Website> sites = findWebSites(page);
 		SiteService siteService = new SiteService();
@@ -98,7 +88,7 @@ public class SiteContentGetter extends Thread {
 			siteService.addSitekey(key);
 		}
 		
-		//searchurl update:
+		//baiduurl update:
 		siteService.updateSearchUrl(page.getUrlStr());
 		
 		siteService.DBCommit();

@@ -16,6 +16,7 @@ public class BaiduPageDealer implements IPageDealer {
 	private OriHttpPage page;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	SiteContentGetter siteGetter = new SiteContentGetter();
+	static String BAIDU_URL = "http://www.baidu.com/s?";
 	
 	public BaiduPageDealer(){
 		siteGetter.setSiteId(siteId);
@@ -26,34 +27,31 @@ public class BaiduPageDealer implements IPageDealer {
 	public List<PageRef> deal(OriHttpPage _page) {
 		page = _page;
 		siteGetter.pushPage(_page);
-		List<PageRef> newurls = findPagingRefs();
+		List<PageRef> newurls = findPagingRefs(_page.getRefId());
 		
 		return newurls;
 	}
 	
-	private List<PageRef> findPagingRefs(){
+	private List<PageRef> findPagingRefs(int parentWordid){
 		List<PageRef> newurls = new ArrayList<PageRef>();
 		SiteService siteService = new SiteService();
 		htmlHelper.init(page.getContent());
-		String[] pagingContent = htmlHelper.getDivsByClassValue("xdGcVm UWeZEg Hxgnfk UQfpJC EZLYns");
-		for (int i=0;i<pagingContent.length;i++){
-			String pc = pagingContent[i];
-			htmlHelper.init(pc.getBytes());
-			String[] divs = htmlHelper.getDivsByClassValue("f13");
-			for (int j=0;j<divs.length;j++){
-				htmlHelper.init(divs[j].getBytes());
-				String div = htmlHelper.getBlockByOneProp("span", "class", "g");
-				div += "a";
-				String url = div;
-				int wordid = page.getRefId();
-				if (siteService.addSearchUrl(url,wordid)){
-					PageRef ref = new PageRef(url);
-					newurls.add(ref);
+		List<PageRef> refs = htmlHelper.getUrlsByLinkKey(BAIDU_URL);
+		for (PageRef ref:refs){
+				int wordid = siteService.addWord(ref.getRefWord());
+				siteService.addWordRelation(parentWordid, wordid, 1);
+				//自动分页:
+				for (int i=0;i<20;i++){
+					String urlstr = BAIDU_URL+"wd="+ref.getRefWord()+"&pn="+i*10;
+					if (siteService.addSearchUrl(urlstr,wordid)){
+						PageRef url = new PageRef(urlstr,ref.getRefWord());
+						url.setRefId(wordid);
+						newurls.add(url);
+					}
+					
 				}
-			}
 		}
-		if (newurls.size()>0)
-			siteService.DBCommit();
+		siteService.DBCommit();
 		
 		return newurls;
 	}
@@ -73,9 +71,9 @@ public class BaiduPageDealer implements IPageDealer {
 	public List<PageRef> getFirstRefs() {
 		// TODO Auto-generated method stub
 		List<PageRef> urls = new ArrayList<PageRef>();
-		String key = "http://www.baidu.com/s?wd=";
 		SiteService service = new SiteService();
-		List<Websitewords>  words = service.getNewwords();
+		
+		//找已有未完成URL:
 		List<Baiduurls> newurls = service.getNewBaiduurls();
 		for (Baiduurls url:newurls){
 			PageRef ref = new PageRef(url.getUrl(),url.getWord());
@@ -83,6 +81,8 @@ public class BaiduPageDealer implements IPageDealer {
 			urls.add(ref);	
 		}
 		
+		//新组装baidu urls:
+		List<Websitewords>  words = service.getNewwords();
 		if (urls.size()<=0){
 			for (Websitewords item:words){
 				String[] warray = item.getWord().split(",");
@@ -93,7 +93,7 @@ public class BaiduPageDealer implements IPageDealer {
 					wordstr += warray[i];
 				}
 				for (int j=0;j<20;j++){
-					String url = key+wordstr;
+					String url = BAIDU_URL+"wd="+wordstr;
 					if (j>0)
 						url += "&pn="+j*10;
 					PageRef ref = new PageRef(url,item.getWord());
