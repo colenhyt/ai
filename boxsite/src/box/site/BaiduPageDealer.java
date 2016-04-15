@@ -3,6 +3,8 @@ package box.site;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import box.site.db.SiteService;
 import box.site.model.Baiduurls;
 import box.site.model.Websitewords;
@@ -12,11 +14,15 @@ import easyshop.html.HTMLInfoSupplier;
 import es.webref.model.PageRef;
 
 public class BaiduPageDealer implements IPageDealer {
+	protected Logger  log = Logger.getLogger(getClass()); 
+
 	private static final String siteId = "baidu";
 	private OriHttpPage page;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	SiteContentGetter siteGetter = new SiteContentGetter();
-	static String BAIDU_URL = "http://www.baidu.com/s?";
+	static String BAIDU_URL = "https://www.baidu.com/s?";
+	static String BAIDU_URL0 = "http://www.baidu.com/s?";
+	static String BAIDU_URL00 = "https://www.baidu.com/";
 	
 	public BaiduPageDealer(){
 		siteGetter.setSiteId(siteId);
@@ -26,6 +32,7 @@ public class BaiduPageDealer implements IPageDealer {
 	@Override
 	public List<PageRef> deal(OriHttpPage _page) {
 		page = _page;
+		log.debug("get page "+_page.getUrlStr());
 		siteGetter.pushPage(_page);
 		List<PageRef> newurls = findPagingRefs(_page.getRefId());
 		
@@ -36,8 +43,15 @@ public class BaiduPageDealer implements IPageDealer {
 		List<PageRef> newurls = new ArrayList<PageRef>();
 		SiteService siteService = new SiteService();
 		htmlHelper.init(page.getContent());
-		List<PageRef> refs = htmlHelper.getUrlsByLinkKey(BAIDU_URL);
+		String relatdiv = htmlHelper.getBlockByOneProp("div","id","rs");
+		htmlHelper.init(relatdiv.getBytes());
+		List<PageRef> refs = htmlHelper.getUrls();
 		for (PageRef ref:refs){
+			if (ref.getRefWord()==null) continue;
+			
+//			String urlstr0 = ref.getUrlStr();
+//			if (urlstr0.indexOf("s?wd")==0)
+//				urlstr0 = BAIDU_URL00 + urlstr0;
 				int wordid = siteService.addWord(ref.getRefWord());
 				siteService.addWordRelation(parentWordid, wordid, 1);
 				//自动分页:

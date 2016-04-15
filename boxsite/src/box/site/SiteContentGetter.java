@@ -128,6 +128,8 @@ public class SiteContentGetter extends Thread {
 			if (urls.size()<=0) continue;
 			String url = urls.get(0);
 			String realurl =new PostPageGetter().getRealUrl(url, httpClient);
+			if (realurl==null)
+				realurl = url;
 			site.setUrl(realurl);
 			site.setBaiduurl(url);
 			site.setSiteid(getNextWebisteId());

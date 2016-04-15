@@ -70,6 +70,7 @@ public class SiteService extends BaseService{
 	private Map<String,Baiduurls>		searchUrlMap;
 	private Map<String,Website>			siteMap;
 	private Map<String,Websitewords>		wordsMap;
+	private Map<String,Websitekeys>		keysMap;
 	private Set<String> 	wordRelationKeys;
 	
 	public BaiduurlsMapper getSearchurlMapper() {
@@ -86,6 +87,14 @@ public class SiteService extends BaseService{
 		
 		searchUrlMap = new HashMap<String,Baiduurls>();
 		
+		wordsMap = new HashMap<String,Websitewords>();
+		
+		WebsitewordsExample e0 = new WebsitewordsExample();
+		List<Websitewords> wl = websitewordsMapper.selectByExample(e0);
+		for (Websitewords word:wl){
+			wordsMap.put(word.getWord(), word);
+		}
+		
 		wordRelationKeys = new HashSet<String>();
 		
 		WordrelationExample ee = new WordrelationExample();
@@ -93,6 +102,14 @@ public class SiteService extends BaseService{
 		for (Wordrelation rel:rls){
 			String key = rel.getWordid()+"_"+rel.getRelatewordid()+"_"+rel.getRelatetype();
 			wordRelationKeys.add(key);
+		}
+		
+		keysMap = new HashMap<String,Websitekeys>();
+		WebsitekeysExample e3 = new WebsitekeysExample();
+		List<Websitekeys> ll = websitekeysMapper.selectByExample(e3);
+		for (Websitekeys item:ll){
+			String key = item.getSiteid()+"_"+item.getWordid();
+			keysMap.put(key, item);
 		}
 		
 		siteMap = new HashMap<String,Website>();
@@ -136,10 +153,14 @@ public class SiteService extends BaseService{
 		r.setWordid(wordid);
 		r.setRelatewordid(relateWordid);
 		r.setRelatetype(relatetype);
+		wordRelationKeys.add(key);
 		wordrelationMapper.insert(r);
 	}
 	
 	public int addWord(String word){
+		if (word==null)
+			return -1;
+		
 		if (wordsMap.containsKey(word))
 			return wordsMap.get(word).getWordid();
 		
@@ -236,6 +257,11 @@ public class SiteService extends BaseService{
 	}
 	
 	public int addSitekey(Websitekeys record){
+		String key = record.getSiteid()+"_"+record.getWordid();
+		if (keysMap.containsKey(key))
+			return -1;
+		
+		keysMap.put(key, record);
 		return websitekeysMapper.insertSelective(record);
 	}
 	
