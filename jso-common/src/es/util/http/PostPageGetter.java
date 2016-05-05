@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -36,7 +37,13 @@ public class PostPageGetter extends PageGetter{
     private int maxTotalConn=20;
     public final static String HTTP_USER_AGENT="Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)";
 	
+	public PostPageGetter(String agent){
+		super(agent);
+	}
 	
+	public PostPageGetter(){
+		
+	}
 //	public HttpPage getPage(){
 //		
 //	}
@@ -47,9 +54,10 @@ public class PostPageGetter extends PageGetter{
 	      	httpClient = HttpClients.createDefault();
 	     }		
 		
-		PostPageGetter getter = new PostPageGetter();
-		String urlStr = "http://www.baidu.com/link?url=g9YsxantDNoKXt0gNo51frJJCP4HOOCzBXs2QDBuUisJoWSfb8vHAkd-s29LGHJ9";
-		getter.getHttpPage(urlStr, httpClient);
+		PostPageGetter getter = new PostPageGetter(HTTP_USER_AGENT);
+		String urlStr = "http://www.baidu.com/link?url=2U8pIIZe93JE6Ayht9HjvvBNixTGPqJec_EltoissHisVtbQ3KiUiPhUR5v0lC1IS8cwSlDCF2jqsatDyTy7k_";
+		String url = getter.getRealUrl(urlStr, httpClient);
+		System.out.println(url);
 	}
 	
 	public HttpPage getHttpPage(String urlStr,Map params){
@@ -62,18 +70,19 @@ public class PostPageGetter extends PageGetter{
 
 	public String getRealUrl(String urlStr,HttpClient client){
             HttpGet get= new HttpGet(urlStr);
-	        
             HttpContext httpContext = new BasicHttpContext();
             
 	        try {
-	            get.addHeader("User-Agent", HTTP_USER_AGENT);
+	            get.addHeader("User-Agent", userAgent);
 	            RequestConfig defaultRequestConfig = RequestConfig.custom()
 	                    .setSocketTimeout(10000).build();
 	            get.setConfig(defaultRequestConfig);
+	            client.execute(get, httpContext);
 	            HttpHost host = (HttpHost) httpContext
 	                    .getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 	            if (host!=null)
 	            	return host.getHostName();
+		        System.out.println("could not get real url "+urlStr);	            
 	            return null;
 	            
 	        }catch(Exception e)

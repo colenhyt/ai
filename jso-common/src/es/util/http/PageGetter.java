@@ -17,8 +17,12 @@ public class PageGetter {
     protected String userAgent;
     HttpClient httpClient= HttpClients.createDefault();
 	
+	public PageGetter(String userAgent){
+        this.userAgent=userAgent;
+	}
+	
 	public PageGetter(){
-        this.userAgent=AGENG_BAIDU;
+        this.userAgent=HTTP_USER_AGENT;
 	}
 	
 	protected HttpClient defaultHttpClient(){
