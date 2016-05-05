@@ -1,6 +1,6 @@
 package box.site;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,16 +10,17 @@ import java.util.Vector;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.log4j.Logger;
 
 import box.site.db.SiteService;
 import box.site.model.Website;
 import box.site.model.Websitekeys;
-import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
 import es.util.http.PostPageGetter;
 
 public class SiteContentGetter extends Thread {
+	protected Logger  log = Logger.getLogger(getClass()); 
     private HttpClient httpClient = null;
     private int maxConnPerHost=2;
     private int timeOut=6000;
@@ -81,7 +82,7 @@ public class SiteContentGetter extends Thread {
 		Vector<Website> sites2 = siteService.addSites(sites);
 		
 		//site word map:
-		for (Website item:sites){
+		for (Website item:sites2){
 			Websitekeys key = new Websitekeys();
 			key.setSiteid(item.getSiteid());
 			key.setWordid(page.getRefId());
@@ -116,7 +117,7 @@ public class SiteContentGetter extends Thread {
 			classKeys.put(siteId, classkey);
 		}
 		if (classkey==null){
-			System.out.println("error,没有找到该页面list item");
+			log.warn("error,没有找到该页面list item,根据关键字:"+keys.toString());
 			return sites;
 		}
 		
@@ -137,9 +138,10 @@ public class SiteContentGetter extends Thread {
 			site.setAlexa(this.getAlexa(site.getUrl()));
 			site.setBdrank(this.getBdRank(site.getUrl()));	
 			site.setRemark(page.getRefWord());
+			site.setCrdate(new Date());
 			sites.add(site);
 		}
-
+		log.warn("找到websites: "+sites.size());
 		return sites;
 	}
 	

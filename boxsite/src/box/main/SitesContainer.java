@@ -41,7 +41,7 @@ public class SitesContainer extends Observable implements Observer {
     
   	MultiThreadedHttpConnectionManager connectionManager = 
   		new MultiThreadedHttpConnectionManager();
-    public final static String HTTP_USER_AGENT="Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)";
+    public final static String HTTP_USER_AGENT="Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)";
     private static final String THREAD_GROUP_NAME = "downloadspider";
 	private ThreadGroup group = new ThreadGroup(THREAD_GROUP_NAME); // our group    
 

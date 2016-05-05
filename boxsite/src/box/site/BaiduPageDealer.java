@@ -11,6 +11,7 @@ import box.site.model.Websitewords;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import es.util.FileUtil;
 import es.webref.model.PageRef;
 
 public class BaiduPageDealer implements IPageDealer {
@@ -32,9 +33,17 @@ public class BaiduPageDealer implements IPageDealer {
 	@Override
 	public List<PageRef> deal(OriHttpPage _page) {
 		page = _page;
+		List<PageRef> newurls = new ArrayList<PageRef>();
 		log.debug("get page "+_page.getUrlStr());
+		String filepath = "./pages/"+_page.getUrlStr().hashCode()+".html";
+		String pageContent = new String(_page.getContent());
+		if (pageContent.indexOf("百度快照")<0){
+			log.warn("没有找到搜索内容");
+			FileUtil.writeFile(filepath, pageContent);
+			return newurls;
+		}
 		siteGetter.pushPage(_page);
-		List<PageRef> newurls = findPagingRefs(_page.getRefId());
+		newurls.addAll(findPagingRefs(_page.getRefId()));
 		
 		return newurls;
 	}
@@ -44,6 +53,9 @@ public class BaiduPageDealer implements IPageDealer {
 		SiteService siteService = new SiteService();
 		htmlHelper.init(page.getContent());
 		String relatdiv = htmlHelper.getBlockByOneProp("div","id","rs");
+		if (relatdiv==null)
+			return newurls;
+		
 		htmlHelper.init(relatdiv.getBytes());
 		List<PageRef> refs = htmlHelper.getUrls();
 		for (PageRef ref:refs){
@@ -66,7 +78,7 @@ public class BaiduPageDealer implements IPageDealer {
 				}
 		}
 		siteService.DBCommit();
-		
+		log.warn("get baidu urls:"+newurls.size());
 		return newurls;
 	}
 	@Override

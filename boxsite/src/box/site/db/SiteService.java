@@ -250,6 +250,9 @@ public class SiteService extends BaseService{
 			if (!siteMap.containsKey(record.getUrl())){
 				sites2.add(record);
 				siteMap.put(record.getUrl(), record);
+//				if (record.getUrl().length()>200){
+//					log.warn(record.getUrl());
+//				}
 				websiteMapper.insertSelective(record);
 			}
 		}
