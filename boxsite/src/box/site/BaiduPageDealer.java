@@ -11,6 +11,7 @@ import box.site.model.Websitewords;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import es.download.flow.DownloadContext;
 import es.util.FileUtil;
 import es.webref.model.PageRef;
 
@@ -20,12 +21,13 @@ public class BaiduPageDealer implements IPageDealer {
 	private static final String siteId = "baidu";
 	private OriHttpPage page;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
-	SiteContentGetter siteGetter = new SiteContentGetter();
+	SiteContentGetter siteGetter;
 	static String BAIDU_URL = "https://www.baidu.com/s?";
 	static String BAIDU_URL0 = "http://www.baidu.com/s?";
 	static String BAIDU_URL00 = "https://www.baidu.com/";
 	
 	public BaiduPageDealer(){
+		siteGetter = new SiteContentGetter(DownloadContext.getSpiderContext().getUserAgent());
 		siteGetter.setSiteId(siteId);
 		siteGetter.start();
 	}

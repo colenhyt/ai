@@ -25,19 +25,18 @@ public class SiteContentGetter extends Thread {
     private int maxConnPerHost=2;
     private int timeOut=6000;
     private int maxTotalConn=20;
-    public final static String HTTP_USER_AGENT="Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)";
-  
     private String alexaapi = "http://data.alexa.com/data?cli=10&url=%s";
 	private String baiduRank = "http://baidurank.aizhan.com/baidu/%s/position/";
 	private String googlePr = "http://toolbarqueries.google.com/search?client=navclient-auto&features=Rank&ch=8&q=info:";
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	private String siteId;
+	private String userAgent;
 	private Map<String,String> classKeys = new HashMap<String,String>();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
 	private int nextWebsiteId = 0;
 	
-	public SiteContentGetter(){
-		
+	public SiteContentGetter(String vuserAgent){
+		userAgent = vuserAgent;
 	}
 	
 	public void setSiteId(String site){
@@ -128,7 +127,7 @@ public class SiteContentGetter extends Thread {
 			List<String> urls =htmlHelper.getUrlStrsByLinkKey(keys.get(0));
 			if (urls.size()<=0) continue;
 			String url = urls.get(0);
-			String realurl =new PostPageGetter().getRealUrl(url, httpClient);
+			String realurl =new PostPageGetter(userAgent).getRealUrl(url, httpClient);
 			if (realurl==null)
 				realurl = url;
 			site.setUrl(realurl);
