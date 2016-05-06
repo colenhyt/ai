@@ -21,15 +21,10 @@ import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
 import es.util.http.PostPageGetter;
 
-public class WebSiteInfoGetter extends Thread {
+public class WebSiteInfoGetter extends SiteContentGetter {
 	protected Logger  log = Logger.getLogger(getClass()); 
     private HttpClient httpClient = null;
-    private String alexaapi = "http://data.alexa.com/data?cli=10&url=";
-	private String baiduRank = "http://baidurank.aizhan.com/baidu/";
-	private String googlePr = "http://toolbarqueries.google.com/search?client=navclient-auto&features=Rank&ch=8&q=info:";
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
-	private String userAgent;
-	private PostPageGetter pageGetter;
 	
 	public static void main(String[] args){
 		WebSiteInfoGetter getter = new WebSiteInfoGetter();
@@ -57,11 +52,6 @@ public class WebSiteInfoGetter extends Thread {
 //		service.updateWebsites(list);
 		service.DBCommit();
 	}
-	public WebSiteInfoGetter(){
-		userAgent = DownloadContext.getSpiderContext().getUserAgent();
-		initHttpClient();
-		pageGetter = new PostPageGetter();
-	}
 	
 	public void run() {
 		while (1==1){
@@ -81,50 +71,6 @@ public class WebSiteInfoGetter extends Thread {
 		if (httpClient==null){
 	      	httpClient = HttpClients.createDefault();
 		}
-	}
-	
-	public int getBdRank(String weburl){
-		int rank=-1;
-		String urlStr = baiduRank+weburl+"/position/";
-		HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
-		if (page.getContent()==null)
-			return rank;
-		String content  = new String(page.getContent());
-		htmlHelper.init(page.getContent());
-		String div = htmlHelper.getDivByClassValue("box_17");
-		if (div!=null){
-			String startKey = "/brs/";
-			String endKey = ".gif";
-			if (content.indexOf(startKey)<=0)
-				return rank;
-			String rankText = content.substring(content.indexOf(startKey)+startKey.length(),content.indexOf(endKey));
-			if (rankText!=null)
-				rank = Integer.valueOf(rankText);			
-		}
-		log.warn("bdrank "+rank);
-		return rank;
-	}
-	
-	public int getAlexa(String weburl){
-		int alexa = -1;
-		String urlStr = alexaapi + weburl;
-		HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
-		if (page.getContent()==null)
-			return alexa;
-		String content  = new String(page.getContent());
-//		log.warn(content);
-		String startKey = "TEXT=\"";
-		String endKey = "\"";
-		if (content.indexOf(startKey)<=0){
-			log.warn("wrong alexa:"+content);
-			return alexa;
-		}
-		String subt = content.substring(content.indexOf(startKey)+startKey.length());
-		String rankText = subt.substring(0,subt.indexOf(endKey));
-		if (rankText!=null)
-			alexa = Integer.valueOf(rankText);
-		log.warn("alexa "+alexa);
-		return alexa;
 	}
 	
 }

@@ -129,6 +129,12 @@ public class SiteService extends BaseService{
 		
 	}
 	
+	public int findWordId(String word){
+		if (wordsMap.containsKey(word))
+			wordsMap.get(word).getWordid();
+		
+		return -1;
+	}
 	public List<Websitewords> getNewwords(){
 		wordsMap = new HashMap<String,Websitewords>();
 		List<Websitewords>  words = new ArrayList<Websitewords>();
@@ -265,6 +271,22 @@ public class SiteService extends BaseService{
 		searchUrlMap.put(url, item);
 		searchurlMapper.insert(item);
 		return true;
+	}
+	
+	public int getWebsiteCount(int wordid){
+		WebsitekeysExample example = new WebsitekeysExample();
+		WebsitekeysExample.Criteria cri = example.createCriteria();
+		cri.andWordidEqualTo(wordid);
+		return websitekeysMapper.countByExample(example);
+	}
+	
+	public List<Baiduurls> getNotDoneSearchUrls(int wordid){
+		
+		BaiduurlsExample example = new BaiduurlsExample();
+		BaiduurlsExample.Criteria criteria = example.createCriteria();
+		criteria.andWordidEqualTo(wordid);
+		criteria.andStatusEqualTo(0);
+		return searchurlMapper.selectByExample(example);
 	}
 	
 	public Vector<Website> addSites(Vector<Website> records){

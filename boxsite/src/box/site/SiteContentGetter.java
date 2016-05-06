@@ -28,15 +28,18 @@ public class SiteContentGetter extends Thread {
 	private String siteId;
 	private String userAgent;
 	private PostPageGetter pageGetter;
+    private String alexaapi = "http://data.alexa.com/data?cli=10&url=";
+	private String baiduRank = "http://baidurank.aizhan.com/baidu/";
+	private String googlePr = "http://toolbarqueries.google.com/search?client=navclient-auto&features=Rank&ch=8&q=info:";
 	private Map<String,String> classKeys = new HashMap<String,String>();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
 	private int nextWebsiteId = 0;
 	
 	public static void main(String[] args){
-		SiteContentGetter getter = new SiteContentGetter(DownloadContext.getSpiderContext().getUserAgent());
+		SiteContentGetter getter = new SiteContentGetter();
 	}
-	public SiteContentGetter(String vuserAgent){
-		userAgent = vuserAgent;
+	public SiteContentGetter(){
+		userAgent = DownloadContext.getSpiderContext().getUserAgent();
 		initHttpClient();
 		pageGetter = new PostPageGetter();
 	}
@@ -48,7 +51,7 @@ public class SiteContentGetter extends Thread {
 		while (1==1){
 			synchronized(this){
 				for (OriHttpPage page:pages){
-					this.genWebSites(page);
+					this.genWebSites(page,false);
 				}
 				pages.clear();
 			}
@@ -74,11 +77,24 @@ public class SiteContentGetter extends Thread {
 		return nextWebsiteId;
 	}
 	
-	public synchronized void genWebSites(OriHttpPage page){
+	public synchronized void genWebSites(OriHttpPage page,boolean findInfo){
 		Vector<Website> sites = findWebSites(page);
 		SiteService siteService = new SiteService();
 		
-		
+		if (findInfo){
+			for (Website site:sites){
+				if (site.getUrl()!=null){
+					site.setAlexa(this.getAlexa(site.getUrl()));
+					site.setBdrank(this.getBdRank(site.getUrl()));	
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 		//site insert:
 		Vector<Website> sites2 = siteService.addSites(sites);
 		
@@ -129,18 +145,62 @@ public class SiteContentGetter extends Thread {
 			if (urls.size()<=0) continue;
 			String url = urls.get(0);
 			String realurl =new PostPageGetter(userAgent).getRealUrl(url, httpClient);
-			if (realurl==null)
-				realurl = url;
-			site.setUrl(realurl);
 			site.setBaiduurl(url);
 			site.setSiteid(getNextWebisteId());
 			site.setStatus(SiteDataManager.WEBSITE_STATUS_DONEURL);
+			if (realurl!=null){
+				site.setUrl(realurl);
+//				site.setAlexa(this.getAlexa(realurl));
+//				site.setBdrank(this.getBdRank(realurl));
+			}
 			site.setRemark(page.getRefWord());
 			site.setCrdate(new Date());
 			sites.add(site);
 		}
 		log.warn("找到websites: "+sites.size());
 		return sites;
+	}
+	public int getAlexa(String weburl){
+			int alexa = -1;
+			String urlStr = alexaapi + weburl;
+			HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
+			if (page.getContent()==null)
+				return alexa;
+			String content  = new String(page.getContent());
+	//		log.warn(content);
+			String startKey = "TEXT=\"";
+			String endKey = "\"";
+			if (content.indexOf(startKey)<=0){
+				log.warn("wrong alexa:"+content);
+				return alexa;
+			}
+			String subt = content.substring(content.indexOf(startKey)+startKey.length());
+			String rankText = subt.substring(0,subt.indexOf(endKey));
+			if (rankText!=null)
+				alexa = Integer.valueOf(rankText);
+			log.warn("alexa "+alexa);
+			return alexa;
+		}
+	public int getBdRank(String weburl){
+		int rank=-1;
+		String urlStr = baiduRank+weburl+"/position/";
+		HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
+		if (page.getContent()==null)
+			return rank;
+		String content  = new String(page.getContent());
+		htmlHelper.init(page.getContent());
+		String div = htmlHelper.getDivByClassValue("box_17");
+		if (div!=null){
+			String startKey = "/brs/";
+			String endKey = ".gif";
+			if (content.indexOf(startKey)<=0)
+				return rank;
+			String rankText = content.substring(content.indexOf(startKey)+startKey.length(),content.indexOf(endKey));
+			if (rankText!=null)
+				rank = Integer.valueOf(rankText);			
+		}
+		log.warn("bdrank "+rank);
+		return rank;
 	}
 	
 }

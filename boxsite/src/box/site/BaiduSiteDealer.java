@@ -15,7 +15,7 @@ import es.download.flow.DownloadContext;
 import es.util.FileUtil;
 import es.webref.model.PageRef;
 
-public class BaiduPageDealer implements IPageDealer {
+public class BaiduSiteDealer implements IPageDealer {
 	protected Logger  log = Logger.getLogger(getClass()); 
 
 	private static final String siteId = "baidu";
@@ -27,12 +27,9 @@ public class BaiduPageDealer implements IPageDealer {
 	static String BAIDU_URL0 = "http://www.baidu.com/s?";
 	static String BAIDU_URL00 = "https://www.baidu.com/";
 	
-	public BaiduPageDealer(){
+	public BaiduSiteDealer(){
 		siteGetter = new SiteContentGetter();
 		siteGetter.setSiteId(siteId);
-		siteGetter.start();
-//		infoGetter = new WebSiteInfoGetter();
-//		infoGetter.start();
 	}
 	
 	@Override
@@ -47,7 +44,14 @@ public class BaiduPageDealer implements IPageDealer {
 			FileUtil.writeFile(filepath, pageContent);
 			return newurls;
 		}
-		siteGetter.pushPage(_page);
+		siteGetter.genWebSites(_page,true);
+		SiteService service = new SiteService();
+		int siteCount = service.getWebsiteCount(_page.getRefId());
+		if (siteCount>50){
+			log.warn("该关键字相关网站已有 ："+siteCount);
+			return newurls;
+		}		
+		
 		newurls.addAll(findPagingRefs(_page.getRefId()));
 		
 		return newurls;
@@ -98,43 +102,50 @@ public class BaiduPageDealer implements IPageDealer {
 		return null;
 	}
 
+	
 	@Override
 	public List<PageRef> getFirstRefs() {
 		// TODO Auto-generated method stub
 		List<PageRef> urls = new ArrayList<PageRef>();
+		String keyword = "";
 		SiteService service = new SiteService();
-		
-		//找已有未完成URL:
-		List<Baiduurls> newurls = service.getNewBaiduurls();
-		for (Baiduurls url:newurls){
-			PageRef ref = new PageRef(url.getUrl(),url.getWord());
-			ref.setRefId(url.getWordid());
-			urls.add(ref);	
-		}
-		
-		//新组装baidu urls:
-		List<Websitewords>  words = service.getNewwords();
-		if (urls.size()<=0){
-			for (Websitewords item:words){
-				String[] warray = item.getWord().split(",");
-				String wordstr = "";
-				for (int i=0;i<warray.length;i++){
-					if (i>0)
-						wordstr += "%20";
-					wordstr += warray[i];
-				}
-				for (int j=0;j<20;j++){
-					String url = BAIDU_URL+"wd="+wordstr;
-					if (j>0)
-						url += "&pn="+j*10;
-					PageRef ref = new PageRef(url,item.getWord());
-					ref.setRefId(item.getWordid());
-					urls.add(ref);		
-					service.addSearchUrl(url, item.getWordid());
-				}
+		int wordid = service.findWordId(keyword);
+		//not done word:
+		if (wordid>0){
+			int siteCount = service.getWebsiteCount(wordid);
+			if (siteCount>50){
+				log.warn("该关键字相关网站已有 ："+siteCount);
+				return urls;
 			}
-			service.DBCommit();
+			
+			List<Baiduurls> bdurls = service.getNotDoneSearchUrls(wordid);
+			for (Baiduurls item:bdurls){
+				PageRef ref = new PageRef(item.getUrl(),keyword);
+				ref.setRefId(wordid);
+				urls.add(ref);		
+			}
 		}
+		
+		if (urls.size()<=0) {
+			wordid = service.addWord(keyword);
+			String[] warray = keyword.split(",");
+			String wordstr = "";
+			for (int i=0;i<warray.length;i++){
+				if (i>0)
+					wordstr += "%20";
+				wordstr += warray[i];
+			}
+			for (int j=0;j<20;j++){
+				String url = BAIDU_URL+"wd="+wordstr;
+				if (j>0)
+					url += "&pn="+j*10;
+				PageRef ref = new PageRef(url,keyword);
+				ref.setRefId(wordid);
+				urls.add(ref);		
+				service.addSearchUrl(url, wordid);
+			}						
+		}
+
 		return urls;
 	}
 
