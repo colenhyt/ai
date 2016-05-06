@@ -15,28 +15,30 @@ import org.apache.log4j.Logger;
 import box.site.db.SiteService;
 import box.site.model.Website;
 import box.site.model.Websitekeys;
+import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import es.download.flow.DownloadContext;
 import es.util.http.PostPageGetter;
 
 public class SiteContentGetter extends Thread {
 	protected Logger  log = Logger.getLogger(getClass()); 
     private HttpClient httpClient = null;
-    private int maxConnPerHost=2;
-    private int timeOut=6000;
-    private int maxTotalConn=20;
-    private String alexaapi = "http://data.alexa.com/data?cli=10&url=%s";
-	private String baiduRank = "http://baidurank.aizhan.com/baidu/%s/position/";
-	private String googlePr = "http://toolbarqueries.google.com/search?client=navclient-auto&features=Rank&ch=8&q=info:";
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	private String siteId;
 	private String userAgent;
+	private PostPageGetter pageGetter;
 	private Map<String,String> classKeys = new HashMap<String,String>();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
 	private int nextWebsiteId = 0;
 	
+	public static void main(String[] args){
+		SiteContentGetter getter = new SiteContentGetter(DownloadContext.getSpiderContext().getUserAgent());
+	}
 	public SiteContentGetter(String vuserAgent){
 		userAgent = vuserAgent;
+		initHttpClient();
+		pageGetter = new PostPageGetter();
 	}
 	
 	public void setSiteId(String site){
@@ -101,7 +103,6 @@ public class SiteContentGetter extends Thread {
 	}
 	
 	public Vector<Website> findWebSites(OriHttpPage page){
-		initHttpClient();
 		
 		htmlHelper.init(page.getContent());
 		Vector<Website> sites = new Vector<Website>();
@@ -134,24 +135,12 @@ public class SiteContentGetter extends Thread {
 			site.setBaiduurl(url);
 			site.setSiteid(getNextWebisteId());
 			site.setStatus(SiteDataManager.WEBSITE_STATUS_DONEURL);
-			site.setAlexa(this.getAlexa(site.getUrl()));
-			site.setBdrank(this.getBdRank(site.getUrl()));	
 			site.setRemark(page.getRefWord());
 			site.setCrdate(new Date());
 			sites.add(site);
 		}
 		log.warn("找到websites: "+sites.size());
 		return sites;
-	}
-	
-	public int getBdRank(String weburl){
-		int rank=0;
-		return rank;
-	}
-	
-	public int getAlexa(String weburl){
-		int alexa = 0;
-		return alexa;
 	}
 	
 }

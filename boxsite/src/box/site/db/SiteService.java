@@ -194,6 +194,19 @@ public class SiteService extends BaseService{
 		return maxSiteid;
 	}
 	
+	public List<Website> getNotInfoWebsite(){
+		WebsiteExample e = new WebsiteExample();
+		WebsiteExample.Criteria criteria = e.createCriteria();
+		criteria.andAlexaIsNull();
+		criteria.andBdrankIsNull();
+		criteria.andUrlIsNotNull();
+		List<Website> list = websiteMapper.selectByExample(e);
+//		List<Website> list2 = new ArrayList<Website>();
+//		for (int i=0;i<2;i++)
+//			list2.add(list.get(i));
+		return list;
+	}
+	
 	public synchronized int getNextWordId(){
 		if (nextWordId==0){
 		nextWordId = getMaxWordid();
@@ -228,6 +241,16 @@ public class SiteService extends BaseService{
 		record.setStatus(1);
 		searchurlMapper.updateByPrimaryKeySelective(record);
 		return true;
+	}
+	
+	public void updateWebsites(List<Website> sites){
+		for (Website site:sites){
+			websiteMapper.updateByPrimaryKey(site);
+		}
+	}
+	
+	public void updateWebsite(Website site){
+			websiteMapper.updateByPrimaryKey(site);
 	}
 	
 	public boolean addSearchUrl(String url,int wordid){

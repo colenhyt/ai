@@ -22,6 +22,7 @@ public class BaiduPageDealer implements IPageDealer {
 	private OriHttpPage page;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	SiteContentGetter siteGetter;
+	WebSiteInfoGetter infoGetter;
 	static String BAIDU_URL = "https://www.baidu.com/s?";
 	static String BAIDU_URL0 = "http://www.baidu.com/s?";
 	static String BAIDU_URL00 = "https://www.baidu.com/";
@@ -30,6 +31,8 @@ public class BaiduPageDealer implements IPageDealer {
 		siteGetter = new SiteContentGetter(DownloadContext.getSpiderContext().getUserAgent());
 		siteGetter.setSiteId(siteId);
 		siteGetter.start();
+		infoGetter = new WebSiteInfoGetter();
+		infoGetter.start();
 	}
 	
 	@Override
