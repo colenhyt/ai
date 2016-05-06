@@ -107,7 +107,7 @@ public class BaiduSiteDealer implements IPageDealer {
 	public List<PageRef> getFirstRefs() {
 		// TODO Auto-generated method stub
 		List<PageRef> urls = new ArrayList<PageRef>();
-		String keyword = "";
+		String keyword = "育儿,教育";
 		SiteService service = new SiteService();
 		int wordid = service.findWordId(keyword);
 		//not done word:
@@ -128,6 +128,7 @@ public class BaiduSiteDealer implements IPageDealer {
 		
 		if (urls.size()<=0) {
 			wordid = service.addWord(keyword);
+			service.DBCommit();
 			String[] warray = keyword.split(",");
 			String wordstr = "";
 			for (int i=0;i<warray.length;i++){

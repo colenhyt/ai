@@ -13,7 +13,7 @@ public class SitePageDealing implements IPageDealing {
 	private Map<String,IPageDealer> dealers = new HashMap<String,IPageDealer>();
 	
 	public SitePageDealing(){
-		IPageDealer dealer = new BaiduPageDealer();
+		IPageDealer dealer = new BaiduSiteDealer();
 		dealers.put(dealer.getSiteId(), dealer);
 	}
 	
