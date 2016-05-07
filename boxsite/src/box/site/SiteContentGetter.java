@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import box.site.db.SiteService;
 import box.site.model.Website;
 import box.site.model.Websitekeys;
+import box.site.parser.HtmlParser2;
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
@@ -39,7 +40,7 @@ public class SiteContentGetter extends Thread {
 	
 	public static void main(String[] args){
 		SiteContentGetter getter = new SiteContentGetter();
-		getter.getDesc("http://wiki.mbalib.com/wiki/");
+		getter.getDesc("http://news.ifeng.com/",true);
 	}
 	public SiteContentGetter(){
 		userAgent = DownloadContext.getSpiderContext().getUserAgent();
@@ -89,7 +90,7 @@ public class SiteContentGetter extends Thread {
 				if (site.getUrl()!=null){
 					site.setAlexa(this.getAlexa(site.getUrl()));
 					site.setBdrank(this.getBdRank(site.getUrl()));	
-					Vector<String> descs = this.getDesc(site.getUrl());
+					Vector<String> descs = this.getDesc(site.getUrl(),false);
 					if (descs.size()>0){
 						site.setName(descs.get(0));
 						site.setCdesc(descs.get(1));
@@ -191,7 +192,7 @@ public class SiteContentGetter extends Thread {
 			return alexa;
 		}
 	
-	public Vector<String> getDesc(String weburl){
+	public Vector<String> getDesc(String weburl,boolean findWords){
 		Vector<String> descs = new Vector<String>();
 		String urlStr = weburl;
 		if (weburl.indexOf("http")<0)
@@ -200,10 +201,8 @@ public class SiteContentGetter extends Thread {
 		if (page.getContent()==null)
 			return descs;	
 		
-			String content  = new String(page.getContent());
-			log.warn(content);
-
-		htmlHelper.init(page.getContent());
+		htmlHelper.init(page.getContent(),page.getCharSet());
+		
 		String title = htmlHelper.getBlockByTagName("title");
 		if (title==null)
 			title = "";
@@ -219,6 +218,16 @@ public class SiteContentGetter extends Thread {
 		
 		String keywords = "";
 		e = htmlHelper.getElementByOneProp("meta", "name", "keywords");
+		try {
+			Vector<String> words = HtmlParser2.getPageWords(new String(page.getContent(),page.getCharSet()));
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		if (e!=null){
 		String desc2 = e.getAttributes().get("content").getValue();
 			if (desc2!=null)
