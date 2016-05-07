@@ -37,10 +37,10 @@ public class BaiduSiteDealer implements IPageDealer {
 		page = _page;
 		List<PageRef> newurls = new ArrayList<PageRef>();
 		log.debug("get page "+_page.getUrlStr());
-		String filepath = "./pages/"+_page.getUrlStr().hashCode()+".html";
 		String pageContent = new String(_page.getContent());
 		if (pageContent.indexOf("百度快照")<0){
 			log.warn("没有找到搜索内容");
+			String filepath = "./pages/"+_page.getUrlStr().hashCode()+".html";
 			FileUtil.writeFile(filepath, pageContent);
 			return newurls;
 		}
@@ -51,6 +51,7 @@ public class BaiduSiteDealer implements IPageDealer {
 			log.warn("该关键字相关网站已有 ："+siteCount);
 			return newurls;
 		}		
+		log.warn("该关键字相关网站有 ："+siteCount);
 		
 		newurls.addAll(findPagingRefs(_page.getRefId()));
 		
@@ -109,6 +110,7 @@ public class BaiduSiteDealer implements IPageDealer {
 		List<PageRef> urls = new ArrayList<PageRef>();
 		String keyword = "育儿,教育";
 		SiteService service = new SiteService();
+		log.warn("开始搜索:"+keyword);
 		int wordid = service.findWordId(keyword);
 		//not done word:
 		if (wordid>0){

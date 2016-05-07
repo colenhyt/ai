@@ -135,6 +135,17 @@ public class SiteService extends BaseService{
 		
 		return -1;
 	}
+	
+	public List<Websitewords> getDonewords(){
+		wordsMap = new HashMap<String,Websitewords>();
+		List<Websitewords>  words = new ArrayList<Websitewords>();
+		WebsitewordsExample e2 = new WebsitewordsExample();
+		WebsitewordsExample.Criteria cri = e2.createCriteria();
+//		cri.andStatusEqualTo(1);
+		List<Websitewords> wordslist = websitewordsMapper.selectByExample(e2);		
+		return wordslist;
+	}
+	
 	public List<Websitewords> getNewwords(){
 		wordsMap = new HashMap<String,Websitewords>();
 		List<Websitewords>  words = new ArrayList<Websitewords>();
@@ -271,6 +282,22 @@ public class SiteService extends BaseService{
 		searchUrlMap.put(url, item);
 		searchurlMapper.insert(item);
 		return true;
+	}
+	
+	public List<Website> getWebsites(int wordid){
+		WebsitekeysExample example = new WebsitekeysExample();
+		WebsitekeysExample.Criteria cri = example.createCriteria();
+		cri.andWordidEqualTo(wordid);
+		List<Websitekeys> keys = websitekeysMapper.selectByExample(example);
+		List<Website> sites = new ArrayList<Website>();
+		for (Websitekeys item:keys){
+			WebsiteExample e2 = new WebsiteExample();
+			WebsiteExample.Criteria cri2 = e2.createCriteria();
+			cri2.andSiteidEqualTo(item.getSiteid());
+			List<Website> l = websiteMapper.selectByExample(e2);
+			sites.addAll(l);
+		}
+		return sites;
 	}
 	
 	public int getWebsiteCount(int wordid){

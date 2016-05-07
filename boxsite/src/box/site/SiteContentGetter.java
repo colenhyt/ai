@@ -1,5 +1,6 @@
 package box.site;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import box.site.model.Websitekeys;
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import easyshop.html.jericho.Element;
 import es.download.flow.DownloadContext;
 import es.util.http.PostPageGetter;
 
@@ -37,11 +39,12 @@ public class SiteContentGetter extends Thread {
 	
 	public static void main(String[] args){
 		SiteContentGetter getter = new SiteContentGetter();
+		getter.getDesc("http://wiki.mbalib.com/wiki/");
 	}
 	public SiteContentGetter(){
 		userAgent = DownloadContext.getSpiderContext().getUserAgent();
 		initHttpClient();
-		pageGetter = new PostPageGetter();
+		pageGetter = new PostPageGetter(userAgent);
 	}
 	
 	public void setSiteId(String site){
@@ -86,8 +89,14 @@ public class SiteContentGetter extends Thread {
 				if (site.getUrl()!=null){
 					site.setAlexa(this.getAlexa(site.getUrl()));
 					site.setBdrank(this.getBdRank(site.getUrl()));	
+					Vector<String> descs = this.getDesc(site.getUrl());
+					if (descs.size()>0){
+						site.setName(descs.get(0));
+						site.setCdesc(descs.get(1));
+						site.setKeywords(descs.get(2));
+					}
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -181,6 +190,45 @@ public class SiteContentGetter extends Thread {
 			log.warn("alexa "+alexa);
 			return alexa;
 		}
+	
+	public Vector<String> getDesc(String weburl){
+		Vector<String> descs = new Vector<String>();
+		String urlStr = weburl;
+		if (weburl.indexOf("http")<0)
+			urlStr = "http://"+weburl;
+		HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
+		if (page.getContent()==null)
+			return descs;	
+		
+			String content  = new String(page.getContent());
+			log.warn(content);
+
+		htmlHelper.init(page.getContent());
+		String title = htmlHelper.getBlockByTagName("title");
+		if (title==null)
+			title = "";
+		descs.add(title);
+		String desc = "";
+		Element e = htmlHelper.getElementByOneProp("meta", "name", "description");
+		if (e!=null){
+		String desc2 = e.getAttributes().get("content").getValue();
+			if (desc2!=null)
+				desc = desc2;
+		}
+		descs.add(desc);
+		
+		String keywords = "";
+		e = htmlHelper.getElementByOneProp("meta", "name", "keywords");
+		if (e!=null){
+		String desc2 = e.getAttributes().get("content").getValue();
+			if (desc2!=null)
+				keywords = desc2;
+		}
+		descs.add(keywords);
+		
+		return descs;
+	}
+	
 	public int getBdRank(String weburl){
 		int rank=-1;
 		String urlStr = baiduRank+weburl+"/position/";
