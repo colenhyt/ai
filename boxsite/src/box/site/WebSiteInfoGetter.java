@@ -1,12 +1,6 @@
 package box.site;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -14,12 +8,8 @@ import org.apache.log4j.Logger;
 
 import box.site.db.SiteService;
 import box.site.model.Website;
-import box.site.model.Websitekeys;
-import easyshop.downloadhelper.HttpPage;
-import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
-import es.download.flow.DownloadContext;
-import es.util.http.PostPageGetter;
+import es.util.word.JiebaHelper;
 
 public class WebSiteInfoGetter extends SiteContentGetter {
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -28,7 +18,8 @@ public class WebSiteInfoGetter extends SiteContentGetter {
 	
 	public static void main(String[] args){
 		WebSiteInfoGetter getter = new WebSiteInfoGetter();
-		getter.start();
+		JiebaHelper.getWords("工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作");
+		//getter.start();
 	}
 	
 	public void fillWebsiteInfo(){

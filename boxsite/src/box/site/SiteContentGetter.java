@@ -1,6 +1,5 @@
 package box.site;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,20 +12,26 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
+import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.SegToken;
+import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
+
 import box.site.db.SiteService;
 import box.site.model.Website;
 import box.site.model.Websitekeys;
-import box.site.parser.HtmlParser2;
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.jericho.Element;
 import es.download.flow.DownloadContext;
 import es.util.http.PostPageGetter;
+import es.util.word.JiebaHelper;
+import es.util.word.WordToken;
 
 public class SiteContentGetter extends Thread {
 	protected Logger  log = Logger.getLogger(getClass()); 
-    private HttpClient httpClient = null;
+	JiebaSegmenter segmenter;
+   private HttpClient httpClient = null;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	private String siteId;
 	private String userAgent;
@@ -46,6 +51,7 @@ public class SiteContentGetter extends Thread {
 		userAgent = DownloadContext.getSpiderContext().getUserAgent();
 		initHttpClient();
 		pageGetter = new PostPageGetter(userAgent);
+		segmenter = new JiebaSegmenter();
 	}
 	
 	public void setSiteId(String site){
@@ -192,6 +198,29 @@ public class SiteContentGetter extends Thread {
 			return alexa;
 		}
 	
+	public Set<WordToken> getPageWords(String weburl){
+		Set<WordToken> tokens = new HashSet<WordToken>();
+		
+		Map<String,WordToken> tokensMap = new HashMap<String,WordToken>();
+		List<String> words = htmlHelper.getUrlWords();
+		for (String sentence:words){
+			if (sentence==null) continue;
+			List<SegToken> segToken = segmenter.process(sentence, SegMode.INDEX);
+			for (SegToken item:segToken){
+				if (!tokensMap.containsKey(item.word)){
+					WordToken token = new WordToken();
+					token.setWord(item.word);
+					tokensMap.put(item.word, token);
+				}
+				tokensMap.get(item.word).addFreq();	
+			}			
+		}
+		
+		tokens.addAll(tokensMap.values());
+		log.warn(tokens.toString());
+		return tokens;
+	}
+	
 	public Vector<String> getDesc(String weburl,boolean findWords){
 		Vector<String> descs = new Vector<String>();
 		String urlStr = weburl;
@@ -216,17 +245,21 @@ public class SiteContentGetter extends Thread {
 		}
 		descs.add(desc);
 		
+		if (findWords){
+			this.getPageWords(weburl);
+		}
+//		try {
+//		Vector<String> words = HtmlParser2.getPageWords(new String(page.getContent(),page.getCharSet()));
+//	} catch (UnsupportedEncodingException e1) {
+//		// TODO Auto-generated catch block
+//		e1.printStackTrace();
+//	} catch (Exception e1) {
+//		// TODO Auto-generated catch block
+//		e1.printStackTrace();
+//	}
+		
 		String keywords = "";
 		e = htmlHelper.getElementByOneProp("meta", "name", "keywords");
-		try {
-			Vector<String> words = HtmlParser2.getPageWords(new String(page.getContent(),page.getCharSet()));
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 		if (e!=null){
 		String desc2 = e.getAttributes().get("content").getValue();
