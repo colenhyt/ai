@@ -11,20 +11,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import org.xml.sax.SAXException;
 
 import cl.html.helper.NekoHTMLDelegate;
-import es.util.FileUtil;
 import easyshop.html.jericho.Attribute;
 import easyshop.html.jericho.Attributes;
 import easyshop.html.jericho.Element;
+import easyshop.html.jericho.Segment;
 import easyshop.html.jericho.Source;
 import easyshop.html.jericho.StartTag;
 import es.Constants;
 import es.util.CollectionComparator;
+import es.util.FileUtil;
 import es.util.html.HTMLContentHelper;
 import es.util.pattern.ESPattern;
 import es.util.string.StringHelper;
@@ -81,6 +81,10 @@ public class HTMLInfoSupplier {
 		init(null,content,"utf-8");
 	}
 	
+	public void init(byte[] content,String encode){
+		init(null,content,encode);
+	}
+	
 	public void init(String _urlstr,byte[] content,String encode){
 		try {
 		this.urlStr=_urlstr;
@@ -113,6 +117,16 @@ public class HTMLInfoSupplier {
 		divElements=totalJerio.findAllElements("div");
 	}
 	
+	public List<String>	getWords(){
+		
+		List<String> words = new ArrayList<String>();
+		List<Segment> e = totalJerio.findWords();
+		for (Segment item:e){
+			System.out.println(item.getSourceText());
+			words.add(item.getSourceText());
+		}
+		return words;
+	}
 	public List<PageRef> getIFrameUrls(){
 		return HTMLContentHelper.getIFrameUrls(strContent);
 	}
@@ -1336,6 +1350,21 @@ public class HTMLInfoSupplier {
 	            	
 	        }
 		return urls;		
+	}
+	
+	public List<String> getUrlWords(){
+		List<String> urlWords = new ArrayList();
+        for (Iterator it=linkTags.iterator();it.hasNext();) {
+        	StartTag tag = (StartTag)it.next();
+        	String href=tag.getAttributes().getValue("href");
+            String url=URLStrHelper.legalUrl(urlStr,href);
+            if (url!=null){
+            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText());
+            	urlWords.add(refWord);	   
+            }
+            	
+        }	
+        return urlWords;
 	}
 	
 	public PageRef[] getPageRefs(){

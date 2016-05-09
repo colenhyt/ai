@@ -1,10 +1,12 @@
 package es.util.http;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -61,11 +63,7 @@ public class PostPageGetter extends PageGetter{
 	}
 	
 	public HttpPage getHttpPage(String urlStr,Map params){
-		return getHttpPage(urlStr,defaultHttpClient(),null,params);
-	}
-	
-	public HttpPage getHttpPage(String urlStr,HttpClient client,Map params){
-		return getHttpPage(urlStr,client,null,params);
+		return getHttpPage(urlStr,defaultHttpClient(),params);
 	}
 
 	public String getRealUrl(String urlStr,HttpClient client){
@@ -95,7 +93,7 @@ public class PostPageGetter extends PageGetter{
 	        }/**/        
 	    }
 
-	public HttpPage getHttpPage(String urlStr,HttpClient client,String charSet,Map params){
+	public HttpPage getHttpPage(String urlStr,HttpClient client,Map params){
 		        
 		        HttpPost post = new HttpPost(urlStr);
 		        if (params.size()>0){
@@ -114,7 +112,8 @@ public class PostPageGetter extends PageGetter{
 		            long startTime = System.currentTimeMillis();
 		            CloseableHttpResponse rep = (CloseableHttpResponse)client.execute(post);
 		            HttpEntity repEntity = rep.getEntity();
-		            String context = EntityUtils.toString(repEntity);
+		            String charSet = getContentCharSet(repEntity);
+		            String context = EntityUtils.toString(repEntity,charSet);
 		        
 		            byte[] content = context.getBytes();
 		            
@@ -153,18 +152,19 @@ public class PostPageGetter extends PageGetter{
 	        HttpContext httpContext = new BasicHttpContext();
 	        
 	        try {
-	            get.addHeader("User-Agent", HTTP_USER_AGENT);
+	            get.addHeader("User-Agent", userAgent);
 	            RequestConfig defaultRequestConfig = RequestConfig.custom()
-	                    .setSocketTimeout(10000).build();
+	                    .setSocketTimeout(30000).build();
 	            get.setConfig(defaultRequestConfig);
 	            CloseableHttpResponse rep = (CloseableHttpResponse)client.execute(get,httpContext);
 	            HttpHost host = (HttpHost) httpContext
 	                    .getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 	            HttpEntity repEntity = rep.getEntity();
-	            String context = EntityUtils.toString(repEntity);
+	            String realEncode = getContentCharSet(repEntity);
+	            String context = EntityUtils.toString(repEntity,realEncode);
 	            long startTime = System.currentTimeMillis();
 	        
-	            byte[] content = context.getBytes();
+ 	            byte[] content = context.getBytes();
 	//            byte[] content=get.getResponseBody();
 	            
 	            
@@ -173,7 +173,7 @@ public class PostPageGetter extends PageGetter{
 	            int bytesPerSec = (int) ((double) content.length / ((double)timeTaken / 1000.0));
 	            log.info("Downloaded " + content.length + " bytes, " + bytesPerSec + " bytes/sec");
 	        	ConnResponse conRes=new ConnResponse(null,null,0,0,rep.getStatusLine().getStatusCode());
-	        	HttpPage page = new HttpPage(urlStr, content,conRes,"gbk");
+	        	HttpPage page = new HttpPage(urlStr, content,conRes,realEncode);
 	        	page.setNewUrlStr(host.getHostName());
 	        	return page;
 	            
@@ -193,5 +193,27 @@ public class PostPageGetter extends PageGetter{
 	        }/**/        
 	    }
 	
+    public static String getContentCharSet(final HttpEntity entity)   
+            throws ParseException {   
+       
+            if (entity == null) {   
+                throw new IllegalArgumentException("HTTP entity may not be null");   
+            }   
+            String charset = null;   
+            if (entity.getContentType() != null) {    
+                HeaderElement values[] = entity.getContentType().getElements();   
+                if (values.length > 0) {   
+                    NameValuePair param = values[0].getParameterByName("charset" );   
+                    if (param != null) {   
+                        charset = param.getValue();   
+                    }   
+                }   
+            }   
+             
+            if(StringUtils.isEmpty(charset)){  
+                charset = "UTF-8";  
+            }  
+            return charset;   
+        }  	
 }
 
