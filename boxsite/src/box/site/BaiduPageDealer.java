@@ -40,10 +40,10 @@ public class BaiduPageDealer implements IPageDealer {
 		page = _page;
 		List<PageRef> newurls = new ArrayList<PageRef>();
 		log.debug("get page "+_page.getUrlStr());
-		String filepath = "./pages/"+_page.getUrlStr().hashCode()+".html";
 		String pageContent = new String(_page.getContent());
 		if (pageContent.indexOf("百度快照")<0){
 			log.warn("没有找到搜索内容");
+			String filepath = "./pages/"+_page.getUrlStr().hashCode()+".html";
 			FileUtil.writeFile(filepath, pageContent);
 			return newurls;
 		}

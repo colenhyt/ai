@@ -91,17 +91,22 @@ public class SiteContentGetter extends Thread {
 		Vector<Website> sites = findWebSites(page);
 		SiteService siteService = new SiteService();
 		
+		//site insert:
+		Vector<Website> sites2 = new Vector<Website>();
+		nextWebsiteId = siteService.addSites(sites,getNextWebisteId(),sites2);
 		if (findInfo){
-			for (Website site:sites){
+			for (Website site:sites2){
 				if (site.getUrl()!=null){
 					site.setAlexa(this.getAlexa(site.getUrl()));
 					site.setBdrank(this.getBdRank(site.getUrl()));	
 					Vector<String> descs = this.getDesc(site.getUrl(),false);
+					this.dealUrlWords(site.getUrl(), page.getRefId(),site.getSiteid(),siteService);
 					if (descs.size()>0){
 						site.setName(descs.get(0));
 						site.setCdesc(descs.get(1));
 						site.setKeywords(descs.get(2));
 					}
+					
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
@@ -111,8 +116,6 @@ public class SiteContentGetter extends Thread {
 				}
 			}
 		}
-		//site insert:
-		Vector<Website> sites2 = siteService.addSites(sites);
 		
 		//site word map:
 		for (Website item:sites2){
@@ -162,7 +165,6 @@ public class SiteContentGetter extends Thread {
 			String url = urls.get(0);
 			String realurl =new PostPageGetter(userAgent).getRealUrl(url, httpClient);
 			site.setBaiduurl(url);
-			site.setSiteid(getNextWebisteId());
 			site.setStatus(SiteDataManager.WEBSITE_STATUS_DONEURL);
 			if (realurl!=null){
 				site.setUrl(realurl);
@@ -198,7 +200,7 @@ public class SiteContentGetter extends Thread {
 			return alexa;
 		}
 	
-	public Set<WordToken> getPageWords(String weburl){
+	public Set<WordToken> getPageWordTokens(String weburl){
 		Set<WordToken> tokens = new HashSet<WordToken>();
 		
 		Map<String,WordToken> tokensMap = new HashMap<String,WordToken>();
@@ -245,19 +247,6 @@ public class SiteContentGetter extends Thread {
 		}
 		descs.add(desc);
 		
-		if (findWords){
-			this.getPageWords(weburl);
-		}
-//		try {
-//		Vector<String> words = HtmlParser2.getPageWords(new String(page.getContent(),page.getCharSet()));
-//	} catch (UnsupportedEncodingException e1) {
-//		// TODO Auto-generated catch block
-//		e1.printStackTrace();
-//	} catch (Exception e1) {
-//		// TODO Auto-generated catch block
-//		e1.printStackTrace();
-//	}
-		
 		String keywords = "";
 		e = htmlHelper.getElementByOneProp("meta", "name", "keywords");
 		
@@ -291,6 +280,30 @@ public class SiteContentGetter extends Thread {
 		}
 		log.warn("bdrank "+rank);
 		return rank;
+	}
+	public void dealUrlWords(String weburl,int parentid,int siteId,SiteService siteService){
+		Set<String> words = new HashSet<String>();
+		
+		List<String> urlwords = htmlHelper.getUrlWords();
+		for (String sentence:urlwords){
+			if (sentence==null) continue;
+			List<SegToken> segToken = segmenter.process(sentence, SegMode.INDEX);
+			for (SegToken item:segToken){
+				words.add(item.word);
+				int wordid = siteService.addWord(item.word);
+				if (wordid>0){
+					Websitekeys key = new Websitekeys();
+					key.setSiteid(siteId);
+					key.setWordid(wordid);
+					siteService.addSitekey(key);
+					
+					siteService.addWordRelation(wordid, parentid, 2);
+				}
+			}			
+		}
+		
+		log.warn(words.toString());
+		
 	}
 	
 }

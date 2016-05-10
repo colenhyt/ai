@@ -330,19 +330,18 @@ public class SiteService extends BaseService{
 		return searchurlMapper.selectByExample(example);
 	}
 	
-	public Vector<Website> addSites(Vector<Website> records){
-		Vector<Website> sites2 = new Vector<Website>();
+	public int addSites(Vector<Website> records,int startSiteId,Vector<Website> addedSites){
+		int maxSiteId = startSiteId;
 		for (Website record:records){
 			if (!siteMap.containsKey(record.getUrl())){
-				sites2.add(record);
+				addedSites.add(record);
+				record.setSiteid(maxSiteId);
 				siteMap.put(record.getUrl(), record);
-//				if (record.getUrl().length()>200){
-//					log.warn(record.getUrl());
-//				}
+				maxSiteId++;
 				websiteMapper.insertSelective(record);
 			}
 		}
-		return sites2;
+		return maxSiteId;
 	}
 	
 	public int addSitekey(Websitekeys record){
