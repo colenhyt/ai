@@ -4,11 +4,13 @@ import java.util.List;
 
 import box.site.db.SiteService;
 import box.site.model.Website;
+import box.site.model.Websitekeys;
 import box.site.model.Websitewords;
 
 import com.alibaba.fastjson.JSON;
 
 public class SiteManager {
+	DataThread dataThread;
 
 	private static SiteManager uniqueInstance = null;
 
@@ -17,6 +19,11 @@ public class SiteManager {
 			uniqueInstance = new SiteManager();
 		}
 		return uniqueInstance;
+	}
+	
+	public SiteManager(){
+		dataThread = new DataThread();
+		dataThread.start();
 	}
 	
 	public static String getSiteWords(){
@@ -35,8 +42,11 @@ public class SiteManager {
 		return service.getWebsites(wordid);
 	}
 	
-	public static int deleteWordid(int wordid,int siteid){
-		SiteService service = new SiteService();
-		return service.deleteWebsitekeys(wordid, siteid);
+	public int deleteWordid(int wordid,int siteid){
+		Websitekeys key = new Websitekeys();
+		key.setWordid(wordid);
+		key.setSiteid(siteid);
+		dataThread.addDeleteKeys(key);
+		return 0;
 	}
 }

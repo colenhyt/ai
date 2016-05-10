@@ -266,12 +266,16 @@ public class SiteService extends BaseService{
 		}
 	}
 	
-	public int deleteWebsitekeys (int wordid,int siteid){
-		WebsitekeysExample e = new WebsitekeysExample();
-		WebsitekeysExample.Criteria cri = e.createCriteria();
-		cri.andWordidEqualTo(wordid);
-		cri.andSiteidEqualTo(siteid);
-		int ret = websitekeysMapper.deleteByExample(e);
+	public int deleteWebsitekeys (List<Websitekeys> items){
+		int ret = 0;
+		for (Websitekeys item:items){
+			WebsitekeysExample e = new WebsitekeysExample();
+			WebsitekeysExample.Criteria cri = e.createCriteria();
+			cri.andWordidEqualTo(item.getWordid());
+			cri.andSiteidEqualTo(item.getSiteid());
+			ret = websitekeysMapper.deleteByExample(e);
+			
+		}
 		this.DBCommit();
 		return ret;
 	}
