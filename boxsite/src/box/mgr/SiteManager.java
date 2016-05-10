@@ -34,4 +34,9 @@ public class SiteManager {
 		SiteService service = new SiteService();
 		return service.getWebsites(wordid);
 	}
+	
+	public static int deleteWordid(int wordid,int siteid){
+		SiteService service = new SiteService();
+		return service.deleteWebsitekeys(wordid, siteid);
+	}
 }

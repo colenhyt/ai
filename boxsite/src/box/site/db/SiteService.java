@@ -266,6 +266,16 @@ public class SiteService extends BaseService{
 		}
 	}
 	
+	public int deleteWebsitekeys (int wordid,int siteid){
+		WebsitekeysExample e = new WebsitekeysExample();
+		WebsitekeysExample.Criteria cri = e.createCriteria();
+		cri.andWordidEqualTo(wordid);
+		cri.andSiteidEqualTo(siteid);
+		int ret = websitekeysMapper.deleteByExample(e);
+		this.DBCommit();
+		return ret;
+	}
+	
 	public void updateWebsite(Website site){
 			websiteMapper.updateByPrimaryKey(site);
 	}
