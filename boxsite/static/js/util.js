@@ -324,6 +324,10 @@ timeoutDesc = function(pitem,item){
     if (diffSec<=0){
      return tt;
     }
+    else if (diffSec<(60))	//秒
+    {
+     tt = "到期:<span style='color:red'>"+ForDight0(diffSec)+"</span>秒";
+    }
     else if (diffSec<(60*60))	//分钟
     {
      tt = "到期:<span style='color:red'>"+ForDight0(diffSec/60)+"</span>分钟";
