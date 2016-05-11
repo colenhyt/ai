@@ -32,14 +32,32 @@ public class SiteManager {
 		return JSON.toJSONString(words);
 	}
 	
-	public static List<Websitewords> getSiteWordlist(){
+	public static String getHotwords(){
 		SiteService service = new SiteService();
-		return service.getDonewords();
+		List<Websitewords> list = service.getDonewords();
+		return JSON.toJSONString(list);
 	}
 	
-	public static List<Website> getSites(int wordid){
+	
+	public static String getSiteWordlist(){
 		SiteService service = new SiteService();
-		return service.getWebsites(wordid);
+		List<Websitewords> list = service.getDonewords();
+		return JSON.toJSONString(list);
+	}
+	
+	public String getSites(int wordid){
+		SiteService service = new SiteService();
+		List<Website> list = service.getWebsites(wordid);
+		return JSON.toJSONString(list);
+	}
+	
+	public String getSites(String word){
+		SiteService service = new SiteService();
+		List<Website> sites = service.getSites(word);
+		if (sites==null){
+			//startup spider:
+		}
+		return JSON.toJSONString(sites);
 	}
 	
 	public int deleteWordid(int wordid,int siteid){

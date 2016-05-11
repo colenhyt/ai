@@ -46,6 +46,9 @@ public class SiteContentGetter extends Thread {
 	public static void main(String[] args){
 		SiteContentGetter getter = new SiteContentGetter();
 		getter.getDesc("http://news.ifeng.com/",true);
+		SiteService siteService = new SiteService();
+		getter.dealUrlWords("http://news.ifeng.com/", 3, 5, siteService);
+		siteService.DBCommit();
 	}
 	public SiteContentGetter(){
 		userAgent = DownloadContext.getSpiderContext().getUserAgent();
@@ -285,6 +288,7 @@ public class SiteContentGetter extends Thread {
 		Set<String> words = new HashSet<String>();
 		
 		List<String> urlwords = htmlHelper.getUrlWords();
+		int count = 0;
 		for (String sentence:urlwords){
 			if (sentence==null) continue;
 			List<SegToken> segToken = segmenter.process(sentence, SegMode.INDEX);
@@ -298,11 +302,12 @@ public class SiteContentGetter extends Thread {
 					siteService.addSitekey(key);
 					
 					siteService.addWordRelation(wordid, parentid, 2);
+					count++;
 				}
 			}			
 		}
 		
-		log.warn(words.toString());
+		log.warn(weburl+" 增加词语  "+count);
 		
 	}
 	
