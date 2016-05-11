@@ -6,24 +6,6 @@ Sitesearch.prototype.init = function(){
 
 }
 
-Sitesearch.prototype.searchrst = function(sitelist)
-{
- var content = "<table>";
- for (var i=0;i<sitelist.length;i++){
-  var item = sitelist[i];
-  var url = item.url;
-  if (url.indexOf("http")<0)
-   url = "http://"+item.url;
-  var name = item.name;
-  if (name==null)
-   name = item.url;
-  content += "<a href='"+url+"' target=blank>"+name+"</a><br>";
- }
- content += "</table>";
- var tag = document.getElementById("searchrst");
- tag.innerHTML = content;
-}
-
 Sitesearch.prototype.search = function()
 {
       var tag = document.getElementById("searchword");
