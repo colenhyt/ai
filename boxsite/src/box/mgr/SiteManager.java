@@ -67,4 +67,11 @@ public class SiteManager {
 		dataThread.addDeleteKeys(key);
 		return 0;
 	}
+	
+	public int updateMyranks(String ranksStr){
+		SiteService service = new SiteService();
+		List<Website> sites = JSON.parseArray(ranksStr, Website.class);
+		service.updateMyranks(sites);
+		return 0;
+	}
 }

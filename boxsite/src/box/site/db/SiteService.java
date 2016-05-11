@@ -266,6 +266,16 @@ public class SiteService extends BaseService{
 		}
 	}
 	
+	public void updateMyranks(List<Website> sites){
+		for (Website record:sites){
+			WebsiteExample example = new WebsiteExample();
+			WebsiteExample.Criteria cri = example.createCriteria();
+			cri.andSiteidEqualTo(record.getSiteid());
+			cri.andMyrankEqualTo(record.getMyrank());
+			websiteMapper.updateByExampleSelective(record, example);
+		}
+	}
+	
 	public int deleteWebsitekeys (List<Websitekeys> items){
 		int ret = 0;
 		for (Websitekeys item:items){
