@@ -51,10 +51,18 @@ Webpage.prototype.load = function(){
   var wordid = getPar("wordid");
   dataParam = "wordid="+wordid;
  }
+ this.queryData(dataParam);
+}
 
+Webpage.prototype.queryData = function(dataParam){
 	try    {
 		$.ajax({type:"post",url:"/boxsite/search.jsp",data:dataParam,success:function(data){
-		 g_webpage.fillItems(cfeval(data));
+		var itemlist = cfeval(data);
+		if (itemlist==null||itemlist.length<=0){
+		 g_webpage.queryPerTime(dataParam);
+		}else {
+		 g_webpage.fillItems(itemlist);
+		 }
 		}});
 	}   catch  (e)   {
 	   return false;
@@ -77,11 +85,30 @@ Webpage.prototype.updateMyrank = function()
  
 	try    {
 		$.ajax({type:"post",url:"/boxsite/data_update.jsp",data:dataParam,success:function(data){
-		 g_webpage.fillItems(cfeval(data));
+		{
+		 var ret = cfeval(data);
+		}
 		}});
 	}   catch  (e)   {
 	   return false;
 	} 
+}
+
+Webpage.prototype.queryPerTime = function(dataParam)
+{
+
+  	var content ="<div class='orderlist_wait_msg' id='orderlist_msg'><br>搜索中....</div>"
+  	var cc = "<div class='orderlist_wait_img' id='orderlist_wait'><img src='static/img/w1.gif'></div>"
+  	content += cc;
+  	
+ var tag = document.getElementById("searchrst");
+ tag.innerHTML = content;
+   	
+ this.dataParam = dataParam;
+	setInterval(function(){
+	   g_webpage.queryData(g_webpage.dataParam);
+	  },2000
+	); 
 }
 
 Webpage.prototype.deleteWord = function(wordid,siteid)

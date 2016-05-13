@@ -12,7 +12,7 @@ Main.prototype.fillWords = function(wordlist)
 
  for (var i=0;i<wordlist.length;i++){
   var item = wordlist[i];
-  content += "<a href='/boxsite/webpage.html?wordid="+item.wordid+"'>"+item.word+"</a>,";
+  content += "<a href='/boxsite/webpage.html?word="+item.word+"'>"+item.word+"</a>,";
   if (i%8==0)
     content += "<br>";
  }
