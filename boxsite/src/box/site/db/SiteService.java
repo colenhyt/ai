@@ -28,7 +28,6 @@ import box.site.model.WordrelationMapper;
 import cn.hd.base.BaseService;
 
 public class SiteService extends BaseService{
-	private int nextWordId = 0;
 
 	public WebsiteMapper getWebsiteMapper() {
 		return websiteMapper;
@@ -67,11 +66,6 @@ public class SiteService extends BaseService{
 		this.websitewordsMapper = websitewordsMapper;
 	}
 
-	private Map<String,Baiduurls>		searchUrlMap;
-	private Map<String,Website>			siteMap;
-	private Map<String,Websitewords>		wordsMap;
-	private Map<String,Websitekeys>		keysMap;
-	private Set<String> 	wordRelationKeys;
 	
 	public BaiduurlsMapper getSearchurlMapper() {
 		return searchurlMapper;
@@ -80,116 +74,52 @@ public class SiteService extends BaseService{
 	public void setSearchurlMapper(BaiduurlsMapper searchurlMapper) {
 		this.searchurlMapper = searchurlMapper;
 	}
+	private Map<String,Baiduurls>		searchUrlMap;
 
 	public SiteService()
 	{
 		initMapper("websiteMapper","websitekeysMapper","searchurlMapper","websitewordsMapper","wordrelationMapper");
 		
-		searchUrlMap = new HashMap<String,Baiduurls>();
-		
-		wordsMap = new HashMap<String,Websitewords>();
-		
-		WebsitewordsExample e0 = new WebsitewordsExample();
-		List<Websitewords> wl = websitewordsMapper.selectByExample(e0);
-		for (Websitewords word:wl){
-			wordsMap.put(word.getWord(), word);
-		}
-		
-		wordRelationKeys = new HashSet<String>();
-		
-		WordrelationExample ee = new WordrelationExample();
-		List<Wordrelation> rls = wordrelationMapper.selectByExample(ee);
-		for (Wordrelation rel:rls){
-			String key = rel.getWordid()+"_"+rel.getRelatewordid()+"_"+rel.getRelatetype();
-			wordRelationKeys.add(key);
-		}
-		
-		keysMap = new HashMap<String,Websitekeys>();
-		WebsitekeysExample e3 = new WebsitekeysExample();
-		List<Websitekeys> ll = websitekeysMapper.selectByExample(e3);
-		for (Websitekeys item:ll){
-			String key = item.getSiteid()+"_"+item.getWordid();
-			keysMap.put(key, item);
-		}
-		
-		siteMap = new HashMap<String,Website>();
-		WebsiteExample e2 = new WebsiteExample();
-		List<Website> list2 = websiteMapper.selectByExample(e2);
-		for (Website item:list2){
-			siteMap.put(item.getUrl(), item);
-		}
-		
 		BaiduurlsExample  example = new BaiduurlsExample();
-//		BaiduurlsExample.Criteria criteria = example.createCriteria();
-//		criteria.andStatusEqualTo(0);
 		List<Baiduurls> list = searchurlMapper.selectByExample(example);
 		for (Baiduurls url:list){
 			searchUrlMap.put(url.getUrl(), url);
-		}
-		
+		}		
+	}
+
+	public List<Websitewords> getWebsitewords(){
+		WebsitewordsExample e0 = new WebsitewordsExample();
+		return websitewordsMapper.selectByExample(e0);		
+	}
+
+	public List<Websitekeys> getWebsitekeys(){
+		WebsitekeysExample e0 = new WebsitekeysExample();
+		return websitekeysMapper.selectByExample(e0);		
+	}
+
+	public List<Website> getWebsites(){
+		WebsiteExample e0 = new WebsiteExample();
+		return websiteMapper.selectByExample(e0);		
 	}
 	
-	public int findWordId(String word){
-		if (wordsMap.containsKey(word))
-			wordsMap.get(word).getWordid();
-		
-		return -1;
+	public List<Wordrelation> getWordrelations(){
+		WordrelationExample e0 = new WordrelationExample();
+		return wordrelationMapper.selectByExample(e0);		
 	}
 	
 	public List<Websitewords> getDonewords(){
-		wordsMap = new HashMap<String,Websitewords>();
-		List<Websitewords>  words = new ArrayList<Websitewords>();
 		WebsitewordsExample e2 = new WebsitewordsExample();
-		WebsitewordsExample.Criteria cri = e2.createCriteria();
-//		cri.andStatusEqualTo(1);
 		List<Websitewords> wordslist = websitewordsMapper.selectByExample(e2);		
 		return wordslist;
 	}
 	
 	public List<Websitewords> getNewwords(){
-		wordsMap = new HashMap<String,Websitewords>();
-		List<Websitewords>  words = new ArrayList<Websitewords>();
 		WebsitewordsExample e2 = new WebsitewordsExample();
-		List<Websitewords> wordslist = websitewordsMapper.selectByExample(e2);
-		for (Websitewords item:wordslist){
-			if (item.getStatus()==0){
-				wordsMap.put(item.getWord(),item);
-				words.add(item);
-			}
-		}
-		
-		return words;
+		WebsitewordsExample.Criteria cri = e2.createCriteria();
+		cri.andStatusEqualTo(0);
+		return websitewordsMapper.selectByExample(e2);
 	}
 	
-	public void addWordRelation(int wordid,int relateWordid,int relatetype){
-		String key = wordid+"_"+relateWordid+"_"+relatetype;
-		if (wordRelationKeys.contains(key))
-			return;
-		
-		Wordrelation r = new Wordrelation();
-		r.setWordid(wordid);
-		r.setRelatewordid(relateWordid);
-		r.setRelatetype(relatetype);
-		wordRelationKeys.add(key);
-		wordrelationMapper.insert(r);
-	}
-	
-	public int addWord(String word){
-		if (word==null)
-			return -1;
-		
-		if (wordsMap.containsKey(word))
-			return wordsMap.get(word).getWordid();
-		
-		Websitewords  record = new Websitewords();
-		record.setWord(word);
-		record.setWordid(this.getNextWordId());
-		record.setStatus(0);
-		websitewordsMapper.insert(record);
-		wordsMap.put(word, record);
-		return record.getWordid();
-		
-	}
 	public List<Baiduurls> getNewBaiduurls(){
 		List<Baiduurls> newurls = new ArrayList<Baiduurls>();
 		
@@ -198,6 +128,30 @@ public class SiteService extends BaseService{
 				newurls.add(item);
 		}
 		return newurls;
+	}	
+	public boolean addSearchUrl(String url,int wordid){
+		if (searchUrlMap.containsKey(url))
+			return false;
+		
+		Baiduurls item = new Baiduurls();
+		item.setUrl(url);
+		item.setStatus(0);
+		item.setWordid(wordid);
+		item.setCrdate(new Date());
+		searchUrlMap.put(url, item);
+		
+		SiteService service = new SiteService();
+		service.addSearchUrl(item);
+		return true;
+	}
+	
+	public void addWordRelation(Wordrelation r){
+		wordrelationMapper.insert(r);
+	}
+	
+	public int addWord(Websitewords record){
+		websitewordsMapper.insert(record);
+		return record.getWordid();
 	}
 	
 	public int getMaxSiteid(){
@@ -222,14 +176,6 @@ public class SiteService extends BaseService{
 //		for (int i=0;i<2;i++)
 //			list2.add(list.get(i));
 		return list;
-	}
-	
-	public synchronized int getNextWordId(){
-		if (nextWordId==0){
-		nextWordId = getMaxWordid();
-		}
-		nextWordId++;
-		return nextWordId;
 	}
 	
 	public int getMaxWordid(){
@@ -294,35 +240,11 @@ public class SiteService extends BaseService{
 			websiteMapper.updateByPrimaryKey(site);
 	}
 	
-	public boolean addSearchUrl(String url,int wordid){
-		if (searchUrlMap.containsKey(url))
-			return false;
-		
-		Baiduurls item = new Baiduurls();
-		item.setUrl(url);
-		item.setStatus(0);
-		item.setWordid(wordid);
-		item.setCrdate(new Date());
-		searchUrlMap.put(url, item);
-		searchurlMapper.insert(item);
+	public boolean addSearchUrl(Baiduurls record){
+		searchurlMapper.insert(record);
 		return true;
 	}
 	
-	public List<Website> getWebsites(int wordid){
-		WebsitekeysExample example = new WebsitekeysExample();
-		WebsitekeysExample.Criteria cri = example.createCriteria();
-		cri.andWordidEqualTo(wordid);
-		List<Websitekeys> keys = websitekeysMapper.selectByExample(example);
-		List<Website> sites = new ArrayList<Website>();
-		for (Websitekeys item:keys){
-			WebsiteExample e2 = new WebsiteExample();
-			WebsiteExample.Criteria cri2 = e2.createCriteria();
-			cri2.andSiteidEqualTo(item.getSiteid());
-			List<Website> l = websiteMapper.selectByExample(e2);
-			sites.addAll(l);
-		}
-		return sites;
-	}
 	
 	public int getWebsiteCount(int wordid){
 		WebsitekeysExample example = new WebsitekeysExample();
@@ -340,27 +262,19 @@ public class SiteService extends BaseService{
 		return searchurlMapper.selectByExample(example);
 	}
 	
-	public int addSites(Vector<Website> records,int startSiteId,Vector<Website> addedSites){
-		int maxSiteId = startSiteId;
-		for (Website record:records){
-			if (!siteMap.containsKey(record.getUrl())){
-				addedSites.add(record);
-				record.setSiteid(maxSiteId);
-				siteMap.put(record.getUrl(), record);
-				maxSiteId++;
-				websiteMapper.insertSelective(record);
-			}
-		}
-		return maxSiteId;
+	public int addSite(Website record){
+		return websiteMapper.insertSelective(record);
 	}
 	
 	public int addSitekey(Websitekeys record){
-		String key = record.getSiteid()+"_"+record.getWordid();
-		if (keysMap.containsKey(key))
-			return -1;
-		
-		keysMap.put(key, record);
 		return websitekeysMapper.insertSelective(record);
+	}
+	
+	public List<Websitekeys> getSitekeys(int wordid){
+		WebsitekeysExample example = new WebsitekeysExample();
+		WebsitekeysExample.Criteria criteria = example.createCriteria();
+		criteria.andWordidEqualTo(wordid);
+		return websitekeysMapper.selectByExample(example);	
 	}
 	
 	public List<Websitekeys> getSitekeys(String key){	
@@ -374,24 +288,6 @@ public class SiteService extends BaseService{
 		else
 			return null;
 		
-		WebsitekeysExample example = new WebsitekeysExample();
-		WebsitekeysExample.Criteria criteria = example.createCriteria();
-		criteria.andWordidEqualTo(worditem.getWordid());
-		return websitekeysMapper.selectByExample(example);
-	}
-	
-	public List<Website> getSites(String key){
-		List<Websitekeys> keys = this.getSitekeys(key);
-		if (keys==null||keys.size()<=0)
-			return null;
-		
-		List<Integer> siteIds = new ArrayList<Integer>();
-		for (int i=0;i<keys.size();i++){
-			siteIds.add(keys.get(i).getSiteid());
-		}
-		WebsiteExample example = new WebsiteExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andSiteidIn(siteIds);
-		return websiteMapper.selectByExample(example);
+		return this.getSitekeys(worditem.getWordid());
 	}
 }

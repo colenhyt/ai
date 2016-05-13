@@ -12,8 +12,8 @@ import box.util.IPageDealing;
 public class SitePageDealing implements IPageDealing {
 	private Map<String,IPageDealer> dealers = new HashMap<String,IPageDealer>();
 	
-	public SitePageDealing(){
-		IPageDealer dealer = new BaiduSiteDealer();
+	public SitePageDealing(String word){
+		IPageDealer dealer = new BaiduSiteDealer(word);
 		dealers.put(dealer.getSiteId(), dealer);
 	}
 	

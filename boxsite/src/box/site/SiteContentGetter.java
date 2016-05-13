@@ -16,6 +16,7 @@ import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.SegToken;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 
+import box.mgr.SiteManager;
 import box.site.db.SiteService;
 import box.site.model.Website;
 import box.site.model.Websitekeys;
@@ -96,7 +97,7 @@ public class SiteContentGetter extends Thread {
 		
 		//site insert:
 		Vector<Website> sites2 = new Vector<Website>();
-		nextWebsiteId = siteService.addSites(sites,getNextWebisteId(),sites2);
+		nextWebsiteId = SiteManager.getInstance().addSites(sites,getNextWebisteId(),sites2);
 		if (findInfo){
 			for (Website site:sites2){
 				if (site.getUrl()!=null){
@@ -294,14 +295,14 @@ public class SiteContentGetter extends Thread {
 			List<SegToken> segToken = segmenter.process(sentence, SegMode.INDEX);
 			for (SegToken item:segToken){
 				words.add(item.word);
-				int wordid = siteService.addWord(item.word);
+				int wordid = SiteManager.getInstance().addWord(item.word);
 				if (wordid>0){
 					Websitekeys key = new Websitekeys();
 					key.setSiteid(siteId);
 					key.setWordid(wordid);
-					siteService.addSitekey(key);
+					SiteManager.getInstance().addSitekey(key);
 					
-					siteService.addWordRelation(wordid, parentid, 2);
+					SiteManager.getInstance().addWordRelation(wordid, parentid, 2);
 					count++;
 				}
 			}			

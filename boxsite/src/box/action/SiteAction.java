@@ -22,12 +22,7 @@ public class SiteAction extends BaseAction{
 	}
 	public String getSites(){
 		String keyword = this.getHttpRequest().getParameter("keyword");
-		List<Website> sites = siteService.getSites(keyword);
-		if (sites==null||sites.size()<=0){
-			
-		}
-		String jsonstr  = JSON.toJSONString(sites);
-		super.write(jsonstr);
+
 		return null;
 	}
 }
