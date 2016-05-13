@@ -299,6 +299,10 @@ public class URLStrHelper {
 		return null;
     }
     
+    public static String getAnchorText(String refWord,String charset){
+    	return HTMLContentHelper.getPureText(refWord,charset);
+    }
+    
     public static String getAnchorText(String refWord){
     	return HTMLContentHelper.getPureText(refWord);
     }

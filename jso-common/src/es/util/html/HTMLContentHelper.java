@@ -258,11 +258,11 @@ public class HTMLContentHelper {
 		}	
 		return pureText;
 	}
-	public static String getPureText(String context){
+	public static String getPureText(String context,String chartset){
 		try {
 			if (context!=null){
 				context=removeHTMLChars(context);
-				return getPureText(context.getBytes(Constants.CHARTSET_DEFAULT),Constants.CHARTSET_DEFAULT);
+				return getPureText(context.getBytes(chartset),chartset);
 			}
 		} catch (UnsupportedEncodingException e) {
 			// log error here
@@ -273,6 +273,11 @@ public class HTMLContentHelper {
 		}
 		return null;
 	}
+	
+	public static String getPureText(String context){
+		return getPureText(context,Constants.CHARTSET_DEFAULT);
+	}
+	
 	public static String getPureText(byte[] content,String encoding) throws Exception{
 		String pureText=null;
 		if (content != null) {

@@ -1359,7 +1359,7 @@ public class HTMLInfoSupplier {
         	String href=tag.getAttributes().getValue("href");
             String url=URLStrHelper.legalUrl(urlStr,href);
             if (url!=null){
-            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText());
+            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText(),this.encoding);
             	urlWords.add(refWord);	   
             }
             	
