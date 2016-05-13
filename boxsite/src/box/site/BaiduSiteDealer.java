@@ -50,12 +50,13 @@ public class BaiduSiteDealer implements IPageDealer {
 		siteGetter.genWebSites(_page,true);
 		SiteService service = new SiteService();
 		int siteCount = service.getWebsiteCount(_page.getRefId());
-		if (siteCount>50){
+		if (siteCount>100){
 			log.warn("该关键字相关网站已有 ："+siteCount);
 			return newurls;
 		}		
 		log.warn("该关键字相关网站有 ："+siteCount);
 		
+		//分页urls:
 		newurls.addAll(findPagingRefs(_page.getRefId()));
 		
 		return newurls;
@@ -74,11 +75,8 @@ public class BaiduSiteDealer implements IPageDealer {
 		for (PageRef ref:refs){
 			if (ref.getRefWord()==null) continue;
 			
-//			String urlstr0 = ref.getUrlStr();
-//			if (urlstr0.indexOf("s?wd")==0)
-//				urlstr0 = BAIDU_URL00 + urlstr0;
-				int wordid = SiteManager.getInstance().addWord(ref.getRefWord());
-				SiteManager.getInstance().addWordRelation(parentWordid, wordid, 1);
+				int wordid = SiteManager.getInstance().addWord(siteService,ref.getRefWord());
+				SiteManager.getInstance().addWordRelation(siteService,parentWordid, wordid, 1);
 				//自动分页:
 				for (int i=0;i<20;i++){
 					String urlstr = BAIDU_URL+"wd="+ref.getRefWord()+"&pn="+i*10;
@@ -134,7 +132,7 @@ public class BaiduSiteDealer implements IPageDealer {
 		}
 		
 		if (urls.size()<=0) {
-			wordid = SiteManager.getInstance().addWord(keyword);
+			wordid = SiteManager.getInstance().addWord(service,keyword);
 			service.DBCommit();
 			String[] warray = keyword.split(",");
 			String wordstr = "";

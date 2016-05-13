@@ -30,6 +30,7 @@ public class SiteManager {
 	DataThread dataThread;
 	private int nextWordId = 0;
 	private int pageCount = 20;
+	private int nextWebsiteId = 0;
 
 	private Map<String,Website>			siteMap;
 	private Map<Integer,Website>			siteMapById;
@@ -76,6 +77,8 @@ public class SiteManager {
 		}
 		
 		siteMap = new HashMap<String,Website>();
+		siteMapById = new HashMap<Integer,Website>();
+		
 		List<Website> list2 = service.getWebsites();
 		for (Website item:list2){
 			siteMap.put(item.getUrl(), item);
@@ -124,7 +127,7 @@ public class SiteManager {
 		return -1;
 	}
 	
-	public void addWordRelation(int wordid,int relateWordid,int relatetype){
+	public void addWordRelation(SiteService service,int wordid,int relateWordid,int relatetype){
 		String key = wordid+"_"+relateWordid+"_"+relatetype;
 		if (wordRelationKeys.contains(key))
 			return;
@@ -134,37 +137,51 @@ public class SiteManager {
 		r.setRelatewordid(relateWordid);
 		r.setRelatetype(relatetype);
 		wordRelationKeys.add(key);
-		SiteService service = new SiteService();
 		service.addWordRelation(r);
 	}
 	
-	public int addSitekey(Websitekeys record){
+	public int addSitekey(SiteService service,Websitekeys record){
 		String key = record.getSiteid()+"_"+record.getWordid();
 		if (keysMap.containsKey(key))
 			return -1;
 		
 		keysMap.put(key, record);
-		SiteService service = new SiteService();
 		return service.addSitekey(record);
 	}
 	
+	public boolean existSite(String siteurl){
+		return siteMap.containsKey(siteurl);
+	}	
 	
-	public int addSites(Vector<Website> records,int startSiteId,Vector<Website> addedSites){
-		int maxSiteId = startSiteId;
-		SiteService service = new SiteService();
+	public void _findNewSites(Vector<Website> records,Vector<Website> newSites){
 		for (Website record:records){
 			if (!siteMap.containsKey(record.getUrl())){
-				addedSites.add(record);
-				record.setSiteid(maxSiteId);
-				siteMap.put(record.getUrl(), record);
-				maxSiteId++;
-				service.addSite(record);
+				newSites.add(record);
 			}
 		}
-		return maxSiteId;
 	}
 	
-	public int addWord(String word){
+	public int addSites(SiteService service,Vector<Website> records){
+		for (Website record:records){
+			if (!siteMap.containsKey(record.getUrl())){
+				record.setSiteid(this.getNextWebisteId());
+				siteMap.put(record.getUrl(), record);
+				 service.addSite(record);
+			}
+		}
+		return 0;
+	}
+	
+	public synchronized int getNextWebisteId(){
+		if (nextWebsiteId==0){
+		SiteService siteService = new SiteService();
+		nextWebsiteId = siteService.getMaxSiteid();
+		}
+		nextWebsiteId++;
+		return nextWebsiteId;
+	}
+	
+	public int addWord(SiteService service,String word){
 		if (word==null)
 			return -1;
 		
@@ -176,7 +193,6 @@ public class SiteManager {
 		record.setWordid(this.getNextWordId());
 		record.setStatus(0);
 		wordsMap.put(word, record);
-		SiteService service = new SiteService();
 		service.addWord(record);
 		return record.getWordid();
 	}
@@ -214,7 +230,6 @@ public class SiteManager {
 	private void startupSpider(String word){
 		IPageDealing dealing = new SitePageDealing(word);
 		int[] a = new int[1]; 
-		//Date dd = DateHelper.formatDate("3", "23", "19:10:10");
 		SitesContainer con = new SitesContainer(a,dealing);
 		con.runningPages();		
 	}
@@ -222,8 +237,8 @@ public class SiteManager {
 	public String querySites(String word,int page){
 		int wordid = this.findWordId(word);
 		if (wordid<=0){
-			wordid = this.addWord(word);
 			this.startupSpider(word);
+			return "[]";
 		}
 		
 		List<Website> list = this.getWebsites(wordid,page);

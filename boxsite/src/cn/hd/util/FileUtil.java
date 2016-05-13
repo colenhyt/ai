@@ -107,7 +107,6 @@ public class FileUtil {
 			}
 
 		} else {
-			System.err.println("Does not exist！");
 		}
 
 		return output;

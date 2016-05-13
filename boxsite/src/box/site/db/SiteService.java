@@ -80,6 +80,7 @@ public class SiteService extends BaseService{
 	{
 		initMapper("websiteMapper","websitekeysMapper","searchurlMapper","websitewordsMapper","wordrelationMapper");
 		
+		searchUrlMap = new HashMap<String,Baiduurls>();
 		BaiduurlsExample  example = new BaiduurlsExample();
 		List<Baiduurls> list = searchurlMapper.selectByExample(example);
 		for (Baiduurls url:list){

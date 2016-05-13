@@ -70,8 +70,8 @@ public class BaiduPageDealer implements IPageDealer {
 //			String urlstr0 = ref.getUrlStr();
 //			if (urlstr0.indexOf("s?wd")==0)
 //				urlstr0 = BAIDU_URL00 + urlstr0;
-				int wordid = SiteManager.getInstance().addWord(ref.getRefWord());
-				SiteManager.getInstance().addWordRelation(parentWordid, wordid, 1);
+				int wordid = SiteManager.getInstance().addWord(siteService,ref.getRefWord());
+				SiteManager.getInstance().addWordRelation(siteService,parentWordid, wordid, 1);
 				//自动分页:
 				for (int i=0;i<20;i++){
 					String urlstr = BAIDU_URL+"wd="+ref.getRefWord()+"&pn="+i*10;

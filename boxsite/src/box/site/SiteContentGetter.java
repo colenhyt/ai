@@ -42,7 +42,6 @@ public class SiteContentGetter extends Thread {
 	private String googlePr = "http://toolbarqueries.google.com/search?client=navclient-auto&features=Rank&ch=8&q=info:";
 	private Map<String,String> classKeys = new HashMap<String,String>();
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
-	private int nextWebsiteId = 0;
 	
 	public static void main(String[] args){
 		SiteContentGetter getter = new SiteContentGetter();
@@ -82,51 +81,46 @@ public class SiteContentGetter extends Thread {
 		pages.add(page);
 	}
 	
-	public synchronized int getNextWebisteId(){
-		if (nextWebsiteId==0){
-		SiteService siteService = new SiteService();
-		nextWebsiteId = siteService.getMaxSiteid();
-		}
-		nextWebsiteId++;
-		return nextWebsiteId;
-	}
-	
 	public synchronized void genWebSites(OriHttpPage page,boolean findInfo){
-		Vector<Website> sites = findWebSites(page);
+		Vector<Website> sites = findWebSitesInPage(page);
 		SiteService siteService = new SiteService();
 		
 		//site insert:
-		Vector<Website> sites2 = new Vector<Website>();
-		nextWebsiteId = SiteManager.getInstance().addSites(sites,getNextWebisteId(),sites2);
+		Vector<Website> newSites = new Vector<Website>();
+		SiteManager.getInstance()._findNewSites(sites,newSites);
 		if (findInfo){
-			for (Website site:sites2){
-				if (site.getUrl()!=null){
-					site.setAlexa(this.getAlexa(site.getUrl()));
-					site.setBdrank(this.getBdRank(site.getUrl()));	
-					Vector<String> descs = this.getDesc(site.getUrl(),false);
-					this.dealUrlWords(site.getUrl(), page.getRefId(),site.getSiteid(),siteService);
-					if (descs.size()>0){
-						site.setName(descs.get(0));
-						site.setCdesc(descs.get(1));
-						site.setKeywords(descs.get(2));
-					}
-					
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+			for (Website site:newSites){
+				String realurl =site.getUrl();
+				if (realurl==null) continue;
+				
+				site.setAlexa(this.getAlexa(site.getUrl()));
+				site.setBdrank(this.getBdRank(site.getUrl()));	
+				Vector<String> descs = this.getDesc(site.getUrl(),false);
+				this.dealUrlWords(site.getUrl(), page.getRefId(),site.getSiteid(),siteService);
+				if (descs.size()>0){
+					site.setName(descs.get(0));
+					site.setCdesc(descs.get(1));
+					site.setKeywords(descs.get(2));
+				}
+				
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
 		
+		//add new sites:
+		SiteManager.getInstance().addSites(siteService, newSites);
+		
 		//site word map:
-		for (Website item:sites2){
+		for (Website item:newSites){
 			Websitekeys key = new Websitekeys();
 			key.setSiteid(item.getSiteid());
 			key.setWordid(page.getRefId());
-			siteService.addSitekey(key);
+			SiteManager.getInstance().addSitekey(siteService,key);
 		}
 		
 		//baiduurl update:
@@ -141,7 +135,7 @@ public class SiteContentGetter extends Thread {
 		}
 	}
 	
-	public Vector<Website> findWebSites(OriHttpPage page){
+	public Vector<Website> findWebSitesInPage(OriHttpPage page){
 		
 		htmlHelper.init(page.getContent());
 		Vector<Website> sites = new Vector<Website>();
@@ -172,8 +166,6 @@ public class SiteContentGetter extends Thread {
 			site.setStatus(SiteDataManager.WEBSITE_STATUS_DONEURL);
 			if (realurl!=null){
 				site.setUrl(realurl);
-//				site.setAlexa(this.getAlexa(realurl));
-//				site.setBdrank(this.getBdRank(realurl));
 			}
 			site.setRemark(page.getRefWord());
 			site.setCrdate(new Date());
@@ -295,14 +287,14 @@ public class SiteContentGetter extends Thread {
 			List<SegToken> segToken = segmenter.process(sentence, SegMode.INDEX);
 			for (SegToken item:segToken){
 				words.add(item.word);
-				int wordid = SiteManager.getInstance().addWord(item.word);
+				int wordid = SiteManager.getInstance().addWord(siteService,item.word);
 				if (wordid>0){
 					Websitekeys key = new Websitekeys();
 					key.setSiteid(siteId);
 					key.setWordid(wordid);
-					SiteManager.getInstance().addSitekey(key);
+					SiteManager.getInstance().addSitekey(siteService,key);
 					
-					SiteManager.getInstance().addWordRelation(wordid, parentid, 2);
+					SiteManager.getInstance().addWordRelation(siteService,wordid, parentid, 2);
 					count++;
 				}
 			}			
