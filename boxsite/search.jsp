@@ -3,13 +3,13 @@
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
 String wordstr = request.getParameter("word");
-String wordidstr = request.getParameter("wordid");
-String sitejsons = "";
-if (wordstr!=null){
- sitejsons = SiteManager.getInstance().getSites(wordstr);
-}else {
-int wordid = Integer.valueOf(wordidstr);
-sitejsons = SiteManager.getInstance().getSites(wordid);
+String pagestr = request.getParameter("page");
+int page = 0;
+if (pagestr!=null){
+ page = Integer.valueOf(pagestr);;
 }
+String sitejsons = "";
+ sitejsons = SiteManager.getInstance().querySites(wordstr,page);
+
 response.getWriter().print(sitejsons);
 %>

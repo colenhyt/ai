@@ -15,19 +15,19 @@
 </head>
 <body>
           <script type="text/javascript" src="static/js/util.js"></script>
-          <form action="/boxsite/webpage.html">
+          <script type="text/javascript" src="static/js/webitem.js"></script>
+          <script type="text/javascript" src="static/js/sitesearch.js"></script>
+          <script type="text/javascript" src="static/js/webpage.js"></script>                   
          <table id="titles">
           <tr><td>搜索:</td>
-          <td><input type='text' size=30 name='word'/></td>
+          <td><input type='text' size=30 id='searchword'/></td>
           </tr>
           <tr>
-          <td><input type='submit' size=50 value='提交'/></td>
+          <td><input type='button' size=50 onclick='g_sitesearch.search()' value='提交'/></td>
           </tr>
           </table>
-          </form>
-          <div id="hotwords">
+          <div id="searchrst">
           </div>
-          <script type="text/javascript" src="static/js/main.js"></script>                   
      	</body>	
     	
 </html>
