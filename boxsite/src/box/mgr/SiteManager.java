@@ -156,6 +156,7 @@ public class SiteManager {
 	public void _findNewSites(Vector<Website> records,Vector<Website> newSites){
 		for (Website record:records){
 			if (!siteMap.containsKey(record.getUrl())){
+				record.setSiteid(this.getNextWebisteId());
 				newSites.add(record);
 			}
 		}
@@ -164,7 +165,6 @@ public class SiteManager {
 	public int addSites(SiteService service,Vector<Website> records){
 		for (Website record:records){
 			if (!siteMap.containsKey(record.getUrl())){
-				record.setSiteid(this.getNextWebisteId());
 				siteMap.put(record.getUrl(), record);
 				 service.addSite(record);
 			}

@@ -99,6 +99,7 @@ public class SiteContentGetter extends Thread {
 				this.dealUrlWords(site.getUrl(), page.getRefId(),site.getSiteid(),siteService);
 				if (descs.size()>0){
 					site.setName(descs.get(0));
+					site.setCtitle(descs.get(0));
 					site.setCdesc(descs.get(1));
 					site.setKeywords(descs.get(2));
 				}
@@ -300,7 +301,7 @@ public class SiteContentGetter extends Thread {
 			}			
 		}
 		
-		log.warn(weburl+" 增加词语  "+count);
+		log.warn(weburl+" 找到链接词语:  "+count);
 		
 	}
 	
