@@ -241,6 +241,16 @@ public class SiteService extends BaseService{
 			websiteMapper.updateByPrimaryKey(site);
 	}
 	
+	public void updateWordCount(int wordid,int siteCount){
+		WebsitewordsExample example = new WebsitewordsExample();
+		WebsitewordsExample.Criteria cri = example.createCriteria();
+		cri.andWordidEqualTo(wordid);
+		Websitewords record = new Websitewords();
+		record.setWordid(wordid);
+		record.setSitecount(siteCount);
+		websitewordsMapper.updateByExampleSelective(record, example);
+	}
+	
 	public boolean addSearchUrl(Baiduurls record){
 		searchurlMapper.insert(record);
 		return true;

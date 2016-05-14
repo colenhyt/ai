@@ -1,7 +1,8 @@
 package box.mgr;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,16 +13,10 @@ import java.util.Vector;
 import box.main.SitesContainer;
 import box.site.SitePageDealing;
 import box.site.db.SiteService;
-import box.site.model.Baiduurls;
-import box.site.model.BaiduurlsExample;
 import box.site.model.Website;
-import box.site.model.WebsiteExample;
 import box.site.model.Websitekeys;
-import box.site.model.WebsitekeysExample;
 import box.site.model.Websitewords;
-import box.site.model.WebsitewordsExample;
 import box.site.model.Wordrelation;
-import box.site.model.WordrelationExample;
 import box.util.IPageDealing;
 
 import com.alibaba.fastjson.JSON;
@@ -122,9 +117,19 @@ public class SiteManager {
 	
 	public int findWordId(String word){
 		if (wordsMap.containsKey(word))
-			wordsMap.get(word).getWordid();
+			return wordsMap.get(word).getWordid();
 		
 		return -1;
+	}
+	
+	public Websitewords findWord(int wordid){
+		Collection<Websitewords> cc = wordsMap.values();
+		for (Websitewords item:cc){
+			if (item.getWordid()==wordid)
+				return item;
+		}
+		
+		return null;
 	}
 	
 	public void addWordRelation(SiteService service,int wordid,int relateWordid,int relatetype){
@@ -146,7 +151,18 @@ public class SiteManager {
 			return -1;
 		
 		keysMap.put(key, record);
+		this.updateWordSiteCount(service, record.getWordid());
 		return service.addSitekey(record);
+	}
+	
+	public void updateWordSiteCount(SiteService service,int wordid){
+		Websitewords sitewords = findWord(wordid);
+		if (sitewords==null){
+			return;
+		}
+		sitewords.setSitecount(sitewords.getSitecount()+1);
+		wordsMap.get(sitewords.getWord()).setSitecount(sitewords.getSitecount());
+		service.updateWordCount(wordid,sitewords.getSitecount());
 	}
 	
 	public boolean existSite(String siteurl){
@@ -214,9 +230,19 @@ public class SiteManager {
 		return JSON.toJSONString(words);
 	}
 	
-	public static String getHotwords(){
-		SiteService service = new SiteService();
-		List<Websitewords> list = service.getDonewords();
+	public String getHotwords(){
+		Collection<Websitewords> words = wordsMap.values();
+		List<Websitewords> items = new ArrayList<Websitewords>();
+		for (Websitewords item:words){
+			if (item.getSitecount()>0)
+				items.add(item);
+		}
+		Collections.sort((List<Websitewords>)items);
+		List<Websitewords> list = new ArrayList<Websitewords>();
+		for (int i=0;i<10;i++){
+			if (items.size()>i)
+				list.add(items.get(i));
+		}
 		return JSON.toJSONString(list);
 	}
 	
