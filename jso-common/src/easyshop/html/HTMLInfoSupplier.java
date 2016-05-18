@@ -1337,19 +1337,38 @@ public class HTMLInfoSupplier {
 		return urls;		
 	}
 	
+	public List<PageRef> getNotDomainUrls(String domainName){
+        List<PageRef> urls=new ArrayList();
+        for (Iterator it=linkTags.iterator();it.hasNext();) {
+        	StartTag tag = (StartTag)it.next();
+        	String href=tag.getAttributes().getValue("href");
+            String url=URLStrHelper.legalUrl(urlStr,href);
+            if (url!=null&&domainName!=null&&url.indexOf(domainName)<0){
+            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText());
+            	urls.add(new PageRef(url,refWord));	   
+            }
+            	
+        }
+	return urls;		
+	}
+	
+	public List<PageRef> getUrls(String domainName){
+        List<PageRef> urls=new ArrayList();
+        for (Iterator it=linkTags.iterator();it.hasNext();) {
+        	StartTag tag = (StartTag)it.next();
+        	String href=tag.getAttributes().getValue("href");
+            String url=URLStrHelper.legalUrl(urlStr,href);
+            if (url!=null&&(domainName==null||url.indexOf(domainName)>0)){
+            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText());
+            	urls.add(new PageRef(url,refWord));	   
+            }
+            	
+        }
+	return urls;		
+	}
+	
 	public List<PageRef> getUrls(){
-	        List<PageRef> urls=new ArrayList();
-	        for (Iterator it=linkTags.iterator();it.hasNext();) {
-	        	StartTag tag = (StartTag)it.next();
-	        	String href=tag.getAttributes().getValue("href");
-	            String url=URLStrHelper.legalUrl(urlStr,href);
-	            if (url!=null){
-	            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText());
-	            	urls.add(new PageRef(url,refWord));	   
-	            }
-	            	
-	        }
-		return urls;		
+	    return getUrls(null);		
 	}
 	
 	public List<String> getUrlWords(){

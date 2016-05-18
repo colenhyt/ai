@@ -410,6 +410,35 @@ public class URLStrHelper {
     	return true;
     }
     
+    public static String getUrlDNA(String urlStr){
+    	String urlKey = getURLDir(urlStr);
+    	Map<String,String> params1 = getParams(urlStr);
+    	for (String pName:params1.keySet()){
+    		urlKey += "_"+pName;
+    	}
+    	return urlKey;
+    }
+    
+    public static boolean isBrotherUrl(String urlStr1,String urlStr2){
+    	String dna1 = getUrlDNA(urlStr1);
+    	String dna2 = getUrlDNA(urlStr2);
+    	boolean isBrother = false;
+    	if (dna1.equalsIgnoreCase(dna2)){
+    		isBrother = true;
+    		Map<String,String> params1 = getParams(urlStr1);
+    		Map<String,String> params2 = getParams(urlStr2);
+    			for (String paramName:params1.keySet()){
+    				String pv = params1.get(paramName);
+    				String pv2 = params2.get(paramName);
+    				if (!pv.equalsIgnoreCase(pv2)){
+    					isBrother = false;
+    					break;
+    				}
+    			}
+    	}
+    	return isBrother;
+    }
+    
     public static boolean isSameURLDir(String urlStr1,String urlStr2){
     	String dir1=getURLDir(urlStr1);
     	String dir2=getURLDir(urlStr2);
