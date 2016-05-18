@@ -41,6 +41,7 @@ public class PagesThread extends Thread implements Runnable{
      OriginalsHelper helper=new OriginalsHelper();
      private int perCount=1000, fullActiveCount=0,threadCount=0,maxUrlCount=0;
     private int currentPageType=-1;
+    PageThreadWorker spider;
     TAction action;
     TSiteConfig siteConfig;
     TPageTypes types;
@@ -156,9 +157,22 @@ public class PagesThread extends Thread implements Runnable{
 //        
 //    }
 
+    public int currUrlsSize(){
+    	return spider.queueSize();
+    }
+    
+    public void pushNewUrls(){
+        List newurls= new ArrayList();
+        List<PageRef> refs = pageDealing.getFirstRefs(siteAction.getSiteId());
+        newurls.addAll(refs);
+        spider.pushInitUrls(newurls);
+        
+        newurls.clear();    	
+    }
+    
     private void b2RunSpiders(int dType){
         
-    	PageThreadWorker spider=new PageThreadWorker(DownloadContext.getSpiderContext());
+    	spider=new PageThreadWorker(DownloadContext.getSpiderContext());
         spider.setHttpClient(httpClient);
         spider.setParams(siteId,dType,threadCount,downloadType,pageActionType,insertCount,pageDealing);
         List newurls= new ArrayList();

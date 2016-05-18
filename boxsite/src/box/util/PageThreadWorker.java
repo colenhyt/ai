@@ -249,11 +249,10 @@ public class PageThreadWorker implements Runnable, Constants{
 
         quit = false;
         running = 0;
-        existURLs=new HashSet();
-        if (queueSize()<=0){
-            log.warn("before spiders work, their queue size is 0");
-            return;
-        }
+//        if (queueSize()<=0){
+//            log.warn("before spiders work, their queue size is 0");
+//            return;
+//        }
         
 		for (int i = 0; i < threadCount; i++) { // spawn threads
 			SpiderThread thread = new SpiderThread(THREAD_GROUP_NAME + i);
@@ -272,7 +271,7 @@ public class PageThreadWorker implements Runnable, Constants{
     /**
      * Get the size of the download queue in a thread-safe manner.
      */
-    private int queueSize()
+    public int queueSize()
     {
         synchronized(queue)
         {

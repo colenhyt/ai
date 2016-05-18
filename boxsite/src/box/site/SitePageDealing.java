@@ -11,10 +11,15 @@ import box.util.IPageDealing;
 
 public class SitePageDealing implements IPageDealing {
 	private Map<String,IPageDealer> dealers = new HashMap<String,IPageDealer>();
+	IPageDealer dealer;
 	
-	public SitePageDealing(String word){
-		IPageDealer dealer = new BaiduSiteDealer(word);
+	public SitePageDealing(){
+		dealer = new BaiduSiteDealer();
 		dealers.put(dealer.getSiteId(), dealer);
+	}
+	
+	public void addWord(String word){
+		dealer.pushSearchWord(word);
 	}
 	
 	@Override

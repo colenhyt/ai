@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -35,6 +36,7 @@ public class SitesContainer extends Observable implements Observer {
     private int perCount=0, fullActiveCount=5000;
     private List targetSites;
     private TSite[] siteActions;
+    private Vector<PagesThread> pagesThreads;
     private int siteRunning=0,sites=0;
     private HttpClient httpClient;
     private IPageDealing pageDealing;
@@ -75,6 +77,17 @@ public class SitesContainer extends Observable implements Observer {
 			siteActions[i]=new TSite(types,pageDealing.getSetupSites()[i]);
 			siteActions[i].setThreads(1);
 		}
+		
+		pagesThreads = new Vector<PagesThread>();
+        for (int i=0;i<siteActions.length;i++){
+    		PagesThread thread=new PagesThread(siteActions[i],siteActions[i].getSpecId(),null,group,THREAD_GROUP_NAME +i,pageDealing);
+    		thread.inHttpClient(httpClient);
+    		thread.start();
+    	    siteRunning++; 
+    	    pagesThreads.add(thread);
+    	    sites++;            	
+        }		
+		
     }
     public void runningUrls(){
         for (Iterator it=targetSites.iterator();it.hasNext();){
@@ -137,10 +150,16 @@ public class SitesContainer extends Observable implements Observer {
 			}
 			
 			if (noMoreFetcherThread) {
-	            log.info("Now all sites pages' download have finished:");
-	            setChanged();
-	            notifyObservers(); 
-				break;
+//	            log.info("Now all sites pages' download have finished:");
+//	            setChanged();
+//	            notifyObservers(); 
+				log.warn("spiders are wating");
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO 自动生成 catch 块
+					e.printStackTrace();
+				}
 			}
 		}    	
 	}

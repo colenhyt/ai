@@ -98,7 +98,10 @@ public class BaiduPageDealer implements IPageDealer {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	public synchronized void pushSearchWord(String word){
+	}
+	
 	@Override
 	public List<PageRef> getFirstRefs() {
 		// TODO Auto-generated method stub

@@ -64,6 +64,11 @@ public class JDPageDealer implements IPageDealer{
 		return newurls;
 	}
 	
+	public void pushSearchWord(String word)
+	{
+		
+	}
+	
 	private void parseCat_dealGoodsItems()
 	{
 		

@@ -29,6 +29,10 @@ public class A5118PageDealer implements IPageDealer{
 		
 	}
 	
+	public void pushSearchWord(String word)
+	{
+		
+	}
 	@Override
 	public List<PageRef> deal(OriHttpPage _page) {
 		page = _page;

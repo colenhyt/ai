@@ -11,6 +11,8 @@ public interface IPageDealer {
 
 	public List<PageRef> deal(OriHttpPage page);
 	
+	public void pushSearchWord(String word);
+	
 	public String getSiteId();
 	
 	public String getFirstUrl();

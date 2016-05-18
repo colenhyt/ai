@@ -26,8 +26,8 @@ public class Main {
 		int t = 190;
 		t = t%10;
 		
-		IPageDealing dealing = new SitePageDealing("京东");
-		
+		SitePageDealing dealing = new SitePageDealing();
+		//dealing.addWord("京东");
 		//Date dd = DateHelper.formatDate("3", "23", "19:10:10");
 		SitesContainer con = new SitesContainer(a,dealing);
 		con.runningPages();

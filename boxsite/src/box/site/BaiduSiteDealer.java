@@ -1,23 +1,26 @@
 package box.site;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import box.mgr.SiteManager;
 import box.site.db.SiteService;
 import box.site.model.Baiduurls;
-import box.site.model.Websitewords;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
-import es.download.flow.DownloadContext;
 import es.util.FileUtil;
 import es.webref.model.PageRef;
 
 public class BaiduSiteDealer implements IPageDealer {
 	protected Logger  log = Logger.getLogger(getClass()); 
+	private Set<String>	wordSet;
 
 	private static final String siteId = "baidu";
 	private OriHttpPage page;
@@ -29,10 +32,19 @@ public class BaiduSiteDealer implements IPageDealer {
 	static String BAIDU_URL00 = "https://www.baidu.com/";
 	private String firstSearchWord;
 	
-	public BaiduSiteDealer(String word){
+	public BaiduSiteDealer(){
 		siteGetter = new SiteContentGetter();
-		firstSearchWord = word;
 		siteGetter.setSiteId(siteId);
+		wordSet = Collections
+				.synchronizedSet(new HashSet<String>());
+	}
+	
+	public synchronized void pushSearchWord(String word){
+		wordSet.add(word);
+	}
+	
+	public synchronized void popSearchWord(String word){
+		wordSet.remove(word);
 	}
 	
 	@Override
@@ -58,6 +70,9 @@ public class BaiduSiteDealer implements IPageDealer {
 		
 		//分页urls:
 		newurls.addAll(findPagingRefs(_page.getRefId()));
+		
+		if (newurls.size()<=0)
+			newurls = getFirstRefs();
 		
 		return newurls;
 	}
@@ -109,9 +124,17 @@ public class BaiduSiteDealer implements IPageDealer {
 	public List<PageRef> getFirstRefs() {
 		// TODO Auto-generated method stub
 		List<PageRef> urls = new ArrayList<PageRef>();
-		String keyword = "育儿,教育";
-		if (firstSearchWord!=null)
-			keyword = firstSearchWord;
+		String keyword = null;
+		if (wordSet.size()>0){
+			Iterator<String> it = wordSet.iterator();
+			if (it.hasNext()){
+				keyword = it.next();
+				this.popSearchWord(keyword);
+			}
+		}
+		if (keyword==null)
+			return urls;
+		
 		SiteService service = new SiteService();
 		log.warn("开始搜索:"+keyword);
 		int wordid = SiteManager.getInstance().findWordId(keyword);

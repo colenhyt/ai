@@ -28,6 +28,10 @@ public class SougouPageDealer implements IPageDealer{
 	{
 		
 	}
+	public void pushSearchWord(String word)
+	{
+		
+	}
 	
 	public List<PageRef> buildSearchWxpublicUrls(){
 		List<PageRef> refs = new ArrayList<PageRef>();

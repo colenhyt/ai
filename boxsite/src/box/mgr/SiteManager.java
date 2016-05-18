@@ -32,6 +32,7 @@ public class SiteManager {
 	private Map<String,Websitewords>		wordsMap;
 	private Map<String,Websitekeys>		keysMap;
 	private Set<String> 	wordRelationKeys;
+	private SitePageDealing dealing;
 	
 	private static SiteManager uniqueInstance = null;
 
@@ -79,8 +80,11 @@ public class SiteManager {
 			siteMap.put(item.getUrl(), item);
 			siteMapById.put(item.getSiteid(), item);
 		}
-
 		
+		dealing = new SitePageDealing();
+		int[] a = new int[1];
+		SitesContainer con = new SitesContainer(a,dealing);
+		con.runningPages();			
 	}
 	
 	public List<Websitewords> getNewwords(){
@@ -253,23 +257,20 @@ public class SiteManager {
 		return JSON.toJSONString(list);
 	}
 	
-	private void startupSpider(String word){
-		IPageDealing dealing = new SitePageDealing(word);
-		int[] a = new int[1]; 
-		SitesContainer con = new SitesContainer(a,dealing);
-		con.runningPages();		
+	private void addSearchWord(String word){
+		dealing.addWord(word);
 	}
 	
 	public String querySites(String word,int page){
 		int wordid = this.findWordId(word);
 		if (wordid<=0){
-			this.startupSpider(word);
+			this.addSearchWord(word);
 			return "[]";
 		}
 		
 		List<Website> list = this.getWebsites(wordid,page);
 		if (list.size()<=0){
-			this.startupSpider(word);
+			//this.startupSpider(word);
 		}
 		
 		return JSON.toJSONString(list);
