@@ -32,9 +32,9 @@ public class URLConstructor {
 		return str.toString();
 	}
 	//把urlstr按照"/"进行split,第一个item去掉了http,最后一个item包含了文件名和所带的参数:
-	public static List parse(String urlStr) {
+	public static List<String> parse(String urlStr) {
 		String url=urlStr;
-		List items = new ArrayList();
+		List<String> items = new ArrayList<String>();
 		if (url==null)
 			return null;
 		

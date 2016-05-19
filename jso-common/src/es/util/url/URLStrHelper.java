@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
+import java.util.regex.Pattern;
 
 import easyshop.model.ModelConstants;
 import es.util.html.HTMLContentHelper;
@@ -410,11 +412,56 @@ public class URLStrHelper {
     	return true;
     }
     
+    public static String _strSpec(String str){
+    	Vector<String> substr = new Vector<String>();
+    	String splitStr = "";
+    	String speStr = "";
+    	if (str.matches("[0-9]+")){
+    		substr.add("d");
+    	}else if (str.indexOf("-")>0){
+			String[] sps = str.split("[-]");
+			splitStr = "-";
+			for (int i=0;i<sps.length;i++){
+				String sp = sps[i];
+				String ss = _strSpec(sp);
+				substr.add(ss);
+			}
+    	}else if (str.indexOf("_")>0){
+			String[] sps = str.split("[_]");
+			splitStr = "_";
+			for (int i=0;i<sps.length;i++){
+				String sp = sps[i];
+				String ss = _strSpec(sp);
+				substr.add(ss);
+			}
+		}else
+			substr.add(str);
+    	
+    	for (int i=0;i<substr.size();i++){
+    		if (i>0)
+    			speStr += splitStr;
+    		speStr += substr.get(i);
+    	}
+    	return speStr;
+    }
+    
     public static String getUrlDNA(String urlStr){
-    	String urlKey = getURLDir(urlStr);
+    	String[] parts = getPartsWithoutParam(urlStr);
+    	//?,_,-
+    	Vector<String> keys = new Vector<String>();
+    	for (int i=0;i<parts.length;i++){
+    		String part = _strSpec(parts[i]);
+    		keys.add(part);
+    	}
+    	String urlKey = "";
+    	for (int i=0;i<keys.size();i++){
+    		if (i>0)
+    			urlKey += "/";
+    		urlKey += keys.get(i);
+    	}
     	Map<String,String> params1 = getParams(urlStr);
     	for (String pName:params1.keySet()){
-    		urlKey += "_"+pName;
+    		urlKey += "&"+pName;
     	}
     	return urlKey;
     }
@@ -534,8 +581,19 @@ public class URLStrHelper {
         return oldStr;
     }
 
-    public static String[] getParts(String urlStr){
-    	List list=URLConstructor.parse(urlStr);
+    public static String[] getPartsWithoutParam(String urlStr){
+    	List<String> list=URLConstructor.parse(urlStr);
+    	String lastp = list.get(list.size()-1);
+    	if (lastp.indexOf("?")>0){
+    		lastp = lastp.substring(0,lastp.indexOf("?"));
+    	}
+    	if (list.size()>1){
+        	list.remove(list.size()-1);
+    		String[] ss = lastp.split("[.]");
+    		for (int i=0;i<ss.length;i++){
+    			list.add(ss[i]);
+    		}
+    	}
     	return (String[])list.toArray(new String[list.size()]);
     }
     
@@ -628,5 +686,16 @@ public class URLStrHelper {
             /* We don't test if the UTF-8 encoding is well-formed */
         }
         return sbuf.toString();
-    }    
+    }
+
+	public static String[] getParts(String urlStr){
+		List<String> list=URLConstructor.parse(urlStr);
+		String lastp = list.get(list.size()-1);
+		list.remove(list.size()-1);
+		String[] ss = lastp.split("[.]");
+		for (int i=0;i<ss.length;i++){
+			list.add(ss[i]);
+		}
+		return (String[])list.toArray(new String[list.size()]);
+	}    
 }
