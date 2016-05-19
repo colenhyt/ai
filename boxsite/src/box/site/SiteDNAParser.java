@@ -16,6 +16,8 @@ import org.apache.log4j.Logger;
 
 import box.mgr.SiteManager;
 import box.site.db.SiteService;
+import box.site.model.WebpageDNA;
+import box.site.model.WebsiteDNA;
 import box.site.model.Websitekeys;
 
 import com.huaban.analysis.jieba.JiebaSegmenter;
@@ -25,67 +27,75 @@ import com.huaban.analysis.jieba.SegToken;
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
-import easyshop.html.jericho.Element;
 import es.download.flow.DownloadContext;
 import es.util.http.PostPageGetter;
 import es.util.url.URLStrHelper;
-import es.util.word.WordToken;
 import es.webref.model.PageRef;
 
-public class SiteDNAParser extends Thread {
+public class SiteDNAParser {
 	protected Logger  log = Logger.getLogger(getClass()); 
 	JiebaSegmenter segmenter;
    private HttpClient httpClient = null;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
-	private String siteId;
 	private String userAgent;
 	private PostPageGetter pageGetter;
-    private String alexaapi = "http://data.alexa.com/data?cli=10&url=";
-	private String baiduRank = "http://baidurank.aizhan.com/baidu/";
-	private String googlePr = "http://toolbarqueries.google.com/search?client=navclient-auto&features=Rank&ch=8&q=info:";
-	private Map<String,String> classKeys = new HashMap<String,String>();
+	private Map<String,WebpageDNA>  dnaPageMap;
+	
 	Set<OriHttpPage> pages = new HashSet<OriHttpPage>();
 	
 	public static void main(String[] args){
 		SiteDNAParser getter = new SiteDNAParser();
-		SiteService siteService = new SiteService();
-		getter.dealUrlWords("http://news.ifeng.com/", 3, 5, siteService);
-		siteService.DBCommit();
+		String a = "01dab6e3-5c87-4648-8d7a-902e0ccccda8";
+		String b = URLStrHelper.getUrlDNA(a);
+		PostPageGetter pageGetter = new PostPageGetter(DownloadContext.getSpiderContext().getUserAgent());
+		HttpPage p = pageGetter.getHttpPage("http://news.ifeng.com/", HttpClients.createDefault());
+		OriHttpPage p2 = new OriHttpPage(p.getUrlStr(),p.getContent(),null,p.getCharSet());
+		getter.parse2DNAs(p2);
 	}
 	public SiteDNAParser(){
 		userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		dnaPageMap = new HashMap<String,WebpageDNA>();
 		initHttpClient();
 		pageGetter = new PostPageGetter(userAgent);
 		segmenter = new JiebaSegmenter();
 	}
 	
-	public void setSiteId(String site){
-		siteId = site;
+	public WebpageDNA queryPageDNA(String urlStr){
+		HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
+		htmlHelper.init(page.getContent());
+		//find urls:
+		//find texts:
+		return null;
 	}
-	public void run() {
-		while (1==1){
-			synchronized(this){
-				for (OriHttpPage page:pages){
-					this.parse2DNAs(page,false);
+	
+	public void defineListAndDataPage(){
+		
+	}
+	public WebsiteDNA parse2DNAs(OriHttpPage page){
+		Map<String,Vector<PageRef>> urls = findSortUrls(page);
+		if (urls.size()<=0)
+			return null;
+		
+		//define list or data page by link count and relate links:
+		//假定: 排除了相同url后, list页url数量会比data多,data页无链接文本会比list页多:找出page urls和无链接文本
+		WebsiteDNA dna = new WebsiteDNA();
+		for (String dirUrl:urls.keySet()){
+			Vector<PageRef> refs = urls.get(dirUrl);
+			if (refs.size()>5){
+				WebpageDNA pageDNA = dnaPageMap.get(dirUrl);
+				if (pageDNA==null){
+					pageDNA = queryPageDNA(refs.get(0).getUrlStr());
+					dnaPageMap.put(dirUrl, pageDNA);
+					continue;
 				}
-				pages.clear();
-			}
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
-	}
-	
-	public synchronized void pushPage(OriHttpPage page){
-		pages.add(page);
-	}
-	
-	public synchronized void parse2DNAs(OriHttpPage page,boolean findInfo){
-		Map<String,Vector<PageRef>> urls = findUrls(page);
-
+		
+		if (dnaPageMap.size()>0){
+			defineListAndDataPage();
+		}
+		
+		return dna;
 	}
 	
 	public void initHttpClient(){
@@ -94,7 +104,7 @@ public class SiteDNAParser extends Thread {
 		}
 	}
 	
-	public Map<String,Vector<PageRef>> findUrls(OriHttpPage page){
+	private Map<String,Vector<PageRef>> findSortUrls(OriHttpPage page){
 		
 		htmlHelper.init(page.getContent());
 		String domainName = URLStrHelper.getHost(page.getUrlStr());
@@ -102,6 +112,7 @@ public class SiteDNAParser extends Thread {
 		Map<String,Vector<PageRef>>  urlDirMap = new HashMap<String,Vector<PageRef>>();
 		for (PageRef ref:refs){
 			String dna = URLStrHelper.getUrlDNA(ref.getUrlStr());
+			log.warn("url("+ref.getUrlStr()+") dna="+dna);
 			Vector<PageRef> dirUrls = urlDirMap.get(dna);
 			if (dirUrls==null){
 				dirUrls = new Vector<PageRef>();
@@ -131,28 +142,6 @@ public class SiteDNAParser extends Thread {
 		log.warn("找到domain urlsmap: "+urlDirMap.size());
 		return urlDirMap;
 	}
-	
-	public int getAlexa(String weburl){
-			int alexa = -1;
-			String urlStr = alexaapi + weburl;
-			HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
-			if (page.getContent()==null)
-				return alexa;
-			String content  = new String(page.getContent());
-	//		log.warn(content);
-			String startKey = "TEXT=\"";
-			String endKey = "\"";
-			if (content.indexOf(startKey)<=0){
-				log.warn("wrong alexa:"+content);
-				return alexa;
-			}
-			String subt = content.substring(content.indexOf(startKey)+startKey.length());
-			String rankText = subt.substring(0,subt.indexOf(endKey));
-			if (rankText!=null)
-				alexa = Integer.valueOf(rankText);
-			log.warn("alexa "+alexa);
-			return alexa;
-		}
 	
 	public void dealUrlWords(String weburl,int parentid,int siteId,SiteService siteService){
 		Set<String> words = new HashSet<String>();

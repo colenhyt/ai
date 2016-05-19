@@ -1,5 +1,6 @@
 package box.mgr;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,18 +11,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
+import redis.clients.jedis.Jedis;
 import box.main.SitesContainer;
 import box.site.SitePageDealing;
 import box.site.db.SiteService;
 import box.site.model.Website;
+import box.site.model.WebsiteDNA;
 import box.site.model.Websitekeys;
 import box.site.model.Websitewords;
 import box.site.model.Wordrelation;
-import box.util.IPageDealing;
+import cn.hd.util.FileUtil;
+import cn.hd.util.RedisClient;
+import cn.hd.util.RedisConfig;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 public class SiteManager {
+	public static final String DATA_WEBSITE_DNA = "data_website_dna";
+	
+	protected Logger  log = Logger.getLogger(getClass()); 
 	DataThread dataThread;
 	private int nextWordId = 0;
 	private int pageCount = 20;
@@ -33,6 +44,7 @@ public class SiteManager {
 	private Map<String,Websitekeys>		keysMap;
 	private Set<String> 	wordRelationKeys;
 	private SitePageDealing dealing;
+	private RedisClient client;
 	
 	private static SiteManager uniqueInstance = null;
 
@@ -46,8 +58,29 @@ public class SiteManager {
 
 	
 	public SiteManager(){
-		dataThread = new DataThread();
+		String path = "/root/";
+		URL  res = Thread.currentThread().getContextClassLoader().getResource("/");
+		String cfgstr = FileUtil.readFile(path + "config.properties");
+		if (cfgstr == null || cfgstr.trim().length() <= 0) {
+			if (res==null){
+				log.warn("game start failed: "+path);
+				return;
+			}
+			cfgstr = FileUtil.readFile(res.getPath() + "config.properties");
+			if (cfgstr==null|| cfgstr.trim().length() <= 0){
+			log.warn("game start failed: "+path);
+			return;
+			}
+		}
+		JSONObject cfgObj = JSON.parseObject(cfgstr);
+		String cfgstr0 = cfgObj.getString("redisCfg");
+		RedisConfig redisCfg = JSON.parseObject(cfgstr0, RedisConfig.class);
+		
+		dataThread = new DataThread(redisCfg);
 		dataThread.start();
+		
+		client = new RedisClient(redisCfg);
+		
 		SiteService service = new SiteService();
 		
 		wordsMap = new HashMap<String,Websitewords>();
@@ -227,6 +260,15 @@ public class SiteManager {
 		return nextWordId;
 	}
 
+	public WebsiteDNA getSiteDNA(String domainName){
+		Jedis jedis = client.getJedis();
+		String str = jedis.hget(SiteManager.DATA_WEBSITE_DNA, domainName);
+		if (str==null){
+			return JSON.parseObject(str, WebsiteDNA.class);
+		}
+		client.returnResource(jedis);
+		return null;
+	}
 	
 	public static String getSiteWords(){
 		SiteService service = new SiteService();

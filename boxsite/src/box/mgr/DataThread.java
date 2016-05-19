@@ -6,8 +6,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 import box.site.db.SiteService;
+import box.site.model.WebsiteDNA;
 import box.site.model.Websitekeys;
 import cn.hd.util.RedisClient;
 import cn.hd.util.RedisConfig;
@@ -17,17 +21,19 @@ public class DataThread extends Thread {
 	private int updateDuration = 2000;
 	private List<Websitekeys>			deleteWebsitekeys;
 	protected Logger  log = Logger.getLogger(getClass()); 
+	private List<WebsiteDNA> dnaList;
 	
-	public DataThread(){
+	public DataThread(RedisConfig cfg){
+		jedisClient = new RedisClient(cfg);
 
 		deleteWebsitekeys = Collections.synchronizedList(new ArrayList<Websitekeys>());		
+		dnaList = Collections.synchronizedList(new ArrayList<WebsiteDNA>());	
 	}
 	
-	/**
-	 * 存储任务
-	 * @param int playerid
-	 * @return 无
-	 * */
+	public synchronized void addWebsiteDNAs(WebsiteDNA siteDNA){
+		dnaList.add(siteDNA);
+	}
+	
 	public synchronized void addDeleteKeys(Websitekeys key){
 		deleteWebsitekeys.add(key);
 	}
@@ -42,14 +48,25 @@ public class DataThread extends Thread {
         	try {
 				synchronized(this)
 				{				
-	        	
+					jedis = jedisClient.getJedis();
+					if (jedis==null){
+						continue;
+					}
+	        		Pipeline p = jedis.pipelined();
+	        		for (WebsiteDNA dna:dnaList){
+	        			p.hset(SiteManager.DATA_WEBSITE_DNA, dna.getDomainName(), JSON.toJSONString(dna));
+	        		}
+	        		dnaList.clear();
+	        		
 	    		if (deleteWebsitekeys.size()>0){
 	    			SiteService service2= new SiteService();
 		    		service2.deleteWebsitekeys(deleteWebsitekeys);
 		    		log.warn("batch delete keys:"+deleteWebsitekeys.size());
 		    		deleteWebsitekeys.clear();    	    			
 	    		}
-	    		
+	    		p.sync();
+        		jedisClient.returnResource(jedis);
+        		
 				}
 				
 //	        		System.out.println("size :"+DataManager.getInstance().playerMaps.size());
