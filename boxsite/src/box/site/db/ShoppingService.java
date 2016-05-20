@@ -20,15 +20,17 @@ public class ShoppingService extends BaseService {
 		initMapper("shoppingdataMapper");		
 	}
 	
-	public List<Shoppingdata> getData(){
+	public List<Shoppingdata> getData(int typeid){
 		ShoppingdataExample example = new ShoppingdataExample();
+		ShoppingdataExample.Criteria cri = example.createCriteria();
+		cri.andTypeidEqualTo(typeid);
 		return shoppingdataMapper.selectByExample(example);
 	}
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		ShoppingService s = new ShoppingService();
-		System.out.println(s.getData().size());
+		System.out.println(s.getData(1).size());
 	}
 
 }

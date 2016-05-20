@@ -74,9 +74,9 @@ public class ShoppingManager extends MgrBase{
 		
 	}
 	
-	public String getDataStr(){
+	public String getDataStr(int typeid){
 		ShoppingService service = new ShoppingService();
-		List<Shoppingdata> items = service.getData();
+		List<Shoppingdata> items = service.getData(typeid);
 		return JSON.toJSONString(items);
 	}
 }
