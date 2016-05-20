@@ -29,8 +29,7 @@ import cn.hd.util.RedisConfig;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-public class SiteManager {
-	public static final String DATA_WEBSITE_DNA = "data_website_dna";
+public class SiteManager extends MgrBase{
 	
 	protected Logger  log = Logger.getLogger(getClass()); 
 	DataThread dataThread;
@@ -58,24 +57,7 @@ public class SiteManager {
 
 	
 	public SiteManager(){
-		String path = "/root/";
-		URL  res = Thread.currentThread().getContextClassLoader().getResource("/");
-		String cfgstr = FileUtil.readFile(path + "config.properties");
-		if (cfgstr == null || cfgstr.trim().length() <= 0) {
-			if (res==null){
-				log.warn("game start failed: "+path);
-				return;
-			}
-			cfgstr = FileUtil.readFile(res.getPath() + "config.properties");
-			if (cfgstr==null|| cfgstr.trim().length() <= 0){
-			log.warn("game start failed: "+path);
-			return;
-			}
-		}
-		JSONObject cfgObj = JSON.parseObject(cfgstr);
-		String cfgstr0 = cfgObj.getString("redisCfg");
-		RedisConfig redisCfg = JSON.parseObject(cfgstr0, RedisConfig.class);
-		
+	
 		dataThread = new DataThread(redisCfg);
 		dataThread.start();
 		
