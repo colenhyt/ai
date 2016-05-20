@@ -14,8 +14,7 @@ function rankonfocus(index){
 
 Webpage.prototype.fillItems = function(sitelist)
 {
- var content = "<form action='/boxsite/webpage.html?submit'>";
- content = "<table>";
+ var content = "<table>";
  for (var i=0;i<sitelist.length;i++){
   var item = sitelist[i];
   var url = item.url;
@@ -39,7 +38,6 @@ Webpage.prototype.fillItems = function(sitelist)
  }
  content += "<tr><td><input type='button' onclick='g_webpage.updateMyrank()' value='更改'/>"
  content += "</table>";
- content += "</form>";
  var tag = document.getElementById("searchrst");
  tag.innerHTML = content;
 }
@@ -47,11 +45,10 @@ Webpage.prototype.fillItems = function(sitelist)
 Webpage.prototype.load = function(){
  var word = getPar("word");
  var dataParam = "word="+word;
- if (word==null||word==false){
-  var wordid = getPar("wordid");
-  dataParam = "wordid="+wordid;
- }
  this.queryData(dataParam);
+ 
+ var tag = document.getElementById("searchword");
+ tag.value=word;
 }
 
 Webpage.prototype.queryData = function(dataParam){
@@ -97,18 +94,17 @@ Webpage.prototype.updateMyrank = function()
 Webpage.prototype.queryPerTime = function(dataParam)
 {
 
-  	var content ="<div class='orderlist_wait_msg' id='orderlist_msg'><br>搜索中....</div>"
-  	var cc = "<div class='orderlist_wait_img' id='orderlist_wait'><img src='static/img/w1.gif'></div>"
-  	content += cc;
+  	var content = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
+  	content +="<div style='text-align:center' id='orderlist_msg'><br>搜索中....</div>";
   	
  var tag = document.getElementById("searchrst");
  tag.innerHTML = content;
    	
- this.dataParam = dataParam;
-	setInterval(function(){
-	   g_webpage.queryData(g_webpage.dataParam);
-	  },2000
-	); 
+// this.dataParam = dataParam;
+//	setInterval(function(){
+//	   g_webpage.queryData(g_webpage.dataParam);
+//	  },2000
+//	); 
 }
 
 Webpage.prototype.deleteWord = function(wordid,siteid)
