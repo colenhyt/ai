@@ -1,5 +1,6 @@
 package box.site.model;
 
+import java.util.List;
 import java.util.Vector;
 
 public class WebpageDNA {
@@ -20,7 +21,7 @@ public class WebpageDNA {
 		texts = new Vector<String>();
 	}
 	
-	public void addDomainUrls(String url){
+	public void addDomainUrl(String url){
 		domainUrls.add(url);
 	}
 	

@@ -1,24 +1,20 @@
 package cn.hd.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
@@ -130,6 +126,30 @@ public class FileUtil {
 	}
 
 
+	//按行读取文件:
+	public static List<String> readFileWithLine(String fileName) {
+		List<String> contents = new ArrayList<String>();
+		 FileReader reader;
+		try {
+			reader = new FileReader(fileName);
+	         BufferedReader br = new BufferedReader(reader);
+	         
+	         String str = null;
+	        
+	         while((str = br.readLine()) != null) {
+	        	 contents.add(str);
+	         }
+	        
+	         br.close();
+	         reader.close();
+	     } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return contents;
+	}
+	
 	/**
 	 * 获取目录下所有文件
 	 * @param folder

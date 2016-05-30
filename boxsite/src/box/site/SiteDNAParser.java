@@ -27,6 +27,7 @@ import com.huaban.analysis.jieba.SegToken;
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import easyshop.html.WebTerm;
 import es.download.flow.DownloadContext;
 import es.util.http.PostPageGetter;
 import es.util.url.URLStrHelper;
@@ -45,12 +46,12 @@ public class SiteDNAParser {
 	
 	public static void main(String[] args){
 		SiteDNAParser getter = new SiteDNAParser();
-		String a = "01dab6e3-5c87-4648-8d7a-902e0ccccda8";
-		String b = URLStrHelper.getUrlDNA(a);
-		PostPageGetter pageGetter = new PostPageGetter(DownloadContext.getSpiderContext().getUserAgent());
-		HttpPage p = pageGetter.getHttpPage("http://news.ifeng.com/", HttpClients.createDefault());
-		OriHttpPage p2 = new OriHttpPage(p.getUrlStr(),p.getContent(),null,p.getCharSet());
-		getter.parse2DNAs(p2);
+//		String a = "01dab6e3-5c87-4648-8d7a-902e0ccccda8";
+//		String b = URLStrHelper.getUrlDNA(a);
+//		PostPageGetter pageGetter = new PostPageGetter(DownloadContext.getSpiderContext().getUserAgent());
+//		HttpPage p = pageGetter.getHttpPage("http://news.ifeng.com/", HttpClients.createDefault());
+//		OriHttpPage p2 = new OriHttpPage(p.getUrlStr(),p.getContent(),null,p.getCharSet());
+		getter.queryPageDNA("http://news.ifeng.com/");
 	}
 	public SiteDNAParser(){
 		userAgent = DownloadContext.getSpiderContext().getUserAgent();
@@ -62,9 +63,20 @@ public class SiteDNAParser {
 	
 	public WebpageDNA queryPageDNA(String urlStr){
 		HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
-		htmlHelper.init(page.getContent());
+		htmlHelper.init(page.getContent(),page.getCharSet());
+		Set<WebTerm> words = htmlHelper.getWords();
+		for (WebTerm w:words){
+			log.warn(w.getTagName()+":"+w.getText());
+		}
+		String domainName = URLStrHelper.getHost(page.getUrlStr());
+		WebpageDNA pageDNA = new WebpageDNA();
 		//find urls:
+		List<PageRef> refs = htmlHelper.getUrls(domainName);
+		for (PageRef ref:refs){
+			pageDNA.addDomainUrl(ref.getUrlStr());
+		}
 		//find texts:
+		
 		return null;
 	}
 	
