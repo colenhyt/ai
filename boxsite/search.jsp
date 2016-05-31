@@ -4,12 +4,12 @@
 <%
 String wordstr = request.getParameter("word");
 String pagestr = request.getParameter("page");
-int page = 0;
+int paging = 0;
 if (pagestr!=null){
- page = Integer.valueOf(pagestr);;
+ paging = Integer.valueOf(pagestr);;
 }
-String sitejsons = "";
- sitejsons = SiteManager.getInstance().querySites(wordstr,page);
+String sitejsons = "tt";
+ sitejsons = SiteManager.getInstance().querySites(wordstr,paging);
 
 response.getWriter().print(sitejsons);
 %>
