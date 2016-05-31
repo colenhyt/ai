@@ -13,13 +13,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.xml.sax.SAXException;
 
 import cl.html.helper.NekoHTMLDelegate;
 import easyshop.html.jericho.Attribute;
 import easyshop.html.jericho.Attributes;
 import easyshop.html.jericho.Element;
-import easyshop.html.jericho.Segment;
 import easyshop.html.jericho.Source;
 import easyshop.html.jericho.StartTag;
 import es.Constants;
@@ -38,6 +40,7 @@ public class HTMLInfoSupplier {
 	private String strContent;
 	private byte[] content;
 	private String urlStr;
+	private Document jsoupDoc;
 	
 	private List<Element> linkElements,trElements,tableElements,divElements;
 	private List<Element> distinctLinkElements=new ArrayList<Element>();
@@ -92,6 +95,8 @@ public class HTMLInfoSupplier {
 		this.encoding=encode;		
 		this.strContent=new String(content,encoding);
 		this.totalJerio=new Source(strContent);
+		
+		jsoupDoc = Jsoup.parse(this.strContent);
 		} catch (UnsupportedEncodingException e) {
 			// TODO 自动生成 catch 块
 			e.printStackTrace();
@@ -117,16 +122,33 @@ public class HTMLInfoSupplier {
 		divElements=totalJerio.findAllElements("div");
 	}
 	
-	public List<String>	getWords(){
-		
+	public static List<String> getMainTerms(Document doc){
 		List<String> words = new ArrayList<String>();
-		List<Segment> e = totalJerio.findWords();
-		for (Segment item:e){
-			System.out.println(item.getSourceText());
-			words.add(item.getSourceText());
+		Elements all = doc.getAllElements();
+		for (org.jsoup.nodes.Element item:all){
+			words.add(item.text());
+		}
+		Elements els = doc.select("meta[name=description]");
+		for (int i=0;i<els.size();i++){
+			words.add(els.get(i).attr("content").toString());
+		}		
+		return words;
+	}
+	
+	public Set<WebTerm>	getWords(){
+		Elements els = jsoupDoc.getAllElements();
+		Set<WebTerm> words = new HashSet<WebTerm>();
+		for (org.jsoup.nodes.Element e:els){
+			if (e.text()!=null&&e.text().trim().length()>0){
+				WebTerm item = new WebTerm();
+				item.setTagName(e.tagName());
+				item.setText(e.text());
+				words.add(item);
+			}
 		}
 		return words;
 	}
+	
 	public List<PageRef> getIFrameUrls(){
 		return HTMLContentHelper.getIFrameUrls(strContent);
 	}
