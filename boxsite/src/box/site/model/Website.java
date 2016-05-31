@@ -452,7 +452,7 @@ public class Website {
     }
     
     public String toString(){
-    	return this.url;
+    	return this.url!=null?this.url:this.baiduurl;
     }
     
 }

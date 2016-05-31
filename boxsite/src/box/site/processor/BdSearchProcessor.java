@@ -14,6 +14,7 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
+import box.mgr.SiteManager;
 import box.site.SiteContentGetter;
 import box.site.model.Website;
 
@@ -41,6 +42,8 @@ public class BdSearchProcessor implements PageProcessor{
 		
 		keyWord = _word;
 		contentGetter = new SiteContentGetter();
+		
+		SiteManager.getInstance();
 		
 		searchUrls = new HashSet<String>();
 		doneUrls = new HashSet<String>();
@@ -92,13 +95,23 @@ public class BdSearchProcessor implements PageProcessor{
 	@Override
 	public void process(Page page) {
 		//1. find sites:
-		Set<Website> sites = new HashSet<Website>();
-		Vector<Website> sitesVec = contentGetter.findWebSitesInPage(page.getRawText().getBytes(), null,true);
-		sites.addAll(sitesVec);
+		Set<String> sites = new HashSet<String>();
+		Vector<Website> sitesVec = contentGetter.findWebSitesInPage(page.getRawText().getBytes(), null,false);
+		
+		Set<Website> newSites = SiteManager.getInstance().addSites(sitesVec);
+		for (Website site:newSites){
+			contentGetter.fillSiteInfo(site);
+			sites.add(site.toString());
+		}
 		
 		//2. find paging urls:
 		String regx = ".*s.*wd=.*&pn=.*";
 		List<String> pagingurls = page.getHtml().links().regex(regx).all();
+		if (pagingurls.size()<=0){
+			log.warn("could not find paging urls ");
+			return;
+		}
+		
 		Set<String> nexturls = new HashSet<String>();
 		for (String url:pagingurls){
 			String uniStr = URLStrHelper.toUtf8String(keyWord);

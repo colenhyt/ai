@@ -23,14 +23,15 @@ public class BdSearchPipeline extends FilePersistentBase  implements Pipeline{
 		String searchWord = (String)resultItems.get("searchWord");
 		
 		//save sites:
-		Set<Website> sites = (Set<Website>)resultItems.get("sites");
+		Set<String> sites = (Set<String>)resultItems.get("sites");
 		
 		String spath = sitepath+searchWord+".sites";
-		Set<Website> allsites = new HashSet<Website>();
+		Set<String> allsites = new HashSet<String>();
 		String content = FileUtil.readFile(spath);
 		if (content!=null&&content.trim().length()>0){
 			StringHelper.json2Set(content, allsites);
 		}
+		
 		allsites.addAll(sites);
 		if (allsites.size()>0)
 			FileUtil.writeFile(spath, JSON.toJSONString(allsites));
