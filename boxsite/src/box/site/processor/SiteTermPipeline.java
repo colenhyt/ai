@@ -1,4 +1,4 @@
-package box.site;
+package box.site.processor;
 
 import java.io.File;
 import java.io.FileWriter;

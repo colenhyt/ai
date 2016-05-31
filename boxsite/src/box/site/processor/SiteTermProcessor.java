@@ -1,4 +1,4 @@
-package box.site;
+package box.site.processor;
 
 import java.util.ArrayList;
 import java.util.HashMap;

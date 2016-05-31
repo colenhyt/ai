@@ -450,4 +450,9 @@ public class Website {
     public void setStatus(Integer status) {
         this.status = status;
     }
+    
+    public String toString(){
+    	return this.url;
+    }
+    
 }

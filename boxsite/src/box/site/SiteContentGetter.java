@@ -81,6 +81,28 @@ public class SiteContentGetter extends Thread {
 		pages.add(page);
 	}
 	
+	public void fillSiteInfo(Website site){
+		String realurl =site.getUrl();
+		if (realurl==null) return;
+		
+		site.setAlexa(this.getAlexa(site.getUrl()));
+		site.setBdrank(this.getBdRank(site.getUrl()));	
+		Vector<String> descs = this.getDesc(site.getUrl(),false);
+		if (descs.size()>0){
+			site.setName(descs.get(0));
+			site.setCtitle(descs.get(0));
+			site.setCdesc(descs.get(1));
+			site.setKeywords(descs.get(2));
+		}		
+		
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+	
 	public synchronized void genWebSites(OriHttpPage page,boolean findInfo){
 		Vector<Website> sites = findWebSitesInPage(page);
 		SiteService siteService = new SiteService();
@@ -137,8 +159,12 @@ public class SiteContentGetter extends Thread {
 	}
 	
 	public Vector<Website> findWebSitesInPage(OriHttpPage page){
+		return findWebSitesInPage(page.getContent(),page.getRefWord(),false);
+	}
+	
+	public Vector<Website> findWebSitesInPage(byte[] content,String refWord,boolean findInfo){
 		
-		htmlHelper.init(page.getContent());
+		htmlHelper.init(content);
 		Vector<Website> sites = new Vector<Website>();
 		
 		String classkey = classKeys.get(siteId);
@@ -168,8 +194,13 @@ public class SiteContentGetter extends Thread {
 			if (realurl!=null){
 				site.setUrl(realurl);
 			}
-			site.setRemark(page.getRefWord());
+			site.setRemark(refWord);
 			site.setCrdate(new Date());
+			
+			if (findInfo){
+				fillSiteInfo(site);				
+			}
+			
 			sites.add(site);
 		}
 		log.warn("找到websites: "+sites.size());
