@@ -1,5 +1,6 @@
 package box.site.processor;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 
@@ -15,9 +17,9 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
-import us.codecraft.webmagic.selector.Selectable;
 import cn.hd.util.FileUtil;
 
+import com.alibaba.fastjson.JSON;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
@@ -33,10 +35,38 @@ public class SiteTermProcessor implements PageProcessor{
 	JiebaSegmenter segmenter;
 	String domainName;
 	Set<String>	stoplistWords;
+	private String path;
+	Set<String> notDownloadurls;
+	Set<String> allDownloadUrls;
+	String urlPath;
 	
 	public SiteTermProcessor(String _startUrl){
 		startUrl = _startUrl;
 		domainName = URLStrHelper.getHost(startUrl).toLowerCase();
+		
+		path = "data/terms/"+domainName;
+		List<File> files = FileUtil.getFiles(path);
+		queryCount = files.size();
+		
+		allDownloadUrls = new HashSet<String>();
+		notDownloadurls = new HashSet<String>();
+		urlPath = path+".urls";
+		String urlcontent = FileUtil.readFile(urlPath);
+		if (urlcontent!=null&&urlcontent.trim().length()>0){
+			List<String> urls = (List<String>)JSON.parse(urlcontent);
+			allDownloadUrls.addAll(urls);
+			for (String url:urls){
+				String code = DigestUtils.md5Hex(url);
+				File f = new File(path+"/"+code+".json");
+				if (f.exists()) continue;
+				notDownloadurls.add(url);
+			}
+		}
+		if (notDownloadurls.size()>0){
+			Object[] urlstrs = notDownloadurls.toArray();
+			startUrl = (String)urlstrs[0];
+		}
+		allDownloadUrls.add(startUrl);
 		
 		segmenter = new JiebaSegmenter();
 		stoplistWords = new HashSet<String>();
@@ -47,34 +77,43 @@ public class SiteTermProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		String url = "http://developer.51cto.com";
         Spider.create(new SiteTermProcessor(url)).addPipeline(new SiteTermPipeline()).run();
 	}
 
 	@Override
 	public void process(Page page) {
-		queryCount++;
 		
-		int maxpagecount = 10;
+		int maxpagecount = 50;
 		
-		page.putField("PageCount", queryCount);
 		page.putField("MaxPageCount", maxpagecount);
-		if (queryCount<=maxpagecount){
-			List<String> requests = new ArrayList<String>();
-			Set<String> seturls = new HashSet<String>();
-			if (domainName!=null){
+		
+		List<String> requests = new ArrayList<String>();
+		if (notDownloadurls.size()>0){
+			requests.addAll(notDownloadurls);
+			queryCount += notDownloadurls.size();
+			notDownloadurls.clear();
+		}
+		
+		//塞入下载链接:
+		if (queryCount<maxpagecount){
+			//找页内urls:
 			 List<String> links = page.getHtml().links().all();
+			 Set<String> newurls = new HashSet<String>();
 			 for (String url:links){
 				 if (url.toLowerCase().indexOf(domainName)<0) continue;
-				 seturls.add(url);
+				 if (allDownloadUrls.contains(url)) continue;
+				 
+				 newurls.add(url);
 			 }
-			 requests.addAll(seturls);
-			}
-			
-			if (requests.size()>0)
-				page.addTargetRequests(requests);			
+			 allDownloadUrls.addAll(newurls);
+			 requests.addAll(newurls);
+			 queryCount += newurls.size();
+			 FileUtil.writeFile(urlPath, JSON.toJSONString(allDownloadUrls));
 		}
+		
+		page.addTargetRequests(requests);	
+		
 		
 		Map<String,Integer> termsMap = new HashMap<String,Integer>();
 		
@@ -92,8 +131,13 @@ public class SiteTermProcessor implements PageProcessor{
 				String w = token.word;
 				if (w==null||w.trim().length()<=0) continue;
 				
+				//不记录数字
 				if (StringHelper.isNumber(w)) continue;
-				
+				//不记录过长词:
+				if (w.trim().length()>25){
+					log.warn("发现过长词 :"+w);
+					continue;
+				}
 				//去掉常用停用词:
 				if (stoplistWords.contains(w)) continue;
 				

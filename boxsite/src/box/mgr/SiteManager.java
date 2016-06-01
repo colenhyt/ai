@@ -205,15 +205,14 @@ public class SiteManager extends MgrBase{
 		return siteMap.containsKey(siteurl);
 	}	
 	
-	public Set<Integer> findSiteIdsByDomainNameCode(int domainNameCode){
+	public Set<Integer> findSiteIdsByDomainNameCode(String folderName){
 		Set<Integer> ids = new HashSet<Integer>();
 		ids.add(3);
 		for (String url:siteMap.keySet()){
 			if (url==null) continue;
 			String domainName = URLStrHelper.getHost(url);
 			if (domainName!=null){
-				int hashcode = domainName.hashCode();
-				if (hashcode==domainNameCode){
+				if (folderName.equalsIgnoreCase(domainName)){
 					ids.add(siteMap.get(url).getSiteid());
 				}
 				
@@ -229,9 +228,8 @@ public class SiteManager extends MgrBase{
 		for (File file:files){
 			int index = file.getName().indexOf(".json");
 			if (index>0){
-				String strcode = file.getName().substring(0,index);
-				int icode = Integer.valueOf(strcode);
-				Set<Integer> ids = findSiteIdsByDomainNameCode(icode);
+				String folderName = file.getName().substring(0,index);
+				Set<Integer> ids = findSiteIdsByDomainNameCode(folderName);
 				String content = FileUtil.readFile(file);
 				Map<String,Integer> termsmap = (Map<String,Integer>)JSON.parse(content);
 				for (int siteid:ids){
