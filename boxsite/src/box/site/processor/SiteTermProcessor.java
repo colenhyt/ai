@@ -25,6 +25,7 @@ import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
 
 import easyshop.html.HTMLInfoSupplier;
+import es.download.flow.DownloadContext;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 
@@ -39,8 +40,14 @@ public class SiteTermProcessor implements PageProcessor{
 	Set<String> notDownloadurls;
 	Set<String> allDownloadUrls;
 	String urlPath;
+	private Site site;
+	int maxpagecount;
 	
-	public SiteTermProcessor(String _startUrl){
+	public SiteTermProcessor(String _startUrl,int _maxCount){
+		maxpagecount = 10;
+		if (_maxCount>0)
+			maxpagecount = _maxCount;
+		
 		startUrl = _startUrl;
 		domainName = URLStrHelper.getHost(startUrl).toLowerCase();
 		
@@ -74,19 +81,34 @@ public class SiteTermProcessor implements PageProcessor{
 		for (String w:cc){
 			stoplistWords.add(w);
 		}
+		
+		site = new Site();
+		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		site.addHeader("User-Agent", userAgent);
+		Set<Integer> codes = new HashSet<Integer>();
+		codes.add(200);
+		codes.add(404);
+		site.setAcceptStatCode(codes);
+		site.addStartUrl(startUrl);		
 	}
 	
 	public static void main(String[] args) {
 		String url = "http://developer.51cto.com";
-        Spider.create(new SiteTermProcessor(url)).addPipeline(new SiteTermPipeline()).run();
+        Spider.create(new SiteTermProcessor(url,-1)).addPipeline(new SiteTermPipeline()).run();
 	}
 
 	@Override
 	public void process(Page page) {
 		
-		int maxpagecount = 50;
-		
 		page.putField("MaxPageCount", maxpagecount);
+		
+		path = "data/terms/"+domainName;
+		List<File> files = FileUtil.getFiles(path);
+		int currpagecount = files.size();
+		if (currpagecount>=maxpagecount){
+			log.warn("下载完成，总共数量 "+currpagecount);
+			System.exit(0);
+		}
 		
 		List<String> requests = new ArrayList<String>();
 		if (notDownloadurls.size()>0){
@@ -157,7 +179,7 @@ public class SiteTermProcessor implements PageProcessor{
 	@Override
 	public Site getSite() {
 		// TODO Auto-generated method stub
-		return Site.me().setDomain(domainName).addStartUrl(startUrl);
+		return site;
 	}
 
 }
