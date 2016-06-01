@@ -52,5 +52,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<mapper resource="box/site/model/WebsitewordsMapper.xml"/>	
 		<mapper resource="box/site/model/BaiduurlsMapper.xml"/>	    
 		<mapper resource="box/site/model/WordrelationMapper.xml"/>	    
-		<mapper resource="box/site/model/ShoppingdataMapper.xml"/>																																		</mappers>
+		<mapper resource="box/site/model/ShoppingdataMapper.xml"/>																																		
+		<mapper resource="box/site/model/WebsitetermsMapper.xml"/>
+</mappers>  
 </configuration>

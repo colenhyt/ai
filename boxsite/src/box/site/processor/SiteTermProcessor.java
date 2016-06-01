@@ -48,7 +48,7 @@ public class SiteTermProcessor implements PageProcessor{
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String url = "http://www.open-open.com/jsoup/set-text.htm";
+		String url = "http://developer.51cto.com";
         Spider.create(new SiteTermProcessor(url)).addPipeline(new SiteTermPipeline()).run();
 	}
 
@@ -56,8 +56,11 @@ public class SiteTermProcessor implements PageProcessor{
 	public void process(Page page) {
 		queryCount++;
 		
+		int maxpagecount = 10;
+		
 		page.putField("PageCount", queryCount);
-		if (queryCount<=0){
+		page.putField("MaxPageCount", maxpagecount);
+		if (queryCount<=maxpagecount){
 			List<String> requests = new ArrayList<String>();
 			Set<String> seturls = new HashSet<String>();
 			if (domainName!=null){

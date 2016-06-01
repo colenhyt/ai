@@ -3,22 +3,20 @@ package box.site.db;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 import box.site.model.Baiduurls;
 import box.site.model.BaiduurlsExample;
 import box.site.model.BaiduurlsMapper;
 import box.site.model.Website;
 import box.site.model.WebsiteExample;
-import box.site.model.WebsiteExample.Criteria;
 import box.site.model.WebsiteMapper;
 import box.site.model.Websitekeys;
 import box.site.model.WebsitekeysExample;
 import box.site.model.WebsitekeysMapper;
+import box.site.model.Websiteterms;
+import box.site.model.WebsitetermsMapper;
 import box.site.model.Websitewords;
 import box.site.model.WebsitewordsExample;
 import box.site.model.WebsitewordsMapper;
@@ -50,6 +48,15 @@ public class SiteService extends BaseService{
 	private BaiduurlsMapper searchurlMapper;
 	private WebsitewordsMapper websitewordsMapper; 
 	private WordrelationMapper wordrelationMapper;
+	private WebsitetermsMapper websitetermsMapper;
+	public WebsitetermsMapper getWebsitetermsMapper() {
+		return websitetermsMapper;
+	}
+
+	public void setWebsitetermsMapper(WebsitetermsMapper websitetermsMapper) {
+		this.websitetermsMapper = websitetermsMapper;
+	}
+
 	public WordrelationMapper getWordrelationMapper() {
 		return wordrelationMapper;
 	}
@@ -78,7 +85,8 @@ public class SiteService extends BaseService{
 
 	public SiteService()
 	{
-		initMapper("websiteMapper","websitekeysMapper","searchurlMapper","websitewordsMapper","wordrelationMapper");
+		initMapper("websiteMapper","websitekeysMapper","searchurlMapper","websitewordsMapper"
+				,"wordrelationMapper","websitetermsMapper");
 		
 		searchUrlMap = new HashMap<String,Baiduurls>();
 		BaiduurlsExample  example = new BaiduurlsExample();
@@ -153,6 +161,10 @@ public class SiteService extends BaseService{
 	public int addWord(Websitewords record){
 		websitewordsMapper.insert(record);
 		return record.getWordid();
+	}
+	
+	public void addWebsiteterms(Websiteterms record){
+		websitetermsMapper.insert(record);
 	}
 	
 	public int getMaxSiteid(){

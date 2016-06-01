@@ -27,13 +27,15 @@ public class SiteTermPipeline extends FilePersistentBase  implements Pipeline {
 	@Override
 	public void process(ResultItems resultItems, Task task) {
 		String site = (String)resultItems.get("DomainName");
+		String maxstr = (String)resultItems.get("MaxPageCount");
+		int maxCount = Integer.valueOf(maxstr);
 		int code = site.hashCode();
         String path = "data/terms" + PATH_SEPERATOR;
 		int pageCount = (int)resultItems.get("PageCount");
         try {
         	Map<String,Integer> termsMap = null;
         	String fileName = null;
-    		if (pageCount>0){
+    		if (pageCount>maxCount){
     			//合并terms:
     			fileName = path+ String.valueOf(code);
     			List<File> files = FileUtil.getFiles(path +code + PATH_SEPERATOR);

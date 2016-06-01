@@ -28,12 +28,12 @@ public class MgrBase {
 	public int maxStockAmount = 100000000;
 
 	public MgrBase(){
-		String path = "/root/";
+		String path = "src/";
 		URL  res = Thread.currentThread().getContextClassLoader().getResource("/");
 		String cfgstr = FileUtil.readFile(path + "config.properties");
 		if (cfgstr == null || cfgstr.trim().length() <= 0) {
 			if (res==null){
-				log.warn("boxsite start failed: "+path);
+				log.warn("boxsite config file could not find: "+cfgstr);
 				return;
 			}
 			cfgstr = FileUtil.readFile(res.getPath() + "config.properties");
@@ -43,6 +43,8 @@ public class MgrBase {
 			}
 		}
 		cfgObj = JSON.parseObject(cfgstr);
+		String cfgstr0 = cfgObj.getString("redisCfg");
+		redisCfg = JSON.parseObject(cfgstr0, RedisConfig.class);
 		
 	}
 }
