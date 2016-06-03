@@ -110,7 +110,7 @@ public class WxpublicService extends BaseService {
 	public WxpublicService()
 	{
 		initMapper("wxpublicMapper","wxtypeMapper");
-		//init();
+		init();
 	}
 	
 	public void updateByHao(String wxHao,Wxpublic record)
@@ -140,7 +140,8 @@ public class WxpublicService extends BaseService {
 	public void init()
 	{
 		wxhaokeys = new HashMap<String,Boolean>();
-		List<Wxpublic> wxps = findActiveWP(-1,null,-1);
+		WxpublicExample example = new WxpublicExample();
+		List<Wxpublic> wxps = wxpublicMapper.selectByExample(example);
 		for (int i=0;i<wxps.size();i++)
 		{
 			wxhaokeys.put(wxps.get(i).getWxhao().toLowerCase(), true);

@@ -33,11 +33,10 @@ public class SougouPageDealer implements IPageDealer{
 		
 	}
 	
-	public List<PageRef> buildSearchWxpublicUrls(){
-		List<PageRef> refs = new ArrayList<PageRef>();
-		htmlHelper.init(page.getContent());
+	public List<String> buildPagingUrls(String urlstr,byte[] pageContent){
+		List<String> refs = new ArrayList<String>();
+		htmlHelper.init(pageContent);
 		String[] mm = htmlHelper.getBlocksByOneProp("resnum", "id", "scd_num");
-		findPublicNames();
 		if (mm.length>0&&StringHelper.isNumber(mm[0]))
 		{
 			int paging = Integer.valueOf(mm[0]);
@@ -45,7 +44,12 @@ public class SougouPageDealer implements IPageDealer{
 			 paging = paging/10+1;
 			else
 			 paging = paging/10;
-			refs.addAll(buildPagingWxpublicUrls(page.getUrlStr(),paging,page.getRefId()));
+			
+			for (int j=2;j<=paging;j++)
+			{
+				String url = urlstr+"&page="+j;
+				refs.add(url);
+			}			
 		}	
 		return refs;
 	}
@@ -60,7 +64,7 @@ public class SougouPageDealer implements IPageDealer{
 			newurls.addAll(refs);
 		}else if (page.getRefWord().indexOf("findwpname")>=0)		//find wp name
 		{
-			findPublicNames();
+			findPublicNames(page.getContent());
 		}else if (page.getRefWord().indexOf("findwptitle")>=0)		//find wp title
 		{
 			dealPublicTitles();
@@ -107,10 +111,9 @@ public class SougouPageDealer implements IPageDealer{
 		return refs;
 	}
 	
-	private void findPublicNames()
-	{
+	public List<Wxpublic> findWxPublics(byte[] pageContent){
 		List<Wxpublic> wxps = new ArrayList<Wxpublic>();
-		htmlHelper.init(page.getContent());
+		htmlHelper.init(pageContent);
 		String openUrlKey = "gzh?openid=";
 		List<Element> list = htmlHelper.getDivElementsByClassValue("wx-rb bg-blue wx-rb_v1 _item");
 		for (int i=0;i<list.size();i++)
@@ -144,7 +147,7 @@ public class SougouPageDealer implements IPageDealer{
 			String haoStr = htmlHelper.getBlock("h4");
 			htmlHelper.init(haoStr.getBytes());
 			haoStr = htmlHelper.getBlock("span");
-			haoStr = haoStr.replaceAll("微信号：", "");
+			haoStr = haoStr.replaceAll("微信号：", "").replace("<label name=\"em_weixinhao\">", "").replace("</label>", "");
 			
 			Wxpublic wp = new Wxpublic();
 			wp.setWxhao(haoStr);
@@ -153,12 +156,20 @@ public class SougouPageDealer implements IPageDealer{
 			wp.setStatus(0);
 			wp.setImgurl(imgSrc);
 			wp.setCrdate(new Date());
-			wp.setType(page.getRefId());
+			if (page!=null)
+				wp.setType(page.getRefId());
 			wxps.add(wp);
-		}
+		}		
+		return wxps;
+	}
+	
+	private void findPublicNames(byte[] content)
+	{
+		List<Wxpublic> wxps = findWxPublics(content);
+		
 		if (wxps.size()>0)
 		{
-			System.out.println("类型"+page.getRefId()+" 找到公众号: "+wxps.size());
+			System.out.println(" 找到公众号: "+wxps.size());
 			WxpublicService  wpService = new WxpublicService();
 			wpService.init();
 			wpService.addWxpublic(wxps);
@@ -266,6 +277,22 @@ public class SougouPageDealer implements IPageDealer{
 			ref.setRefId(12);
 			refs.add(ref);
 		// TODO Auto-generated method stub
+		return refs;
+	}
+	public List<PageRef> buildSearchWxpublicUrls(){
+		List<PageRef> refs = new ArrayList<PageRef>();
+		htmlHelper.init(page.getContent());
+		String[] mm = htmlHelper.getBlocksByOneProp("resnum", "id", "scd_num");
+		findPublicNames(page.getContent());
+		if (mm.length>0&&StringHelper.isNumber(mm[0]))
+		{
+			int paging = Integer.valueOf(mm[0]);
+			if (paging%10>0)
+			 paging = paging/10+1;
+			else
+			 paging = paging/10;
+			refs.addAll(buildPagingWxpublicUrls(page.getUrlStr(),paging,page.getRefId()));
+		}	
 		return refs;
 	}
 	
