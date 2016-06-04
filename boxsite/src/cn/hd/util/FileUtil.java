@@ -51,6 +51,7 @@ public class FileUtil {
 	 * @param content
 	 */
 	public static void writeFile(String path, String content,String encode) {
+		checkAndMakeParentDirecotry(path);
 	       File f = new File(path);
 	       writeFile(f, content,encode);
 	}
@@ -60,6 +61,7 @@ public class FileUtil {
 	 * @param content
 	 */
 	public static void writeFile(String path, String content) {
+		checkAndMakeParentDirecotry(path);
 	       File f = new File(path);
 	       writeFile(f, content,"utf-8");
 	}
@@ -363,5 +365,15 @@ public class FileUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public static void checkAndMakeParentDirecotry(String fullName) {
+	    int index = fullName.lastIndexOf("/");
+	    if (index > 0) {
+	        String path = fullName.substring(0, index);
+	        File file = new File(path);
+	        if (!file.exists()) {
+	            file.mkdirs();
+	        }
+	    }
 	}
 }

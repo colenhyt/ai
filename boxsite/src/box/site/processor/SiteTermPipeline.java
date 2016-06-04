@@ -33,15 +33,16 @@ public class SiteTermPipeline extends FilePersistentBase  implements Pipeline {
 		int pageCount = files.size();
         try {
         	Map<String,Integer> termsMap = null;
+        	boolean exist = false;
         	String fileName = null;
     		if (pageCount>maxCount){
+    			exist = true;
     			//合并terms:
     			fileName = path+ site;
     			termsMap = new HashMap<String,Integer>();
     			for (int i=0;i<files.size();i++){
     				String content = FileUtil.readFile(files.get(i));
     				Map<String,Integer> json = (Map<String,Integer>)JSON.parse(content);
-    				log.warn("aa :"+content);
     				for (String key:json.keySet()){
     					if (termsMap.containsKey(key))
     						termsMap.put(key, termsMap.get(key)+json.get(key));
@@ -62,6 +63,10 @@ public class SiteTermPipeline extends FilePersistentBase  implements Pipeline {
             PrintWriter printWriter = new PrintWriter(new FileWriter(getFile(fileName + ".json")));
             printWriter.write(JSON.toJSONString(termsMap));
             printWriter.close();
+            if (exist){
+    			log.warn("下载完成，合并词, 页面总共数量 :"+pageCount);
+    			System.exit(0);
+            }
         } catch (IOException e) {
             log.warn("write file error", e);
         }		

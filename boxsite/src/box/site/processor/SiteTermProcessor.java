@@ -13,10 +13,12 @@ import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 
 import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
+import us.codecraft.webmagic.selector.PlainText;
 import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -32,13 +34,16 @@ import es.util.url.URLStrHelper;
 public class SiteTermProcessor implements PageProcessor{
 	protected Logger  log = Logger.getLogger(getClass());
 	int queryCount;
-	private String startUrl;
+	public String startUrl;
 	JiebaSegmenter segmenter;
 	String domainName;
 	Set<String>	stoplistWords;
-	private String path;
-	Set<String> notDownloadurls;
-	Set<String> allDownloadUrls;
+	Set<String>	filterlistWords;
+	private String termsPath;
+	private String pagesPath;
+	public Set<String> notDownloadurls;
+	public Set<String> doneDownloadurls;
+	public Set<String> allDownloadUrls;
 	String urlPath;
 	private Site site;
 	int maxpagecount;
@@ -51,21 +56,27 @@ public class SiteTermProcessor implements PageProcessor{
 		startUrl = _startUrl;
 		domainName = URLStrHelper.getHost(startUrl).toLowerCase();
 		
-		path = "data/terms/"+domainName;
-		List<File> files = FileUtil.getFiles(path);
+		termsPath = "data/terms/"+domainName;
+		pagesPath = "data/pages/"+domainName;
+		
+		List<File> files = FileUtil.getFiles(termsPath);
 		queryCount = files.size();
 		
 		allDownloadUrls = new HashSet<String>();
 		notDownloadurls = new HashSet<String>();
-		urlPath = path+".urls";
+		doneDownloadurls = new HashSet<String>();
+		urlPath = termsPath+".urls";
 		String urlcontent = FileUtil.readFile(urlPath);
 		if (urlcontent!=null&&urlcontent.trim().length()>0){
 			List<String> urls = (List<String>)JSON.parse(urlcontent);
 			allDownloadUrls.addAll(urls);
 			for (String url:urls){
 				String code = DigestUtils.md5Hex(url);
-				File f = new File(path+"/"+code+".json");
-				if (f.exists()) continue;
+				File f = new File(termsPath+"/"+code+".json");
+				if (f.exists()) {
+					doneDownloadurls.add(url);
+					continue;
+				}
 				notDownloadurls.add(url);
 			}
 		}
@@ -82,6 +93,13 @@ public class SiteTermProcessor implements PageProcessor{
 			stoplistWords.add(w);
 		}
 		
+		
+		filterlistWords = new HashSet<String>();
+		cc = FileUtil.readFileWithLine("filterlist.txt");
+		for (String w:cc){
+			filterlistWords.add(w);
+		}
+		
 		site = new Site();
 		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
 		site.addHeader("User-Agent", userAgent);
@@ -94,7 +112,21 @@ public class SiteTermProcessor implements PageProcessor{
 	
 	public static void main(String[] args) {
 		String url = "http://developer.51cto.com";
-        Spider.create(new SiteTermProcessor(url,-1)).addPipeline(new SiteTermPipeline()).run();
+		
+		SiteTermProcessor processor = new SiteTermProcessor(url,-1);
+//		Set<String> urls = processor.doneDownloadurls;
+//		for (String url1:urls){
+//			processor.parseFromPage(url,"gb2312");
+//		}
+		
+		Set<String> sites = new HashSet<String>();
+		
+		for (String site:sites){
+			SiteTermProcessor p1 = new SiteTermProcessor(site,-1);
+	        Spider.create(p1).addPipeline(new SiteTermPipeline()).run();
+			
+		}
+		
 	}
 
 	@Override
@@ -102,13 +134,14 @@ public class SiteTermProcessor implements PageProcessor{
 		
 		page.putField("MaxPageCount", maxpagecount);
 		
-		path = "data/terms/"+domainName;
-		List<File> files = FileUtil.getFiles(path);
-		int currpagecount = files.size();
-		if (currpagecount>=maxpagecount){
-			log.warn("下载完成，总共数量 "+currpagecount);
-			System.exit(0);
-		}
+		doneDownloadurls.add(page.getRequest().getUrl());
+		
+		//保存网页:
+		String fileName = page.getRequest().getUrl().hashCode()+".html";
+		String pagePath = pagesPath +"/"+fileName;
+		FileUtil.writeFile(pagePath, page.getRawText(),page.getCharset());
+		
+		//parseFromPage(page.getRequest().getUrl(),site.getCharset());
 		
 		List<String> requests = new ArrayList<String>();
 		if (notDownloadurls.size()>0){
@@ -136,7 +169,29 @@ public class SiteTermProcessor implements PageProcessor{
 		
 		page.addTargetRequests(requests);	
 		
+		//取词:
+		Map<String,Integer> termsMap = getTerms(page);
 		
+		page.putField("PageTerm", termsMap);
+		page.putField("DomainName", domainName);
+		log.warn("get terms "+termsMap.size()+",pageCount:"+queryCount);
+//		
+	}
+
+	public void parseFromPage(String urlstr,String charset){
+		String fileName = urlstr.hashCode()+".html";
+		String pagePath = pagesPath +"/"+fileName;	
+		String content = FileUtil.readFile(pagePath, charset);
+		Request request = new Request(urlstr);
+		Page page = new Page();
+        page.setRawText(content);
+        page.setRequest(request);
+        page.setUrl(new PlainText(urlstr));
+        Map<String,Integer> terms = getTerms(page);
+        log.warn(terms.toString());
+	}
+	
+	public Map<String,Integer> getTerms(Page page){
 		Map<String,Integer> termsMap = new HashMap<String,Integer>();
 		
 		Html html = page.getHtml();
@@ -162,20 +217,28 @@ public class SiteTermProcessor implements PageProcessor{
 				}
 				//去掉常用停用词:
 				if (stoplistWords.contains(w)) continue;
+				//字符过滤:
+				String w1 = filter(w);
 				
-				if (termsMap.containsKey(w))
-					termsMap.put(w, termsMap.get(w).intValue()+1);
+				if (w1.trim().length()<=0) continue;
+				
+				if (termsMap.containsKey(w1))
+					termsMap.put(w1, termsMap.get(w1).intValue()+1);
 				else
-					termsMap.put(w, 1);
+					termsMap.put(w1, 1);
 			}
 		}
-		
-		page.putField("PageTerm", termsMap);
-		page.putField("DomainName", domainName);
-		log.warn("get terms "+termsMap.size()+",pageCount:"+queryCount);
-//		
+		return termsMap;
 	}
-
+	
+	public String filter(String word){
+		String w = word;
+		for (String str:filterlistWords){
+			w = w.replace(str, "");
+		}
+		return w;
+	}
+	
 	@Override
 	public Site getSite() {
 		// TODO Auto-generated method stub

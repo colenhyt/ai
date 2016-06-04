@@ -36,7 +36,7 @@ public class SogouWXPublicFinder implements IItemFinder {
 			String str = new String(page.getRawText().getBytes());
 			if (str.indexOf("您的访问过于频繁")>0){
 				String urlkey = DigestUtils.md5Hex(page.getRequest().getUrl());
-				String path="data/error/sogou/"+urlkey+".html";
+				String path="data/pages/sogou/"+urlkey+".html";
 				File f = filePer.getFile(path);
 				FileUtil.writeFile(f, str);
 		        try {
