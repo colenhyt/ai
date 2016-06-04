@@ -278,8 +278,10 @@ public class StringHelper {
 	
 	public static <T> void json2Set(String jsonStr,Set<T> strSet){
 		JSONArray array = JSON.parseArray(jsonStr);
-		for (int i=0;i<array.size();i++){
-			strSet.add((T)array.get(i));
+		if (array!=null){
+			for (int i=0;i<array.size();i++){
+				strSet.add((T)array.get(i));
+			}
 		}
 	}
 	public static String removeStrs(String str,String[] removed){
