@@ -16,18 +16,23 @@
 <body>
           <script type="text/javascript" src="static/js/util.js"></script>
           <form action="/boxsite/webpage.html">
-         <table id="titles">
-          <tr><td>搜索:</td>
-          <td><input type='text' size=30 name='word'/></td>
+          <div style='position:absolute;top:50%;left:50%;margin:-200px 0 0 -250px; '>
+         <table style='width:500px'>
+         <tr><td style='font-size:40px;text-align:center'>网站搜<br><br></td></tr>
+          <tr>
+          <td style='text-align:center'>
+          <input type='text' name='word' size=30 /><input type='submit' size=50 value='搜一下'/></td>
           </tr>
           <tr>
-          <td><input type='submit' size=50 value='提交'/></td>
-          </tr>
-          </table>
-          </form>
+          <td ><br>热门搜词:<br>
           <div id="hotwords">
           </div>
+          </td>
+          </tr>
           <script type="text/javascript" src="static/js/main.js"></script>                   
+          </table>
+           </form>
+           </div>
      	</body>	
     	
 </html>
