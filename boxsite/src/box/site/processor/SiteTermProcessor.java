@@ -19,6 +19,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.PlainText;
+import box.site.model.WebUrl;
 import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -30,9 +31,11 @@ import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
+import es.webref.model.PageRef;
 
 public class SiteTermProcessor implements PageProcessor{
 	protected Logger  log = Logger.getLogger(getClass());
+    private HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	int queryCount;
 	public String startUrl;
 	JiebaSegmenter segmenter;
@@ -120,10 +123,11 @@ public class SiteTermProcessor implements PageProcessor{
 //		}
 		
 		Set<String> sites = new HashSet<String>();
+		sites.add(url);
 		
 		for (String site:sites){
 			SiteTermProcessor p1 = new SiteTermProcessor(site,-1);
-	        Spider.create(p1).addPipeline(new SiteTermPipeline()).run();
+	        Spider.create(p1).addPipeline(new SiteTermPipeline()).addPipeline(new SiteURLsPipeline()).run();
 			
 		}
 		
@@ -169,9 +173,13 @@ public class SiteTermProcessor implements PageProcessor{
 		
 		page.addTargetRequests(requests);	
 		
+		//取urls:
+		Set<WebUrl> urls = getUrls(page);
+		
 		//取词:
 		Map<String,Integer> termsMap = getTerms(page);
 		
+		page.putField("PageUrls", urls);
 		page.putField("PageTerm", termsMap);
 		page.putField("DomainName", domainName);
 		log.warn("get terms "+termsMap.size()+",pageCount:"+queryCount);
@@ -189,6 +197,21 @@ public class SiteTermProcessor implements PageProcessor{
         page.setUrl(new PlainText(urlstr));
         Map<String,Integer> terms = getTerms(page);
         log.warn(terms.toString());
+	}
+	
+	public Set<WebUrl> getUrls(Page page){
+		Set<WebUrl> urls = new HashSet<WebUrl>();
+		htmlHelper.init(page.getRequest().getUrl(),page.getRawText().getBytes(), page.getCharset());
+		List<PageRef> refs = htmlHelper.getUrls(domainName);
+		
+		
+		for (PageRef ref:refs){
+			WebUrl url = new WebUrl();
+			url.setText(ref.getRefWord());
+			url.setUrl(ref.getUrlStr());
+			urls.add(url);
+		}
+		return urls;
 	}
 	
 	public Map<String,Integer> getTerms(Page page){

@@ -32,6 +32,9 @@ public class SiteTermPipeline extends FilePersistentBase  implements Pipeline {
         List<File> files = FileUtil.getFiles(path+site + PATH_SEPERATOR);
 		int pageCount = files.size();
         try {
+        	//urls 处理:
+        	
+        	//terms 处理:
         	Map<String,Integer> termsMap = null;
         	boolean exist = false;
         	String fileName = null;
