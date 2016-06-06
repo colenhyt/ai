@@ -174,7 +174,7 @@ public class SiteTermProcessor implements PageProcessor{
 		page.addTargetRequests(requests);	
 		
 		//取urls:
-		Set<WebUrl> urls = getUrls(page);
+		Map<String,WebUrl> urls = getUrls(page);
 		
 		//取词:
 		Map<String,Integer> termsMap = getTerms(page);
@@ -199,8 +199,8 @@ public class SiteTermProcessor implements PageProcessor{
         log.warn(terms.toString());
 	}
 	
-	public Set<WebUrl> getUrls(Page page){
-		Set<WebUrl> urls = new HashSet<WebUrl>();
+	public Map<String,WebUrl> getUrls(Page page){
+		Map<String,WebUrl> urls = new HashMap<String,WebUrl>();
 		htmlHelper.init(page.getRequest().getUrl(),page.getRawText().getBytes(), page.getCharset());
 		List<PageRef> refs = htmlHelper.getUrls(domainName);
 		
@@ -209,7 +209,7 @@ public class SiteTermProcessor implements PageProcessor{
 			WebUrl url = new WebUrl();
 			url.setText(ref.getRefWord());
 			url.setUrl(ref.getUrlStr());
-			urls.add(url);
+			urls.put(url.getUrl(),url);
 		}
 		return urls;
 	}

@@ -13,9 +13,9 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import box.mgr.SiteManager;
+import cn.hd.util.StringUtil;
 import es.download.flow.DownloadContext;
 import es.util.FileUtil;
-import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 
 public class ListSearchProcessor implements PageProcessor{
@@ -54,15 +54,15 @@ public class ListSearchProcessor implements PageProcessor{
 		
 		String searUrls = FileUtil.readFile(path+keyWord+".json");
 		if (searUrls!=null&&searUrls.trim().length()>0){
-			StringHelper.json2Set(searUrls, searchUrls);
+			StringUtil.json2Set(searUrls, searchUrls,String.class);
 			String relates = FileUtil.readFile(path+keyWord+"_relate.json");
 			if (relates!=null&&relates.trim().length()>0){
-				StringHelper.json2Set(relates, relateWords);
+				StringUtil.json2Set(relates, relateWords,String.class);
 			}
 			
 			String jsonStr = FileUtil.readFile(path+keyWord+"_done.json");
 			if (jsonStr!=null&&jsonStr.trim().length()>0){
-				StringHelper.json2Set(jsonStr, doneUrls);
+				StringUtil.json2Set(jsonStr, doneUrls,String.class);
 			}
 			
 			for (String url:searchUrls){

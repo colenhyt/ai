@@ -3,6 +3,17 @@ package box.site.model;
 public class WebUrl {
 	private String url;
 	private String text;
+	private int id;
+	private int cat;
+	public int getCat() {
+		return cat;
+	}
+	public void setCat(int cat) {
+		this.cat = cat;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public String getUrl() {
 		return url;
 	}
@@ -18,5 +29,13 @@ public class WebUrl {
 	
 	public String toString(){
 		return this.url+","+this.text;
+	}
+	
+	public int getId(){
+		return this.url.hashCode();
+	}
+	
+	public int hashCode(){
+		return this.url.hashCode();
 	}
 }

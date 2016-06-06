@@ -7,12 +7,11 @@ import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.utils.FilePersistentBase;
-import box.site.model.Website;
+import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
 
 import es.util.FileUtil;
-import es.util.string.StringHelper;
 
 public class BdSearchPipeline extends FilePersistentBase  implements Pipeline{
 	String sitepath = "data/sites/";
@@ -29,7 +28,7 @@ public class BdSearchPipeline extends FilePersistentBase  implements Pipeline{
 		Set<String> allsites = new HashSet<String>();
 		String content = FileUtil.readFile(spath);
 		if (content!=null&&content.trim().length()>0){
-			StringHelper.json2Set(content, allsites);
+			StringUtil.json2Set(content, allsites,String.class);
 		}
 		
 		allsites.addAll(sites);

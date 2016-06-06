@@ -1,6 +1,11 @@
 package cn.hd.util;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 public class StringUtil {
 	
@@ -14,5 +19,14 @@ public class StringUtil {
 	    }   
 	    return sb.toString();   
 	 }   
+	
+	
+	public static <T> void json2Set(String jsonStr,Set<T> strSet,Class cls){
+		Set<JSONObject> objs = JSON.parseObject(jsonStr,HashSet.class);
+		for (JSONObject obj:objs){
+			T t = (T)JSON.parseObject(obj.toJSONString(),cls);
+			strSet.add(t);
+		}
+	}	
 
 }
