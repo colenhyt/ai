@@ -8,28 +8,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
-import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.PlainText;
 import box.site.model.WebUrl;
 import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
-import com.huaban.analysis.jieba.JiebaSegmenter;
-import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
-import com.huaban.analysis.jieba.SegToken;
 
 import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
-import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
@@ -175,16 +170,21 @@ public class SitePageGetProcessor implements PageProcessor{
 	
 	public Map<String,WebUrl> getUrls(Page page){
 		Map<String,WebUrl> urls = new HashMap<String,WebUrl>();
-		htmlHelper.init(page.getRequest().getUrl(),page.getRawText().getBytes(), page.getCharset());
-		List<PageRef> refs = htmlHelper.getUrls(domainName);
 		
-		
-		for (PageRef ref:refs){
+		Elements els = page.getHtml().getDocument().getElementsByTag("a");
+		for (Element e:els){
+			String text = e.text();
+			if (text==null||text.trim().length()<=0) continue;
+			String link = e.attr("href");
+			
+//			log.warn("link "+link+",text:"+text);
+			
 			WebUrl url = new WebUrl();
-			url.setText(ref.getRefWord());
-			url.setUrl(ref.getUrlStr());
+			url.setText(text);
+			url.setUrl(link);
 			urls.put(url.getUrl(),url);
 		}
+		
 		return urls;
 	}
 	
