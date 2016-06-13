@@ -23,6 +23,7 @@ import box.site.model.WebUrl;
 import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
@@ -38,6 +39,7 @@ public class SitePageGetProcessor implements PageProcessor{
 	public Set<String> notDownloadurls;
 	public Set<String> doneDownloadurls;
 	public Set<String> allDownloadUrls;
+	private Set<String> urlRegs = new HashSet<String>();
 	String urlPath;
 	private Site site;
 	int maxpagecount;
@@ -52,8 +54,25 @@ public class SitePageGetProcessor implements PageProcessor{
 		
 		pagesPath = "data/pages/"+domainName;
 		
+			
 		List<File> files = FileUtil.getFiles(pagesPath);
 		queryCount = files.size();
+		
+		urlRegs = new HashSet<String>();
+		String weburlpath = "data/pages/" + domainName+"_urls.json";
+		String weburlc = FileUtil.readFile(weburlpath);
+		if (weburlc!=null&&weburlc.trim().length()>0){
+			Map<String,JSONObject> jsonstr = (Map<String,JSONObject>)JSON.parseObject(weburlc, HashMap.class);
+			for (String url:jsonstr.keySet()){
+				JSONObject jsonobj = jsonstr.get(url);
+				WebUrl item = (WebUrl)JSON.parseObject(jsonobj.toJSONString(),WebUrl.class);
+				if (item.getCat()>0){
+					String regUrl = URLStrHelper.getUrlRex(item.getUrl());
+					urlRegs.add(regUrl);
+				}
+			}
+		}
+		
 		
 		allDownloadUrls = new HashSet<String>();
 		notDownloadurls = new HashSet<String>();
