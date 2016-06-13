@@ -1,10 +1,12 @@
 package cn.hd.util;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.ansj.domain.Term;
-import org.ansj.splitWord.analysis.BaseAnalysis;
+import java.util.Map.Entry;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -71,21 +73,53 @@ public class ChineseToEnglish {
 		return strBuf.toString();
 	}
 
+	public Map<String, Integer> sortMapByValue(Map<String, Integer> oriMap) {  
+	    Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();  
+	    if (oriMap != null && !oriMap.isEmpty()) {  
+	        List<Map.Entry<String, Integer>> entryList = new ArrayList<Map.Entry<String, Integer>>(oriMap.entrySet());  
+	        Collections.sort(entryList,  
+	                new Comparator<Map.Entry<String, Integer>>() {  
+	                    public int compare(Entry<String, Integer> entry1,  
+	                            Entry<String, Integer> entry2) {  
+	                        int value1 = 0, value2 = 0;  
+	                        try {  
+	                            value1 = (entry1.getValue());  
+	                            value2 = (entry2.getValue());  
+	                        } catch (NumberFormatException e) {  
+	                            value1 = 0;  
+	                            value2 = 0;  
+	                        }  
+	                        return value2 - value1;  
+	                    }  
+	                });  
+	        Iterator<Map.Entry<String, Integer>> iter = entryList.iterator();  
+	        Map.Entry<String, Integer> tmpEntry = null;  
+	        while (iter.hasNext()) {  
+	            tmpEntry = iter.next();  
+	            sortedMap.put(tmpEntry.getKey(), tmpEntry.getValue());  
+	        }  
+	    }  
+	    return sortedMap;  
+	}  
+	
 	public static void main(String[] args) {
 //		System.out.println(getPingYin("孔一帆 孔妍男 孔祥维 孔智育 孔祥颖 孔祥栋 孔祥睿 孔鑫 孔德开 孔令敞 孔令力 孔宁 孔静 孔彬"));
 //		System.out.println(getPinYinHeadChar("綦江县"));
 //		System.out.println(getCnASCII("綦江县"));
-		String content = FileUtil.readFile("d:\\boxsite\\library\\test.txt");
-		List<Term> parse = BaseAnalysis.parse(content);
-		Map<String,Integer> map = new HashMap<String,Integer>();
-		for (Term item:parse){
-			int count = 1;
-			if (map.containsKey(item.getName())){
-				int c = map.get(item.getName());
-				count = c+1;
-			}
-			map.put(item.getName(), count);
-		}
-	    System.out.println(map);
+//		String content = FileUtil.readFile("d:\\boxsite\\library\\test.txt");
+//		List<Term> parse = BaseAnalysis.parse(content);
+//		Map<String,Integer> map = new HashMap<String,Integer>();
+//		for (Term item:parse){
+//			if (item.getName().trim().length()<=0)continue;
+//			int count = 1;
+//			if (map.containsKey(item.getName())){
+//				int c = map.get(item.getName());
+//				count = c+1;
+//			}
+//			map.put(item.getName(), count);
+//		}
+//		ChineseToEnglish sh = new ChineseToEnglish();
+//		Map<String, Integer> a = sh.sortMapByValue(map);
+//	    System.out.println(a);
 	}
 }

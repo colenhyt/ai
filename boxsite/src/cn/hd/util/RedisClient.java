@@ -15,8 +15,6 @@ import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 import redis.clients.jedis.SortingParams;
 
-import com.alibaba.fastjson.JSON;
-
 
 
 public class RedisClient {

@@ -1,7 +1,6 @@
 package cn.hd.util;
 
-import java.security.*; 
-import java.security.spec.*;
+import java.security.MessageDigest;
 
 public class MD5 {
 	public final static String MD5(String s) {

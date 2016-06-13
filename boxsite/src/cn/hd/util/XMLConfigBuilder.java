@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Set;
+
 import org.apache.ibatis.builder.BaseBuilder;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
@@ -14,7 +14,6 @@ import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.io.ReaderInputStream;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.mapping.Environment.Builder;
 import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.parsing.XPathParser;
 import org.apache.ibatis.plugin.Interceptor;
@@ -25,9 +24,7 @@ import org.apache.ibatis.session.AutoMappingBehavior;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.type.TypeAliasRegistry;
 import org.apache.ibatis.type.TypeHandler;
-import org.apache.ibatis.type.TypeHandlerRegistry;
 
 public class XMLConfigBuilder extends BaseBuilder
 {

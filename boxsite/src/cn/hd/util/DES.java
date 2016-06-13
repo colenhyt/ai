@@ -7,8 +7,10 @@ package cn.hd.util;
 * @author
 * @version 1.0
 */
-import java.security.*;
-import javax.crypto.*;
+import java.security.Key;
+import java.security.Security;
+
+import javax.crypto.Cipher;
 public class DES {
     private static String strDefaultKey = "ws";
     private Cipher encryptCipher = null;

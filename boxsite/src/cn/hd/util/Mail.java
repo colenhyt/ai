@@ -1,27 +1,5 @@
 package cn.hd.util;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import javax.mail.Address;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.URLName;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
-import com.sun.mail.smtp.SMTPTransport;
+import java.util.Collection;import java.util.Collections;import java.util.Date;import java.util.Map;import java.util.Properties;import java.util.concurrent.ArrayBlockingQueue;import java.util.concurrent.ThreadPoolExecutor;import java.util.concurrent.TimeUnit;import javax.mail.Address;import javax.mail.Authenticator;import javax.mail.Message;import javax.mail.MessagingException;import javax.mail.Part;import javax.mail.PasswordAuthentication;import javax.mail.Session;import javax.mail.Transport;import javax.mail.URLName;import javax.mail.internet.InternetAddress;import javax.mail.internet.MimeBodyPart;import javax.mail.internet.MimeMessage;import javax.mail.internet.MimeMultipart;import javax.mail.internet.MimeUtility;import com.sun.mail.smtp.SMTPTransport;
 public class Mail {
 	private final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 	private boolean mailUserName = true;
