@@ -13,8 +13,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
 import com.huaban.analysis.jieba.JiebaSegmenter;
-import com.huaban.analysis.jieba.SegToken;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
+import com.huaban.analysis.jieba.SegToken;
 
 import box.mgr.SiteManager;
 import box.site.db.SiteService;
@@ -26,7 +26,6 @@ import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.jericho.Element;
 import es.download.flow.DownloadContext;
 import es.util.http.PostPageGetter;
-import es.util.word.JiebaHelper;
 import es.util.word.WordToken;
 
 public class SiteContentGetter extends Thread {

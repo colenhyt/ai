@@ -1,7 +1,5 @@
 package box.site;
 
-import easyshop.downloadhelper.OriHttpPage;
-
 public class SiteRealUrlGetter extends Thread  {
 
 	public SiteRealUrlGetter() {

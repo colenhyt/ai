@@ -5,7 +5,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import box.site.SitePageDealing;
-import box.util.IPageDealing;
 import es.download.finditemurls.StraightUrlStrsFinder;
 import es.download.helper.OriginalsHelper;
 

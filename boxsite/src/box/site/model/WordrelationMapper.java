@@ -1,8 +1,7 @@
 package box.site.model;
 
-import box.site.model.Wordrelation;
-import box.site.model.WordrelationExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface WordrelationMapper {

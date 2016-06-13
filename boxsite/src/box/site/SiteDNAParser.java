@@ -14,20 +14,18 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
+import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
+import com.huaban.analysis.jieba.SegToken;
+
 import box.mgr.SiteManager;
 import box.site.db.SiteService;
 import box.site.model.WebpageDNA;
 import box.site.model.WebsiteDNA;
 import box.site.model.Websitekeys;
-
-import com.huaban.analysis.jieba.JiebaSegmenter;
-import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
-import com.huaban.analysis.jieba.SegToken;
-
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
-import easyshop.html.WebTerm;
 import es.download.flow.DownloadContext;
 import es.util.http.PostPageGetter;
 import es.util.url.URLStrHelper;
@@ -64,10 +62,10 @@ public class SiteDNAParser {
 	public WebpageDNA queryPageDNA(String urlStr){
 		HttpPage page = pageGetter.getHttpPage(urlStr, httpClient);
 		htmlHelper.init(page.getContent(),page.getCharSet());
-		Set<WebTerm> words = htmlHelper.getWords();
-		for (WebTerm w:words){
-			log.warn(w.getTagName()+":"+w.getText());
-		}
+//		Set<WebTerm> words = htmlHelper.getWords();
+//		for (WebTerm w:words){
+//			log.warn(w.getTagName()+":"+w.getText());
+//		}
 		String domainName = URLStrHelper.getHost(page.getUrlStr());
 		WebpageDNA pageDNA = new WebpageDNA();
 		//find urls:

@@ -1,8 +1,7 @@
 package box.site.model;
 
-import box.site.model.Baiduurls;
-import box.site.model.BaiduurlsExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface BaiduurlsMapper {

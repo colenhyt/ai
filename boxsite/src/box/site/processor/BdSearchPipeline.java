@@ -30,8 +30,9 @@ public class BdSearchPipeline extends FilePersistentBase  implements Pipeline{
 		if (content!=null&&content.trim().length()>0){
 			StringUtil.json2Set(content, allsites,String.class);
 		}
+		if (sites!=null)
+			allsites.addAll(sites);
 		
-		allsites.addAll(sites);
 		if (allsites.size()>0)
 			FileUtil.writeFile(spath, JSON.toJSONString(allsites));
 		

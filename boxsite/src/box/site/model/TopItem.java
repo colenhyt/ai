@@ -27,6 +27,14 @@ public class TopItem implements Comparable{
 	private Date crDate;
 	private int id;
 	private String sitekey;
+	private long contentTime;
+	
+	public long getContentTime() {
+		return contentTime;
+	}
+	public void setContentTime(long contentTime) {
+		this.contentTime = contentTime;
+	}
 	public String getSitekey() {
 		return sitekey;
 	}

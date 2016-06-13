@@ -1,8 +1,7 @@
 package box.db;
 
-import box.db.Siteurl;
-import box.db.SiteurlExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface SiteurlMapper {

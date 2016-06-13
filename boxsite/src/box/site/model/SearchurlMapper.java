@@ -1,8 +1,7 @@
 package box.site.model;
 
-import box.site.model.Searchurl;
-import box.site.model.SearchurlExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface SearchurlMapper {

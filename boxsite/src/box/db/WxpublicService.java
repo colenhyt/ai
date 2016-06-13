@@ -32,6 +32,14 @@ public class WxpublicService extends BaseService {
 		return wxtypeMapper.selectByExample(example);		
 	}
 	
+	public List<Wxpublic> findNoOpenIdWp()
+	{
+		WxpublicExample example = new WxpublicExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andOpenidIsNull();
+		return wxpublicMapper.selectByExample(example);
+	}
+	
 	public List<Wxpublic> findAllNotSearchWp()
 	{
 		List<Wxtype> types= findtypes();

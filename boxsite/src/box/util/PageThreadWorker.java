@@ -10,20 +10,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
 
-import box.dianshang.DsPageDealing;
 import easyshop.downloadhelper.HttpPageGetter;
 import easyshop.downloadhelper.OriHttpPage;
 import es.Constants;
 import es.download.DownloadQueue;
-import es.download.INewOriginalPagesDealer;
-import es.download.NewOriginalPagesCommonSaver;
 import es.download.SpiderContext;
 import es.download.URLsConverter;
 import es.download.helper.OriginalsHelper;
-import es.simple.TSiteConfigs;
 import es.webref.model.PageRef;
 
 /**

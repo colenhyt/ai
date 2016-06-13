@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import easyshop.downloadhelper.OriHttpPage;
-import es.webref.model.PageRef;
 import box.util.IPageDealer;
 import box.util.IPageDealing;
+import easyshop.downloadhelper.OriHttpPage;
+import es.webref.model.PageRef;
 
 public class SitePageDealing implements IPageDealing {
 	private Map<String,IPageDealer> dealers = new HashMap<String,IPageDealer>();

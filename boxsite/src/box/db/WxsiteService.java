@@ -1,12 +1,8 @@
 package box.db;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import box.db.WxpublicExample.Criteria;
 import cn.hd.base.BaseService;
-import es.util.url.URLStrHelper;
 
 public class WxsiteService extends BaseService {
 	

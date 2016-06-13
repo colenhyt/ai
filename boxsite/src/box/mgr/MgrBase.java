@@ -6,11 +6,11 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import cn.hd.util.FileUtil;
-import cn.hd.util.RedisConfig;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+
+import cn.hd.util.FileUtil;
+import cn.hd.util.RedisConfig;
 
 public class MgrBase {
 	public static final String DATA_WEBSITE_DNA = "data_website_dna";

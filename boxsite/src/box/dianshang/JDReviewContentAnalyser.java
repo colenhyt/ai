@@ -8,25 +8,19 @@ package box.dianshang;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.HttpPageGetter;
-import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.jericho.Source;
 import easyshop.model.ProductItem;
 import easyshop.model.ReviewItem;
-import es.datamodel.ICharactorsDictionary;
 import es.util.date.JavaDateHelper;
 import es.util.html.HTMLContentHelper;
 import es.util.pattern.ESPattern;
-import es.util.string.StringHelper;
 import es.webref.model.PageRef;
 
 /**

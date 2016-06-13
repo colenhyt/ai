@@ -1,8 +1,7 @@
 package box.db;
 
-import box.db.Wxtype;
-import box.db.WxtypeExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface WxtypeMapper {

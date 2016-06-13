@@ -7,6 +7,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import box.site.SitePageDealing;
 import box.site.db.ShoppingService;
 import box.site.model.Shoppingdata;
@@ -16,9 +19,6 @@ import box.site.model.Websitewords;
 import cn.hd.util.FileUtil;
 import cn.hd.util.RedisClient;
 import cn.hd.util.RedisConfig;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
 public class ShoppingManager extends MgrBase{
 	public static final String DATA_WEBSITE_DNA = "data_website_dna";

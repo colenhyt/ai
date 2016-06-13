@@ -1,8 +1,7 @@
 package box.site.model;
 
-import box.site.model.Websitewords;
-import box.site.model.WebsitewordsExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface WebsitewordsMapper {

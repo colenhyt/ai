@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
 
 import easyshop.downloadhelper.HttpPage;
@@ -89,7 +89,6 @@ public class UrlThreadWorker implements Runnable, Constants{
         System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
         System.setProperty("sun.net.client.defaultReadTimeout", "30000");        
         this.context = context;
-        httpClient=new HttpClient();
         queue = new DownloadQueue(context);
         missingURLs=new HashSet();
         URLsSet=new HashSet();

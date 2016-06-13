@@ -1,8 +1,7 @@
 package box.site.model;
 
-import box.site.model.Websitekeys;
-import box.site.model.WebsitekeysExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface WebsitekeysMapper {

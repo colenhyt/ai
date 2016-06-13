@@ -1,8 +1,7 @@
 package box.db;
 
-import box.db.Wxtitle;
-import box.db.WxtitleExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface WxtitleMapper {

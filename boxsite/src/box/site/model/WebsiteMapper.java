@@ -1,8 +1,7 @@
 package box.site.model;
 
-import box.site.model.Website;
-import box.site.model.WebsiteExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface WebsiteMapper {

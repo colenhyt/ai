@@ -1,8 +1,7 @@
 package box.db;
 
-import box.db.Wxsite;
-import box.db.WxsiteExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface WxsiteMapper {

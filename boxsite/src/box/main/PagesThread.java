@@ -11,10 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
 
-import box.dianshang.DsPageDealing;
 import box.util.IPageDealing;
 import box.util.PageThreadWorker;
 import box.util.TSite;
@@ -26,7 +25,6 @@ import es.simple.TDownloadSite;
 import es.simple.TPageTypes;
 import es.simple.TSiteConfig;
 import es.simple.Tracy;
-import es.util.url.URLStrFormattor;
 import es.webref.model.PageRef;
 
 /**

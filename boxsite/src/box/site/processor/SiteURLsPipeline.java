@@ -29,13 +29,14 @@ public class SiteURLsPipeline extends FilePersistentBase  implements Pipeline {
 	@Override
 	public void process(ResultItems resultItems, Task task) {
 		String site = (String)resultItems.get("DomainName");
+		String charset = (String)resultItems.get("Charset");
         String fileName = "data/pages" + PATH_SEPERATOR+site+"_urls.json";
         try {
         	//urls 处理:
         	Object obj = resultItems.get("PageUrls");
     		Map<String,WebUrl> allitems = new HashMap<String,WebUrl>();
     		Map<String,WebUrl> urls = (Map<String,WebUrl>)obj;
-    		String content = FileUtil.readFile(fileName);
+    		String content = FileUtil.readFile(fileName,charset);
     		
     		if (content!=null&&content.trim().length()>0){
     			Map<String,JSONObject> jsonstr = (Map<String,JSONObject>)JSON.parseObject(content, HashMap.class);
@@ -47,7 +48,8 @@ public class SiteURLsPipeline extends FilePersistentBase  implements Pipeline {
     		}
     		allitems.putAll(urls);    		
             PrintWriter printWriter = new PrintWriter(new FileWriter(getFile(fileName)));
-            printWriter.write(JSON.toJSONString(allitems));
+            String str = new String(JSON.toJSONString(allitems).getBytes(),charset);
+            printWriter.write(str);
             printWriter.close();
         } catch (IOException e) {
             log.warn("write file error", e);

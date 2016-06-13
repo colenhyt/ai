@@ -1,6 +1,10 @@
 package box.main;
 
-import java.sql.*;  
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;  
 
 public class TestMyJDBC {  
     String dbUrl = "jdbc:mysql://localhost:3306/box";  

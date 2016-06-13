@@ -12,7 +12,6 @@ import box.site.model.Websitewords;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
-import es.download.flow.DownloadContext;
 import es.util.FileUtil;
 import es.webref.model.PageRef;
 

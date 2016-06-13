@@ -137,6 +137,7 @@ public class SiteTermProcessor implements PageProcessor{
 	public void process(Page page) {
 		
 		page.putField("MaxPageCount", maxpagecount);
+		page.putField("Charset", page.getCharset());
 		
 		doneDownloadurls.add(page.getRequest().getUrl());
 		

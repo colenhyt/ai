@@ -14,10 +14,8 @@ import org.apache.log4j.Logger;
 import es.download.finditemurls.UrlStrsSimulator;
 import es.download.flow.DownloadContext;
 import es.download.helper.OriginalsHelper;
-import es.simple.TAction;
 import es.simple.TDownloadSite;
 import es.simple.TPageTypes;
-import es.simple.TSingleSiteStage;
 import es.simple.TSiteConfig;
 import es.simple.TSiteConfigs;
 

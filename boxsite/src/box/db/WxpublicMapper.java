@@ -1,8 +1,7 @@
 package box.db;
 
-import box.db.Wxpublic;
-import box.db.WxpublicExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface WxpublicMapper {

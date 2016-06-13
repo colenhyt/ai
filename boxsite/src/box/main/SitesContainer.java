@@ -12,9 +12,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
 
 import box.util.IPageDealing;
@@ -41,8 +39,8 @@ public class SitesContainer extends Observable implements Observer {
     private HttpClient httpClient;
     private IPageDealing pageDealing;
     
-  	MultiThreadedHttpConnectionManager connectionManager = 
-  		new MultiThreadedHttpConnectionManager();
+//  	MultiThreadedHttpConnectionManager connectionManager = 
+//  		new MultiThreadedHttpConnectionManager();
     public final static String HTTP_USER_AGENT="Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)";
     private static final String THREAD_GROUP_NAME = "downloadspider";
 	private ThreadGroup group = new ThreadGroup(THREAD_GROUP_NAME); // our group    
@@ -56,11 +54,11 @@ public class SitesContainer extends Observable implements Observer {
     private int maxTotalConn=20;
 
     public SitesContainer(){
-      	httpClient = new HttpClient(connectionManager);
-        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
-      	connectionManager.getParams().setConnectionTimeout(6000);
-      	connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnPerHost);
-      	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);    	
+//      	httpClient = new HttpClient(connectionManager);
+//        httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
+//      	connectionManager.getParams().setConnectionTimeout(6000);
+//      	connectionManager.getParams().setDefaultMaxConnectionsPerHost(maxConnPerHost);
+//      	connectionManager.getParams().setMaxTotalConnections(maxTotalConn);    	
     }
     
     public SitesContainer(int[] _types,IPageDealing _pageDealing){

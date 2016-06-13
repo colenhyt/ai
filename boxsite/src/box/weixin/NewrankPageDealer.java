@@ -12,7 +12,6 @@ import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.jericho.Element;
-import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
 public class NewrankPageDealer implements IPageDealer{

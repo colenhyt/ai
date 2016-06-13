@@ -1,8 +1,7 @@
 package box.db;
 
-import box.db.Goodsitem;
-import box.db.GoodsitemExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface GoodsitemMapper {

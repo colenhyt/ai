@@ -1,8 +1,7 @@
 package box.site.model;
 
-import box.site.model.Shoppingdata;
-import box.site.model.ShoppingdataExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ShoppingdataMapper {

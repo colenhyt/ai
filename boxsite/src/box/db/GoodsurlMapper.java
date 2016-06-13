@@ -1,8 +1,7 @@
 package box.db;
 
-import box.db.Goodsurl;
-import box.db.GoodsurlExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface GoodsurlMapper {
