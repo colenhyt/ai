@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1381,7 +1382,7 @@ public class HTMLInfoSupplier {
         	String href=tag.getAttributes().getValue("href");
             String url=URLStrHelper.legalUrl(urlStr,href);
             if (url!=null&&(domainName==null||url.indexOf(domainName)>0)){
-            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText());
+            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText(),this.encoding);
             	urls.add(new PageRef(url,refWord));	   
             }
             	
@@ -1729,6 +1730,40 @@ public class HTMLInfoSupplier {
 	        }
 	    }			
 	    return tags;
+	}
+
+	//获取按同类聚合并根据数量多少进行排序的URL集合:
+	public static Map<String,Vector<PageRef>> findSortUrls(List<PageRef> refs){
+		Map<String,Vector<PageRef>>  urlDirMap = new HashMap<String,Vector<PageRef>>();
+		for (PageRef ref:refs){
+			String dna = URLStrHelper.getUrlRex(ref.getUrlStr());
+			Vector<PageRef> dirUrls = urlDirMap.get(dna);
+			if (dirUrls==null){
+				dirUrls = new Vector<PageRef>();
+				urlDirMap.put(dna, dirUrls);
+			}
+			boolean isBrother = true;
+			for (PageRef ref2:dirUrls){
+				if (!URLStrHelper.isBrotherUrl(ref2.getUrlStr(), ref.getUrlStr())){
+					isBrother = false;
+					break;
+				}
+			}
+			if (isBrother){
+				dirUrls.add(ref);				
+			}
+		}
+	
+		 //通过ArrayList构造函数把map.entrySet()转换成list 
+		List<Map.Entry<String,Vector<PageRef>>> mappingList = new ArrayList<Map.Entry<String,Vector<PageRef>>>(urlDirMap.entrySet()); 
+		  //通过比较器实现比较排序 
+		  Collections.sort(mappingList, new Comparator<Map.Entry<String,Vector<PageRef>>>(){ 
+		   public int compare(Map.Entry<String,Vector<PageRef>> mapping1,Map.Entry<String,Vector<PageRef>> mapping2){ 
+		    return mapping1.getValue().size()> mapping2.getValue().size()?1:0; 
+		   } 
+		  }); 
+		  
+		return urlDirMap;
 	}
 
 }

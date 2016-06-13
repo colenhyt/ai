@@ -412,18 +412,18 @@ public class URLStrHelper {
     	return true;
     }
     
-    public static String _strSpec(String str){
+    public static String _strReg(String str){
     	Vector<String> substr = new Vector<String>();
     	String splitStr = "";
     	String speStr = "";
     	if (str.matches("[0-9]+")){
-    		substr.add("d");
+    		substr.add("[0-9]+");
     	}else if (str.indexOf("-")>0){
 			String[] sps = str.split("[-]");
 			splitStr = "-";
 			for (int i=0;i<sps.length;i++){
 				String sp = sps[i];
-				String ss = _strSpec(sp);
+				String ss = _strReg(sp);
 				substr.add(ss);
 			}
     	}else if (str.indexOf("_")>0){
@@ -431,7 +431,7 @@ public class URLStrHelper {
 			splitStr = "_";
 			for (int i=0;i<sps.length;i++){
 				String sp = sps[i];
-				String ss = _strSpec(sp);
+				String ss = _strReg(sp);
 				substr.add(ss);
 			}
 		}else
@@ -445,23 +445,33 @@ public class URLStrHelper {
     	return speStr;
     }
     
-    public static String getUrlDNA(String urlStr){
-    	String[] parts = getPartsWithoutParam(urlStr);
+    //得到正则表达式形式url
+    public static String getUrlRex(String urlStr){
+    	String[] parts = urlStr.split("[/]");
+    	String lastp = parts[parts.length-1];
+    	if (lastp.indexOf("?")>0){
+    		lastp = lastp.substring(0,lastp.indexOf("?"));
+    	}
+    	//有文件名
+		String[] ss = lastp.split("[.]");
+    	if (ss.length>1){
+    		ss[0] = _strReg(ss[0]);
+    		parts[parts.length-1] = (ss[0]+"."+ss[1]);
+    	}
+    	
     	//?,_,-
     	Vector<String> keys = new Vector<String>();
-    	for (int i=0;i<parts.length;i++){
-    		String part = _strSpec(parts[i]);
+    	for (int i=0;i<parts.length-1;i++){
+    		String part = _strReg(parts[i]);
     		keys.add(part);
     	}
+    	keys.add(parts[parts.length-1]);
+    	
     	String urlKey = "";
     	for (int i=0;i<keys.size();i++){
     		if (i>0)
     			urlKey += "/";
     		urlKey += keys.get(i);
-    	}
-    	Map<String,String> params1 = getParams(urlStr);
-    	for (String pName:params1.keySet()){
-    		urlKey += "&"+pName;
     	}
     	return urlKey;
     }
@@ -581,7 +591,7 @@ public class URLStrHelper {
         return oldStr;
     }
 
-    public static String[] getPartsWithoutParam(String urlStr){
+    public static String[] getPartsWithoutParam2(String urlStr){
     	List<String> list=URLConstructor.parse(urlStr);
     	String lastp = list.get(list.size()-1);
     	if (lastp.indexOf("?")>0){
@@ -695,6 +705,76 @@ public class URLStrHelper {
 		String[] ss = lastp.split("[.]");
 		for (int i=0;i<ss.length;i++){
 			list.add(ss[i]);
+		}
+		return (String[])list.toArray(new String[list.size()]);
+	}
+
+	public static String getUrlDNA(String urlStr){
+		String[] parts = getPartsWithoutParam(urlStr);
+		//?,_,-
+		Vector<String> keys = new Vector<String>();
+		for (int i=0;i<parts.length;i++){
+			String part = _strSpec(parts[i]);
+			keys.add(part);
+		}
+		String urlKey = "";
+		for (int i=0;i<keys.size();i++){
+			if (i>0)
+				urlKey += "/";
+			urlKey += keys.get(i);
+		}
+		Map<String,String> params1 = getParams(urlStr);
+		for (String pName:params1.keySet()){
+			urlKey += "&"+pName;
+		}
+		return urlKey;
+	}
+
+	public static String _strSpec(String str){
+		Vector<String> substr = new Vector<String>();
+		String splitStr = "";
+		String speStr = "";
+		if (str.matches("[0-9]+")){
+			substr.add("d");
+		}else if (str.indexOf("-")>0){
+			String[] sps = str.split("[-]");
+			splitStr = "-";
+			for (int i=0;i<sps.length;i++){
+				String sp = sps[i];
+				String ss = _strSpec(sp);
+				substr.add(ss);
+			}
+		}else if (str.indexOf("_")>0){
+			String[] sps = str.split("[_]");
+			splitStr = "_";
+			for (int i=0;i<sps.length;i++){
+				String sp = sps[i];
+				String ss = _strSpec(sp);
+				substr.add(ss);
+			}
+		}else
+			substr.add(str);
+		
+		for (int i=0;i<substr.size();i++){
+			if (i>0)
+				speStr += splitStr;
+			speStr += substr.get(i);
+		}
+		return speStr;
+	}
+
+	public static String[] getPartsWithoutParam(String urlStr){
+		List<String> list=URLConstructor.parse(urlStr);
+		String lastp = list.get(list.size()-1);
+		if (lastp.indexOf("?")>0){
+			lastp = lastp.substring(0,lastp.indexOf("?"));
+		}
+		if (list.size()>1){
+	    	list.remove(list.size()-1);
+			String[] ss = lastp.split("[.]");
+			for (int i=0;i<ss.length;i++){
+				list.add(ss[i]);
+			}
 		}
 		return (String[])list.toArray(new String[list.size()]);
 	}    

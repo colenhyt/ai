@@ -20,7 +20,6 @@
 	<classpathentry kind="lib" path="lib/versioncheck.jar"/>
 	<classpathentry kind="lib" path="lib/xerces-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
-	<classpathentry kind="lib" path="lib/dbcp/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/dbcp/commons-dbcp-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/dbcp/commons-pool-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/parser/nekohtml.jar"/>
@@ -41,5 +40,7 @@
 	<classpathentry kind="lib" path="lib/httpclient/httpmime-4.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient/jna-4.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient/jna-platform-4.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jsoup-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/boxsite/WEB-INF/lib/fastjson-1.2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
