@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Element;
@@ -30,7 +31,6 @@ import es.webref.model.PageRef;
 
 public class SitePageGetProcessor implements PageProcessor{
 	protected Logger  log = Logger.getLogger(getClass());
-    private HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	int queryCount;
 	public String startUrl;
 	String domainName;
@@ -94,6 +94,12 @@ public class SitePageGetProcessor implements PageProcessor{
 		
 		Set<String> sites = new HashSet<String>();
 		sites.add(url);
+		
+//		url = "http://book.51cto.com/art/200909/149969.htm";
+//		String rr = "http://book.51cto.com/art/[0-9]+/[0-9]+.htm";
+//		boolean b = url.matches(rr);
+//		String reg = URLStrHelper.getUrlRex(url);
+//		System.out.println(reg);
 		
 		for (String site:sites){
 			SitePageGetProcessor p1 = new SitePageGetProcessor(site,20);
@@ -170,6 +176,7 @@ public class SitePageGetProcessor implements PageProcessor{
 	
 	public Map<String,WebUrl> getUrls(Page page){
 		Map<String,WebUrl> urls = new HashMap<String,WebUrl>();
+		List<PageRef> refs = new ArrayList<PageRef>();
 		
 		Elements els = page.getHtml().getDocument().getElementsByTag("a");
 		for (Element e:els){
@@ -183,7 +190,13 @@ public class SitePageGetProcessor implements PageProcessor{
 			url.setText(text);
 			url.setUrl(link);
 			urls.put(url.getUrl(),url);
+			
+			PageRef ref = new PageRef(url.getUrl(),text);
+			refs.add(ref);
 		}
+		
+		Map<String,Vector<PageRef>> maprefs = HTMLInfoSupplier.findSortUrls(refs);
+		log.warn(maprefs.toString());
 		
 		return urls;
 	}
