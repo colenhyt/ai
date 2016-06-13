@@ -1,6 +1,9 @@
 package box.mgr;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,11 +99,28 @@ public class PageManager extends MgrBase{
 		return siteurls2;
 	}
 	
-	public String getCatNews(int catid){
+	public String getCatNews(int catid,int startTime){
 		if (catid<=0)
 			return null;
 		
 		Date d = new Date();
+		//循环5天取有内容的当天topitem:
+		String filePath = findLatestItemPath(catid);
+		if (filePath==null)
+			return null;
+		
+		String content = FileUtil.readFile(filePath);
+		List<TopItem> citems = new ArrayList<TopItem>();
+		StringUtil.json2List(content, citems,TopItem.class);
+		Collections.sort(citems);
+		
+		//返回最新:
+		if (startTime<=0)
+			return content;
+		else {
+		}
+		
+		return null;
 	}
 	
 	public String getSiteNotTrainingUrls(String sitekey,boolean isAll){
@@ -119,8 +139,9 @@ public class PageManager extends MgrBase{
 	//获取正文，入库
 	public void process(){
 		List<File> folders = FileUtil.getFolders(path);
+		
+		List<TopItem> newItems = new ArrayList<TopItem>();
 		for (File folder:folders){
-			Set<TopItem> newItems = new HashSet<TopItem>();
 			String sitekey = folder.getName();
 			//获取该站点所有网页正文
 			Map<String,WebUrl> urls = siteUrls.get(sitekey);
@@ -143,14 +164,13 @@ public class PageManager extends MgrBase{
 				titem.setContent(content);
 				titem.setCrDate(new Date());
 				titem.setId(url.hashCode());
+				titem.setSitekey(sitekey);
 				newItems.add(titem);
 				currItems.put(titem.getId(),titem);
 			}
 			if (newItems.size()<=0){
 				continue;
 			}
-			//按日期入库,一天一个json:
-			
 			
 			//入库后处理:
 			for (TopItem item2:newItems){
@@ -168,10 +188,69 @@ public class PageManager extends MgrBase{
 			File urlfile = new File(path+sitekey+"_urls.json");
 			FileUtil.writeFile(urlfile, JSON.toJSONString(urls));
 			urlfile = new File(path+sitekey+"_done_urls.json");
-			FileUtil.writeFile(urlfile, JSON.toJSONString(savedUrls));
+			FileUtil.writeFile(urlfile, JSON.toJSONString(savedUrls));		
+		}
+
+		Map<Integer,List<TopItem>> mapitems = new HashMap<Integer,List<TopItem>>();
+		//topitem 入库:
+		for (TopItem item:newItems){
+			List<TopItem> catItems = mapitems.get(item.getCat());
+			if (catItems==null){
+				catItems = new ArrayList<TopItem>();
+			}
+			catItems.add(item);
+			mapitems.put(item.getCat(), catItems);
+		}
+		
+		Date currDate = new Date();
+		//按日期入库,一天一个json:
+		for (int catid:mapitems.keySet()){
+			String itempath = itemPath(currDate,catid);
+			String content = FileUtil.readFile(itempath);
+			List<TopItem> citems = mapitems.get(catid);
+			if (content!=null&&content.trim().length()>0){
+				StringUtil.json2List(content, citems,TopItem.class);
+			}
+			FileUtil.writeFile(itempath, JSON.toJSONString(citems));
 		}
 
 	}
+	
+	//发现有内容的最新的一个目录
+	private String findLatestItemPath(int catid){
+		//当天,-5天
+		Calendar c = Calendar.getInstance();
+		String path = itemPath(new Date(),catid);
+		File f = new File(path);
+		if (f.exists()){
+			return path;
+		}
+		
+		long dateSec = 60*60*24*1000;
+		for (int i=0;i<5;i++){
+			long du = dateSec*i;
+			long dtime = System.currentTimeMillis()-du;
+			c.setTimeInMillis(dtime);
+			path = itemPath(c.getTime(),catid);
+			File ff = new File(path);
+			if (ff.exists()){
+				return path;
+			}
+		}
+		
+		return path;
+		
+	}
+	
+	private String itemPath(Date currDate,int catid){
+		Calendar c = Calendar.getInstance();
+		c.setTime(currDate);
+		String datePath = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);
+		String itemPath = "data/items/";
+		String itempath = itemPath+catid+"/"+datePath+"_items.json";
+		return itempath;
+	}
+	
 	public String addTrainingurls(String sitekey,String tradingUrlsStr){
 		Map<String,WebUrl> urls = siteUrls.get(sitekey);
 		if (urls==null){

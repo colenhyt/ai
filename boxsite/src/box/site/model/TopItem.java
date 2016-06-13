@@ -2,7 +2,7 @@ package box.site.model;
 
 import java.util.Date;
 
-public class TopItem {
+public class TopItem implements Comparable{
 	public String getUrl() {
 		return url;
 	}
@@ -26,6 +26,13 @@ public class TopItem {
 	private String content;
 	private Date crDate;
 	private int id;
+	private String sitekey;
+	public String getSitekey() {
+		return sitekey;
+	}
+	public void setSitekey(String sitekey) {
+		this.sitekey = sitekey;
+	}
 	public int getId() {
 		return id;
 	}
@@ -37,5 +44,11 @@ public class TopItem {
 	}
 	public void setCrDate(Date crDate) {
 		this.crDate = crDate;
+	}
+	@Override
+	public int compareTo(Object o) {
+		TopItem item = (TopItem)o;
+		Long crd = item.getCrDate().getTime();
+		return crd.compareTo(this.getCrDate().getTime());
 	}
 }
