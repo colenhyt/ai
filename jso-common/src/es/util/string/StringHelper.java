@@ -7,13 +7,14 @@
 package es.util.string;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import es.Constants;
 import es.util.html.HTMLContentHelper;
@@ -276,14 +277,6 @@ public class StringHelper {
         return str;
 	}
 	
-	public static <T> void json2Set(String jsonStr,Set<T> strSet){
-		JSONArray array = JSON.parseArray(jsonStr);
-		if (array!=null){
-			for (int i=0;i<array.size();i++){
-				strSet.add((T)array.get(i));
-			}
-		}
-	}
 	public static String removeStrs(String str,String[] removed){
 		for (int i=0;i<removed.length;i++)
 			str=str.replace(removed[i], "");
