@@ -214,8 +214,8 @@ public class SitePageGetProcessor implements PageProcessor{
 			refs.add(ref);
 		}
 		
-		Map<String,Vector<PageRef>> maprefs = HTMLInfoSupplier.findSortUrls(refs);
-		log.warn(maprefs.toString());
+//		Map<String,Vector<PageRef>> maprefs = HTMLInfoSupplier.findSortUrls(refs);
+//		log.warn(maprefs.toString());
 		
 		return urls;
 	}

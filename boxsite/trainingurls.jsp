@@ -5,6 +5,10 @@
 String typestr = request.getParameter("type");
 String sitekey = request.getParameter("sitekey");
 String siteurls = request.getParameter("siteurls");
+String isallflag = request.getParameter("isall");
+boolean isAll = false;
+if (isallflag!=null)
+ isAll = true;
 int typeid = 0;
 if (typestr!=null){
  typeid = Integer.valueOf(typestr);;
@@ -14,9 +18,9 @@ PageManager.getInstance().init();
 
 String jsonstr = "";
 if (typeid==0)
- jsonstr = PageManager.getInstance().getSiteNotTradingUrls(sitekey);
+ jsonstr = PageManager.getInstance().getSiteNotTrainingUrls(sitekey,isAll);
 else if (typeid==1)
- jsonstr = PageManager.getInstance().addTradingurls(sitekey,siteurls);
+ jsonstr = PageManager.getInstance().addTrainingurls(sitekey,siteurls);
 
 response.getWriter().print(jsonstr);
 %>

@@ -1,12 +1,12 @@
 var g_currurls = {};
 var g_sitekey = "";
 
-function queryUrls(sitekey)
+function queryNews(catid)
 {
-	var dataParam = "sitekey="+sitekey;
-	g_sitekey = sitekey;
+	var dataParam = "cat="+catid;
+	g_cat = catid;
 	try    {
-		$.ajax({type:"post",url:"/boxsite/tradingurls.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/boxsite/news.jsp",data:dataParam,success:function(data){
 		 queryUrlsRst(cfeval(data));
 		}});
 	}   catch  (e)   {
@@ -14,53 +14,9 @@ function queryUrls(sitekey)
 	}
 }
 
-function queryUrlsRst(data)
+function queryNewsRst(data)
 {
-	var tag = document.getElementById("siteurls");
-	var content = "<table>";
-	for (var i=0;i<data.length;i++){
-	  var color = "#DDDDDD";
-	  if (i%2==0)
-	    color = "white";
-	 content += "<tr style='font-size:25px;padding-top:5px;background:"+color+"'>"
-	 content += "<td width=500><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
-	 content += "<td>"
-	 if (data[i].cat==1)
-	  content += "<input type='radio' name='url_"+data[i].id+"' value='1' checked>热点 ";
-	 else
-	  content += "<input type='radio' name='url_"+data[i].id+"' value='1'>热点 ";
-	content += "&nbsp;&nbsp;";
-	
-	 if (data[i].cat==2)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='2' checked>业界";
-	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='2'>业界";
-	content += "&nbsp;&nbsp;";
-
-	 if (data[i].cat==3)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='3' checked>产品";
-	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='3'>产品";
-	content += "&nbsp;&nbsp;";
-
-	 if (data[i].cat==4)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='4' checked>创投";
-	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='4'>创投";
-	content += "&nbsp;&nbsp;";
-
-	 if (data[i].cat==5)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='5' checked>八卦";
-	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='5'>八卦";
-	content += "&nbsp;&nbsp;";
-	 content += "</td>"
-	 content += "</tr>"
-	}
-	content += "</table>";
-	tag.innerHTML = content;
-	
-	g_currurls = data;
+	alert('aaa');
 }
 
 function defineUrlCat()
@@ -85,7 +41,7 @@ function defineUrlCat()
 	alert(dataParam);
 	
 	try    {
-		$.ajax({type:"post",url:"/boxsite/tradingurls.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/boxsite/trainingurls.jsp",data:dataParam,success:function(data){
 		 
 		}});
 	}   catch  (e)   {

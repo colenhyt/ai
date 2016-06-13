@@ -96,6 +96,13 @@ public class PageManager extends MgrBase{
 		return siteurls2;
 	}
 	
+	public String getCatNews(int catid){
+		if (catid<=0)
+			return null;
+		
+		Date d = new Date();
+	}
+	
 	public String getSiteNotTrainingUrls(String sitekey,boolean isAll){
 		Map<String,WebUrl> urls = siteUrls.get(sitekey);
 		if (urls!=null){
