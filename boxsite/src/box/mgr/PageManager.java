@@ -29,6 +29,7 @@ public class PageManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 
 	String path = "c:/boxsite/data/pages/";
 	String hispath = "c:/boxsite/data/hispages/";
+	String traniningpath = "c:/boxsite/data/training/";
 	private boolean inited = false;
 
 	public static void main(String[] args) {
@@ -175,10 +176,18 @@ public class PageManager extends MgrBase{
 		StringUtil.json2Set(tradingUrlsStr, urls2,WebUrl.class);
 		for (WebUrl url:urls2){
 			urls.put(url.getUrl(),url);
+			
+			//copy cat url page to training path:
+			String fileName = url.getUrl().hashCode()+".html";
+			String fileP = path+sitekey+"/"+fileName;
+			String pageC = FileUtil.readFile(fileP);
+			FileUtil.writeFile(traniningpath+url.getCat()+"/"+fileName,pageC);			
 		}
 		
+		//update url cat type:
 		File urlfile = new File(path+sitekey+"_urls.json");
 		FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrls));
+		
 		
 		
 		return "";
