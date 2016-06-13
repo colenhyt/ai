@@ -1,6 +1,7 @@
 package box.mgr;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import box.site.PageContentGetter;
+import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import cn.hd.util.StringUtil;
 
@@ -21,13 +24,16 @@ public class PageManager extends MgrBase{
 	private static PageManager uniqueInstance = null;
 	private Set<String>	sitekeys;
 	private Map<String,Map<String,WebUrl>> siteUrls = new HashMap<String,Map<String,WebUrl>>();
+	private Map<Integer,TopItem> currItems = new HashMap<Integer,TopItem>();
+	private Map<String,Set<String>> savedUrls = new HashMap<String,Set<String>>();
 	protected Logger  log = Logger.getLogger(getClass()); 
 	String path = "c:/boxsite/data/pages/";
+	String hispath = "c:/boxsite/data/hispages/";
 	private boolean inited = false;
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		String a = PageManager.getInstance().getSiteNotTradingUrls("51cto.com");
+		String a = PageManager.getInstance().getSiteNotTrainingUrls("51cto.com",true);
 		WebUrl w1 = new WebUrl();
 		w1.setUrl("aaa");
 		WebUrl w2 = new WebUrl();
@@ -38,7 +44,7 @@ public class PageManager extends MgrBase{
 		set.add(w1);
 		boolean t = w1.hashCode()==w2.hashCode();
 		System.out.println(a);
-		PageManager.getInstance().addTradingurls("51cto.com", a);
+		PageManager.getInstance().addTrainingurls("51cto.com", a);
 
 	}
 
@@ -59,29 +65,42 @@ public class PageManager extends MgrBase{
 		List<File> folders = FileUtil.getFolders(path);
 		for (File folder:folders){
 			sitekeys.add(folder.getName());
-			File urlfile = new File(path+folder.getName()+"_urls.json");
-			if (!urlfile.exists()) continue;
-			String content = FileUtil.readFile(urlfile);
-			Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
-			Map<String,WebUrl> siteurls2 = new HashMap<String,WebUrl>();
-			for (String url:urls.keySet()){
-				JSONObject json = urls.get(url);
-				WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-				if (item.getText()==null||item.getText().trim().length()<=0) continue;
-				siteurls2.put(item.getUrl(),item);
-				
+			String urlspath = (path+folder.getName()+"_urls.json");
+			Map<String,WebUrl> siteurls2 = getFileUrls(urlspath);
+			if (siteurls2!=null) {
+				siteUrls.put(folder.getName(), siteurls2);
 			}
-			siteUrls.put(folder.getName(), siteurls2);
+			String savedPath = (path+folder.getName()+"_done_urls.json");
+			Set<String> siteurls3 = getFileUrls2(savedPath);
+			if (siteurls3!=null) {
+				savedUrls.put(folder.getName(), siteurls3);
+			}			
 		}
 		log.warn("aaa "+siteUrls.toString());
 	}
 	
-	public String getSiteNotTradingUrls(String sitekey){
+	private Set<String> getFileUrls2(String filePath){
+		File urlfile = new File(filePath);
+		if (!urlfile.exists()) return null;
+		
+		String content = FileUtil.readFile(filePath);
+		Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
+		Set<String> siteurls2 = new HashSet<String>();
+		for (String url:urls.keySet()){
+			JSONObject json = urls.get(url);
+			String item = JSON.parseObject(json.toJSONString(),String.class);
+			if (item==null||item.trim().length()<=0) continue;
+			siteurls2.add(item);
+		}		
+		return siteurls2;
+	}
+	
+	public String getSiteNotTrainingUrls(String sitekey,boolean isAll){
 		Map<String,WebUrl> urls = siteUrls.get(sitekey);
 		if (urls!=null){
 			Set<WebUrl> notUrls = new HashSet<WebUrl>();
 			for (WebUrl url:urls.values()){
-				if (url.getCat()<=0)
+				if (isAll||url.getCat()<=0)
 					notUrls.add(url);
 			}
 			return JSON.toJSONString(notUrls);
@@ -89,12 +108,69 @@ public class PageManager extends MgrBase{
 		return null;
 	}
 	
-	public String addTradingurls(String sitekey,String tradingUrlsStr){
+	//获取正文，入库
+	public void process(){
+		List<File> folders = FileUtil.getFolders(path);
+		for (File folder:folders){
+			Set<TopItem> newItems = new HashSet<TopItem>();
+			String sitekey = folder.getName();
+			//获取该站点所有网页正文
+			Map<String,WebUrl> urls = siteUrls.get(sitekey);
+			Set<String> saves = savedUrls.get(sitekey);
+			for (String url:urls.keySet()){
+				WebUrl item = urls.get(url);
+				if (item.getCat()<=0) continue;
+				if (saves.contains(url)) continue;
+				String filePath = path + sitekey + "/"+ url.hashCode()+".html";
+				String pageContent = FileUtil.readFile(filePath);
+				//获取正文:
+				String content = PageContentGetter.getContent(pageContent);
+				if (content==null){
+					log.warn("could not get content "+filePath);
+					continue;
+				}
+				TopItem titem = new TopItem();
+				titem.setCat(item.getCat());
+				titem.setUrl(url);
+				titem.setContent(content);
+				titem.setCrDate(new Date());
+				titem.setId(url.hashCode());
+				newItems.add(titem);
+				currItems.put(titem.getId(),titem);
+			}
+			if (newItems.size()<=0){
+				continue;
+			}
+			//按日期入库,一天一个json:
+			
+			
+			//入库后处理:
+			for (TopItem item2:newItems){
+				//放到已完成列表:
+				saves.add(item2.getUrl());
+				//移除当前url:
+				urls.remove(item2.getUrl());
+				//page移到历史库,删除当前网页:
+				String fileName = item2.getUrl().hashCode()+".html";
+				String fileP = path+sitekey+"/"+fileName;
+				String pageC = FileUtil.readFile(fileP);
+				FileUtil.writeFile(hispath+sitekey+"/"+fileName,pageC);
+				FileUtil.del(fileP);
+			}
+			File urlfile = new File(path+sitekey+"_urls.json");
+			FileUtil.writeFile(urlfile, JSON.toJSONString(urls));
+			urlfile = new File(path+sitekey+"_done_urls.json");
+			FileUtil.writeFile(urlfile, JSON.toJSONString(savedUrls));
+		}
+
+	}
+	public String addTrainingurls(String sitekey,String tradingUrlsStr){
 		Map<String,WebUrl> urls = siteUrls.get(sitekey);
 		if (urls==null){
 			urls = new HashMap<String,WebUrl>();
 			siteUrls.put(sitekey,urls);
 		}
+		
 		Set<WebUrl> urls2 = new HashSet<WebUrl>();
 		StringUtil.json2Set(tradingUrlsStr, urls2,WebUrl.class);
 		for (WebUrl url:urls2){
@@ -102,8 +178,26 @@ public class PageManager extends MgrBase{
 		}
 		
 		File urlfile = new File(path+sitekey+"_urls.json");
-		FileUtil.writeFile(urlfile, JSON.toJSONString(urls));
+		FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrls));
+		
+		
 		return "";
+	}
+
+	private Map<String,WebUrl> getFileUrls(String filePath){
+		File urlfile = new File(filePath);
+		if (!urlfile.exists()) return null;
+		
+		String content = FileUtil.readFile(filePath);
+		Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
+		Map<String,WebUrl> siteurls2 = new HashMap<String,WebUrl>();
+		for (String url:urls.keySet()){
+			JSONObject json = urls.get(url);
+			WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
+			if (item.getText()==null||item.getText().trim().length()<=0) continue;
+			siteurls2.put(item.getUrl(),item);
+		}		
+		return siteurls2;
 	}
 	
 }
