@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import es.download.flow.DownloadContext;
+import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
@@ -130,13 +131,13 @@ public class SitePageGetProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
-		String url = "http://www.huxiu.com";
+		String url = "http://www.51cto.com/";
 		
 		Set<String> sites = new HashSet<String>();
 		sites.add(url);
 		
-		url = "http://www.huxiu.com/article/152285/1.html?f=index_feed_article";
-		String rr = "http://www.huxiu.com/article/[0-9]+/[0-9]+.html.*";
+		url = "http://www.tmtpost.com/1822225.html";
+		String rr = "http://www.tmtpost.com/[0-9]+.html.*";
 		boolean b = url.matches(rr);
 		String reg = URLStrHelper.getUrlRex(url);
 		System.out.println(reg);
@@ -152,14 +153,21 @@ public class SitePageGetProcessor implements PageProcessor{
 	public void process(Page page) {
 		
 		page.putField("MaxPageCount", maxpagecount);
-		page.putField("Charset", page.getCharset());
 		
 		doneDownloadurls.add(page.getRequest().getUrl());
+		String pageContent = page.getRawText();
+		String charset = page.getCharset();
+		if (page.getCharset().equalsIgnoreCase("gbk")||page.getCharset().equalsIgnoreCase("gb2312")){
+			pageContent = StringHelper.gbk2utf8(page.getRawText());
+			charset = "utf-8";
+		}
+		 
+		page.putField("Charset", charset);
 		
 		//保存网页:
 		String fileName = page.getRequest().getUrl().hashCode()+".html";
 		String pagePath = pagesPath +"/"+fileName;
-		FileUtil.writeFile(pagePath, page.getRawText(),page.getCharset());
+		FileUtil.writeFile(pagePath, pageContent,charset);
 		
 		List<File> files = FileUtil.getFiles(pagesPath);
 		queryCount = files.size();
