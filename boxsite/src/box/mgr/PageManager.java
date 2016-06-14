@@ -105,14 +105,9 @@ public class PageManager extends MgrBase{
 		if (!urlfile.exists()) return null;
 		
 		String content = FileUtil.readFile(filePath);
-		Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
+		List<String> urls = (List<String>)JSON.parse(content);
 		Set<String> siteurls2 = new HashSet<String>();
-		for (String url:urls.keySet()){
-			JSONObject json = urls.get(url);
-			String item = JSON.parseObject(json.toJSONString(),String.class);
-			if (item==null||item.trim().length()<=0) continue;
-			siteurls2.add(item);
-		}		
+		siteurls2.addAll(urls);
 		return siteurls2;
 	}
 	
@@ -233,11 +228,12 @@ public class PageManager extends MgrBase{
 				titem.setId(url.hashCode());
 				titem.setContent(content);
 				//尚未分类，即可分类:
-//				if (item.getCat()<=0) {
+				if (item.getCat()<=0) {
 //					int catid = newsClassifier.testClassify(titem);
 //					if (catid<=0) continue;
 //					titem.setCat(catid);
-//				};
+					continue;
+				};
 				titem.setCat(item.getCat());
 				titem.setCrDate(new Date());
 				titem.setSitekey(sitekey);
