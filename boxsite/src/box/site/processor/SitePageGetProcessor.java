@@ -21,6 +21,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.PlainText;
 import box.site.model.WebUrl;
 import cn.hd.util.FileUtil;
+import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -45,7 +46,7 @@ public class SitePageGetProcessor implements PageProcessor{
 	int maxpagecount;
 	
 	public SitePageGetProcessor(String _startUrl,int _maxCount){
-		maxpagecount = 10;
+		maxpagecount = 50;
 		if (_maxCount>0)
 			maxpagecount = _maxCount;
 		
@@ -59,6 +60,13 @@ public class SitePageGetProcessor implements PageProcessor{
 		queryCount = files.size();
 		
 		urlRegs = new HashSet<String>();
+		String regpath = "dna/" + domainName+"_reg.json";
+		String regc = FileUtil.readFile(regpath);
+		if (regc!=null&&regc.trim().length()>0){
+			List<String> regs = (List<String>)JSON.parse(regc);
+			urlRegs.addAll(regs);
+		}
+		
 		String weburlpath = "data/pages/" + domainName+"_urls.json";
 		String weburlc = FileUtil.readFile(weburlpath);
 		if (weburlc!=null&&weburlc.trim().length()>0){
@@ -72,7 +80,6 @@ public class SitePageGetProcessor implements PageProcessor{
 				}
 			}
 		}
-		
 		
 		allDownloadUrls = new HashSet<String>();
 		notDownloadurls = new HashSet<String>();
@@ -109,16 +116,16 @@ public class SitePageGetProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
-		String url = "http://developer.51cto.com";
+		String url = "http://www.huxiu.com";
 		
 		Set<String> sites = new HashSet<String>();
 		sites.add(url);
 		
-//		url = "http://book.51cto.com/art/200909/149969.htm";
-//		String rr = "http://book.51cto.com/art/[0-9]+/[0-9]+.htm";
-//		boolean b = url.matches(rr);
-//		String reg = URLStrHelper.getUrlRex(url);
-//		System.out.println(reg);
+		url = "http://www.huxiu.com/article/152285/1.html?f=index_feed_article";
+		String rr = "http://www.huxiu.com/article/[0-9]+/[0-9]+.html.*";
+		boolean b = url.matches(rr);
+		String reg = URLStrHelper.getUrlRex(url);
+		System.out.println(reg);
 		
 		for (String site:sites){
 			SitePageGetProcessor p1 = new SitePageGetProcessor(site,20);
@@ -131,6 +138,7 @@ public class SitePageGetProcessor implements PageProcessor{
 	public void process(Page page) {
 		
 		page.putField("MaxPageCount", maxpagecount);
+		page.putField("Charset", page.getCharset());
 		
 		doneDownloadurls.add(page.getRequest().getUrl());
 		
@@ -153,6 +161,22 @@ public class SitePageGetProcessor implements PageProcessor{
 			notDownloadurls.clear();
 		}
 		
+		//根据正则表达式找link:
+		for (String regUrl:urlRegs){
+			List<String> links = page.getHtml().links().regex(regUrl).all();
+			 Set<String> newurls = new HashSet<String>();
+			 for (String url:links){
+				 if (url.toLowerCase().indexOf(domainName)<0) continue;
+				 if (allDownloadUrls.contains(url)) continue;
+				 newurls.add(url);
+			 }	
+			 allDownloadUrls.addAll(newurls);
+			 requests.addAll(newurls);
+			 queryCount += newurls.size();
+			 if (queryCount>=maxpagecount)
+				 break;
+		}
+		
 		//找到合法url,并塞入下载链接:
 		if (queryCount<maxpagecount){
 			//找页内urls:
@@ -167,9 +191,10 @@ public class SitePageGetProcessor implements PageProcessor{
 			 allDownloadUrls.addAll(newurls);
 			 requests.addAll(newurls);
 			 queryCount += newurls.size();
-			 FileUtil.writeFile(urlPath, JSON.toJSONString(allDownloadUrls));
 		}
 		
+		 FileUtil.writeFile(urlPath, JSON.toJSONString(allDownloadUrls));
+		 
 		page.addTargetRequests(requests);	
 		
 		//取urls:
@@ -179,6 +204,13 @@ public class SitePageGetProcessor implements PageProcessor{
 		page.putField("PageUrls", urls);
 		page.putField("DomainName", domainName);
 		log.warn("get page "+urls.size()+",pageCount:"+queryCount);
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //		
 	}
 
@@ -214,8 +246,8 @@ public class SitePageGetProcessor implements PageProcessor{
 			refs.add(ref);
 		}
 		
-//		Map<String,Vector<PageRef>> maprefs = HTMLInfoSupplier.findSortUrls(refs);
-//		log.warn(maprefs.toString());
+		Map<String,Vector<PageRef>> maprefs = HTMLInfoSupplier.findSortUrls(refs);
+		log.warn(maprefs.toString());
 		
 		return urls;
 	}
