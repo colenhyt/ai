@@ -128,7 +128,7 @@ public class SitePageGetProcessor implements PageProcessor{
 		System.out.println(reg);
 		
 		for (String site:sites){
-			SitePageGetProcessor p1 = new SitePageGetProcessor(site,20);
+			SitePageGetProcessor p1 = new SitePageGetProcessor(site,50);
 	        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
 		}
 		
@@ -225,15 +225,27 @@ public class SitePageGetProcessor implements PageProcessor{
         page.setUrl(new PlainText(urlstr));
 	}
 	
+	private boolean isReg(String url){
+		if (urlRegs.size()<=0)
+			return true;
+		
+		for (String reg:urlRegs){
+			if (url.matches(reg))
+			 return true;
+		}
+		return false;
+	}
 	public Map<String,WebUrl> getUrls(Page page){
 		Map<String,WebUrl> urls = new HashMap<String,WebUrl>();
 		List<PageRef> refs = new ArrayList<PageRef>();
 		
 		Elements els = page.getHtml().getDocument().getElementsByTag("a");
 		for (Element e:els){
+			String link = e.attr("href");
+			if (link.toLowerCase().indexOf(domainName)<0) continue;
+			if (!isReg(link)) continue;
 			String text = e.text();
 			if (text==null||text.trim().length()<=0) continue;
-			String link = e.attr("href");
 			
 //			log.warn("link "+link+",text:"+text);
 			
@@ -242,12 +254,12 @@ public class SitePageGetProcessor implements PageProcessor{
 			url.setUrl(link);
 			urls.put(url.getUrl(),url);
 			
-			PageRef ref = new PageRef(url.getUrl(),text);
-			refs.add(ref);
+//			PageRef ref = new PageRef(url.getUrl(),text);
+//			refs.add(ref);
 		}
 		
-		Map<String,Vector<PageRef>> maprefs = HTMLInfoSupplier.findSortUrls(refs);
-		log.warn(maprefs.toString());
+//		Map<String,Vector<PageRef>> maprefs = HTMLInfoSupplier.findSortUrls(refs);
+//		log.warn(maprefs.toString());
 		
 		return urls;
 	}
