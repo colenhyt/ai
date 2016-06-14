@@ -42,8 +42,8 @@ public class NewsClassifier {
 			int catid = Integer.valueOf(fn);
 			FileInputStream fis = new FileInputStream(f);
            ObjectInputStream ois = new ObjectInputStream(fis);  
-//            Classifier classifier = (Classifier) ois.readObject(); 
-//            classifyMap.put(catid, classifier);
+            Classifier classifier = (Classifier) ois.readObject(); 
+            classifyMap.put(catid, classifier);
 		}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
