@@ -83,12 +83,21 @@ public class SitePageGetProcessor implements PageProcessor{
 		allDownloadUrls = new HashSet<String>();
 		notDownloadurls = new HashSet<String>();
 		doneDownloadurls = new HashSet<String>();
+		String doneContent = FileUtil.readFile(pagesPath+"_done_urls.json");
+		if (doneContent!=null&&doneContent.trim().length()>0){
+			List<String> doneUrls = (List<String>)JSON.parse(doneContent);
+			doneDownloadurls.addAll(doneUrls);
+		}
+		
+		
 		urlPath = pagesPath+".urls";
 		String urlcontent = FileUtil.readFile(urlPath);
 		if (urlcontent!=null&&urlcontent.trim().length()>0){
 			List<String> urls = (List<String>)JSON.parse(urlcontent);
 			allDownloadUrls.addAll(urls);
 			for (String url:urls){
+				if (doneDownloadurls.contains(url)) continue;
+				
 				String fileName = url.hashCode()+".html";
 				File f = new File(pagesPath+"/"+fileName);
 				if (f.exists()) {
@@ -172,6 +181,7 @@ public class SitePageGetProcessor implements PageProcessor{
 			 Set<String> newurls = new HashSet<String>();
 			 for (String url:links){
 				 if (url.toLowerCase().indexOf(domainName)<0) continue;
+				 if (doneDownloadurls.contains(url)) continue;
 				 if (allDownloadUrls.contains(url)) continue;
 				 newurls.add(url);
 			 }	

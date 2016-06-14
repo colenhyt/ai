@@ -31,28 +31,16 @@ public class PageManager extends MgrBase{
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,List<TopItem>> viewItemsMap = new HashMap<String,List<TopItem>>();
-	private Map<String,Set<String>> savedUrls = new HashMap<String,Set<String>>();
+	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
 	protected Logger  log = Logger.getLogger(getClass()); 
 	String path = "c:/boxsite/data/pages/";
-	String hispath = "c:/boxsite/data/hispages/";
 	String traniningpath = "c:/boxsite/data/training/";
 	String itemPath = "c:/boxsite/data/items/";
 	private boolean inited = false;
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		String a = PageManager.getInstance().getSiteNotTrainingUrls("51cto.com",true);
-		WebUrl w1 = new WebUrl();
-		w1.setUrl("aaa");
-		WebUrl w2 = new WebUrl();
-		w2.setUrl("aaa");
-		int c1 = w1.hashCode();
-		int c2 = w2.hashCode();
-		Set<WebUrl> set = new HashSet<WebUrl>();
-		set.add(w1);
-		boolean t = w1.hashCode()==w2.hashCode();
-		System.out.println(a);
-		PageManager.getInstance().addTrainingurls("51cto.com", a);
+		PageManager.getInstance().process();
 
 	}
 
@@ -81,7 +69,7 @@ public class PageManager extends MgrBase{
 			String savedPath = (path+folder.getName()+"_done_urls.json");
 			Set<String> siteurls3 = getFileUrls2(savedPath);
 			if (siteurls3!=null) {
-				savedUrls.put(folder.getName(), siteurls3);
+				savedUrlsMap.put(folder.getName(), siteurls3);
 			}			
 		}
 		
@@ -228,10 +216,10 @@ public class PageManager extends MgrBase{
 			String sitekey = folder.getName();
 			//获取该站点所有网页正文
 			Map<String,WebUrl> urls = allSiteUrlsMap.get(sitekey);
-			Set<String> saves = savedUrls.get(sitekey);
+			Set<String> saves = savedUrlsMap.get(sitekey);
 			for (String url:urls.keySet()){
 				WebUrl item = urls.get(url);
-				if (saves.contains(url)) continue;
+				if (saves!=null&&saves.contains(url)) continue;
 				String filePath = path + sitekey + "/"+ url.hashCode()+".html";
 				String pageContent = FileUtil.readFile(filePath);
 				//获取正文:
@@ -245,11 +233,11 @@ public class PageManager extends MgrBase{
 				titem.setId(url.hashCode());
 				titem.setContent(content);
 				//尚未分类，即可分类:
-				if (item.getCat()<=0) {
-					int catid = newsClassifier.testClassify(titem);
-					if (catid<=0) continue;
-					titem.setCat(catid);
-				};
+//				if (item.getCat()<=0) {
+//					int catid = newsClassifier.testClassify(titem);
+//					if (catid<=0) continue;
+//					titem.setCat(catid);
+//				};
 				titem.setCat(item.getCat());
 				titem.setCrDate(new Date());
 				titem.setSitekey(sitekey);
@@ -264,18 +252,21 @@ public class PageManager extends MgrBase{
 				continue;
 			}
 			
+			if (saves==null){
+				saves = new HashSet<String>();
+				
+			}
 			//入库后处理:
 			for (TopItem item2:newItems){
 				//放到已完成列表:
 				saves.add(item2.getUrl());
 				//移除当前url:
 				urls.remove(item2.getUrl());
-
 			}
-			File urlfile = new File(path+sitekey+"_urls.json");
-			FileUtil.writeFile(urlfile, JSON.toJSONString(urls));
-			urlfile = new File(path+sitekey+"_done_urls.json");
-			FileUtil.writeFile(urlfile, JSON.toJSONString(savedUrls));		
+			savedUrlsMap.put(sitekey, saves);
+			
+			FileUtil.writeFile(path+sitekey+"_urls.json", JSON.toJSONString(urls));
+			FileUtil.writeFile(path+sitekey+"_done_urls.json", JSON.toJSONString(saves));		
 		}
 
 		Map<Integer,List<TopItem>> mapitems = new HashMap<Integer,List<TopItem>>();
