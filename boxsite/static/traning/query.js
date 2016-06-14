@@ -1,6 +1,26 @@
 var g_currurls = {};
 var g_sitekey = "";
 
+function querySitekeys()
+{
+	var dataParam = "type=2";
+	
+	var data = $.ajax({type:"post",url:"/boxsite/trainingurls.jsp",data:dataParam,async:false});
+	
+	var keystr = cfeval(data.responseText);
+	
+	var content = ""
+	for (var i=0;i<keystr.length;i++){
+	var key = keystr[i];
+	 content += "<a href=\"javascript:queryUrls('"+key+"')\">"+key+"</a> <br>";
+	}
+	
+	var tag = document.getElementById("keysdiv");
+	tag.innerHTML = content;
+}
+
+querySitekeys();
+
 function queryUrls(sitekey)
 {
 	var dataParam = "sitekey="+sitekey;
