@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Element;
@@ -21,12 +20,10 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.PlainText;
 import box.site.model.WebUrl;
 import cn.hd.util.FileUtil;
-import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
@@ -41,6 +38,7 @@ public class SitePageGetProcessor implements PageProcessor{
 	public Set<String> doneDownloadurls;
 	public Set<String> allDownloadUrls;
 	private Set<String> urlRegs = new HashSet<String>();
+	private Map<String,WebUrl> webitemMap = new HashMap<String,WebUrl>();
 	String urlPath;
 	private Site site;
 	int maxpagecount;
@@ -77,6 +75,7 @@ public class SitePageGetProcessor implements PageProcessor{
 				if (item.getCat()>0){
 					String regUrl = URLStrHelper.getUrlRex(item.getUrl());
 					urlRegs.add(regUrl);
+					webitemMap.put(item.getUrl(), item);
 				}
 			}
 		}
@@ -96,7 +95,13 @@ public class SitePageGetProcessor implements PageProcessor{
 					doneDownloadurls.add(url);
 					continue;
 				}
-				notDownloadurls.add(url);
+				//优先下载已分类url:
+				if (webitemMap.containsKey(url)){
+					WebUrl item = webitemMap.get(url);
+					if (item.getCat()>0)
+						notDownloadurls.add(url);
+				}
+//				notDownloadurls.add(url);
 			}
 		}
 		if (notDownloadurls.size()>0){
@@ -128,7 +133,7 @@ public class SitePageGetProcessor implements PageProcessor{
 		System.out.println(reg);
 		
 		for (String site:sites){
-			SitePageGetProcessor p1 = new SitePageGetProcessor(site,50);
+			SitePageGetProcessor p1 = new SitePageGetProcessor(site,20);
 	        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
 		}
 		

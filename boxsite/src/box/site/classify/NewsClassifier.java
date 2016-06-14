@@ -6,10 +6,13 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import box.site.model.TopItem;
+import box.site.model.WebUrl;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.NaiveBayesTrainer;
@@ -27,6 +30,9 @@ import cc.mallet.pipe.iterator.FileIterator;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cn.hd.util.FileUtil;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 public class NewsClassifier {
 	private String trainingPath ="data/training";
@@ -52,6 +58,34 @@ public class NewsClassifier {
 	}
 	
 	public void trainingClassifiers(){
+		//搬移已分类page到training path:
+		String path = "data/pages/";
+		List<File> files = FileUtil.getFiles(path);
+		for (File f:files){
+			if (f.getName().indexOf(".json")<0)continue;
+			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
+			String content = FileUtil.readFile(f);
+			if (content!=null&&content.trim().length()>0){
+				Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
+				for (String url:urls.keySet()){
+					JSONObject json = urls.get(url);
+					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
+					if (item.getCat()<=0) continue;
+					String fileName = item.getUrl().hashCode()+".html";
+					String fileP = path+sitekey+"/"+fileName;
+					File ff = new File(fileP);
+					if (!ff.exists()) continue;
+					String pageC = FileUtil.readFile(fileP);
+					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+fileName,pageC);
+				}
+			}
+		}
+		//copy cat url page to training path:
+//		String fileName = url.getUrl().hashCode()+".html";
+//		String fileP = path+sitekey+"/"+fileName;
+//		String pageC = FileUtil.readFile(fileP);
+//		FileUtil.writeFile(traniningpath+url.getCat()+"/"+fileName,pageC);	
+		
 		// Create the pipeline that will take as input {data = File, target = String for classname}
 		// and turn them into {data = FeatureVector, target = Label}
 		Pipe instancePipe = new SerialPipes (new Pipe[] {

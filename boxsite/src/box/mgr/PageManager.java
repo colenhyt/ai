@@ -28,7 +28,7 @@ public class PageManager extends MgrBase{
 	private static PageManager uniqueInstance = null;
 	private Set<String>	sitekeys;
 	private NewsClassifier newsClassifier = new NewsClassifier();
-	private Map<String,Map<String,WebUrl>> siteUrls = new HashMap<String,Map<String,WebUrl>>();
+	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,List<TopItem>> viewItemsMap = new HashMap<String,List<TopItem>>();
 	private Map<String,Set<String>> savedUrls = new HashMap<String,Set<String>>();
@@ -76,7 +76,7 @@ public class PageManager extends MgrBase{
 			String urlspath = (path+folder.getName()+"_urls.json");
 			Map<String,WebUrl> siteurls2 = getFileUrls(urlspath);
 			if (siteurls2!=null) {
-				siteUrls.put(folder.getName(), siteurls2);
+				allSiteUrlsMap.put(folder.getName(), siteurls2);
 			}
 			String savedPath = (path+folder.getName()+"_done_urls.json");
 			Set<String> siteurls3 = getFileUrls2(savedPath);
@@ -109,7 +109,7 @@ public class PageManager extends MgrBase{
 			}
 		}
 		
-		log.warn("aaa "+siteUrls.toString());
+		log.warn("aaa "+allSiteUrlsMap.toString());
 	}
 	
 	private Set<String> getFileUrls2(String filePath){
@@ -207,7 +207,7 @@ public class PageManager extends MgrBase{
 	}
 	
 	public String getSiteNotTrainingUrls(String sitekey,boolean isAll){
-		Map<String,WebUrl> urls = siteUrls.get(sitekey);
+		Map<String,WebUrl> urls = allSiteUrlsMap.get(sitekey);
 		if (urls!=null){
 			Set<WebUrl> notUrls = new HashSet<WebUrl>();
 			for (WebUrl url:urls.values()){
@@ -227,7 +227,7 @@ public class PageManager extends MgrBase{
 		for (File folder:folders){
 			String sitekey = folder.getName();
 			//获取该站点所有网页正文
-			Map<String,WebUrl> urls = siteUrls.get(sitekey);
+			Map<String,WebUrl> urls = allSiteUrlsMap.get(sitekey);
 			Set<String> saves = savedUrls.get(sitekey);
 			for (String url:urls.keySet()){
 				WebUrl item = urls.get(url);
@@ -319,8 +319,8 @@ public class PageManager extends MgrBase{
 			String fileName = item2.getUrl().hashCode()+".html";
 			String fileP = path+item2.getSitekey()+"/"+fileName;
 			String pageC = FileUtil.readFile(fileP);
-			FileUtil.writeFile(hispath+item2.getSitekey()+"/"+fileName,pageC);
-			FileUtil.del(fileP);		
+//			FileUtil.writeFile(hispath+item2.getSitekey()+"/"+fileName,pageC);
+//			FileUtil.del(fileP);		
 			}
 		}
 	}
@@ -362,28 +362,22 @@ public class PageManager extends MgrBase{
 	}
 	
 	public String addTrainingurls(String sitekey,String tradingUrlsStr){
-		Map<String,WebUrl> urls = siteUrls.get(sitekey);
-		if (urls==null){
-			urls = new HashMap<String,WebUrl>();
-			siteUrls.put(sitekey,urls);
+		Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
+		if (siteUrlsMap==null){
+			siteUrlsMap = new HashMap<String,WebUrl>();
+			allSiteUrlsMap.put(sitekey,siteUrlsMap);
 		}
 		
-		Set<WebUrl> urls2 = new HashSet<WebUrl>();
-		StringUtil.json2Set(tradingUrlsStr, urls2,WebUrl.class);
+		List<WebUrl> urls2 = (List<WebUrl>)JSON.parseArray(tradingUrlsStr, WebUrl.class);
 		for (WebUrl url:urls2){
-			urls.put(url.getUrl(),url);
-			
-			//copy cat url page to training path:
-			String fileName = url.getUrl().hashCode()+".html";
-			String fileP = path+sitekey+"/"+fileName;
-			String pageC = FileUtil.readFile(fileP);
-			FileUtil.writeFile(traniningpath+url.getCat()+"/"+fileName,pageC);			
+			WebUrl item = siteUrlsMap.get(url.getUrl());
+			item.setCat(url.getCat());
+			siteUrlsMap.put(url.getUrl(),item);
 		}
 		
 		//update url cat type:
 		File urlfile = new File(path+sitekey+"_urls.json");
-		FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrls));
-		
+		FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));
 		
 		
 		return "";
@@ -394,12 +388,11 @@ public class PageManager extends MgrBase{
 		if (!urlfile.exists()) return null;
 		
 		String content = FileUtil.readFile(filePath);
-		Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
+		Map<String,JSONObject> urls = (Map<String,JSONObject>)JSON.parse(content);
 		Map<String,WebUrl> siteurls2 = new HashMap<String,WebUrl>();
-		for (String url:urls.keySet()){
-			JSONObject json = urls.get(url);
-			WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-			if (item.getText()==null||item.getText().trim().length()<=0) continue;
+		for (JSONObject json:urls.values()){
+			WebUrl item = JSON.parseObject(json.toJSONString(), WebUrl.class);
+			if (item==null||item.getText()==null||item.getText().trim().length()<=0) continue;
 			siteurls2.put(item.getUrl(),item);
 		}		
 		return siteurls2;
