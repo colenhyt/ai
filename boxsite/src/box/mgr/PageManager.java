@@ -33,7 +33,7 @@ public class PageManager extends MgrBase{
 	private Map<String,List<TopItem>> viewItemsMap = new HashMap<String,List<TopItem>>();
 	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
 	protected Logger  log = Logger.getLogger(getClass()); 
-	String path = "c:/boxsite/data/pages/";
+	String pagesPath = "c:/boxsite/data/pages/";
 	String traniningpath = "c:/boxsite/data/training/";
 	String itemPath = "c:/boxsite/data/items/";
 	private boolean inited = false;
@@ -58,15 +58,15 @@ public class PageManager extends MgrBase{
 		
 		sitekeys = new HashSet<String>();
 		
-		List<File> folders = FileUtil.getFolders(path);
+		List<File> folders = FileUtil.getFolders(pagesPath);
 		for (File folder:folders){
 			sitekeys.add(folder.getName());
-			String urlspath = (path+folder.getName()+"_urls.json");
+			String urlspath = (pagesPath+folder.getName()+"_urls.json");
 			Map<String,WebUrl> siteurls2 = getFileUrls(urlspath);
 			if (siteurls2!=null) {
 				allSiteUrlsMap.put(folder.getName(), siteurls2);
 			}
-			String savedPath = (path+folder.getName()+"_done_urls.json");
+			String savedPath = (pagesPath+folder.getName()+"_done_urls.json");
 			Set<String> siteurls3 = getFileUrls2(savedPath);
 			if (siteurls3!=null) {
 				savedUrlsMap.put(folder.getName(), siteurls3);
@@ -204,7 +204,7 @@ public class PageManager extends MgrBase{
 	
 	//获取正文，入库
 	public void process(){
-		List<File> folders = FileUtil.getFolders(path);
+		List<File> folders = FileUtil.getFolders(pagesPath);
 		
 		List<TopItem> newItems = new ArrayList<TopItem>();
 		for (File folder:folders){
@@ -215,7 +215,7 @@ public class PageManager extends MgrBase{
 			for (String url:urls.keySet()){
 				WebUrl item = urls.get(url);
 				if (saves!=null&&saves.contains(url)) continue;
-				String filePath = path + sitekey + "/"+ url.hashCode()+".html";
+				String filePath = pagesPath + sitekey + "/"+ url.hashCode()+".html";
 				String pageContent = FileUtil.readFile(filePath);
 				//获取正文:
 				String content = PageContentGetter.getContent(pageContent);
@@ -261,8 +261,8 @@ public class PageManager extends MgrBase{
 			}
 			savedUrlsMap.put(sitekey, saves);
 			
-			FileUtil.writeFile(path+sitekey+"_urls.json", JSON.toJSONString(urls));
-			FileUtil.writeFile(path+sitekey+"_done_urls.json", JSON.toJSONString(saves));		
+			FileUtil.writeFile(pagesPath+sitekey+"_urls.json", JSON.toJSONString(urls));
+			FileUtil.writeFile(pagesPath+sitekey+"_done_urls.json", JSON.toJSONString(saves));		
 		}
 
 		Map<Integer,List<TopItem>> mapitems = new HashMap<Integer,List<TopItem>>();
@@ -304,7 +304,7 @@ public class PageManager extends MgrBase{
 			for (TopItem item2:citems){
 			//page移到历史库,删除当前网页:
 			String fileName = item2.getUrl().hashCode()+".html";
-			String fileP = path+item2.getSitekey()+"/"+fileName;
+			String fileP = pagesPath+item2.getSitekey()+"/"+fileName;
 			String pageC = FileUtil.readFile(fileP);
 //			FileUtil.writeFile(hispath+item2.getSitekey()+"/"+fileName,pageC);
 //			FileUtil.del(fileP);		
@@ -363,13 +363,22 @@ public class PageManager extends MgrBase{
 		}
 		
 		//update url cat type:
-		File urlfile = new File(path+sitekey+"_urls.json");
+		File urlfile = new File(pagesPath+sitekey+"_urls.json");
 		FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));
 		
 		
 		return "";
 	}
 
+	public String getSitekeys(){
+		List<String> sitekeys = new ArrayList<String>();
+		List<File> folders = FileUtil.getFolders(pagesPath);
+		for (File folder:folders){
+			sitekeys.add(folder.getName());
+		}
+		return JSON.toJSONString(sitekeys);
+	}
+	
 	private Map<String,WebUrl> getFileUrls(String filePath){
 		File urlfile = new File(filePath);
 		if (!urlfile.exists()) return null;
