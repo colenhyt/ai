@@ -12,8 +12,9 @@ import com.alibaba.fastjson.JSONObject;
 import cn.hd.util.FileUtil;
 import cn.hd.util.RedisConfig;
 
-public class MgrBase {
+public class MgrBase extends java.util.TimerTask {
 	public static final String DATA_WEBSITE_DNA = "data_website_dna";
+	private Boolean isStart;
 
 	protected Logger  log = Logger.getLogger(getClass()); 
 	protected int tick = 0;
@@ -47,4 +48,25 @@ public class MgrBase {
 		redisCfg = JSON.parseObject(cfgstr0, RedisConfig.class);
 		
 	}
-}
+
+	public void update(){
+		
+	}
+	
+	@Override
+	public void run() {
+		this.update();
+		
+	}
+
+
+	public void start(){
+		if (isStart) return;
+		
+		log.info("Manager start....");
+		
+		isStart = true;
+		
+		java.util.Timer timer = new java.util.Timer(true);  
+		timer.schedule(this, 3000,3000);   		
+	}}

@@ -13,18 +13,21 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import box.site.PageContentGetter;
+import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import cn.hd.util.StringUtil;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import es.util.FileUtil;
 
 public class PageManager extends MgrBase{
 	private static PageManager uniqueInstance = null;
 	private Set<String>	sitekeys;
+	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> siteUrls = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,List<TopItem>> viewItemsMap = new HashMap<String,List<TopItem>>();
@@ -90,6 +93,7 @@ public class PageManager extends MgrBase{
 			List<File> subitemPaths = FileUtil.getFolders(f.getAbsolutePath());
 			
 			for (File datepath:subitemPaths){
+				
 				String key = f.getName()+"_"+datepath.getName();
 				List<File> itemfiles = FileUtil.getFiles(datepath.getAbsolutePath());
 				if (itemfiles.size()>0){
@@ -227,7 +231,6 @@ public class PageManager extends MgrBase{
 			Set<String> saves = savedUrls.get(sitekey);
 			for (String url:urls.keySet()){
 				WebUrl item = urls.get(url);
-				if (item.getCat()<=0) continue;
 				if (saves.contains(url)) continue;
 				String filePath = path + sitekey + "/"+ url.hashCode()+".html";
 				String pageContent = FileUtil.readFile(filePath);
@@ -238,11 +241,17 @@ public class PageManager extends MgrBase{
 					continue;
 				}
 				TopItem titem = new TopItem();
-				titem.setCat(item.getCat());
 				titem.setUrl(url);
-				titem.setContent(content);
-				titem.setCrDate(new Date());
 				titem.setId(url.hashCode());
+				titem.setContent(content);
+				//尚未分类，即可分类:
+				if (item.getCat()<=0) {
+					int catid = newsClassifier.testClassify(titem);
+					if (catid<=0) continue;
+					titem.setCat(catid);
+				};
+				titem.setCat(item.getCat());
+				titem.setCrDate(new Date());
 				titem.setSitekey(sitekey);
 				File f = new File(filePath);
 				if (f.exists()){
@@ -270,7 +279,7 @@ public class PageManager extends MgrBase{
 		}
 
 		Map<Integer,List<TopItem>> mapitems = new HashMap<Integer,List<TopItem>>();
-		//topitem 入库:
+		//topitem 入map库:
 		for (TopItem item:newItems){
 			List<TopItem> catItems = mapitems.get(item.getCat());
 			if (catItems==null){
@@ -285,10 +294,21 @@ public class PageManager extends MgrBase{
 		Calendar c = Calendar.getInstance();
 		for (int catid:mapitems.keySet()){
 			c.setTime(currDate);
+			List<TopItem> citems = mapitems.get(catid);
+			String key = keyPath(c.getTime(),catid);
+			//放入viewItemMap内存:
+			List<TopItem> vitems = viewItemsMap.get(key);
+			if (vitems==null){
+				vitems = new ArrayList<TopItem>();
+			}
+			vitems.addAll(citems);
+			Collections.sort(vitems);
+			viewItemsMap.put(key, vitems);
+			
+			//topitem 落地
 			String datePath = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);
 			String itempath = itemPath+catid+"/"+datePath+"/"+currDate.getTime()+"_items.json";			
 			String content = FileUtil.readFile(itempath);
-			List<TopItem> citems = mapitems.get(catid);
 			if (content!=null&&content.trim().length()>0){
 				StringUtil.json2List(content, citems,TopItem.class);
 			}
@@ -303,7 +323,6 @@ public class PageManager extends MgrBase{
 			FileUtil.del(fileP);		
 			}
 		}
-
 	}
 	
 	//发现有内容的最新的一个目录
@@ -335,6 +354,11 @@ public class PageManager extends MgrBase{
 		}
 		return false;
 		
+	}
+
+	@Override
+	public void update(){
+		this.process();
 	}
 	
 	public String addTrainingurls(String sitekey,String tradingUrlsStr){
