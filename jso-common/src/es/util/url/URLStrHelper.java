@@ -473,6 +473,7 @@ public class URLStrHelper {
     			urlKey += "/";
     		urlKey += keys.get(i);
     	}
+    	urlKey += ".*";
     	return urlKey;
     }
     

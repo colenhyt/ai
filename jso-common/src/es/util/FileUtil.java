@@ -60,6 +60,7 @@ public class FileUtil {
 	 * @param content
 	 */
 	public static void writeFile(String path, String content) {
+		checkAndMakeParentDirecotry(path);
 	       File f = new File(path);
 	       writeFile(f, content,"utf-8");
 	}
