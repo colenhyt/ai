@@ -42,8 +42,8 @@ public class NewsClassifier {
 			int catid = Integer.valueOf(fn);
 			FileInputStream fis = new FileInputStream(f);
            ObjectInputStream ois = new ObjectInputStream(fis);  
-            Classifier classifier = (Classifier) ois.readObject(); 
-            classifyMap.put(catid, classifier);
+//            Classifier classifier = (Classifier) ois.readObject(); 
+//            classifyMap.put(catid, classifier);
 		}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -62,7 +62,7 @@ public class NewsClassifier {
 			new TokenSequenceLowercase (),		  // TokenSequence words lowercased
 			new TokenSequenceRemoveStopwords (),// Remove stopwords from sequence
 			new TokenSequence2FeatureSequence(),// Replace each Token with a feature index
-			new FeatureSequence2FeatureVector(),// Collapse word order into a "feature vector"
+			new FeatureSequence2WeightFeatureVector(),// Collapse word order into a "weight feature vector"
 			new PrintInputAndTarget(),
 		});
 
@@ -71,7 +71,7 @@ public class NewsClassifier {
 
 		List<File> folders = FileUtil.getFolders(trainingPath);
 		for (File f:folders){
-			ilist.clear();
+			ilist = new InstanceList (instancePipe);
 			int catid = Integer.valueOf(f.getName());
 			String directories = trainingPath+"/"+catid;
 			ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
@@ -98,7 +98,6 @@ public class NewsClassifier {
 		Pipe instancePipe = new SerialPipes (new Pipe[] {
 				new Target2Label (),							  // Target String -> class label
 				new CharSequence2GBKTokenSequence (),  // Data String -> TokenSequence
-				new TokenSequenceLowercase (),		  // TokenSequence words lowercased
 				new TokenSequenceRemoveStopwords (),// Remove stopwords from sequence
 				new TokenSequence2FeatureSequence(),// Replace each Token with a feature index
 				new FeatureSequence2FeatureVector(),// Collapse word order into a "feature vector"
@@ -131,8 +130,8 @@ public class NewsClassifier {
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		NewsClassifier classifier = new NewsClassifier();
+		classifier.trainingClassifiers();
 	}
 
 }
