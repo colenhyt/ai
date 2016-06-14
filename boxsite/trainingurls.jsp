@@ -21,6 +21,8 @@ if (typeid==0)
  jsonstr = PageManager.getInstance().getSiteNotTrainingUrls(sitekey,isAll);
 else if (typeid==1)
  jsonstr = PageManager.getInstance().addTrainingurls(sitekey,siteurls);
+else if (typeid==2)
+ jsonstr = PageManager.getInstance().getSitekeys();
 
 response.getWriter().print(jsonstr);
 %>
