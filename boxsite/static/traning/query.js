@@ -76,9 +76,11 @@ function defineUrlCat()
 	  }
 	  if (cat>0){
 		  g_currurls[i].cat = cat;
-		  catUrls.push(g_currurls[i]);
+		  var item = {cat:g_currurls[i].cat,url:g_currurls[i].url};
+		  catUrls.push(item);
 	  }
 	}
+	alert(catUrls);
 	
 	var strurls = JSON.stringify(catUrls);
 	var dataParam = "type=1&sitekey="+g_sitekey+"&siteurls="+strurls;
@@ -86,7 +88,7 @@ function defineUrlCat()
 	
 	try    {
 		$.ajax({type:"post",url:"/boxsite/trainingurls.jsp",data:dataParam,success:function(data){
-		 
+		 queryUrls(g_sitekey);
 		}});
 	}   catch  (e)   {
 	   return false;
