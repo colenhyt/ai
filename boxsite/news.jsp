@@ -5,9 +5,9 @@
 String catstr = request.getParameter("cat");
 String startsecstr = request.getParameter("starttime");
 
-int startsec = 0;
+long startsec = 0;
 if (startsecstr!=null){
- startsec = Integer.valueOf(startsecstr);
+ startsec = Long.valueOf(startsecstr);
 }
 
 String itemstr = request.getParameter("item");

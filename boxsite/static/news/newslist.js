@@ -1,4 +1,15 @@
 
+var g_currcat = 0;
+var g_lastqueryup = {};
+var g_lastquerydown = {};
+
+var g_newscats = [
+[1,'热点'],
+[2,'业界'],
+[3,'产品'],
+[4,'创投'],
+];
+
 var g_sitekeys = {
 "huxiu.com":"虎嗅",
 "iwacai.com":"爱挖柴",
@@ -12,9 +23,18 @@ newslist.prototype = {
  //alert（'www');
  loaded:true,
  
+  init: function(){
+   var content = "";
+   for (var i=0;i<g_newscats.length;i++){
+    var list = g_newscats[i];
+   content += "<li><a href='javascript:g_newslist.getlist("+list[0]+")'>"+list[1]+"</a></li> "
+   }
+   var tag = document.getElementById("nav");
+   tag.innerHTML = content;
+  },
   getlist: function (catid,starttime) {
     var stime = 0;
-    if (starttime!=null)
+    if (starttime!=null&&starttime>0)
      stime = starttime;
 	var dataParam = "cat="+catid+"&starttime="+stime;
 	try    {
@@ -73,3 +93,4 @@ var g_newslist = new newslist();
 
 var g_newslistview = new newslistview();
 
+g_newslist.init();
