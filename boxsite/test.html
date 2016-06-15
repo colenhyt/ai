@@ -1,170 +1,71 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset='utf-8'>
-  <link href="dist/css/zui.css" rel="stylesheet">
-  <link href="static/css/cf640.css" rel="stylesheet">
-  <meta name="viewport" content="width=640, height=1236, target-densitydpi=device-dpi" />  
-		<title>cf</title>
-	</head>
-  <script src="dist/js/jquery-2.0.3.js"></script>
-  <script src="dist/js/zui.min.js"></script>
-  <script src="dist/js/json2.js"></script>
-  <script src="dist/js/ichart.1.2.min.js"></script>
 
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8" />
+<title>slider-2</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<link href="static/css/slider_2.css?v=112" rel="stylesheet" type="text/css">
 </head>
 <body>
-   <div id='abc' style='color:red'>abc</div>      
-    	</body>	
-  <script type="text/javascript">
-$("#abc").click(function(){
-  var div=$("#abc");
-  div.animate({fontSize:'3em'},"slow");
-  div.animate({left:'+=60px',top:'+=60px'},1000);
-  div.animate({fontSize:'1em'},"slow");
-});  
-
-carAni1();
-carAni2();
-carAni3();
-
-function carAni1(){
-
- var divName = "divcar1";
-var anis=[
-['+=240px','+=150px',3000,'icon_car1.png',"0px","138px"],
-['-=60px','+=60px',1000,'icon_car1_2.png'],
-]
-
- var tag = document.getElementById(divName);
- if (!tag){
-  var img=document.createElement("img");
-  img.id=divName;
-  img.style.position="absolute";
-  document.body.appendChild(img);   
- }
- 
- var div=$("#"+divName);
- div.fadeIn("fast");
- div.attr("src","static/img/"+anis[0][3]);
- div.css("left",anis[0][4]);
- div.css("top",anis[0][5]);
- 
-  var ani= anis[0];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   var div=$("#"+divName);
-   div.attr("src","static/img/"+anis[1][3]);  
-  });
+  <section>
+    <!-- view container -->
+    <ul id="pages" class="view-container" style="">
+      <!-- pageA container -->
+      <li id="pageA" class="page-container"style="display:block;"> 
+        <header>HEADER A</header>
+        <b id="btnNext1" class="page-num">A</b> 
+      </li>
+      <!-- pageB container -->
+      <li id="pageB" class="page-container" style="display:none;"> <header>HEADER B</header> <b id="btnNext2" class="page-num">B</b></li>
+      <!-- pageC container -->
+      <li id="pageC" class="page-container" style="display:none;"> <header>HEADER C</header> <b id="pageBack" class="page-num">C</b></li>
+    </ul>
   
-  ani= anis[1];
-  div.animate({left:ani[0],top:ani[1]},ani[2]);
+  </section>
   
-  div.fadeOut("slow",function(){
-   carAni1();
-  });
+  <footer>FOOTER</footer>
 
-}
+  <!-- framework -->
+  <script type="text/javascript" src="static/js/frame.min.js"></script>
+  <script>
+        var btnNext1 = $('#btnNext1');
+        var btnNext2 = $('#btnNext2');
+        var pageBack = $('#pageBack');
+        var pages = $('#pages');
+        var pageA = $('#pageA');
+        var pageB = $('#pageB');
+        var pageC = $('#pageC');
 
+        btnNext1.click(function(){
+            pageB.css({'display' : 'block'});
+            pageB.addClass('animatestart sliderightin');            
 
-function carAni2(){
+            setTimeout(function(){ //动画结束时重置class
+              pageA.css({'display' : 'none'});  
+              pageB.removeClass('animatestart sliderightin');
+            }, 350);          
+        });
 
- var divName = "divcar2";
-var anis=[
-['-=200px','+=150px',1500,'icon_car2.png',"325px","43px"],
-['+=60px','+=60px',1000,'icon_car2_2.png'],
-['-=10px','+=10px',500,'icon_car2.png'],
-['+=160px','+=160px',2000,'icon_car2_2.png'],
-['-=160px','+=160px',2500,'icon_car2.png'],
-]
+        btnNext2.click(function(){
+            pageC.css({'display' : 'block'});
+            pageC.addClass('animatestart sliderightin');            
 
- var tag = document.getElementById(divName);
- if (!tag){
-  var img=document.createElement("img");
-  img.id=divName;
-  img.style.position="absolute";
-  document.body.appendChild(img);   
- }
- 
- var div=$("#"+divName);
- div.fadeIn("fast");
- div.attr("src","static/img/"+anis[0][3]);
- div.css("left",anis[0][4]);
- div.css("top",anis[0][5]);
- 
-  var ani= anis[0];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   var div=$("#"+divName);
-   div.attr("src","static/img/"+anis[1][3]);  
-  });
+            setTimeout(function(){ //动画结束时重置class
+              pageB.css({'display' : 'none'}); 
+              pageC.removeClass('animatestart sliderightin');
+            }, 350);   
+        });
+        pageBack.click(function(){
+            pageB.css({'display' : 'block'});
+            pageC.addClass('animatestart sliderightout');
 
-  ani= anis[1];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   var div=$("#"+divName);
-   div.attr("src","static/img/"+anis[2][3]);  
-  });
-
-  ani= anis[2];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   var div=$("#"+divName);
-   div.attr("src","static/img/"+anis[3][3]);  
-  });
-  
-
-  ani= anis[3];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   var div=$("#"+divName);
-   div.attr("src","static/img/"+anis[4][3]);  
-  });  
-  
-  ani= anis[4];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   carAni2();
-  });
-
-}
-
-
-function carAni3(){
-
- var divName = "divcar3";
-var anis=[
-['-=200px','+=150px',1500,'icon_car3.png',"625px","243px"],
-['+=60px','+=60px',1000,'icon_car3_2.png'],
-['-=160px','+=160px',2000,'icon_car3.png'],
-]
-
- var tag = document.getElementById(divName);
- if (!tag){
-  var img=document.createElement("img");
-  img.id=divName;
-  img.style.position="absolute";
-  document.body.appendChild(img);   
- }
- 
- var div=$("#"+divName);
- div.fadeIn("fast");
- div.attr("src","static/img/"+anis[0][3]);
- div.css("left",anis[0][4]);
- div.css("top",anis[0][5]);
- 
-  var ani= anis[0];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   var div=$("#"+divName);
-   div.attr("src","static/img/"+anis[1][3]);  
-  });
-
-  ani= anis[1];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   var div=$("#"+divName);
-   div.attr("src","static/img/"+anis[2][3]);  
-  });
-
-  
-  ani= anis[2];
-  div.animate({left:ani[0],top:ani[1]},ani[2],function(){
-   carAni3();
-  });
-
-}
-  </script>    	
+            setTimeout(function(){ //动画结束时重置class
+              pageC.css('display', 'none');
+              pageC.removeClass('animatestart sliderightout');
+            }, 350);
+        });
+  </script>
+</body>
 </html>
