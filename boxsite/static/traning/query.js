@@ -42,8 +42,8 @@ function queryUrlsRst(data)
 	  var color = "#DDDDDD";
 	  if (i%2==0)
 	    color = "white";
-	 content += "<tr style='font-size:25px;padding-top:5px;background:"+color+"'>"
-	 content += "<td width=500><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
+	 content += "<tr style='font-size:30px;padding-top:5px;background:"+color+"'>"
+	 content += "<td width=1000><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
 	 content += "<td>"
 	 if (data[i].cat==1)
 	  content += "<input type='radio' name='url_"+data[i].id+"' value='1' checked>热点 ";
@@ -52,9 +52,9 @@ function queryUrlsRst(data)
 	content += "&nbsp;&nbsp;";
 	
 	 if (data[i].cat==2)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='2' checked>业界";
+	 content += "<input type='radio' name='url_"+data[i].id+"' value='2' checked>市场";
 	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='2'>业界";
+	 content += "<input type='radio' name='url_"+data[i].id+"' value='2'>市场";
 	content += "&nbsp;&nbsp;";
 
 	 if (data[i].cat==3)
@@ -64,16 +64,23 @@ function queryUrlsRst(data)
 	content += "&nbsp;&nbsp;";
 
 	 if (data[i].cat==4)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='4' checked>创投";
+	 content += "<input type='radio' name='url_"+data[i].id+"' value='4' checked>公司";
 	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='4'>创投";
+	 content += "<input type='radio' name='url_"+data[i].id+"' value='4'>公司";
 	content += "&nbsp;&nbsp;";
 
 	 if (data[i].cat==5)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='5' checked>八卦";
+	 content += "<input type='radio' name='url_"+data[i].id+"' value='5' checked>人物";
 	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='5'>八卦";
+	 content += "<input type='radio' name='url_"+data[i].id+"' value='5'>人物";
 	content += "&nbsp;&nbsp;";
+		
+	 if (data[i].cat==6)
+	 content += "<input type='radio' name='url_"+data[i].id+"' value='6' checked>创投";
+	 else
+	 content += "<input type='radio' name='url_"+data[i].id+"' value='6'>创投";
+	content += "&nbsp;&nbsp;";
+
 	 content += "</td>"
 	 content += "</tr>"
 	}

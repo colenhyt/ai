@@ -88,13 +88,14 @@ var data = $.ajax({type:"post",url:"/boxsite/show_wps.do",data:dataParam,async:f
 var obj = cfeval(data.responseText);
  var content = ""
    content += "         <thead><tr style='background:#128171;color:#ffffff;font-size:20px'>"
-  content += "        <td>公众名称</td>"
-  content += "        <td>公众号</td>"
-  content += "        <td>搜狗查看</td>"
-  content += "        <td>操作</td>"
-  content += "        <td>阅读数</td>"
-  content += "        <td>排名估计</td>"
-  content += "        <td>查看</td>"
+  content += "        <td style='border:1px solid'>公众名称</td>"
+  content += "        <td style='border:1px solid'>公众号</td>"
+  content += "        <td style='border:1px solid'>搜狗最近文章</td>"
+  content += "        <td style='border:1px solid'>相似公众号</td>"
+  content += "        <td style='border:1px solid'>操作</td>"
+  content += "        <td style='border:1px solid'>阅读数</td>"
+  content += "        <td style='border:1px solid'>排名估计</td>"
+  content += "        <td style='border:1px solid'>查看</td>"
   content += "        </tr>"
   content += "        </thead>"
  for (var i=0;i<obj.length;i++)
@@ -102,6 +103,10 @@ var obj = cfeval(data.responseText);
    content += "<tr style='font-size:18px;border:2px solid' id='tr"+obj[i].wxhao+"'>"
   content += "<td><a href='http://www.5118.com/weixin/detail?name="+obj[i].wxname+"' target=_blank>"+obj[i].wxname+"</a></td> "
   content += "<td><a href='http://www.newrank.cn/public/info/detail.html?account="+obj[i].wxhao+"' target=_blank>"+obj[i].wxhao+"</a></td> "
+  if (obj[i].openid.length>0)
+  content += "<td><a href='http://weixin.sogou.com/gzh?openid="+obj[i].openid+"' target=_blank>最近文章</a></td>";
+  else
+  content += "<td></td>";
   content += "<td><a href='http://weixin.sogou.com/weixin?fr=sgsearch&type=1&query="+obj[i].wxname+"' target=_blank>"+obj[i].wxhao+"</a></td>";
   content += "<td><input type='button' value='删除' onclick=\"changePublic('"+obj[i].wxhao+"',-1)\"></td> "
   content += "<td>"+obj[i].viewcount+"</td> "
