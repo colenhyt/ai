@@ -3,20 +3,28 @@
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
 String catstr = request.getParameter("cat");
-String startsecstr = request.getParameter("startsec");
-int catid = 0;
-if (catstr!=null){
- catid = Integer.valueOf(catstr);
-}
+String startsecstr = request.getParameter("starttime");
+
 int startsec = 0;
 if (startsecstr!=null){
  startsec = Integer.valueOf(startsecstr);
 }
 
+String itemstr = request.getParameter("item");
+int itemid = -1;
+if (itemstr!=null){
+ itemid = Integer.valueOf(itemstr);
+}
 PageManager.getInstance().init();
 
 String jsonstr = "";
- jsonstr = PageManager.getInstance().getCatNews(catid,startsec);
+int catid = -1;
+if (catstr!=null){
+ catid = Integer.valueOf(catstr);
+ jsonstr = PageManager.getInstance().getNewslist(catid,startsec);
+}else {
+ jsonstr = PageManager.getInstance().getNews(itemid);
+}
 
 response.getWriter().print(jsonstr);
 %>
