@@ -106,12 +106,12 @@ public class SitePageGetProcessor implements PageProcessor{
 					continue;
 				}
 				//优先下载已分类url:
-				if (webitemMap.containsKey(url)){
-					WebUrl item = webitemMap.get(url);
-					if (item.getCat()>0)
-						notDownloadurls.add(url);
-				}
-//				notDownloadurls.add(url);
+//				if (webitemMap.containsKey(url)){
+//					WebUrl item = webitemMap.get(url);
+//					if (item.getCat()>0)
+//						notDownloadurls.add(url);
+//				}
+				notDownloadurls.add(url);
 			}
 		}
 		if (notDownloadurls.size()>0){
@@ -131,20 +131,33 @@ public class SitePageGetProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
-		String url = "http://www.51cto.com/";
+		String url = "http://www.iheima.com/";
 		
 		Set<String> sites = new HashSet<String>();
-		sites.add(url);
+//		sites.add("http://www.tmtpost.com");
+//		sites.add("http://www.leiphone.com");
+//		sites.add("http://www.huxiu.com");
+//		sites.add("http://www.iheima.com/");
+//		sites.add("http://www.pintu360.com/");
+//		sites.add("http://www.ikanchai.com/");
+//		sites.add("http://www.iyiou.com/");
+//		sites.add("http://www.techweb.com.cn/");
+//		sites.add("http://www.ifanr.com/");
+//		sites.add("http://www.cyzone.cn/");
+//		sites.add("http://www.sootoo.com/");
 		
-		url = "http://www.tmtpost.com/1822225.html";
-		String rr = "http://www.tmtpost.com/[0-9]+.html.*";
+		url = "http://www.sootoo.com/content/664139.shtml";
+		String rr = "http://www.sootoo.com/content/[0-9]+.shtml";
 		boolean b = url.matches(rr);
 		String reg = URLStrHelper.getUrlRex(url);
-		System.out.println(reg);
+		System.out.println(b);
 		
 		for (String site:sites){
-			SitePageGetProcessor p1 = new SitePageGetProcessor(site,20);
-	        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
+			SitePageGetProcessor p1 = new SitePageGetProcessor(site,300);
+			MultiPageTask task = new MultiPageTask(site);
+			Thread t2=new Thread(task);
+			t2.start();
+//	        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
 		}
 		
 	}
@@ -201,20 +214,20 @@ public class SitePageGetProcessor implements PageProcessor{
 		}
 		
 		//找到合法url,并塞入下载链接:
-		if (queryCount<maxpagecount){
-			//找页内urls:
-			 List<String> links = page.getHtml().links().all();
-			 Set<String> newurls = new HashSet<String>();
-			 for (String url:links){
-				 if (url.toLowerCase().indexOf(domainName)<0) continue;
-				 if (allDownloadUrls.contains(url)) continue;
-				 
-				 newurls.add(url);
-			 }
-			 allDownloadUrls.addAll(newurls);
-			 requests.addAll(newurls);
-			 queryCount += newurls.size();
-		}
+//		if (queryCount<maxpagecount){
+//			//找页内urls:
+//			 List<String> links = page.getHtml().links().all();
+//			 Set<String> newurls = new HashSet<String>();
+//			 for (String url:links){
+//				 if (url.toLowerCase().indexOf(domainName)<0) continue;
+//				 if (allDownloadUrls.contains(url)) continue;
+//				 
+//				 newurls.add(url);
+//			 }
+//			 allDownloadUrls.addAll(newurls);
+//			 requests.addAll(newurls);
+//			 queryCount += newurls.size();
+//		}
 		
 		 FileUtil.writeFile(urlPath, JSON.toJSONString(allDownloadUrls));
 		 

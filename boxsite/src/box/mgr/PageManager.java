@@ -30,7 +30,8 @@ public class PageManager extends MgrBase{
 	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
-	private Map<String,List<TopItem>> viewItemsMap = new HashMap<String,List<TopItem>>();
+	private Map<String,List<TopItem>> viewListItemsMap = new HashMap<String,List<TopItem>>();
+	private Map<Integer,TopItem> viewItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
 	protected Logger  log = Logger.getLogger(getClass()); 
 	String pagesPath = "c:/boxsite/data/pages/";
@@ -40,7 +41,14 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		PageManager.getInstance().process();
+		String retstr = PageManager.getInstance().getNews(1702355117);
+		System.out.println(retstr);
+		
+		String filePath = "c:/boxsite/data/pages/cyzone.cn/-49602460.html";
+//		String pageContent = FileUtil.readFile(filePath);	
+//		String pp = PageContentGetter.getTitle(pageContent);
+//		System.out.println(pp);
+		//PageManager.getInstance().process();
 
 	}
 
@@ -62,12 +70,12 @@ public class PageManager extends MgrBase{
 		for (File folder:folders){
 			sitekeys.add(folder.getName());
 			String urlspath = (pagesPath+folder.getName()+"_urls.json");
-			Map<String,WebUrl> siteurls2 = getFileUrls(urlspath);
+			Map<String,WebUrl> siteurls2 = _getFileUrls(urlspath,folder.getName());
 			if (siteurls2!=null) {
 				allSiteUrlsMap.put(folder.getName(), siteurls2);
 			}
 			String savedPath = (pagesPath+folder.getName()+"_done_urls.json");
-			Set<String> siteurls3 = getFileUrls2(savedPath);
+			Set<String> siteurls3 = _getFileUrls2(savedPath);
 			if (siteurls3!=null) {
 				savedUrlsMap.put(folder.getName(), siteurls3);
 			}			
@@ -75,7 +83,7 @@ public class PageManager extends MgrBase{
 		
 		
 		//load view topitems:
-		viewItemsMap = new HashMap<String,List<TopItem>>();
+		viewListItemsMap = new HashMap<String,List<TopItem>>();
 		List<File> catfs = FileUtil.getFolders(itemPath);
 		for (File f:catfs){
 			List<File> subitemPaths = FileUtil.getFolders(f.getAbsolutePath());
@@ -92,15 +100,17 @@ public class PageManager extends MgrBase{
 							StringUtil.json2List(cc, items,TopItem.class);	
 					}
 					Collections.sort(items);
-					viewItemsMap.put(key, items);
+					for (TopItem item:items){
+						viewItemsMap.put(item.getId(), item);
+					}
+					viewListItemsMap.put(key, items);
 				}
 			}
 		}
 		
-		log.warn("aaa "+allSiteUrlsMap.toString());
 	}
 	
-	private Set<String> getFileUrls2(String filePath){
+	private Set<String> _getFileUrls2(String filePath){
 		File urlfile = new File(filePath);
 		if (!urlfile.exists()) return null;
 		
@@ -111,20 +121,30 @@ public class PageManager extends MgrBase{
 		return siteurls2;
 	}
 	
-	public String getCatNews(int catid,long startTime){
-		if (catid<=0)
+	public String getNews(int itemid){
+		if (itemid<0)
+			return null;
+		
+		if (viewItemsMap.containsKey(itemid))
+			return JSON.toJSONString(viewItemsMap.get(itemid));
+		
+		return null;
+	}
+	
+	public String getNewslist(int catid,long startTime){
+		if (catid<0)
 			return null;
 		
 		//循环5天取有内容的当天topitem:
 		List<TopItem> citems = new ArrayList<TopItem>();
-		boolean get = findLatestItems(catid,startTime,citems);
+		boolean get = _findLatestItems(catid,startTime,citems);
 		if (!get)
 			return JSON.toJSONString(citems);
 		
 		List<TopItem> retitems = new ArrayList<TopItem>();
 		
-		//每次返回30条:
-		int perCount = 10;
+		//每次返回5条:
+		int perCount = 5;
 		if (startTime>0){			//最新
 			int starti = 0;
 			int ii = 0;
@@ -144,7 +164,7 @@ public class PageManager extends MgrBase{
 			if (retitems.size()<perCount){
 				startTime += 3600*24*1000;
 				List<TopItem> citems2 = new ArrayList<TopItem>();
-				findLatestItems(catid,startTime,citems2);
+				_findLatestItems(catid,startTime,citems2);
 				int pcount = perCount - retitems.size();
 				int maxi = citems2.size()>pcount?pcount:citems2.size()-1;
 				for (int i=0;i<maxi;i++){
@@ -177,7 +197,7 @@ public class PageManager extends MgrBase{
 			if (startTime<0&&retitems.size()<perCount){
 				startTime -= 3600*24*1000;
 				List<TopItem> citems2 = new ArrayList<TopItem>();
-				findLatestItems(catid,startTime,citems2);
+				_findLatestItems(catid,startTime,citems2);
 				int pcount = perCount - retitems.size();
 				int maxi = citems2.size()>pcount?pcount:citems2.size()-1;
 				for (int i=maxi;i>=0;i--){
@@ -186,7 +206,9 @@ public class PageManager extends MgrBase{
 			}
 		}
 		
-		return JSON.toJSONString(retitems);
+		String newstr = JSON.toJSONString(retitems);
+		String retstr = "{'cat':"+catid+",'news':"+newstr+",'startTime':"+startTime+"}";
+		return retstr;
 	}
 	
 	public String getSiteNotTrainingUrls(String sitekey,boolean isAll){
@@ -219,14 +241,21 @@ public class PageManager extends MgrBase{
 				String pageContent = FileUtil.readFile(filePath);
 				//获取正文:
 				String content = PageContentGetter.getContent(pageContent);
-				if (content==null){
+				if (content==null||content.trim().length()<=0){
 					log.warn("could not get content "+filePath);
+					continue;
+				}
+				//获取标题:
+				String title = PageContentGetter.getTitle(pageContent);
+				if (title==null||title.trim().length()<=0){
+					log.warn("could not get title: "+filePath);
 					continue;
 				}
 				TopItem titem = new TopItem();
 				titem.setUrl(url);
 				titem.setId(url.hashCode());
 				titem.setContent(content);
+				titem.setCtitle(title);
 				//尚未分类，即可分类:
 				if (item.getCat()<=0) {
 //					int catid = newsClassifier.testClassify(titem);
@@ -282,15 +311,15 @@ public class PageManager extends MgrBase{
 		for (int catid:mapitems.keySet()){
 			c.setTime(currDate);
 			List<TopItem> citems = mapitems.get(catid);
-			String key = keyPath(c.getTime(),catid);
+			String key = _keyPath(c.getTime(),catid);
 			//放入viewItemMap内存:
-			List<TopItem> vitems = viewItemsMap.get(key);
+			List<TopItem> vitems = viewListItemsMap.get(key);
 			if (vitems==null){
 				vitems = new ArrayList<TopItem>();
 			}
 			vitems.addAll(citems);
 			Collections.sort(vitems);
-			viewItemsMap.put(key, vitems);
+			viewListItemsMap.put(key, vitems);
 			
 			//topitem 落地
 			String datePath = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);
@@ -313,14 +342,17 @@ public class PageManager extends MgrBase{
 	}
 	
 	//发现有内容的最新的一个目录
-	private boolean findLatestItems(int catid,long currTime,List<TopItem> items){
+	private boolean _findLatestItems(int catid,long currTime,List<TopItem> items){
 		//当天,往前5天或者往后5天
-		long findTime = Math.abs(currTime);
-		String key = keyPath(new Date(findTime),catid);
-		if (!viewItemsMap.containsKey(key)){
+		long currT = currTime;
+		if (currT==0)
+			currT = System.currentTimeMillis();
+		long findTime = Math.abs(currT);
+		String key = _keyPath(new Date(findTime),catid);
+		if (!viewListItemsMap.containsKey(key)){
 			Calendar c = Calendar.getInstance();
 			long dateSec = 60*60*24*1000;
-			for (int i=0;i<5;i++){
+			for (int i=1;i<6;i++){
 				long du = dateSec*i;
 				long dtime = findTime - du;
 				if (currTime>0)
@@ -329,14 +361,15 @@ public class PageManager extends MgrBase{
 				if (dtime>System.currentTimeMillis()) break;
 				
 				c.setTimeInMillis(dtime);
-				key = keyPath(c.getTime(),catid);
-				if (viewItemsMap.containsKey(key)){
+				key = _keyPath(c.getTime(),catid);
+				if (viewListItemsMap.containsKey(key)){
 					break;
 				}
 			}
 		}
-		if (viewItemsMap.containsKey(key)){
-			items = viewItemsMap.get(key);
+		if (viewListItemsMap.containsKey(key)){
+			List<TopItem> sitems = viewListItemsMap.get(key);
+			items.addAll(sitems);
 			return true;
 		}
 		return false;
@@ -379,7 +412,7 @@ public class PageManager extends MgrBase{
 		return JSON.toJSONString(sitekeys);
 	}
 	
-	private Map<String,WebUrl> getFileUrls(String filePath){
+	private Map<String,WebUrl> _getFileUrls(String filePath,String sitekey){
 		File urlfile = new File(filePath);
 		if (!urlfile.exists()) return null;
 		
@@ -389,12 +422,16 @@ public class PageManager extends MgrBase{
 		for (JSONObject json:urls.values()){
 			WebUrl item = JSON.parseObject(json.toJSONString(), WebUrl.class);
 			if (item==null||item.getText()==null||item.getText().trim().length()<=0) continue;
+			String ppath = pagesPath + sitekey + "/"+ item.getUrl().hashCode()+".html";
+			File ff = new File(ppath);
+			if (!ff.exists()) continue;
+			
 			siteurls2.put(item.getUrl(),item);
 		}		
 		return siteurls2;
 	}
 
-	private String keyPath(Date currDate,int catid){
+	private String _keyPath(Date currDate,int catid){
 		Calendar c = Calendar.getInstance();
 		c.setTime(currDate);
 		String datePath = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);

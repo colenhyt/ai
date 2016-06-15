@@ -28,7 +28,28 @@ public class TopItem implements Comparable{
 	private int id;
 	private String sitekey;
 	private long contentTime;
-	
+	private String ctitle;
+	public String getCtitle() {
+		return ctitle;
+	}
+	public void setCtitle(String ctitle) {
+		this.ctitle = ctitle;
+	}
+	public int getLike() {
+		return like;
+	}
+	public void setLike(int like) {
+		this.like = like;
+	}
+	public String getShortImg() {
+		return shortImg;
+	}
+	public void setShortImg(String shortImg) {
+		this.shortImg = shortImg;
+	}
+	private int like;
+	private String shortImg;
+
 	public long getContentTime() {
 		return contentTime;
 	}
