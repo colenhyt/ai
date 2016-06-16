@@ -6,17 +6,14 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.NaiveBayesTrainer;
-import cc.mallet.pipe.CharSequence2GBKTokenSequence;
 import cc.mallet.pipe.FeatureSequence2FeatureVector;
 import cc.mallet.pipe.Input2CharSequence;
 import cc.mallet.pipe.Pipe;
@@ -59,27 +56,28 @@ public class NewsClassifier {
 	
 	public void trainingClassifiers(){
 		//搬移已分类page到training path:
-		String path = "data/pages/";
-		List<File> files = FileUtil.getFiles(path);
-		for (File f:files){
-			if (f.getName().indexOf(".json")<0)continue;
-			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-			String content = FileUtil.readFile(f);
-			if (content!=null&&content.trim().length()>0){
-				Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
-				for (String url:urls.keySet()){
-					JSONObject json = urls.get(url);
-					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-					if (item.getCat()<=0) continue;
-					String fileName = item.getUrl().hashCode()+".html";
-					String fileP = path+sitekey+"/"+fileName;
-					File ff = new File(fileP);
-					if (!ff.exists()) continue;
-					String pageC = FileUtil.readFile(fileP);
-					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+fileName,pageC);
-				}
-			}
-		}
+//		String path = "data/pages/";
+//		List<File> files = FileUtil.getFiles(path);
+//		for (File f:files){
+//			if (f.getName().indexOf(".json")<0)continue;
+//			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
+//			String content = FileUtil.readFile(f);
+//			if (content!=null&&content.trim().length()>0){
+//				Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
+//				for (String url:urls.keySet()){
+//					JSONObject json = urls.get(url);
+//					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
+//					if (item.getCat()<=0) continue;
+//					String fileName = item.getUrl().hashCode()+".html";
+//					String fileP = path+sitekey+"/"+fileName;
+//					File ff = new File(fileP);
+//					if (!ff.exists()) continue;
+//					String pageC = FileUtil.readFile(fileP);
+//					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+fileName,pageC);
+//				}
+//			}
+//		}
+		
 		//copy cat url page to training path:
 //		String fileName = url.getUrl().hashCode()+".html";
 //		String fileP = path+sitekey+"/"+fileName;
@@ -90,7 +88,7 @@ public class NewsClassifier {
 		// and turn them into {data = FeatureVector, target = Label}
 		Pipe instancePipe = new SerialPipes (new Pipe[] {
 			new Target2Label (),							  // Target String -> class label
-			new Input2CharSequence ("gb2312"),				  // Data File -> String containing contents
+			new Input2CharSequence (),				  // Data File -> String containing contents
 			//new CharSubsequence (CharSubsequence.SKIP_HEADER), // Remove UseNet or email header
 			new CharSequence2GBKTokenSequence (),  // Data String -> TokenSequence
 			new TokenSequenceLowercase (),		  // TokenSequence words lowercased
