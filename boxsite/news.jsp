@@ -4,6 +4,7 @@
 <%
 String catstr = request.getParameter("cat");
 String startsecstr = request.getParameter("starttime");
+String typestr = request.getParameter("type");
 
 long startsec = 0;
 if (startsecstr!=null){
@@ -19,9 +20,12 @@ PageManager.getInstance().init();
 
 String jsonstr = "";
 int catid = -1;
-if (catstr!=null){
+if (catstr != null){
  catid = Integer.valueOf(catstr);
- jsonstr = PageManager.getInstance().getNewslist(catid,startsec);
+ if (typestr==null)
+  jsonstr = PageManager.getInstance().getNewslist(catid,startsec);
+ else if (typestr.equals("2"))
+  jsonstr = PageManager.getInstance().getNewsCount(catid,startsec);
 }else {
  jsonstr = PageManager.getInstance().getNews(itemid);
 }
