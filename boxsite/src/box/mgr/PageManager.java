@@ -131,6 +131,12 @@ public class PageManager extends MgrBase{
 		return null;
 	}
 	
+	public String getNewsCount(int catid,long startTime){
+	  int newsCount = 0;
+	  
+	  return String.valueOf(newsCount);
+	}
+	
 	public String getNewslist(int catid,long startTime){
 		if (catid<0)
 			return null;
