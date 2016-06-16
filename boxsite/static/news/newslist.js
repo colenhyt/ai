@@ -17,6 +17,7 @@ var g_newscats = [
 [6,'创投'],
 ];
 
+
 var g_sitekeys = {
 "huxiu.com":"虎嗅",
 "iwacai.com":"爱挖柴",
@@ -25,16 +26,41 @@ var g_sitekeys = {
 
 function moveDirection(startX,startY,endX,endY){
 	//阀值:
-  var validLen = 50;
-  var invalidLen = 10;
-  if (startY-endY>validLen&&Math.abs(endX-startX)<invalidLen)
+  var validLen = 80;
+  var invalidLen = 50;
+  if (endY-startY>validLen&&Math.abs(endX-startX)<invalidLen)
   	return 0;		//up;
-  else if (endY-startY>validLen&&Math.abs(endX-startX)<invalidLen)
+  else if (startY-endY>validLen&&Math.abs(endX-startX)<invalidLen)
   	return 1;		//down;
   else if (startX-endX>validLen&&Math.abs(endY-startY)<invalidLen)
   	return 2;		//left;
  else if (endX-startX>validLen&&Math.abs(endY-startY)<invalidLen)
   	return 3;		//right;
+}
+
+user = function(options){
+
+}
+
+user.prototype = {
+	userdata:{},
+	login:function(){
+	  var sessionid = 0;
+	  var userdata = store.get("newsuser");
+	  if (userdata!=null){
+	    sessionid = userdata.sessionid;
+	  };
+	  
+	var dataParam = "sessionid="+sessionid;
+	try    {
+		$.ajax({type:"post",url:"/boxsite/user.jsp",data:dataParam,success:function(data){
+		var jsonstr = cfeval(data);
+		g_user.userdata = jsonstr;
+		store.set("newsuser",jsonstr);
+		}});
+	}   catch  (e)   {
+	} 	  
+	},
 }
 
 newslist = function(options){
@@ -196,6 +222,9 @@ newslistview.prototype = {
     	//alert(item.content);
     },    
 }
+
+var g_user = new user();
+g_user.login();
 
 var g_newslist = new newslist();
 

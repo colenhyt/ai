@@ -24,7 +24,7 @@ if (catstr != null){
  catid = Integer.valueOf(catstr);
  if (typestr==null)
   jsonstr = PageManager.getInstance().getNewslist(catid,startsec);
- else if (typestr.equals("2"))
+ else
   jsonstr = PageManager.getInstance().getNewsCount(catid,startsec);
 }else {
  jsonstr = PageManager.getInstance().getNews(itemid);

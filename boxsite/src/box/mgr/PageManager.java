@@ -13,15 +13,15 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import box.site.PageContentGetter;
-import box.site.classify.NewsClassifier;
-import box.site.model.TopItem;
-import box.site.model.WebUrl;
-import cn.hd.util.StringUtil;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import box.site.PageContentGetter;
+import box.site.classify.NewsClassifier;
+import box.site.model.TopItem;
+import box.site.model.User;
+import box.site.model.WebUrl;
+import cn.hd.util.StringUtil;
 import es.util.FileUtil;
 
 public class PageManager extends MgrBase{
@@ -33,10 +33,13 @@ public class PageManager extends MgrBase{
 	private Map<String,List<TopItem>> viewListItemsMap = new HashMap<String,List<TopItem>>();
 	private Map<Integer,TopItem> viewItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
+	private Map<Long, User>   userMap = new HashMap<Long,User>();
 	protected Logger  log = Logger.getLogger(getClass()); 
-	String pagesPath = "c:/boxsite/data/pages/";
-	String traniningpath = "c:/boxsite/data/training/";
-	String itemPath = "c:/boxsite/data/items/";
+	String rootPath = "d:/boxsite/data/";
+	String userFilePath = rootPath+"users.json";
+	String pagesPath = "d:/boxsite/data/pages/";
+	String traniningpath = "d:/boxsite/data/training/";
+	String itemPath = "d:/boxsite/data/items/";
 	private boolean inited = false;
 
 	public static void main(String[] args) {
@@ -80,7 +83,6 @@ public class PageManager extends MgrBase{
 				savedUrlsMap.put(folder.getName(), siteurls3);
 			}			
 		}
-		
 		
 		//load view topitems:
 		viewListItemsMap = new HashMap<String,List<TopItem>>();
@@ -415,10 +417,67 @@ public class PageManager extends MgrBase{
 		File urlfile = new File(pagesPath+sitekey+"_urls.json");
 		FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));
 		
-		
 		return "";
 	}
 
+	//获取收藏列表:
+	public String getFavos(long clientSessionid){
+		User user = userMap.get(clientSessionid);
+		if (user!=null){
+			String itemstr = user.getFavos();
+			List<TopItem> items = new ArrayList<TopItem>();
+			String[] itemids = itemstr.split(",");
+			for (String itemidstr:itemids){
+				int itemid = Integer.valueOf(itemidstr);
+				TopItem item = viewItemsMap.get(itemid);
+				items.add(item);
+			}
+			return JSON.toJSONString(items);
+		}
+		return null;
+	}
+	
+	//收藏文章
+	public String addFavo(long clientSessionid,int itemid){
+		User user = userMap.get(clientSessionid);
+		if (user!=null){
+			String itemstr = user.getFavos();
+			if (itemstr==null)
+				itemstr = String.valueOf(itemid);
+			else
+				itemstr += ","+itemid;
+		}
+		return null;
+	}
+	
+	//点赞文章
+	public String addLike(long clientSessionid,int itemid){
+		TopItem item = viewItemsMap.get(itemid);
+		if (item!=null){
+			item.setLike(item.getLike()+1);
+		}
+		//???持久化 itemMap:
+		
+		return null;
+	}
+	
+	//user登录
+	public String login(long clientSessionid){
+		User user =  new User();
+		//new user
+		if (clientSessionid<=0){
+			user.setSessionid(System.currentTimeMillis());
+			userMap.put(user.getSessionid(),user);			
+			FileUtil.writeFile(userFilePath,JSON.toJSONString(userMap));			
+		}else {
+			User user2 = userMap.get(clientSessionid);
+			if (user2!=null)
+				user.setSessionid(user2.getSessionid());
+		}
+				
+		return JSON.toJSONString(user);
+	}
+	
 	public String getSitekeys(){
 		List<String> sitekeys = new ArrayList<String>();
 		List<File> folders = FileUtil.getFolders(pagesPath);
