@@ -1175,6 +1175,15 @@ public class HTMLInfoSupplier {
         return tags;
 	}
 	
+	public String getTitleContent(){
+		List list = totalJerio.findAllStartTags("title");
+		if (list.size()>0){
+			StartTag tag = (StartTag)list.get(0);
+			return tag.getElement().getContentText();
+		}
+		return null;
+	}
+	
 	public Element getElementByOnePropAndKey(String tagName,String propName,String propValue,String key){
 	        List list = totalJerio.findAllStartTags(tagName);
 	        for (Iterator it=list.iterator();it.hasNext();) {
