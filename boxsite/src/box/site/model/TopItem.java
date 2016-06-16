@@ -29,6 +29,13 @@ public class TopItem implements Comparable{
 	private String sitekey;
 	private long contentTime;
 	private String ctitle;
+	private String htmlContent;
+	public String getHtmlContent() {
+		return htmlContent;
+	}
+	public void setHtmlContent(String htmlContent) {
+		this.htmlContent = htmlContent;
+	}
 	public String getCtitle() {
 		return ctitle;
 	}

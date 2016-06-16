@@ -40,14 +40,14 @@ public class PageManager extends MgrBase{
 	private boolean inited = false;
 
 	public static void main(String[] args) {
-		PageManager.getInstance().init();
-		String retstr = PageManager.getInstance().getNews(1702355117);
-		System.out.println(retstr);
+//		PageManager.getInstance().init();
+//		String retstr = PageManager.getInstance().getNews(664000350);
+//		System.out.println(retstr);
 		
-		String filePath = "c:/boxsite/data/pages/cyzone.cn/-49602460.html";
-//		String pageContent = FileUtil.readFile(filePath);	
-//		String pp = PageContentGetter.getTitle(pageContent);
-//		System.out.println(pp);
+		String filePath = "c:/boxsite/data/pages/ikanchai.com/-62796559.html";
+		String pageContent = FileUtil.readFile(filePath);	
+		List<String> pp = PageContentGetter.getHtmlContent(pageContent);
+		System.out.println(pp);
 		//PageManager.getInstance().process();
 
 	}
@@ -240,8 +240,8 @@ public class PageManager extends MgrBase{
 				String filePath = pagesPath + sitekey + "/"+ url.hashCode()+".html";
 				String pageContent = FileUtil.readFile(filePath);
 				//获取正文:
-				String content = PageContentGetter.getContent(pageContent);
-				if (content==null||content.trim().length()<=0){
+				List<String> contents = PageContentGetter.getHtmlContent(pageContent);
+				if (contents==null||contents.size()<=0){
 					log.warn("could not get content "+filePath);
 					continue;
 				}
@@ -254,7 +254,8 @@ public class PageManager extends MgrBase{
 				TopItem titem = new TopItem();
 				titem.setUrl(url);
 				titem.setId(url.hashCode());
-				titem.setContent(content);
+				titem.setContent(contents.get(0));
+				titem.setHtmlContent(contents.get(1));
 				titem.setCtitle(title);
 				//尚未分类，即可分类:
 				if (item.getCat()<=0) {

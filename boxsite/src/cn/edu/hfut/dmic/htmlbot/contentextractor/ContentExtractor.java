@@ -172,6 +172,15 @@ public class ContentExtractor {
         threshold = computeThreshold();
     }
 
+    public String getText() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tNodeList.size(); i++) {
+            TextNode tNode = tNodeList.get(i);
+            sb.append(tNode.text().trim() + "\n");
+        }
+        return sb.toString();
+    }
+    
     public String getContent() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tNodeList.size(); i++) {
