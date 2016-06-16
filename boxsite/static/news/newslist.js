@@ -56,6 +56,9 @@ newslist.prototype = {
    var tag = document.getElementById("nav");
    tag.innerHTML = content;
    
+   var d = new Date();
+   g_lastqueryup[g_currcat] = d.getTime();
+   
    var obj = document.getElementById('wrapper');
 	obj.addEventListener('touchstart', function(event) {
 	     // 如果这个元素的位置内只有一个手指的话
@@ -138,17 +141,15 @@ newslist.prototype = {
   },
   
   getcurrlist: function () {
-   var d = new Date();
-   g_newslist.getlist(g_currcat,d.getTime());
+   g_newslist.getlist(g_currcat,g_lastqueryup[g_currcat]);
   },  
  
   getnewscount: function () {
-    var d = new Date();
-	var dataParam = "type=2&cat="+g_currcat+"&starttime="+d.getTime();
+	var dataParam = "type=2&cat="+g_currcat+"&starttime="+g_lastqueryup[g_currcat];
 	try    {
 		$.ajax({type:"post",url:"/boxsite/news.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
-		g_newslistview.viewitem(jsonstr);
+		var count = parseInt(jsonstr);
 		}});
 	}   catch  (e)   {
 	}   

@@ -133,19 +133,19 @@ public class PageManager extends MgrBase{
 	
 	public String getNewsCount(int catid,long startTime){
 	  int newsCount = 0;
+	  List<TopItem> retitems = _findNewsitems(catid,startTime);
+	  if (retitems!=null)
+		  newsCount = retitems.size();
 	  
 	  return String.valueOf(newsCount);
 	}
 	
-	public String getNewslist(int catid,long startTime){
-		if (catid<0)
-			return null;
-		
+	private List<TopItem> _findNewsitems(int catid,long startTime){
 		//循环5天取有内容的当天topitem:
 		List<TopItem> citems = new ArrayList<TopItem>();
-		boolean get = _findLatestItems(catid,startTime,citems);
+		boolean get = __findLatestItems(catid,startTime,citems);
 		if (!get)
-			return JSON.toJSONString(citems);
+			return citems;
 		
 		List<TopItem> retitems = new ArrayList<TopItem>();
 		
@@ -170,7 +170,7 @@ public class PageManager extends MgrBase{
 			if (retitems.size()<perCount){
 				startTime += 3600*24*1000;
 				List<TopItem> citems2 = new ArrayList<TopItem>();
-				_findLatestItems(catid,startTime,citems2);
+				__findLatestItems(catid,startTime,citems2);
 				int pcount = perCount - retitems.size();
 				int maxi = citems2.size()>pcount?pcount:citems2.size()-1;
 				for (int i=0;i<maxi;i++){
@@ -203,14 +203,23 @@ public class PageManager extends MgrBase{
 			if (startTime<0&&retitems.size()<perCount){
 				startTime -= 3600*24*1000;
 				List<TopItem> citems2 = new ArrayList<TopItem>();
-				_findLatestItems(catid,startTime,citems2);
+				__findLatestItems(catid,startTime,citems2);
 				int pcount = perCount - retitems.size();
 				int maxi = citems2.size()>pcount?pcount:citems2.size()-1;
 				for (int i=maxi;i>=0;i--){
 					retitems.add(citems2.get(i));
 				}				
 			}
-		}
+		}		
+		
+		return retitems;
+	}
+	
+	public String getNewslist(int catid,long startTime){
+		if (catid<0)
+			return null;
+		
+		List<TopItem> retitems = _findNewsitems(catid,startTime);
 		
 		String newstr = JSON.toJSONString(retitems);
 		String retstr = "{'cat':"+catid+",'news':"+newstr+",'startTime':"+startTime+"}";
@@ -349,7 +358,7 @@ public class PageManager extends MgrBase{
 	}
 	
 	//发现有内容的最新的一个目录
-	private boolean _findLatestItems(int catid,long currTime,List<TopItem> items){
+	private boolean __findLatestItems(int catid,long currTime,List<TopItem> items){
 		//当天,往前5天或者往后5天
 		long currT = currTime;
 		if (currT==0)
