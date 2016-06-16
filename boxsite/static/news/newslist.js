@@ -2,9 +2,11 @@
 var g_currcat = 1;
 var g_lastqueryup = {};
 var g_lastquerydown = {};
-var g_movestart = 0;
-var g_moveend = 0;
-var g_move = false;
+var g_movestartx = 0;
+var g_moveendx = 0;
+var g_movestarty = 0;
+var g_moveendy = 0;
+var g_moveflag = false;
 
 var g_newscats = [
 [1,'热点'],
@@ -20,6 +22,20 @@ var g_sitekeys = {
 "iwacai.com":"爱挖柴",
 "iheima.com":"i黑马"
 };
+
+function moveDirection(startX,startY,endX,endY){
+	//阀值:
+  var validLen = 50;
+  var invalidLen = 10;
+  if (startY-endY>validLen&&Math.abs(endX-startX)<invalidLen)
+  	return 0;		//up;
+  else if (endY-startY>validLen&&Math.abs(endX-startX)<invalidLen)
+  	return 1;		//down;
+  else if (startX-endX>validLen&&Math.abs(endY-startY)<invalidLen)
+  	return 2;		//left;
+ else if (endX-startX>validLen&&Math.abs(endY-startY)<invalidLen)
+  	return 3;		//right;
+}
 
 newslist = function(options){
 }
@@ -45,37 +61,56 @@ newslist.prototype = {
 	     // 如果这个元素的位置内只有一个手指的话
 	    if (event.targetTouches.length == 1) {	        	        
 	　　　　 event.preventDefault();// 阻止浏览器默认事件，重要
-	     g_movestart = event.touches[0].clientX;
+	     g_movestartx = event.touches[0].clientX;
+	     g_movestarty = event.touches[0].clientY;
 	        }
 	}, false);   
 	obj.addEventListener('touchend', function(event) {
+		if (!g_moveflag) return;
+		
 	     // 如果这个元素的位置内只有一个手指的话
 	　　　　 event.preventDefault();// 阻止浏览器默认事件，重要
-	     g_moveend = event.changedTouches[0].clientX;
-	     var margin = (g_moveend-g_movestart);
-	     if (g_move==true){
-	       if (margin>0){
-	        g_newslist.getlist(g_currcat-1);
-	       }else if (margin<0){
+	     g_moveendx = event.changedTouches[0].clientX;
+	     g_moveendy = event.changedTouches[0].clientY;
+	       var moveDir = moveDirection(g_movestartx,g_moveendx,g_movestarty,g_moveendy);
+	       if (moveDir==2){
 	        g_newslist.getlist(g_currcat+1);
+	       }else if (moveDir==3){
+	        g_newslist.getlist(g_currcat-1);
 	       }
-	     }
 	       
-	     g_move = false;
+	     g_moveflag = false;
 	}, false);   
 	obj.addEventListener('touchmove', function(event) {
 	     // 如果这个元素的位置内只有一个手指的话
 	    if (event.targetTouches.length == 1) {
-	        
-	        
 	　　　　 event.preventDefault();// 阻止浏览器默认事件，重要 
 	        var touch = event.targetTouches[0];
-	        g_move = true;
-	        // 把元素放在手指所在的位置
-	       // obj.style.left = touch.pageX-50 + 'px';
-	        //obj.style.top = touch.pageY-50 + 'px';
+	        g_moveflag = true;
 	        }
 	}, false);
+	
+	obj.onmousedown = function(event){
+	 g_movestartx = event.clientX;
+	 g_movestarty = event.clientY;
+	};	
+	
+	obj.onmouseup = function(event){
+	 g_moveendx = event.clientX;
+	 g_moveendy = event.clientY;	
+	       var moveDir = moveDirection(g_movestartx,g_moveendx,g_movestarty,g_moveendy);
+	       if (moveDir==2){
+	        g_newslist.getlist(g_currcat+1);
+	       }else if (moveDir==3){
+	        g_newslist.getlist(g_currcat-1);
+	       }	 
+	 
+	 g_moveflag = false;
+	};	
+	
+	obj.onmousemove = function(event){
+	 g_moveflag = true;
+	};	
   },
   getlist: function (catid,starttime) {
     if (catid<=0||catid>6) return;
@@ -102,7 +137,23 @@ newslist.prototype = {
 	}   
   },
   
+  getcurrlist: function () {
+   var d = new Date();
+   g_newslist.getlist(g_currcat,d.getTime());
+  },  
  
+  getnewscount: function () {
+    var d = new Date();
+	var dataParam = "type=2&cat="+g_currcat+"&starttime="+d.getTime();
+	try    {
+		$.ajax({type:"post",url:"/boxsite/news.jsp",data:dataParam,success:function(data){
+		var jsonstr = cfeval(data);
+		g_newslistview.viewitem(jsonstr);
+		}});
+	}   catch  (e)   {
+	}   
+  },
+     
   getnews: function (itemid) {
 	var dataParam = "item="+itemid;
 	try    {
@@ -150,3 +201,5 @@ var g_newslist = new newslist();
 var g_newslistview = new newslistview();
 
 g_newslist.init();
+g_newslist.getcurrlist();
+g_newslist.getnewscount();
