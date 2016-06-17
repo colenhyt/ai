@@ -18,6 +18,7 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.PlainText;
+import box.mgr.ProcessManager;
 import box.site.model.WebUrl;
 import cn.hd.util.FileUtil;
 
@@ -31,6 +32,7 @@ import es.webref.model.PageRef;
 
 public class SitePageGetProcessor implements PageProcessor{
 	protected Logger  log = Logger.getLogger(getClass());
+	private MultiPageTask mainThread;
 	int queryCount;
 	public String startUrl;
 	String domainName;
@@ -44,7 +46,9 @@ public class SitePageGetProcessor implements PageProcessor{
 	private Site site;
 	int maxpagecount;
 	
-	public SitePageGetProcessor(String _startUrl,int _maxCount){
+	public SitePageGetProcessor(MultiPageTask task,String _startUrl,int _maxCount){
+		mainThread = task;
+		
 		maxpagecount = 50;
 		if (_maxCount>0)
 			maxpagecount = _maxCount;
@@ -133,33 +137,7 @@ public class SitePageGetProcessor implements PageProcessor{
 	public static void main(String[] args) {
 		String url = "http://www.iheima.com/";
 		
-		Set<String> sites = new HashSet<String>();
-//		sites.add("http://www.tmtpost.com");
-//		sites.add("http://www.leiphone.com");
-//		sites.add("http://www.huxiu.com");
-//		sites.add("http://www.iheima.com/");
-//		sites.add("http://www.pintu360.com/");
-//		sites.add("http://www.ikanchai.com/");
-//		sites.add("http://www.iyiou.com/");
-//		sites.add("http://www.techweb.com.cn/");
-//		sites.add("http://www.ifanr.com/");
-//		sites.add("http://www.cyzone.cn/");
-//		sites.add("http://www.sootoo.com/");
-		
-		url = "http://www.sootoo.com/content/664139.shtml";
-		String rr = "http://www.sootoo.com/content/[0-9]+.shtml";
-		boolean b = url.matches(rr);
-		String reg = URLStrHelper.getUrlRex(url);
-		System.out.println(b);
-		
-		for (String site:sites){
-			SitePageGetProcessor p1 = new SitePageGetProcessor(site,300);
-			MultiPageTask task = new MultiPageTask(site);
-			Thread t2=new Thread(task);
-			t2.start();
-//	        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
-		}
-		
+	
 	}
 
 	@Override
@@ -186,7 +164,8 @@ public class SitePageGetProcessor implements PageProcessor{
 		queryCount = files.size();
 		if (queryCount>=maxpagecount){
 			log.warn("页面下载完成，总共有页面 "+queryCount);
-			System.exit(0);
+			mainThread.finishCallback(domainName);
+			return;
 		}
 		
 		List<String> requests = new ArrayList<String>();

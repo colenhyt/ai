@@ -1,16 +1,20 @@
 package box.mgr;
 
 
+import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
+import box.site.model.WebUrl;
 import cn.hd.util.FileUtil;
 import cn.hd.util.RedisConfig;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 public class MgrBase extends java.util.TimerTask {
 	public static final String DATA_WEBSITE_DNA = "data_website_dna";
@@ -74,4 +78,23 @@ public class MgrBase extends java.util.TimerTask {
 		
 		java.util.Timer timer = new java.util.Timer(true);  
 		timer.schedule(this, 3000,3000);   		
+	}
+
+	protected Map<String,WebUrl> _getFileUrls(String filePath,String sitekey){
+		File urlfile = new File(filePath);
+		if (!urlfile.exists()) return null;
+		
+		String content = FileUtil.readFile(filePath);
+		Map<String,JSONObject> urls = (Map<String,JSONObject>)JSON.parse(content);
+		Map<String,WebUrl> siteurls2 = new HashMap<String,WebUrl>();
+		for (JSONObject json:urls.values()){
+			WebUrl item = JSON.parseObject(json.toJSONString(), WebUrl.class);
+			if (item==null||item.getText()==null||item.getText().trim().length()<=0) continue;
+			String ppath = pagesPath + sitekey + "/"+ item.getUrl().hashCode()+".html";
+			File ff = new File(ppath);
+			if (!ff.exists()) continue;
+			
+			siteurls2.put(item.getUrl(),item);
+		}		
+		return siteurls2;
 	}}

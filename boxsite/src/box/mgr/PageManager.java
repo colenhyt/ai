@@ -63,6 +63,11 @@ public class PageManager extends MgrBase{
 		List<File> folders = FileUtil.getFolders(pagesPath);
 		for (File folder:folders){
 			sitekeys.add(folder.getName());
+			String urlspath = (pagesPath+folder.getName()+"_urls.json");
+			Map<String,WebUrl> siteurls2 = _getFileUrls(urlspath,folder.getName());
+			if (siteurls2!=null) {
+				allSiteUrlsMap.put(folder.getName(), siteurls2);
+			}
 		}
 		
 		//load view topitems:

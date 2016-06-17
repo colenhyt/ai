@@ -29,6 +29,7 @@ public class ProcessManager extends MgrBase {
 	private boolean inited = false;
 	private boolean running = false;
 	private int runningSpiderCount = 0;
+	private int processStep = 0;
 	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
@@ -45,6 +46,7 @@ public class ProcessManager extends MgrBase {
 		if (inited) return;
 		
 		inited = true;	
+		running = true;
 		
 		List<File> folders = FileUtil.getFolders(pagesPath);
 		for (File folder:folders){
@@ -105,22 +107,16 @@ public class ProcessManager extends MgrBase {
 		runningSpiderCount--;
 		if (runningSpiderCount>0) return;
 		
-		//文章分类:
-		List<TopItem> newitems = processClassfiy();
-		//save:
-		Map<Integer,List<TopItem>> mapitems = processSaveItems(newitems);
-		//放入当前内存:
-		PageManager.getInstance().pushNewItems(mapitems);	
-		
+		processStep = 1;
+		Thread.currentThread().notifyAll();			
 	}
 	
-	public void process(){
-		init();
-		
+	public void processSpiders(){
+	
 		//spider:
 		Set<String> sites = new HashSet<String>();
 //		sites.add("http://www.tmtpost.com");
-//		sites.add("http://www.leiphone.com");
+		sites.add("http://www.leiphone.com");
 //		sites.add("http://www.huxiu.com");
 //		sites.add("http://www.iheima.com/");
 //		sites.add("http://www.pintu360.com/");
@@ -134,17 +130,42 @@ public class ProcessManager extends MgrBase {
 		
 		runningSpiderCount = sites.size();
 		for (String site:sites){
-			MultiPageTask task = new MultiPageTask(site);
+			MultiPageTask task = new MultiPageTask(this,site,20);
 			Thread t2=new Thread(task);
 			t2.start();
 		}
-		running = true;
 		
+	
 	}
 	
 	@Override
 	public void update(){
-		this.process();
+		//运转间隔
+		final int PROCESS_DURATION = 60 * 60 * 1000;		//1小时
+		
+		try {
+			while (running){
+				if (processStep==0){
+					this.processSpiders();
+					Thread.currentThread().wait();
+				}else if (processStep==1){
+					int a = 10;
+					a++;
+//					//文章分类:
+//					List<TopItem> newitems = processClassfiy();
+//					//save:
+//					Map<Integer,List<TopItem>> mapitems = processSaveItems(newitems);
+//					//放入当前内存:
+//					PageManager.getInstance().pushNewItems(mapitems);					
+				}
+				
+				Thread.sleep(PROCESS_DURATION);
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
+//		this.process();
 	}
 	
 	//获取正文，入库
@@ -223,25 +244,6 @@ public class ProcessManager extends MgrBase {
 
 	}
 
-	private Map<String,WebUrl> _getFileUrls(String filePath,String sitekey){
-			File urlfile = new File(filePath);
-			if (!urlfile.exists()) return null;
-			
-			String content = FileUtil.readFile(filePath);
-			Map<String,JSONObject> urls = (Map<String,JSONObject>)JSON.parse(content);
-			Map<String,WebUrl> siteurls2 = new HashMap<String,WebUrl>();
-			for (JSONObject json:urls.values()){
-				WebUrl item = JSON.parseObject(json.toJSONString(), WebUrl.class);
-				if (item==null||item.getText()==null||item.getText().trim().length()<=0) continue;
-				String ppath = pagesPath + sitekey + "/"+ item.getUrl().hashCode()+".html";
-				File ff = new File(ppath);
-				if (!ff.exists()) continue;
-				
-				siteurls2.put(item.getUrl(),item);
-			}		
-			return siteurls2;
-		}
-
 	private Set<String> _getFileUrls2(String filePath){
 		File urlfile = new File(filePath);
 		if (!urlfile.exists()) return null;
@@ -254,7 +256,9 @@ public class ProcessManager extends MgrBase {
 	}
 
 	public static void main(String[] args) {
-		ProcessManager.getInstance().process();
+		ProcessManager.getInstance().init();
+		
+		ProcessManager.getInstance().update();
 	}
 
 }
