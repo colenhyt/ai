@@ -27,19 +27,10 @@ import es.util.FileUtil;
 public class PageManager extends MgrBase{
 	private static PageManager uniqueInstance = null;
 	private Set<String>	sitekeys;
-	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
-	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,List<TopItem>> viewListItemsMap = new HashMap<String,List<TopItem>>();
 	private Map<Integer,TopItem> viewItemsMap = new HashMap<Integer,TopItem>();
-	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
 	private Map<Long, User>   userMap = new HashMap<Long,User>();
-	protected Logger  log = Logger.getLogger(getClass()); 
-	String rootPath = "d:/boxsite/data/";
-	String userFilePath = rootPath+"users.json";
-	String pagesPath = "d:/boxsite/data/pages/";
-	String traniningpath = "d:/boxsite/data/training/";
-	String itemPath = "d:/boxsite/data/items/";
 	private boolean inited = false;
 
 	public static void main(String[] args) {
@@ -72,16 +63,6 @@ public class PageManager extends MgrBase{
 		List<File> folders = FileUtil.getFolders(pagesPath);
 		for (File folder:folders){
 			sitekeys.add(folder.getName());
-			String urlspath = (pagesPath+folder.getName()+"_urls.json");
-			Map<String,WebUrl> siteurls2 = _getFileUrls(urlspath,folder.getName());
-			if (siteurls2!=null) {
-				allSiteUrlsMap.put(folder.getName(), siteurls2);
-			}
-			String savedPath = (pagesPath+folder.getName()+"_done_urls.json");
-			Set<String> siteurls3 = _getFileUrls2(savedPath);
-			if (siteurls3!=null) {
-				savedUrlsMap.put(folder.getName(), siteurls3);
-			}			
 		}
 		
 		//load view topitems:
@@ -112,15 +93,24 @@ public class PageManager extends MgrBase{
 		
 	}
 	
-	private Set<String> _getFileUrls2(String filePath){
-		File urlfile = new File(filePath);
-		if (!urlfile.exists()) return null;
+	public void pushNewItems(Map<Integer,List<TopItem>> mapitems){
 		
-		String content = FileUtil.readFile(filePath);
-		List<String> urls = (List<String>)JSON.parse(content);
-		Set<String> siteurls2 = new HashSet<String>();
-		siteurls2.addAll(urls);
-		return siteurls2;
+		Date currDate = new Date();
+		//按日期入内存库,一天一个json:
+		Calendar c = Calendar.getInstance();
+		for (int catid:mapitems.keySet()){
+			c.setTime(currDate);
+			List<TopItem> citems = mapitems.get(catid);
+			String key = _keyPath(c.getTime(),catid);
+			//放入viewItemMap内存:
+			List<TopItem> vitems = viewListItemsMap.get(key);
+			if (vitems==null){
+				vitems = new ArrayList<TopItem>();
+			}
+			vitems.addAll(citems);
+			Collections.sort(vitems);
+			viewListItemsMap.put(key, vitems);
+		}
 	}
 	
 	public String getNews(int itemid){
@@ -241,122 +231,9 @@ public class PageManager extends MgrBase{
 		return null;
 	}
 	
-	//获取正文，入库
+	//定期扫最新的items:
 	public void process(){
-		List<File> folders = FileUtil.getFolders(pagesPath);
-		
-		List<TopItem> newItems = new ArrayList<TopItem>();
-		for (File folder:folders){
-			String sitekey = folder.getName();
-			//获取该站点所有网页正文
-			Map<String,WebUrl> urls = allSiteUrlsMap.get(sitekey);
-			Set<String> saves = savedUrlsMap.get(sitekey);
-			for (String url:urls.keySet()){
-				WebUrl item = urls.get(url);
-				if (saves!=null&&saves.contains(url)) continue;
-				String filePath = pagesPath + sitekey + "/"+ url.hashCode()+".html";
-				String pageContent = FileUtil.readFile(filePath);
-				//获取正文:
-				List<String> contents = PageContentGetter.getHtmlContent(pageContent);
-				if (contents==null||contents.size()<=0){
-					log.warn("could not get content "+filePath);
-					continue;
-				}
-				//获取标题:
-				String title = PageContentGetter.getTitle(pageContent);
-				if (title==null||title.trim().length()<=0){
-					log.warn("could not get title: "+filePath);
-					continue;
-				}
-				TopItem titem = new TopItem();
-				titem.setUrl(url);
-				titem.setId(url.hashCode());
-				titem.setContent(contents.get(0));
-				titem.setHtmlContent(contents.get(1));
-				titem.setCtitle(title);
-				//尚未分类，即可分类:
-				if (item.getCat()<=0) {
-//					int catid = newsClassifier.testClassify(titem);
-//					if (catid<=0) continue;
-//					titem.setCat(catid);
-					continue;
-				};
-				titem.setCat(item.getCat());
-				titem.setCrDate(new Date());
-				titem.setSitekey(sitekey);
-				File f = new File(filePath);
-				if (f.exists()){
-					titem.setContentTime(f.lastModified());
-				}
-				newItems.add(titem);
-				processItemsMap.put(titem.getId(),titem);
-			}
-			if (newItems.size()<=0){
-				continue;
-			}
-			
-			if (saves==null){
-				saves = new HashSet<String>();
-				
-			}
-			//入库后处理:
-			for (TopItem item2:newItems){
-				//放到已完成列表:
-				saves.add(item2.getUrl());
-				//移除当前url:
-				urls.remove(item2.getUrl());
-			}
-			savedUrlsMap.put(sitekey, saves);
-			
-			FileUtil.writeFile(pagesPath+sitekey+"_urls.json", JSON.toJSONString(urls));
-			FileUtil.writeFile(pagesPath+sitekey+"_done_urls.json", JSON.toJSONString(saves));		
-		}
 
-		Map<Integer,List<TopItem>> mapitems = new HashMap<Integer,List<TopItem>>();
-		//topitem 入map库:
-		for (TopItem item:newItems){
-			List<TopItem> catItems = mapitems.get(item.getCat());
-			if (catItems==null){
-				catItems = new ArrayList<TopItem>();
-			}
-			catItems.add(item);
-			mapitems.put(item.getCat(), catItems);
-		}
-		
-		Date currDate = new Date();
-		//按日期入库,一天一个json:
-		Calendar c = Calendar.getInstance();
-		for (int catid:mapitems.keySet()){
-			c.setTime(currDate);
-			List<TopItem> citems = mapitems.get(catid);
-			String key = _keyPath(c.getTime(),catid);
-			//放入viewItemMap内存:
-			List<TopItem> vitems = viewListItemsMap.get(key);
-			if (vitems==null){
-				vitems = new ArrayList<TopItem>();
-			}
-			vitems.addAll(citems);
-			Collections.sort(vitems);
-			viewListItemsMap.put(key, vitems);
-			
-			//topitem 落地
-			String datePath = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);
-			String itempath = itemPath+catid+"/"+datePath+"/"+currDate.getTime()+"_items.json";			
-			String content = FileUtil.readFile(itempath);
-			if (content!=null&&content.trim().length()>0){
-				StringUtil.json2List(content, citems,TopItem.class);
-			}
-			FileUtil.writeFile(itempath, JSON.toJSONString(citems));
-			
-			for (TopItem item2:citems){
-			//page移到历史库,删除当前网页:
-			String fileName = item2.getUrl().hashCode()+".html";
-			String fileP = pagesPath+item2.getSitekey()+"/"+fileName;
-			String pageC = FileUtil.readFile(fileP);
-//			FileUtil.writeFile(hispath+item2.getSitekey()+"/"+fileName,pageC);
-//			FileUtil.del(fileP);		
-			}
-		}
 	}
 	
 	//发现有内容的最新的一个目录
@@ -487,25 +364,6 @@ public class PageManager extends MgrBase{
 		return JSON.toJSONString(sitekeys);
 	}
 	
-	private Map<String,WebUrl> _getFileUrls(String filePath,String sitekey){
-		File urlfile = new File(filePath);
-		if (!urlfile.exists()) return null;
-		
-		String content = FileUtil.readFile(filePath);
-		Map<String,JSONObject> urls = (Map<String,JSONObject>)JSON.parse(content);
-		Map<String,WebUrl> siteurls2 = new HashMap<String,WebUrl>();
-		for (JSONObject json:urls.values()){
-			WebUrl item = JSON.parseObject(json.toJSONString(), WebUrl.class);
-			if (item==null||item.getText()==null||item.getText().trim().length()<=0) continue;
-			String ppath = pagesPath + sitekey + "/"+ item.getUrl().hashCode()+".html";
-			File ff = new File(ppath);
-			if (!ff.exists()) continue;
-			
-			siteurls2.put(item.getUrl(),item);
-		}		
-		return siteurls2;
-	}
-
 	private String _keyPath(Date currDate,int catid){
 		Calendar c = Calendar.getInstance();
 		c.setTime(currDate);

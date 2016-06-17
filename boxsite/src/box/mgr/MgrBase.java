@@ -27,6 +27,11 @@ public class MgrBase extends java.util.TimerTask {
 	public RedisConfig redisCfg;
 	public JSONObject cfgObj;
 	public int maxStockAmount = 100000000;
+	protected String rootPath = "c:/boxsite/data/";
+	protected String userFilePath = rootPath+"users.json";
+	protected String pagesPath = rootPath+"pages/";
+	protected String traniningpath = rootPath+"training/";
+	protected String itemPath = rootPath+"items/";
 
 	public MgrBase(){
 		String path = "src/";

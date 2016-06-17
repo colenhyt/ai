@@ -39,19 +39,19 @@ public class FeatureSequence2WeightFeatureVector extends Pipe implements Seriali
 	boolean binary;
 	JSONObject json;
 
-	public FeatureSequence2WeightFeatureVector (boolean binary)
+	public FeatureSequence2WeightFeatureVector (boolean binary,int keyid)
 	{
 		this.binary = binary;
-		String content = FileUtil.readFile("data/training/keysweight.json");
+		String content = FileUtil.readFile("data/training/"+keyid+".keysweight");
 		if (content!=null&&content.trim().length()>0){
 			json = JSON.parseObject(content);
 		}
 		int t = 10;
 	}
 
-	public FeatureSequence2WeightFeatureVector ()
+	public FeatureSequence2WeightFeatureVector (int keyid)
 	{
-		this (false);
+		this (false,keyid);
 	}
 	
 	
