@@ -42,8 +42,8 @@ function queryUrlsRst(data)
 	  var color = "#DDDDDD";
 	  if (i%2==0)
 	    color = "white";
-	 content += "<tr style='font-size:30px;padding-top:5px;background:"+color+"'>"
-	 content += "<td width=1000><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
+	 content += "<tr style='font-size:25px;padding-top:5px;background:"+color+"'>"
+	 content += "<td width=800><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
 	 content += "<td>"
 	 if (data[i].cat==1)
 	  content += "<input type='radio' name='url_"+data[i].id+"' value='1' checked>热点 ";
@@ -80,6 +80,12 @@ function queryUrlsRst(data)
 	 else
 	 content += "<input type='radio' name='url_"+data[i].id+"' value='6'>创投";
 	content += "&nbsp;&nbsp;";
+	
+	 if (data[i].cat==7)
+	 	content += "<input type='radio' name='url_"+data[i].id+"' value='7' checked>无效";
+	 else
+	 	 content += "<input type='radio' name='url_"+data[i].id+"' value='7'>无效";
+	content += "&nbsp;&nbsp;";
 
 	 content += "</td>"
 	 content += "</tr>"
@@ -107,11 +113,9 @@ function defineUrlCat()
 		  catUrls.push(item);
 	  }
 	}
-	alert(catUrls);
 	
 	var strurls = JSON.stringify(catUrls);
 	var dataParam = "type=1&sitekey="+g_sitekey+"&siteurls="+strurls;
-	alert(dataParam);
 	
 	try    {
 		$.ajax({type:"post",url:"/boxsite/trainingurls.jsp",data:dataParam,success:function(data){
