@@ -224,6 +224,19 @@ public class PageManager extends MgrBase{
 		return retstr;
 	}
 	
+	public String getSiteTrainingUrls(String sitekey){
+		Map<String,WebUrl> urls = allSiteUrlsMap.get(sitekey);
+		if (urls!=null){
+			Set<WebUrl> notUrls = new HashSet<WebUrl>();
+			for (WebUrl url:urls.values()){
+				if (url.getCat()>0)
+					notUrls.add(url);
+			}
+			return JSON.toJSONString(notUrls);
+		}
+		return null;
+	}
+	
 	public String getSiteNotTrainingUrls(String sitekey,boolean isAll){
 		Map<String,WebUrl> urls = allSiteUrlsMap.get(sitekey);
 		if (urls!=null){

@@ -19,6 +19,8 @@ PageManager.getInstance().init();
 String jsonstr = "";
 if (typeid==0)
  jsonstr = PageManager.getInstance().getSiteNotTrainingUrls(sitekey,isAll);
+else if (typeid==-1)
+ jsonstr = PageManager.getInstance().getSiteTrainingUrls(sitekey);
 else if (typeid==1)
  jsonstr = PageManager.getInstance().addTrainingurls(sitekey,siteurls);
 else if (typeid==2)
