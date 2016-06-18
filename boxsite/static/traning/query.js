@@ -42,50 +42,31 @@ function queryUrlsRst(data)
 	  var color = "#DDDDDD";
 	  if (i%2==0)
 	    color = "white";
-	 content += "<tr style='font-size:25px;padding-top:5px;background:"+color+"'>"
-	 content += "<td width=800><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
+	 content += "<tr style='font-size:23px;padding-top:5px;background:"+color+"'>"
+	 content += "<td width=680><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
 	 content += "<td>"
-	 if (data[i].cat==1)
-	  content += "<input type='radio' name='url_"+data[i].id+"' value='1' checked>热点 ";
+	 
+	 var cats = [[1,"热点"],[11,"行业"],[21,"公司"],[31,"访谈"],[41,"项目"],[51,"产品"],[61,"创业"],[71,"投融资"]];
+	 
+	 if (data[i].cat==0)
+	 	content += "<input type='radio' name='url_"+data[i].id+"' id='0_"+data[i].id+"' value='0' checked><label for='0_"+data[i].id+"'>复位</lable>";
 	 else
-	  content += "<input type='radio' name='url_"+data[i].id+"' value='1'>热点 ";
-	content += "&nbsp;&nbsp;";
-	
-	 if (data[i].cat==2)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='2' checked>市场";
+	 	 content += "<input type='radio' name='url_"+data[i].id+"' id='0_"+data[i].id+"' value='0'><label for='0_"+data[i].id+"'>复位</lable>";
+	 
+	 for (var k=0;k<cats.length;k++){
+ 	     var cat = cats[k][0];
+	     var id = cat+"_"+data[i].id;
+	     
+		 if (cat==data[i].cat)
+		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"' checked><label for='"+id+"'>"+cats[k][1]+"</label>";
+		 else
+		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"'><label for='"+id+"'>"+cats[k][1]+"</label> ";
+	 }
+	 
+	 if (data[i].cat==-1)
+	 	content += "<input type='radio' name='url_"+data[i].id+"' id='-1_"+data[i].id+"' value='-1' checked><label for='-1_"+data[i].id+"'>无效</lable>";
 	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='2'>市场";
-	content += "&nbsp;&nbsp;";
-
-	 if (data[i].cat==3)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='3' checked>产品";
-	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='3'>产品";
-	content += "&nbsp;&nbsp;";
-
-	 if (data[i].cat==4)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='4' checked>公司";
-	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='4'>公司";
-	content += "&nbsp;&nbsp;";
-
-	 if (data[i].cat==5)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='5' checked>人物";
-	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='5'>人物";
-	content += "&nbsp;&nbsp;";
-		
-	 if (data[i].cat==6)
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='6' checked>创投";
-	 else
-	 content += "<input type='radio' name='url_"+data[i].id+"' value='6'>创投";
-	content += "&nbsp;&nbsp;";
-	
-	 if (data[i].cat==7)
-	 	content += "<input type='radio' name='url_"+data[i].id+"' value='7' checked>无效";
-	 else
-	 	 content += "<input type='radio' name='url_"+data[i].id+"' value='7'>无效";
-	content += "&nbsp;&nbsp;";
+	 	 content += "<input type='radio' name='url_"+data[i].id+"' id='-1_"+data[i].id+"' value='-1'><label for='-1_"+data[i].id+"'>无效</lable>";
 
 	 content += "</td>"
 	 content += "</tr>"

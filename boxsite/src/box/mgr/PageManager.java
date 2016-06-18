@@ -34,14 +34,15 @@ public class PageManager extends MgrBase{
 	private boolean inited = false;
 
 	public static void main(String[] args) {
-//		PageManager.getInstance().init();
+		PageManager.getInstance().init();
+		PageManager.getInstance().resetTrainingurls();
 //		String retstr = PageManager.getInstance().getNews(664000350);
 //		System.out.println(retstr);
 		
-		String filePath = "c:/boxsite/data/pages/ikanchai.com/-62796559.html";
-		String pageContent = FileUtil.readFile(filePath);	
-		List<String> pp = PageContentGetter.getHtmlContent(pageContent);
-		System.out.println(pp);
+//		String filePath = "c:/boxsite/data/pages/ikanchai.com/-62796559.html";
+//		String pageContent = FileUtil.readFile(filePath);	
+//		List<String> pp = PageContentGetter.getHtmlContent(pageContent);
+//		System.out.println(pp);
 		//PageManager.getInstance().process();
 
 	}
@@ -279,6 +280,17 @@ public class PageManager extends MgrBase{
 	@Override
 	public void update(){
 		this.process();
+	}
+	
+	public void resetTrainingurls(){
+		for (String sitekey:allSiteUrlsMap.keySet()){
+			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
+			for (WebUrl item:siteUrlsMap.values()){
+				item.setCat(0);
+			}
+			File urlfile = new File(pagesPath+sitekey+"_urls.json");
+			FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));			
+		}
 	}
 	
 	public String addTrainingurls(String sitekey,String tradingUrlsStr){
