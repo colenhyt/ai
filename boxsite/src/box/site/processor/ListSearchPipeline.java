@@ -2,6 +2,7 @@ package box.site.processor;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import us.codecraft.webmagic.ResultItems;
@@ -43,7 +44,8 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 		Set<String> allitems = new HashSet<String>();
 		String content = FileUtil.readFile(spath);
 		if (content!=null&&content.trim().length()>0){
-			StringUtil.json2Set(content, allitems,String.class);
+			List<String> durls = (List<String>)JSON.parse(content);
+			allitems.addAll(durls);			
 		}
 		
 		allitems.addAll(items);

@@ -182,12 +182,12 @@ public class SiteContentGetter extends Thread {
 		
 		String[] itemsContent = htmlHelper.getDivsByClassValue(classkey);
 		for (String itemstr:itemsContent){
-			Website site = new Website();
 			htmlHelper.init(itemstr.getBytes());
 			List<String> urls =htmlHelper.getUrlStrsByLinkKey(keys.get(0));
 			if (urls.size()<=0) continue;
 			String url = urls.get(0);
 			String realurl =new PostPageGetter(userAgent).getRealUrl(url, httpClient);
+			Website site = new Website();
 			site.setBaiduurl(url);
 			site.setStatus(SiteDataManager.WEBSITE_STATUS_DONEURL);
 			if (realurl!=null){
@@ -223,7 +223,7 @@ public class SiteContentGetter extends Thread {
 			String rankText = subt.substring(0,subt.indexOf(endKey));
 			if (rankText!=null)
 				alexa = Integer.valueOf(rankText);
-			log.warn("alexa "+alexa);
+			log.warn(weburl+ " alexa "+alexa);
 			return alexa;
 		}
 	
@@ -305,7 +305,7 @@ public class SiteContentGetter extends Thread {
 			if (rankText!=null)
 				rank = Integer.valueOf(rankText);			
 		}
-		log.warn("bdrank "+rank);
+		log.warn(weburl + " bdrank "+rank);
 		return rank;
 	}
 	public void dealUrlWords(String weburl,int parentid,int siteId,SiteService siteService){

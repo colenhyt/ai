@@ -15,7 +15,7 @@ import es.util.url.URLStrHelper;
 
 public class BdSiteFinder implements IItemFinder {
 	protected Logger  log = Logger.getLogger(getClass());
-	Set<String>		relateWords;
+	Set<String>		relateWords = new HashSet<String>();
 	private SiteContentGetter contentGetter = new SiteContentGetter();
 
 	@Override
@@ -31,20 +31,19 @@ public class BdSiteFinder implements IItemFinder {
 		
 		Set<Website> newSites = SiteManager.getInstance().addSites(sitesVec);
 		for (Website site:newSites){
-			contentGetter.fillSiteInfo(site);
+//			contentGetter.fillSiteInfo(site);
 			sites.add(site.toString());
 		}		
 		page.putField("items", sites);
 		
-		Set<String> pagingurls = new HashSet<String>();
 		//2. find paging urls:
 		String regx = ".*s.*wd=.*&pn=.*";
-		List<String> pagingurls2 = page.getHtml().links().regex(regx).all();
+		List<String> pagingurls = page.getHtml().links().regex(regx).all();
 		if (pagingurls.size()<=0){
 			log.warn("could not find paging urls ");
+			page.putField("pagingurls", pagingurls);
 			return;
 		}
-		pagingurls.addAll(pagingurls2);
 		page.putField("pagingurls", pagingurls);
 		
 		//3. find related words:

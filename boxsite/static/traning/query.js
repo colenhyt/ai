@@ -65,7 +65,7 @@ function queryUrlsRst(data)
 	 content += "<td width=680><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
 	 content += "<td><div style='font-size:21px'>"
 	 
-	 var cats = [[1,"热点"],[2,"资讯"],[11,"行业"],[21,"公司"],[31,"访谈"],[41,"项目"],[51,"产品"],[61,"创业"],[71,"投融资"]];
+	 var cats = [[1,"热点"],[2,"资讯"],[11,"行业"],[21,"公司"],[31,"访谈"],[41,"项目"],[51,"产品"],[61,"创业"],[71,"投融资"],[-1,"无效"]];
 	 
 	 if (data[i].cat==0)
 	 	content += "<input type='radio' name='url_"+data[i].id+"' id='0_"+data[i].id+"' value='0' checked><label for='0_"+data[i].id+"'>复位</lable>";
@@ -80,12 +80,8 @@ function queryUrlsRst(data)
 		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"' checked><label for='"+id+"'>"+cats[k][1]+"</label>";
 		 else
 		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"'><label for='"+id+"'>"+cats[k][1]+"</label> ";
+		  
 	 }
-	 
-	 if (data[i].cat==-1)
-	 	content += "<input type='radio' name='url_"+data[i].id+"' id='-1_"+data[i].id+"' value='-1' checked><label for='-1_"+data[i].id+"'>无效</lable>";
-	 else
-	 	 content += "<input type='radio' name='url_"+data[i].id+"' id='-1_"+data[i].id+"' value='-1'><label for='-1_"+data[i].id+"'>无效</lable>";
 
 	 content += "</div></td>"
 	 content += "</tr>"

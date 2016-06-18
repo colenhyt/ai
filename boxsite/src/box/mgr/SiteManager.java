@@ -73,50 +73,47 @@ public class SiteManager extends MgrBase{
 				srcSiteMap.put(key, (Website)JSON.parseObject(itemd.toJSONString(), Website.class));
 			}
 		}
-		int a = srcSiteMap.size();
-		dataThread = new DataThread(redisCfg);
-		dataThread.start();
-		
-		client = new RedisClient(redisCfg);
-		
-		SiteService service = new SiteService();
-		
-		wordsMap = new HashMap<String,Websitewords>();
-		
-		List<Websitewords> wl = service.getWebsitewords();
-		for (Websitewords word:wl){
-			wordsMap.put(word.getWord(), word);
-		}
-		
+
 		wordRelationKeys = new HashSet<String>();
-		
-		List<Wordrelation> rls = service.getWordrelations();
-		for (Wordrelation rel:rls){
-			String key = rel.getWordid()+"_"+rel.getRelatewordid()+"_"+rel.getRelatetype();
-			wordRelationKeys.add(key);
-		}
-		
 		keysMap = new HashMap<String,Websitekeys>();
-		List<Websitekeys> ll = service.getWebsitekeys();
-		for (Websitekeys item:ll){
-			String key = item.getSiteid()+"_"+item.getWordid();
-			keysMap.put(key, item);
-		}
-		
 		siteMapById = new HashMap<Integer,Website>();
 		
 
 		siteMap = new HashMap<String,Website>();
-		List<Website> list2 = service.getWebsites();
-		for (Website item:list2){
-			siteMap.put(item.getUrl(), item);
-			siteMapById.put(item.getSiteid(), item);
-		}
+
+//		dataThread = new DataThread(redisCfg);
+//		dataThread.start();
 		
-//		dealing = new SitePageDealing();
-//		int[] a = new int[1];
-//		SitesContainer con = new SitesContainer(a,dealing);
-//		con.runningPages();			
+//		client = new RedisClient(redisCfg);
+		
+//		SiteService service = new SiteService();
+//		
+//		wordsMap = new HashMap<String,Websitewords>();
+//		
+//		List<Websitewords> wl = service.getWebsitewords();
+//		for (Websitewords word:wl){
+//			wordsMap.put(word.getWord(), word);
+//		}
+//		
+//		
+//		List<Wordrelation> rls = service.getWordrelations();
+//		for (Wordrelation rel:rls){
+//			String key = rel.getWordid()+"_"+rel.getRelatewordid()+"_"+rel.getRelatetype();
+//			wordRelationKeys.add(key);
+//		}
+//		
+//		List<Websitekeys> ll = service.getWebsitekeys();
+//		for (Websitekeys item:ll){
+//			String key = item.getSiteid()+"_"+item.getWordid();
+//			keysMap.put(key, item);
+//		}
+//		
+//		List<Website> list2 = service.getWebsites();
+//		for (Website item:list2){
+//			siteMap.put(item.getUrl(), item);
+//			siteMapById.put(item.getSiteid(), item);
+//		}
+//		
 	}
 	
 	public List<Websitewords> getNewwords(){
@@ -274,10 +271,15 @@ public class SiteManager extends MgrBase{
 	}
 	
 	public Set<Website> addSites(Vector<Website> records){
-		SiteService service = new SiteService();
+//		SiteService service = new SiteService();
 		Set<Website> newsites = new HashSet<Website>();
 		for (Website record:records){
-			record.setSiteid(this.getNextWebisteId());
+			if (record==null) continue;
+			String url = record.getBaiduurl();
+			if (record.getUrl()!=null)
+				url = record.getUrl();
+			String domainName = URLStrHelper.getHost(url).toLowerCase();
+			record.setSiteid(domainName.hashCode());
 			record.setCrdate(new Date());
 			if (!srcSiteMap.containsKey(record.toString())){
 				srcSiteMap.put(record.toString(), record);
@@ -285,7 +287,7 @@ public class SiteManager extends MgrBase{
 			}
 			if (!siteMap.containsKey(record.getUrl())){
 				siteMap.put(record.getUrl(), record);
-				 service.addSite(record);
+//				 service.addSite(record);
 			}			
 		}
 		//落地:

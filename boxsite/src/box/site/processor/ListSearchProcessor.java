@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -44,7 +46,14 @@ public class ListSearchProcessor implements PageProcessor{
 		else if (siteKey.equals("baidu"))
 			searchDoer = new BdSiteFinder();
 		
-		keyWord = _word;
+		String wordstr = "";
+		String[] warray = _word.split(",");
+		for (int i=0;i<warray.length;i++){
+			if (i>0)
+				wordstr += "%20";
+			wordstr += warray[i];
+		}
+		keyWord = wordstr;
 		
 		SiteManager.getInstance();
 		
@@ -54,15 +63,18 @@ public class ListSearchProcessor implements PageProcessor{
 		
 		String searUrls = FileUtil.readFile(path+keyWord+".json");
 		if (searUrls!=null&&searUrls.trim().length()>0){
-			StringUtil.json2Set(searUrls, searchUrls,String.class);
+			List<String> lurls = (List<String>)JSON.parse(searUrls);
+			searchUrls.addAll(lurls);
 			String relates = FileUtil.readFile(path+keyWord+"_relate.json");
 			if (relates!=null&&relates.trim().length()>0){
-				StringUtil.json2Set(relates, relateWords,String.class);
+				List<String> durls = (List<String>)JSON.parse(relates);
+				relateWords.addAll(durls);
 			}
 			
 			String jsonStr = FileUtil.readFile(path+keyWord+"_done.json");
 			if (jsonStr!=null&&jsonStr.trim().length()>0){
-				StringUtil.json2Set(jsonStr, doneUrls,String.class);
+				List<String> durls = (List<String>)JSON.parse(jsonStr);
+				doneUrls.addAll(durls);
 			}
 			
 			for (String url:searchUrls){
@@ -74,7 +86,7 @@ public class ListSearchProcessor implements PageProcessor{
 		}
 		
 		if (startUrl==null){
-			startUrl = searchDoer.getStartUrl(_word);	
+			startUrl = searchDoer.getStartUrl(keyWord);	
 			if (doneUrls.contains(startUrl))
 				startUrl = null;
 		}
@@ -93,9 +105,9 @@ public class ListSearchProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
-		String word = "电影";
+		String word = "o2o,创业";
 		ListSearchProcessor p = new ListSearchProcessor();
-		p.init("sogou",word);
+		p.init("baidu",word);
        Spider.create(p).addPipeline(new ListSearchPipeline()).run();
 
 	}
