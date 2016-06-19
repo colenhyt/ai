@@ -12,6 +12,21 @@ function rankonfocus(index){
  tags[index].select();
 }
 
+Webpage.prototype.fillItems2 = function(sitelist){
+ var content = "<table>";
+ for (var i=0;i<sitelist.length;i++){
+  var url = sitelist[i];
+  if (url.indexOf("http")<0)
+   url = "http://"+url;
+  content += "<tr>";
+  content += "<td><a href='"+url+"' target=blank>"+url+"</a></td>";
+  content += "</tr>";
+  }
+ content += "</table>";
+ var tag = document.getElementById("searchrst");
+ tag.innerHTML = content;
+}
+
 Webpage.prototype.fillItems = function(sitelist)
 {
  var content = "<table>";
@@ -55,10 +70,11 @@ Webpage.prototype.queryData = function(dataParam){
 	try    {
 		$.ajax({type:"post",url:"/boxsite/search.jsp",data:dataParam,success:function(data){
 		var itemlist = cfeval(data);
-		if (itemlist==null||itemlist.length<=0){
-		 g_webpage.queryPerTime(dataParam);
-		}else {
-		 g_webpage.fillItems(itemlist);
+//		if (itemlist==null||itemlist.length<=0){
+//		 g_webpage.queryPerTime(dataParam);
+//		}else 
+		{
+		 g_webpage.fillItems2(itemlist);
 		 }
 		}});
 	}   catch  (e)   {
