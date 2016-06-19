@@ -14,7 +14,9 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import redis.clients.jedis.Jedis;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import box.site.SitePageDealing;
 import box.site.db.SiteService;
 import box.site.model.Website;
@@ -25,11 +27,8 @@ import box.site.model.Websitewords;
 import box.site.model.Wordrelation;
 import cn.hd.util.FileUtil;
 import cn.hd.util.RedisClient;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import es.util.url.URLStrHelper;
+import redis.clients.jedis.Jedis;
 
 public class SiteManager extends MgrBase{
 	
@@ -348,6 +347,17 @@ public class SiteManager extends MgrBase{
 		return JSON.toJSONString(words);
 	}
 	
+	public String getHotwords2(){
+		List<String> words = new ArrayList<String>();
+		List<File> files = FileUtil.getFiles("d:/boxsite/data/items/baidu/");
+		for (File f:files){
+			String name = f.getName();
+			name = name.replace("%20", ",").replace(".items", "");
+			words.add(name);
+		}
+		return JSON.toJSONString(words);
+	}
+	
 	public String getHotwords(){
 		Collection<Websitewords> words = wordsMap.values();
 		List<Websitewords> items = new ArrayList<Websitewords>();
@@ -386,6 +396,17 @@ public class SiteManager extends MgrBase{
 		if (list.size()<=0){
 			//this.startupSpider(word);
 		}
+		
+		return JSON.toJSONString(list);
+	}
+	
+	public String querySites2(String word,int page){
+		List<String> list = new ArrayList<String>();
+		word = word.replace(",", "%20");
+		String path = "d:/boxsite/data/items/baidu/"+word+".items";
+		String content = FileUtil.readFile(path);
+		if (content.trim().length()>0)
+			list = (List<String>)JSON.parse(content);
 		
 		return JSON.toJSONString(list);
 	}
