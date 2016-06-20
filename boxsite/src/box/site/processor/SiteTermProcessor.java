@@ -2,11 +2,14 @@ package box.site.processor;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
@@ -20,6 +23,8 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.PlainText;
 import box.site.model.WebUrl;
+import cn.edu.hfut.dmic.htmlbot.DomPage;
+import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -42,8 +47,8 @@ public class SiteTermProcessor implements PageProcessor{
 	String domainName;
 	Set<String>	stoplistWords;
 	Set<String>	filterlistWords;
-	private String termsPath;
-	private String pagesPath;
+	private String siteTermsPath;
+	private String sitePagesPath;
 	public Set<String> notDownloadurls;
 	public Set<String> doneDownloadurls;
 	public Set<String> allDownloadUrls;
@@ -59,23 +64,23 @@ public class SiteTermProcessor implements PageProcessor{
 		startUrl = _startUrl;
 		domainName = URLStrHelper.getHost(startUrl).toLowerCase();
 		
-		termsPath = "data/terms/"+domainName;
-		pagesPath = "data/pages/"+domainName;
+		siteTermsPath = "data/terms/"+domainName;
+		sitePagesPath = "data/pages/"+domainName;
 		
-		List<File> files = FileUtil.getFiles(termsPath);
+		List<File> files = FileUtil.getFiles(siteTermsPath);
 		queryCount = files.size();
 		
 		allDownloadUrls = new HashSet<String>();
 		notDownloadurls = new HashSet<String>();
 		doneDownloadurls = new HashSet<String>();
-		urlPath = termsPath+".urls";
+		urlPath = siteTermsPath+".urls";
 		String urlcontent = FileUtil.readFile(urlPath);
 		if (urlcontent!=null&&urlcontent.trim().length()>0){
 			List<String> urls = (List<String>)JSON.parse(urlcontent);
 			allDownloadUrls.addAll(urls);
 			for (String url:urls){
 				String code = DigestUtils.md5Hex(url);
-				File f = new File(termsPath+"/"+code+".json");
+				File f = new File(siteTermsPath+"/"+code+".json");
 				if (f.exists()) {
 					doneDownloadurls.add(url);
 					continue;
@@ -114,7 +119,7 @@ public class SiteTermProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
-		String url = "http://developer.51cto.com";
+		String url = "http://www.iheima.com";
 		
 		SiteTermProcessor processor = new SiteTermProcessor(url,-1);
 //		Set<String> urls = processor.doneDownloadurls;
@@ -122,15 +127,60 @@ public class SiteTermProcessor implements PageProcessor{
 //			processor.parseFromPage(url,"gb2312");
 //		}
 		
-		Set<String> sites = new HashSet<String>();
-		sites.add(url);
+		processor.processFilesTerms();
 		
-		for (String site:sites){
-			SiteTermProcessor p1 = new SiteTermProcessor(site,-1);
-	        Spider.create(p1).addPipeline(new SiteTermPipeline()).addPipeline(new SiteURLsPipeline()).run();
-			
+	}
+	
+	public void processFilesTerms(){
+		List<File> files = FileUtil.getFiles(sitePagesPath);
+//		for (File f:files){
+//			String content = FileUtil.readFile(f);
+//			DomPage domPage = HtmlBot.getDomPageByHtml(content);
+//			Document doc = domPage.getDoc();
+//			Map<String,Integer>  mapTerms = getTerms(doc);
+//			String str = f.getName().substring(0,f.getName().indexOf(".html"));
+//			String fileName = siteTermsPath + "/"+ str+".json";
+//			FileUtil.writeFile(fileName, JSON.toJSONString(mapTerms));
+//			log.warn("get terms "+mapTerms.size());
+//		}
+		
+		Map<String,Integer> termsMap = new HashMap<String,Integer>();
+		files = FileUtil.getFiles(siteTermsPath);
+		for (File f:files){
+			String content = FileUtil.readFile(f);
+			Map<String,Integer> json = (Map<String,Integer>)JSON.parse(content);
+			for (String key:json.keySet()){
+				if (termsMap.containsKey(key))
+					termsMap.put(key, termsMap.get(key)+json.get(key));
+				else
+					termsMap.put(key, json.get(key));
+			}
+		}		
+		
+	  //通过比较器实现比较排序 
+		List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
+	  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
+	   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
+		   return mapping2.getValue().compareTo(mapping1.getValue()); 
+	   } 
+	  }); 
+		  
+//	  for(Map.Entry<String,Integer> mapping:mappingList){ 
+//		   System.out.println(mapping.getKey()+":"+mapping.getValue()); 
+//		  }	  
+		int count  = 50;
+		String fileHot = siteTermsPath+"_"+count+".json";
+		List<Map.Entry<String,Integer>> toplist = new ArrayList<Map.Entry<String,Integer>>();
+		for (int i=0;i<mappingList.size();i++){
+			Map.Entry<String,Integer> item = mappingList.get(i);
+			if (item.getKey().length()>1){
+				log.warn("keyword: "+JSON.toJSONString(item));
+				toplist.add(item);
+			}if (toplist.size()>count)break;
 		}
-		
+		FileUtil.writeFile(fileHot, JSON.toJSONString(toplist));
+		String fileName = siteTermsPath+".json";
+		FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
 	}
 
 	@Override
@@ -143,7 +193,7 @@ public class SiteTermProcessor implements PageProcessor{
 		
 		//保存网页:
 		String fileName = page.getRequest().getUrl().hashCode()+".html";
-		String pagePath = pagesPath +"/"+fileName;
+		String pagePath = sitePagesPath +"/"+fileName;
 		FileUtil.writeFile(pagePath, page.getRawText(),page.getCharset());
 		
 		//parseFromPage(page.getRequest().getUrl(),site.getCharset());
@@ -178,7 +228,7 @@ public class SiteTermProcessor implements PageProcessor{
 		Map<String,WebUrl> urls = getUrls(page);
 		
 		//取词:
-		Map<String,Integer> termsMap = getTerms(page);
+		Map<String,Integer> termsMap = getTerms(page.getHtml().getDocument());
 		
 		page.putField("PageUrls", urls);
 		page.putField("PageTerm", termsMap);
@@ -189,14 +239,14 @@ public class SiteTermProcessor implements PageProcessor{
 
 	public void parseFromPage(String urlstr,String charset){
 		String fileName = urlstr.hashCode()+".html";
-		String pagePath = pagesPath +"/"+fileName;	
+		String pagePath = sitePagesPath +"/"+fileName;	
 		String content = FileUtil.readFile(pagePath, charset);
 		Request request = new Request(urlstr);
 		Page page = new Page();
         page.setRawText(content);
         page.setRequest(request);
         page.setUrl(new PlainText(urlstr));
-        Map<String,Integer> terms = getTerms(page);
+        Map<String,Integer> terms = getTerms(page.getHtml().getDocument());
         log.warn(terms.toString());
 	}
 	
@@ -215,11 +265,9 @@ public class SiteTermProcessor implements PageProcessor{
 		return urls;
 	}
 	
-	public Map<String,Integer> getTerms(Page page){
+	public Map<String,Integer> getTerms(Document doc){
 		Map<String,Integer> termsMap = new HashMap<String,Integer>();
 		
-		Html html = page.getHtml();
-		Document doc = html.getDocument();
 		//取页面所有文本:
 		List<String> words = HTMLInfoSupplier.getMainTerms(doc);
 		

@@ -277,15 +277,17 @@ public class SiteManager extends MgrBase{
 			String url = record.getBaiduurl();
 			if (record.getUrl()!=null)
 				url = record.getUrl();
+			if (url.indexOf("http")<0)
+				url = "http://"+url;
 			String domainName = URLStrHelper.getHost(url).toLowerCase();
 			record.setSiteid(domainName.hashCode());
 			record.setCrdate(new Date());
-			if (!srcSiteMap.containsKey(record.toString())){
-				srcSiteMap.put(record.toString(), record);
+			if (!srcSiteMap.containsKey(url)){
+				srcSiteMap.put(url, record);
 				newsites.add(record);
 			}
-			if (!siteMap.containsKey(record.getUrl())){
-				siteMap.put(record.getUrl(), record);
+			if (!siteMap.containsKey(url)){
+				siteMap.put(url, record);
 //				 service.addSite(record);
 			}			
 		}
@@ -349,7 +351,7 @@ public class SiteManager extends MgrBase{
 	
 	public String getHotwords2(){
 		List<String> words = new ArrayList<String>();
-		List<File> files = FileUtil.getFiles("d:/boxsite/data/items/baidu/");
+		List<File> files = FileUtil.getFiles(itemPath+"baidu/");
 		for (File f:files){
 			String name = f.getName();
 			name = name.replace("%20", ",").replace(".items", "");
@@ -401,12 +403,18 @@ public class SiteManager extends MgrBase{
 	}
 	
 	public String querySites2(String word,int page){
-		List<String> list = new ArrayList<String>();
+		List<Website> list = new ArrayList<Website>();
 		word = word.replace(",", "%20");
-		String path = "d:/boxsite/data/items/baidu/"+word+".items";
+		String path = itemPath + "baidu/"+word+".items";
 		String content = FileUtil.readFile(path);
-		if (content.trim().length()>0)
-			list = (List<String>)JSON.parse(content);
+		if (content.trim().length()>0){
+			List<String> stritems = (List<String>)JSON.parse(content);
+			for (String str:stritems){
+				JSONObject obj = JSONObject.parseObject(str);
+				Website item = (Website)JSON.toJavaObject(obj, Website.class);
+				list.add(item);
+			}
+		}
 		
 		return JSON.toJSONString(list);
 	}

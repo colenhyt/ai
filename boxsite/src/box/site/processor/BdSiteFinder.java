@@ -7,6 +7,8 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+
 import us.codecraft.webmagic.Page;
 import box.mgr.SiteManager;
 import box.site.SiteContentGetter;
@@ -32,7 +34,7 @@ public class BdSiteFinder implements IItemFinder {
 		Set<Website> newSites = SiteManager.getInstance().addSites(sitesVec);
 		for (Website site:newSites){
 //			contentGetter.fillSiteInfo(site);
-			sites.add(site.toString());
+			sites.add(JSON.toJSONString(site));
 		}		
 		page.putField("items", sites);
 		

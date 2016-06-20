@@ -9,7 +9,7 @@ if (pagestr!=null){
  paging = Integer.valueOf(pagestr);;
 }
 String sitejsons = "tt";
- sitejsons = SiteManager.getInstance().querySites(wordstr,paging);
+ sitejsons = SiteManager.getInstance().querySites2(wordstr,paging);
 
 response.getWriter().print(sitejsons);
 %>

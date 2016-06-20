@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
@@ -16,13 +18,18 @@ import com.alibaba.fastjson.JSON;
 import es.util.FileUtil;
 
 public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
+	protected Logger  log = Logger.getLogger(getClass());
 	String sitepath = "data/items/";
 	String path = "data/list/";
 
 	@Override
 	public void process(ResultItems resultItems, Task task) {
 		String searchWord = (String)resultItems.get("searchWord");
+		Object maxCountStr = resultItems.get("maxCount");
 		String siteKey = (String)resultItems.get("siteKey");
+		int maxCount = -1;
+		if (maxCountStr!=null)
+			maxCount = ((Integer)maxCountStr).intValue();
 		
 		if (path.indexOf(siteKey)<0)
 			path += siteKey+"/";
@@ -39,6 +46,7 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 		
 		//save sites:
 		Set<String> items = (Set<String>)resultItems.get("items");
+		log.warn("找到新sites: "+items.size());
 		
 		String spath = sitepath +searchWord+".items";
 		Set<String> allitems = new HashSet<String>();
@@ -46,6 +54,11 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 		if (content!=null&&content.trim().length()>0){
 			List<String> durls = (List<String>)JSON.parse(content);
 			allitems.addAll(durls);			
+		}
+		
+		if (allitems.size()>maxCount&&maxCount>0){
+			log.warn("规定数量达到  "+maxCount);
+			System.exit(0);
 		}
 		
 		allitems.addAll(items);

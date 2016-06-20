@@ -33,7 +33,7 @@ Webpage.prototype.fillItems = function(sitelist)
  for (var i=0;i<sitelist.length;i++){
   var item = sitelist[i];
   var url = item.url;
-  if (url.indexOf("http")<0)
+  if (url!=null&&url.indexOf("http")<0)
    url = "http://"+item.url;
   var name = item.name;
   content += "<tr>";
@@ -74,7 +74,7 @@ Webpage.prototype.queryData = function(dataParam){
 //		 g_webpage.queryPerTime(dataParam);
 //		}else 
 		{
-		 g_webpage.fillItems2(itemlist);
+		 g_webpage.fillItems(itemlist);
 		 }
 		}});
 	}   catch  (e)   {

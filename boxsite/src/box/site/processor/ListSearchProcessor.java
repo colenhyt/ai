@@ -31,9 +31,12 @@ public class ListSearchProcessor implements PageProcessor{
 	Set<String>		searchUrls;
 	Set<String>		doneUrls;
 	Set<String>		relateWords;
+	private int maxCount = -1;
 	private Site site;
 
-	public void init(String _siteKey,String _word){
+	public void init(String _siteKey,String _word,int _maxCount){
+		
+		maxCount = _maxCount;
 		
 		siteKey = _siteKey;
 		path += siteKey +"/";
@@ -105,9 +108,11 @@ public class ListSearchProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
-		String word = "o2o,创业";
+		String wordGroup = "创业,公司,市场，企业,中国,科技,互联网,产品,平台,服务,技术,电商,投资,融资,智能,创新,领域,模式,时代,硬件,资讯,未来,创业者";
+		String[] words = wordGroup.split(",");
+		String word = "创业,公司,领域";
 		ListSearchProcessor p = new ListSearchProcessor();
-		p.init("baidu",word);
+		p.init("baidu",word,50);
        Spider.create(p).addPipeline(new ListSearchPipeline()).run();
 
 	}
@@ -139,6 +144,7 @@ public class ListSearchProcessor implements PageProcessor{
 		searchUrls.remove(page.getRequest().getUrl());
 		
 		page.putField("siteKey", siteKey);
+		page.putField("maxCount", maxCount);
 		page.putField("searchWord", keyWord);
 		page.putField("searchUrls", searchUrls);
 		page.putField("doneUrls", doneUrls);
