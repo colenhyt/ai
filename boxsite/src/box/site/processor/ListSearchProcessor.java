@@ -127,7 +127,7 @@ public class ListSearchProcessor implements PageProcessor{
 		word = "互联网,服务,模式";
 		word = "投资,产品,创新";
 		word  = "融资,投资,技术";
-		word = "o2o";
+		word = "贝叶斯定律";
 		
 		Set<String> engines = new HashSet<String>();
 		engines.add("baidu");
@@ -135,10 +135,10 @@ public class ListSearchProcessor implements PageProcessor{
 		engines.add("bing");
 		
 		for (String engine:engines){
-			ListSearchProcessor p = new ListSearchProcessor();
-			p.init(engine,word,100);
 			System.out.println("spider :"+engine);
-	       Spider.create(p).addPipeline(new ListSearchPipeline()).run();			
+			MultiSearchTask task = new MultiSearchTask(engine,word,50);
+			Thread t2=new Thread(task);
+			t2.start();
 		}
 
 
