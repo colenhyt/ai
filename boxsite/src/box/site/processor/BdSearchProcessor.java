@@ -93,7 +93,7 @@ public class BdSearchProcessor implements PageProcessor{
 	public void process(Page page) {
 		//1. find sites:
 		Set<String> sites = new HashSet<String>();
-		Vector<Website> sitesVec = contentGetter.findWebSitesInPage(page.getRawText().getBytes(), null,false);
+		Vector<Website> sitesVec = contentGetter.findWebSitesInPage(page.getRawText().getBytes(), null,false,null);
 		
 		Set<Website> newSites = SiteManager.getInstance().addSites(sitesVec);
 		for (Website site:newSites){

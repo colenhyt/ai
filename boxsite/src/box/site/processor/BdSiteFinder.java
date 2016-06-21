@@ -19,6 +19,7 @@ public class BdSiteFinder implements IItemFinder {
 	protected Logger  log = Logger.getLogger(getClass());
 	Set<String>		relateWords = new HashSet<String>();
 	private SiteContentGetter contentGetter = new SiteContentGetter();
+	private Set<String> stopDomains = new HashSet<String>();
 
 	@Override
 	public String getStartUrl(String word) {
@@ -27,9 +28,11 @@ public class BdSiteFinder implements IItemFinder {
 
 	@Override
 	public void process(Page page) {
+		stopDomains.add(".org");
+		stopDomains.add(".gov");
 		//1. find sites:
 		Set<String> sites = new HashSet<String>();
-		Vector<Website> sitesVec = contentGetter.findWebSitesInPage(page.getRawText().getBytes(), null,false);
+		Vector<Website> sitesVec = contentGetter.findWebSitesInPage(page.getRawText().getBytes(), null,false,stopDomains);
 		
 		Set<Website> newSites = SiteManager.getInstance().addSites(sitesVec);
 		for (Website site:newSites){

@@ -108,11 +108,24 @@ public class ListSearchProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
+		
+		String url = "http://www.crc.com.hk";
+		String  u = URLStrHelper.getHost(url);
+		System.out.println(u);
 		String wordGroup = "创业,公司,市场，企业,中国,科技,互联网,产品,平台,服务,技术,电商,投资,融资,智能,创新,领域,模式,时代,硬件,资讯,未来,创业者";
 		String[] words = wordGroup.split(",");
 		String word = "创业,公司,领域";
+		word = "创业,科技,互联网";
+		word = "创业,技术,产品";
+		word = "创业,创新,模式";
+		word = "融资,技术,创新";
+		word = "科技,领域,创新";
+		word = "互联网,服务,模式";
+		word = "投资,产品,创新";
+		word  = "融资,投资,技术";
+		word = "人工智能";
 		ListSearchProcessor p = new ListSearchProcessor();
-		p.init("baidu",word,50);
+		p.init("baidu",word,100);
        Spider.create(p).addPipeline(new ListSearchPipeline()).run();
 
 	}

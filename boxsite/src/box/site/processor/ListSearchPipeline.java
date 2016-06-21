@@ -21,6 +21,7 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 	protected Logger  log = Logger.getLogger(getClass());
 	String sitepath = "data/items/";
 	String path = "data/list/";
+	private int reTry = 0;
 
 	@Override
 	public void process(ResultItems resultItems, Task task) {
@@ -48,22 +49,30 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 		Set<String> items = (Set<String>)resultItems.get("items");
 		log.warn("找到新sites: "+items.size());
 		
-		String spath = sitepath +searchWord+".items";
 		Set<String> allitems = new HashSet<String>();
-		String content = FileUtil.readFile(spath);
-		if (content!=null&&content.trim().length()>0){
-			List<String> durls = (List<String>)JSON.parse(content);
-			allitems.addAll(durls);			
+		if (items.size()>0){
+			String spath = sitepath +searchWord+".items";
+			String content = FileUtil.readFile(spath);
+			if (content!=null&&content.trim().length()>0){
+				List<String> durls = (List<String>)JSON.parse(content);
+				allitems.addAll(durls);			
+			}
+			
+			allitems.addAll(items);
+			if (allitems.size()>0)
+				FileUtil.writeFile(spath, JSON.toJSONString(allitems));
+		}else {
+			reTry++;
+			if (reTry>20){
+				log.warn("尝试次数 20,已无法找到新item");
+				System.exit(0);
+			}
 		}
 		
 		if (allitems.size()>maxCount&&maxCount>0){
 			log.warn("规定数量达到  "+maxCount);
 			System.exit(0);
 		}
-		
-		allitems.addAll(items);
-		if (allitems.size()>0)
-			FileUtil.writeFile(spath, JSON.toJSONString(allitems));
 		
 		//save search urls:
 		Set<String> searchUrls = (Set<String>)resultItems.get("searchUrls");

@@ -158,10 +158,10 @@ public class SiteContentGetter extends Thread {
 	}
 	
 	public Vector<Website> findWebSitesInPage(OriHttpPage page){
-		return findWebSitesInPage(page.getContent(),page.getRefWord(),false);
+		return findWebSitesInPage(page.getContent(),page.getRefWord(),false,null);
 	}
 	
-	public Vector<Website> findWebSitesInPage(byte[] content,String refWord,boolean findInfo){
+	public Vector<Website> findWebSitesInPage(byte[] content,String refWord,boolean findInfo,Set<String> stopdomains){
 		
 		htmlHelper.init(content);
 		Vector<Website> sites = new Vector<Website>();
@@ -186,7 +186,29 @@ public class SiteContentGetter extends Thread {
 			List<String> urls =htmlHelper.getUrlStrsByLinkKey(keys.get(0));
 			if (urls.size()<=0) continue;
 			String url = urls.get(0);
-			String realurl =new PostPageGetter(userAgent).getRealUrl(url, httpClient);
+			String realurl = null;
+			String realurl2str = htmlHelper.getBlockByOneProp("a", "class", "c-showurl");
+			if (realurl2str!=null){
+				int index = realurl2str.indexOf("/");
+				int index2 = realurl2str.indexOf("...");
+				if (index>0)
+					realurl = realurl2str.substring(0,index);
+				else if (index2>0)
+					realurl = realurl2str.substring(0,index2);
+				else
+					realurl = realurl2str;
+			}else
+				realurl = new PostPageGetter(userAgent).getRealUrl(url, httpClient);
+			if (realurl!=null&&stopdomains!=null){
+				boolean foundStop = false;
+				for (String domain:stopdomains){
+					if (realurl.indexOf(domain)>0){
+						foundStop = true;
+						break;
+					}
+				}
+				if (foundStop) continue;
+			}
 			Website site = new Website();
 			site.setBaiduurl(url);
 			site.setStatus(SiteDataManager.WEBSITE_STATUS_DONEURL);
