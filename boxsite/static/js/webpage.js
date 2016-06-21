@@ -42,9 +42,18 @@ Webpage.prototype.fillItems = function(sitelist)
   var myrank = item.myrank;
   if (myrank==null)
    myrank = -1;
+   if (name.length>60)
+    name = name.substring(0,60);
+  var alexa = item.alexa;
+  if (alexa==null)
+   alexa = -1;
+  var bdrank = item.bdrank;
+  if (bdrank==null)
+   bdrank = -1;
+   
   content += "<td><a href='"+url+"' target=blank>"+name+"</a></td>";
-  content += "<td>alexa:"+item.alexa+"</td>";
-  content += "<td>bdrank:"+item.bdrank+"</td>";
+  content += "<td>alexa:"+alexa+"</td>";
+  content += "<td>bdrank:"+bdrank+"</td>";
   content += "<td><a href='javascript:g_webpage.deleteWord("+item.wordid+","+item.siteid+")'>删除该关键字关联</a></td>";
   content += "<td><input name='myranks' type='input' size=10 value='"+myrank+"' onfocus='rankonfocus("+i+")'/></td>";
   content += "<td><input name='siteids' type='hidden' value='"+item.siteid+"' /></td>";

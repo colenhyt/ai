@@ -350,13 +350,28 @@ public class SiteManager extends MgrBase{
 	}
 	
 	public String getHotwords2(){
-		List<String> words = new ArrayList<String>();
+		Set<String> wordset = new HashSet<String>();
 		List<File> files = FileUtil.getFiles(itemPath+"baidu/");
 		for (File f:files){
 			String name = f.getName();
 			name = name.replace("%20", ",").replace(".items", "");
-			words.add(name);
+			wordset.add(name);
 		}
+		files = FileUtil.getFiles(itemPath+"bing/");
+		for (File f:files){
+			String name = f.getName();
+			name = name.replace("%20", ",").replace(".items", "");
+			wordset.add(name);
+		}
+		files = FileUtil.getFiles(itemPath+"sogou/");
+		for (File f:files){
+			String name = f.getName();
+			name = name.replace("%20", ",").replace(".items", "");
+			wordset.add(name);
+		}
+		
+		List<String> words = new ArrayList<String>();
+		words.addAll(wordset);
 		return JSON.toJSONString(words);
 	}
 	
@@ -405,6 +420,7 @@ public class SiteManager extends MgrBase{
 	public String querySites2(String word,int page){
 		List<Website> list = new ArrayList<Website>();
 		word = word.replace(",", "%20");
+		Set<String>  siteset = new HashSet<String>();
 		String path = itemPath + "baidu/"+word+".items";
 		String content = FileUtil.readFile(path);
 		if (content.trim().length()>0){
@@ -412,10 +428,38 @@ public class SiteManager extends MgrBase{
 			for (String str:stritems){
 				JSONObject obj = JSONObject.parseObject(str);
 				Website item = (Website)JSON.toJavaObject(obj, Website.class);
-				list.add(item);
+				if (!siteset.contains(item.getUrl())){
+					siteset.add(item.getUrl());
+					list.add(item);
+				}
 			}
 		}
-		
+		path = itemPath + "bing/"+word+".items";
+		content = FileUtil.readFile(path);
+		if (content.trim().length()>0){
+			List<String> stritems = (List<String>)JSON.parse(content);
+			for (String str:stritems){
+				JSONObject obj = JSONObject.parseObject(str);
+				Website item = (Website)JSON.toJavaObject(obj, Website.class);
+				if (!siteset.contains(item.getUrl())){
+					siteset.add(item.getUrl());
+					list.add(item);
+				}
+			}
+		}
+		path = itemPath + "sogou/"+word+".items";
+		content = FileUtil.readFile(path);
+		if (content.trim().length()>0){
+			List<String> stritems = (List<String>)JSON.parse(content);
+			for (String str:stritems){
+				JSONObject obj = JSONObject.parseObject(str);
+				Website item = (Website)JSON.toJavaObject(obj, Website.class);
+				if (!siteset.contains(item.getUrl())){
+					siteset.add(item.getUrl());
+					list.add(item);
+				}
+			}
+		}		
 		return JSON.toJSONString(list);
 	}
 	

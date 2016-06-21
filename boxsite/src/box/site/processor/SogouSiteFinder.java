@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
@@ -16,15 +18,24 @@ import box.site.SiteContentGetter;
 import box.site.SiteDataManager;
 import box.site.model.Website;
 import easyshop.html.HTMLInfoSupplier;
+import es.download.flow.DownloadContext;
+import es.util.http.PostPageGetter;
 import es.util.url.URLStrHelper;
 
 public class SogouSiteFinder implements IItemFinder {
 	protected Logger  log = Logger.getLogger(getClass());
 	Set<String>		relateWords = new HashSet<String>();
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
+	private HttpClient httpClient = HttpClients.createDefault();
 	private SiteContentGetter contentGetter = new SiteContentGetter();
 	private Set<String> stopDomains = new HashSet<String>();
+	private String userAgent;
 
+	public SogouSiteFinder(){
+		userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		
+	}
+	
 	@Override
 	public String getStartUrl(String word) {
 		return "https://www.sogou.com/web?query="+word;
@@ -44,23 +55,35 @@ public class SogouSiteFinder implements IItemFinder {
 			if (div==null) continue;
 			htmlHelper.init(div.getBytes());
 			String linstr = htmlHelper.getBlock("cite");
-			String url = sogouurl ;
+			String realurl = null ;
 			String siteword = null;
 			if (linstr!=null&&linstr.indexOf("-")>0){
 				int i0 = linstr.indexOf("-");
-				siteword = linstr.substring(0,i0);
-				int i1 = linstr.indexOf("/");
-				int i2 = linstr.indexOf("...");
-				if (i1>i0+1)
-					url = linstr.substring(i0+1,i1);
-				else if (i2>i0+1)
-					url = linstr.substring(i0+1,i2);
+				String substr = linstr.substring(0,i0);
+				if (substr.indexOf("/")>0)
+					realurl = linstr.substring(0,substr.indexOf("/"));
+				else {
+					siteword = substr;
+					int i1 = linstr.indexOf("/");
+					int i2 = linstr.indexOf("...");
+					int i3 = linstr.indexOf("-",i0+1);
+					if (i1>i0+1)
+						realurl = linstr.substring(i0+1,i1);
+					else if (i2>i0+1)
+						realurl = linstr.substring(i0+1,i2);
+					else if (i3>i0+1)
+						realurl = linstr.substring(i0+1,i3);
+				}
 			}
-			if (url!=null)
-				url = url.trim();
+			
+			if (realurl!=null){
+				realurl = realurl.trim();
+				if (realurl.indexOf("&nbsp;")>0)
+					realurl = realurl.substring(0,realurl.indexOf("&nbsp;"));
+			}
 			boolean foundStop = false;
 			for (String domain:stopDomains){
-				if (url.indexOf(domain)>0){
+				if (realurl.indexOf(domain)>0){
 					foundStop = true;
 					break;
 				}
@@ -68,10 +91,10 @@ public class SogouSiteFinder implements IItemFinder {
 			if (foundStop) continue;			
 			
 			Website site = new Website();
-			site.setBaiduurl(url);
+			site.setBaiduurl(sogouurl);
 			site.setStatus(SiteDataManager.WEBSITE_STATUS_DONEURL);
-			if (url!=null){
-				site.setUrl(url);
+			if (realurl!=null){
+				site.setUrl(realurl);
 			}
 			site.setCtitle(siteword);
 			site.setCrdate(new Date());

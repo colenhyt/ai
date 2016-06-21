@@ -44,10 +44,14 @@ public class ListSearchProcessor implements PageProcessor{
 		if (!folder.exists())
 			folder.mkdir();
 		
-		if (siteKey.equals("sogou"))
+		if (siteKey.equals("sogouwx"))
 			searchDoer = new SogouWXPublicFinder();
 		else if (siteKey.equals("baidu"))
 			searchDoer = new BdSiteFinder();
+		else if (siteKey.equals("bing"))
+			searchDoer = new BingSiteFinder();
+		else if (siteKey.equals("sogou"))
+			searchDoer = new SogouSiteFinder();
 		
 		String wordstr = "";
 		String[] warray = _word.split(",");
@@ -123,10 +127,20 @@ public class ListSearchProcessor implements PageProcessor{
 		word = "互联网,服务,模式";
 		word = "投资,产品,创新";
 		word  = "融资,投资,技术";
-		word = "人工智能";
-		ListSearchProcessor p = new ListSearchProcessor();
-		p.init("baidu",word,100);
-       Spider.create(p).addPipeline(new ListSearchPipeline()).run();
+		word = "o2o";
+		
+		Set<String> engines = new HashSet<String>();
+		engines.add("baidu");
+		engines.add("sogou");
+		engines.add("bing");
+		
+		for (String engine:engines){
+			ListSearchProcessor p = new ListSearchProcessor();
+			p.init(engine,word,100);
+			System.out.println("spider :"+engine);
+	       Spider.create(p).addPipeline(new ListSearchPipeline()).run();			
+		}
+
 
 	}
 
@@ -144,8 +158,9 @@ public class ListSearchProcessor implements PageProcessor{
 		List<String> pagingurls = page.getResultItems().get("pagingurls");
 		
 		for (String url:pagingurls){
-			String uniStr = URLStrHelper.toUtf8String(keyWord);
-			if (url.indexOf(keyWord)<=0&&url.indexOf(uniStr)<=0)continue;
+			String uniStr = URLStrHelper.toUtf8String(keyWord).toLowerCase();
+			if (url.indexOf(keyWord)<=0&&url.indexOf(uniStr)<=0
+					&&url.toLowerCase().indexOf(uniStr)<=0)continue;
 			if (searchUrls.contains(url)||doneUrls.contains(url)) continue;
 			newurls.add(url);
 		}
