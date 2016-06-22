@@ -53,7 +53,8 @@ public class PageContentGetter {
 	
 	public static String getTitle(String pageContent){
 		infoSupp.init(pageContent.getBytes());
-		return infoSupp.getTitleContent();
+		//return infoSupp.getTitleContent();
+		return null;
 	}
 	
 	public String getSpecSiteContent(String sitekey,String content){
@@ -93,12 +94,6 @@ public class PageContentGetter {
 			if (e!=null&&e2!=null){
 				context = content.substring(e.getBegin(),e2.getEnd());
 			}
-//			StartTag tag = infoSupp.getNextStartTag(e.getEnd(), "p");
-//			if (tag!=null){
-//				context += tag.getElement().getContentText();	
-//				tag = infoSupp.getNextStartTag(tag.getElement().getEnd(), "p");
-//				context += tag.getElement().getContentText();
-//			}
 			return context;
 		}
 							
