@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
+import box.site.PageContentGetter;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import cc.mallet.classify.Classifier;
@@ -37,7 +40,7 @@ import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
 
 public class NewsClassifier {
-	public final static int CAT_HOT = 1;
+	protected Logger  log = Logger.getLogger(getClass()); 
 	public final static int CAT_MARKET = 2;
 	public final static int CAT_PRODUCT = 3;
 	public final static int CAT_COMPANY = 4;
@@ -48,6 +51,7 @@ public class NewsClassifier {
 	private Set<String>  comSet = new HashSet<String>();
 	private Map<Integer,Classifier>	classifyMap = new HashMap<Integer,Classifier>();
 	JiebaSegmenter segmenter = new JiebaSegmenter();
+	private PageContentGetter contentGetter = new PageContentGetter();
 	
 	public NewsClassifier(){
 		String content = FileUtil.readFile(trainingPath+"people.json");
@@ -86,9 +90,10 @@ public class NewsClassifier {
 		for (File f:files){
 			if (f.getName().indexOf(".json")<0)continue;
 			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-			String content = FileUtil.readFile(f);
-			if (content!=null&&content.trim().length()>0){
-				Map<String,JSONObject> urls = JSON.parseObject(content,HashMap.class);
+			String urlsContent = FileUtil.readFile(f);
+			if (urlsContent!=null&&urlsContent.trim().length()>0){
+				log.warn("push training data: "+sitekey);
+				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
 				for (String url:urls.keySet()){
 					JSONObject json = urls.get(url);
 					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
@@ -97,8 +102,11 @@ public class NewsClassifier {
 					String fileP = path+sitekey+"/"+fileName;
 					File ff = new File(fileP);
 					if (!ff.exists()) continue;
-					String pageC = FileUtil.readFile(fileP);
-					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+fileName,pageC);
+					String pageContent = FileUtil.readFile(fileP);
+					List<String> cc = contentGetter.getHtmlContent(item.getUrl(), pageContent);
+					if (cc==null) continue;
+					String pureContext = cc.get(0);
+					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
 				}
 			}
 		}
@@ -128,6 +136,7 @@ public class NewsClassifier {
 			ClassifierTrainer naiveBayesTrainer = new NaiveBayesTrainer ();	
 			Classifier classifier = naiveBayesTrainer.train (ilist);
 			String filename = trainingPath+"/"+catid+".classifier";
+			log.warn("build classfier:"+ filename);
 			//保存:
 			try {
 				ObjectOutputStream oos = new ObjectOutputStream

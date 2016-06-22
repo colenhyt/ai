@@ -59,16 +59,18 @@ public class FeatureSequence2WeightFeatureVector extends Pipe implements Seriali
 	{
 		FeatureSequence fs = (FeatureSequence) carrier.getData();
 		FeatureVector vector = new FeatureVector (fs, binary);
-		for (String key:json.keySet()){
-			int idx = vector.location(key);
-			if (idx>0){
-				int weight = json.getIntValue(key);
-				double vv = vector.value(idx);
-				if (vv>0){
-				 vv *= weight;
-				 vector.setValue(idx, vv);
+		if (json!=null){
+			for (String key:json.keySet()){
+				int idx = vector.location(key);
+				if (idx>0){
+					int weight = json.getIntValue(key);
+					double vv = vector.value(idx);
+					if (vv>0){
+					 vv *= weight;
+					 vector.setValue(idx, vv);
+					}
 				}
-			}
+			}			
 		}
 		carrier.setData(vector);
 		return carrier;
