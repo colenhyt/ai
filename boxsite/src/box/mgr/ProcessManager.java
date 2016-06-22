@@ -30,6 +30,7 @@ public class ProcessManager extends MgrBase {
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
+	private PageContentGetter contentGetter = new PageContentGetter();
 
 	public static ProcessManager getInstance() {
 		if (uniqueInstance == null) {
@@ -184,7 +185,7 @@ public class ProcessManager extends MgrBase {
 				String filePath = pagesPath + sitekey + "/"+ url.hashCode()+".html";
 				String pageContent = FileUtil.readFile(filePath);
 				//获取正文:
-				List<String> contents = PageContentGetter.getHtmlContent(pageContent);
+				List<String> contents = contentGetter.getHtmlContent(url,pageContent);
 				if (contents==null||contents.size()<=0){
 					log.warn("could not get content "+filePath);
 					continue;

@@ -18,6 +18,7 @@ import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
 
+import easyshop.html.HTMLInfoSupplier;
 import es.util.FileUtil;
 
 public class PageManager extends MgrBase{
@@ -28,6 +29,7 @@ public class PageManager extends MgrBase{
 	private Map<Integer,TopItem> viewItemsMap = new HashMap<Integer,TopItem>();
 	private Map<Long, User>   userMap = new HashMap<Long,User>();
 	private boolean inited = false;
+	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
