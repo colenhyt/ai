@@ -473,8 +473,17 @@ public class HTMLInfoSupplier {
             }
         }
         return null;
-		
 	}
+	
+	//找到某标签的后一个标签内容
+	public String getNextBlock(String tagName,String propName,String propValue,String nextTagName){
+		Element e = getElementByOneProp(tagName,propName,propValue);
+		StartTag tag = totalJerio.findNextStartTag(e.getEnd(), nextTagName);
+		if (tag!=null)
+			return tag.getElement().getContentText();
+        return null;
+	}
+	
 	public int getBlockPosition(int position,String tagName){
 		Element e=totalJerio.findEnclosingElement(position, tagName);
 		if (e!=null)
@@ -1475,7 +1484,7 @@ public class HTMLInfoSupplier {
 		return urls;		
 	}
 
-	public List<String> getUrlStrsByLinkKey(String linkKey){
+	public List<String> getUrlStrs(){
 	        List<String> urls=new ArrayList<String>();
 	        for (Iterator it=linkTags.iterator();it.hasNext();) {
 	        	StartTag tag = (StartTag)it.next();
@@ -1483,7 +1492,7 @@ public class HTMLInfoSupplier {
 	            String value=attrs.getValue("href");
 	            if (value!=null){
 		            String url=URLStrHelper.legalUrl(urlStr,value);
-		            if (url!=null&&linkKey!=null&&url.indexOf(linkKey)>=0){
+		            if (url!=null){
 		            	if (!urls.contains(url))
 		            		urls.add(url);	   		            
 		            	}
@@ -1739,6 +1748,24 @@ public class HTMLInfoSupplier {
 	        }
 	    }			
 	    return tags;
+	}
+
+	public List<String> getUrlStrsByLinkKey(String linkKey){
+	        List<String> urls=new ArrayList<String>();
+	        for (Iterator it=linkTags.iterator();it.hasNext();) {
+	        	StartTag tag = (StartTag)it.next();
+	            Attributes attrs=tag.getAttributes();
+	            String value=attrs.getValue("href");
+	            if (value!=null){
+		            String url=URLStrHelper.legalUrl(urlStr,value);
+		            if (url!=null&&linkKey!=null&&url.indexOf(linkKey)>=0){
+		            	if (!urls.contains(url))
+		            		urls.add(url);	   		            
+		            	}
+	            }
+	            	
+	        }
+		return urls;		
 	}
 
 	//获取按同类聚合并根据数量多少进行排序的URL集合:

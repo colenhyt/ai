@@ -85,7 +85,7 @@ public class PostPageGetter extends PageGetter{
 	            
 	        }catch(Exception e)
 	        {
-	            log.warn("Caught Exception: " + e.getMessage(), e);
+	            log.warn("Caught Exception: " + e.getMessage());
 	            ConnResponse conRes=new ConnResponse(null,null,0,0,0);
 	            return null;
 	        }  finally {

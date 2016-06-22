@@ -115,6 +115,7 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String readFile(String fileName,String encode) {
+		checkAndMakeParentDirecotry(fileName);
 		File file = new File(fileName);
 		return readFile(file,encode);
 	}

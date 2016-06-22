@@ -289,14 +289,17 @@ public class URLStrHelper {
     public static String getHost(String urlStr){
 //    	http://www.c.com返回c.com
 		String host=getHostStr(urlStr);
-		String post=getHostPost(host);
-		if (host!=null&&post!=null){
-			String pre=host.substring(0,host.indexOf(post));
-			int i=pre.lastIndexOf(".");
-			if (i>0&&i<pre.length()-1)
-				return pre.substring(i+1)+post;
-			else
-				return pre+post;
+		if (host!=null){
+			String post=getHostPost(host);
+			if (post!=null){
+				String pre=host.substring(0,host.indexOf(post));
+				int i=pre.lastIndexOf(".");
+				if (i>0&&i<pre.length()-1)
+					return pre.substring(i+1)+post;
+				else
+					return pre+post;				
+			}
+			return host;
 		}
 		return null;
     }
@@ -340,7 +343,14 @@ public class URLStrHelper {
     			return urlStr.substring(pre.length());
     		else 
     			return null;
-    	}else
+    	}else {
+    		int i=urlStr.indexOf("/");
+    		int j=urlStr.indexOf("?");
+    		if (i>0)
+    			return urlStr.substring(0,i);
+    		else if (j>0)
+    			return urlStr.substring(0,j);
+    	}
     		return null;
     }
     
