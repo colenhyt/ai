@@ -293,9 +293,11 @@ public class PageManager extends MgrBase{
 	}
 	
 	public void renameTrainingurlTitles(){
+		Set<String> sites = new HashSet<String>();
+		sites.add("tmtpost.com");
 		for (String sitekey:allSiteUrlsMap.keySet()){
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
-			if (sitekey.equals("163.com")||sitekey.equals("sina.com.cn")||sitekey.equals("qq.com")){
+			if (sites.contains(sitekey)){
 				for (WebUrl item:siteUrlsMap.values()){
 					String ppath = pagesPath + sitekey + "/"+ item.getUrl().hashCode()+".html";
 					String fcontent = FileUtil.readFile(ppath);
