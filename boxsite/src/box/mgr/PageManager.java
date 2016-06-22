@@ -11,17 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import box.site.PageContentGetter;
-import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.model.User;
 import box.site.model.WebUrl;
 import cn.hd.util.StringUtil;
+
+import com.alibaba.fastjson.JSON;
+
 import es.util.FileUtil;
 
 public class PageManager extends MgrBase{
@@ -35,7 +31,7 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		PageManager.getInstance().resetTrainingurls();
+		PageManager.getInstance().renameTrainingurlTitles();
 //		String retstr = PageManager.getInstance().getNews(664000350);
 //		System.out.println(retstr);
 		
@@ -242,8 +238,9 @@ public class PageManager extends MgrBase{
 		if (urls!=null){
 			Set<WebUrl> notUrls = new HashSet<WebUrl>();
 			for (WebUrl url:urls.values()){
-				if (isAll||url.getCat()<=0)
+				if (isAll||url.getCat()<=0){
 					notUrls.add(url);
+				}
 			}
 			return JSON.toJSONString(notUrls);
 		}
@@ -293,6 +290,25 @@ public class PageManager extends MgrBase{
 	@Override
 	public void update(){
 		this.process();
+	}
+	
+	public void renameTrainingurlTitles(){
+		for (String sitekey:allSiteUrlsMap.keySet()){
+			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
+			if (sitekey.equals("163.com")||sitekey.equals("sina.com.cn")||sitekey.equals("qq.com")){
+				for (WebUrl item:siteUrlsMap.values()){
+					String ppath = pagesPath + sitekey + "/"+ item.getUrl().hashCode()+".html";
+					String fcontent = FileUtil.readFile(ppath);
+					if (fcontent.trim().length()<=0) continue;
+					htmlHelper.init(fcontent.getBytes());
+					String title = htmlHelper.getTitleContent();
+					if (title!=null)						
+						item.setText(title);					
+				}
+				File urlfile = new File(pagesPath+sitekey+"_urls.json");
+				FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));			
+			}				
+		}
 	}
 	
 	public void resetTrainingurls(){

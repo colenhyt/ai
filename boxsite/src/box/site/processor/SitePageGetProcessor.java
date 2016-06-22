@@ -63,7 +63,7 @@ public class SitePageGetProcessor implements PageProcessor{
 		queryCount = files.size();
 		
 		urlRegs = new HashSet<String>();
-		String regpath = "dna/" + domainName+"_reg.json";
+		String regpath = "dna/" + domainName+".json";
 		String regc = FileUtil.readFile(regpath);
 		if (regc!=null&&regc.trim().length()>0){
 			List<String> regs = (List<String>)JSON.parse(regc);
@@ -135,9 +135,11 @@ public class SitePageGetProcessor implements PageProcessor{
 	}
 	
 	public static void main(String[] args) {
-		String url = "http://www.iheima.com/";
+		String url = "http://tech.163.com/16/0622/02/BQ4NNB9600097U7T.html";
 		
-	
+		String reg = "http://tech.163.com/[0-9]+/[0-9]+/[0-9]+/[a-zA-Z0-9]+.html";
+		boolean bb = url.matches(reg);
+		System.out.println(bb);
 	}
 
 	@Override

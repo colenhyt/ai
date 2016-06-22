@@ -104,7 +104,7 @@ public class ProcessManager extends MgrBase {
 		if (runningSpiderCount>0) return;
 		
 		processStep = 1;
-		Thread.currentThread().notifyAll();			
+//		Thread.currentThread().notifyAll();			
 	}
 	
 	public void processSpiders(){
@@ -112,7 +112,7 @@ public class ProcessManager extends MgrBase {
 		//spider:
 		Set<String> sites = new HashSet<String>();
 //		sites.add("http://www.tmtpost.com");
-		sites.add("http://www.leiphone.com");
+//		sites.add("http://www.leiphone.com");
 //		sites.add("http://www.huxiu.com");
 //		sites.add("http://www.iheima.com/");
 //		sites.add("http://www.pintu360.com/");
@@ -123,6 +123,10 @@ public class ProcessManager extends MgrBase {
 //		sites.add("http://www.cyzone.cn/");
 //		sites.add("http://www.sootoo.com/");
 		
+//		sites.add("http://tech.163.com");
+//		sites.add("http://tech.qq.com/");
+//		sites.add("http://tech.sina.com.cn/");
+		sites.add("http://it.sohu.com");
 		
 		runningSpiderCount = sites.size();
 		for (String site:sites){
@@ -254,7 +258,8 @@ public class ProcessManager extends MgrBase {
 	public static void main(String[] args) {
 		ProcessManager.getInstance().init();
 		
-		ProcessManager.getInstance().update();
+//		ProcessManager.getInstance().update();
+		ProcessManager.getInstance().processSpiders();
 	}
 
 }
