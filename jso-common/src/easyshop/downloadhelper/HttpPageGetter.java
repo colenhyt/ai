@@ -38,9 +38,6 @@ import java.util.Iterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -58,6 +55,7 @@ import es.webref.model.WebLink;
 public class HttpPageGetter extends PageGetter
 {
 	static Logger log=Logger.getLogger(HttpPageGetter.class.getName());
+	   private HttpClient httpClient = null;
 
     private int failureCount = 0;
     
@@ -65,6 +63,11 @@ public class HttpPageGetter extends PageGetter
     static CharTools tool=new CharTools();
     public HttpPageGetter(){
     	super();
+    }
+    
+    public HttpPageGetter(HttpClient _httpClient){
+    	httpClient = _httpClient;
+    	//httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, HTTP_USER_AGENT);  //让服务器认为是IE
     }
     
     public static void main(String[] args){
@@ -307,6 +310,7 @@ public class HttpPageGetter extends PageGetter
     public HttpPage getDHttpPage(PageRef url){
         return getDHttpPage(url,"gbk");      
     }
+
 
 	public HttpPage getDHttpPage(PageRef url,String charSet){
 	        count++;

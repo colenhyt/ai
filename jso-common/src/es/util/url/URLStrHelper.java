@@ -343,16 +343,15 @@ public class URLStrHelper {
     			return urlStr.substring(pre.length());
     		else 
     			return null;
-    	}else {
-    		int i=urlStr.indexOf("/");
+		}else if (urlStr.indexOf("//")<0){		//没有http://
     		int j=urlStr.indexOf("?");
-    		if (i>0)
-    			return urlStr.substring(0,i);
-    		else if (j>0)
+    		if (j>0)
     			return urlStr.substring(0,j);
+    		else
+    			return urlStr;
     	}
     		return null;
-    }
+		}
     
     //包括后缀名的url文件名
     public static String getFullFileName(String urlStr){

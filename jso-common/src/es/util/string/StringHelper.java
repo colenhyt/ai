@@ -181,6 +181,11 @@ public class StringHelper {
 		}
 		return context;
 	}
+	
+	public static String subString(String str,String lastChar){
+		return str.substring(0,str.indexOf(lastChar));
+	}
+	
 	public static String findString(String context,String[] pres,String[] afters){
 		int start=-1,end=-1;
 		if (pres!=null&&pres.length>0){

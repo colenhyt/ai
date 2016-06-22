@@ -34,8 +34,9 @@ public class CharacterEncodeConverter {
             
             // Step 3-1：将字符的ASCII编码转换成2进制值
             int m = (int) c[i];
+            String s4 = Integer.toHexString(m);
             String word = Integer.toBinaryString(m);
-            System.out.println(word);
+//            System.out.println(word);
 
             // Step 3-2：将2进制值补足16位(2个字节的长度) 
             StringBuffer sb = new StringBuffer();
