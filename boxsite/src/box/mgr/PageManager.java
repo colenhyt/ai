@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import box.site.PageContentGetter;
 import box.site.model.TopItem;
 import box.site.model.User;
 import box.site.model.WebUrl;
@@ -20,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 
 import easyshop.html.HTMLInfoSupplier;
 import es.util.FileUtil;
+import es.util.url.URLStrHelper;
 
 public class PageManager extends MgrBase{
 	private static PageManager uniqueInstance = null;
@@ -30,6 +32,7 @@ public class PageManager extends MgrBase{
 	private Map<Long, User>   userMap = new HashMap<Long,User>();
 	private boolean inited = false;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
+	private PageContentGetter contentGetter = new PageContentGetter();
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
@@ -117,12 +120,31 @@ public class PageManager extends MgrBase{
 		}
 	}
 	
+	public String getNews2(String url){
+		String sitekey = URLStrHelper.getHost(url).toLowerCase();
+		String content = FileUtil.readFile(pagesPath+sitekey+"/"+url.hashCode()+".html");
+		TopItem item = new TopItem();
+		item.setUrl(url);
+		if (content.trim().length()>0){
+			String title = contentGetter.getTitle(content);
+			item.setCtitle(title);
+			List<String> ccs = contentGetter.getHtmlContent(url, content);
+			if (ccs!=null)
+			item.setHtmlContent(ccs.get(1));
+		}
+			
+		return JSON.toJSONString(item);
+		
+	}
+	
 	public String getNews(int itemid){
 		if (itemid<0)
 			return null;
 		
-		if (viewItemsMap.containsKey(itemid))
-			return JSON.toJSONString(viewItemsMap.get(itemid));
+		TopItem item = viewItemsMap.get(itemid);
+		if (item!=null){
+			return JSON.toJSONString(item);
+		}
 		
 		return null;
 	}

@@ -6,12 +6,15 @@ news.prototype = {
 
   init:function(){
    var itemid = getPar("itemid");
-   
-   g_news.getnews(itemid);
+    var url = getPar("url");
+  	 g_news.getnews(itemid,url);
   },
  
-  getnews: function (itemid) {
+  getnews: function (itemid,url) {
 	var dataParam = "item="+itemid;
+	if (!itemid&&url)
+	  dataParam = "url="+url;
+	  
 	try    {
 		$.ajax({type:"post",url:"/boxsite/news.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
@@ -25,7 +28,7 @@ news.prototype = {
     var content = "";
     content += "<h>"+item.ctitle+"</h>";
     content += "<div>来源:"+g_sitekeys[item.sitekey]+"</div>";
-    content += "<div>"+item.content+"</div>";
+    content += "<div>"+item.htmlContent+"</div>";
     
     var tag = document.getElementById("content");
     tag.innerHTML = content;

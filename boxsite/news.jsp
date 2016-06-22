@@ -26,8 +26,12 @@ if (catstr != null){
   jsonstr = PageManager.getInstance().getNewslist(catid,startsec);
  else
   jsonstr = PageManager.getInstance().getNewsCount(catid,startsec);
-}else {
+}else if (itemstr!=null){
  jsonstr = PageManager.getInstance().getNews(itemid);
+}else{
+String url = request.getParameter("url");
+
+ jsonstr = PageManager.getInstance().getNews2(url);
 }
 
 response.getWriter().print(jsonstr);

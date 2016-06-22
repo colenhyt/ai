@@ -62,7 +62,7 @@ function queryUrlsRst(data)
 	  if (i%2==0)
 	    color = "white";
 	 content += "<tr style='font-size:23px;padding-top:5px;background:"+color+"'>"
-	 content += "<td width=680><a href='"+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
+	 content += "<td width=680><a href='news.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
 	 content += "<td><div style='font-size:21px'>"
 	 
 	 var cats = [[1,"综合"],[11,"动态"],[21,"产品"],[31,"分析"],[41,"运营"],[51,"创投"],[-1,"无效"]];

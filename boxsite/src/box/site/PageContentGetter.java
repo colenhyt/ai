@@ -13,6 +13,7 @@ import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.edu.hfut.dmic.htmlbot.contentextractor.ContentExtractor;
 import easyshop.html.HTMLInfoSupplier;
+import easyshop.html.jericho.StartTag;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
@@ -26,18 +27,28 @@ public class PageContentGetter {
 		sitekeys.add("qq.com");
 		sitekeys.add("sohu.com");
 		sitekeys.add("huxiu.com");
-//		sitekeys.add("iheima.com");
+		sitekeys.add("iheima.com");
+		sitekeys.add("cyzone.cn");
+		sitekeys.add("ifanr.com");
+		sitekeys.add("ikanchai.com");
+		sitekeys.add("iyiou.com");
+		sitekeys.add("leiphone.com");
+		sitekeys.add("pintu360.com");
+		sitekeys.add("sootoo.com");
+		sitekeys.add("techweb.com.cn");
+		sitekeys.add("tmtpost.com");
 	}
 	
 	public static void main(String[] args){
-		String sitekey = "iheima.com";
-		String path = "data/pages/"+sitekey+"/2043054237.html";
+		String sitekey = "tmtpost.com";
+		String path = "data/pages/"+sitekey+"/1535882773.html";
 		String content = FileUtil.readFile(path);
 		PageContentGetter getter = new PageContentGetter();
+//		System.out.println(content);
 		String cc = getter.getSpecSiteContent(sitekey, content);
-//		System.out.println(cc);
-		List<String> cc2 = getter.getHtmlContent("http://"+sitekey, content);
-		System.out.println(cc2.toString());
+		System.out.println(cc);
+//		List<String> cc2 = getter.getHtmlContent("http://"+sitekey, content);
+//		System.out.println(cc2.toString());
 	}
 	
 	public static String getTitle(String pageContent){
@@ -53,12 +64,43 @@ public class PageContentGetter {
 			return infoSupp.getBlockByOneProp("div","id","Cnt-Main-Article-QQ");
 		else if (sitekey.indexOf("sina.com")>=0)
 			return infoSupp.getDivByClassValue("content");
+		else if (sitekey.indexOf("ikanchai.com")>=0)
+			return infoSupp.getDivByClassValue("hl_content");
+		else if (sitekey.indexOf("iyiou.com")>=0)
+			return infoSupp.getBlockByOneProp("div","id","post_description");
 		else if (sitekey.indexOf("sohu.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","contentText");
 		else if (sitekey.indexOf("huxiu.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","article_content");
-		else if (sitekey.indexOf("iheima.com")>=0)
-			return infoSupp.getNextBlock("div", "class","outline","p");
+		else if (sitekey.indexOf("tmtpost.com")>=0)
+			return infoSupp.getBlock("article");
+		else if (sitekey.indexOf("sootoo.com")>=0)
+			return infoSupp.getBlockByOneProp("div","id","content");
+		else if (sitekey.indexOf("ifanr.com")>=0)
+			return infoSupp.getBlockByOneProp("article","class","o-single-content__body__content c-article-content s-single-article js-article");
+		else if (sitekey.indexOf("techweb.com.cn")>=0)
+			return infoSupp.getDivByClassValue("content_txt");
+		else if (sitekey.indexOf("pintu360.com")>=0)
+			return infoSupp.getDivByClassValue("article-body");
+		else if (sitekey.indexOf("cyzone.cn")>=0)
+			return infoSupp.getDivByClassValue("article-content");
+		else if (sitekey.indexOf("leiphone.com")>=0)
+			return infoSupp.getDivByClassValue("pageCont lph-article-comView ");
+		else if (sitekey.indexOf("iheima.com")>=0){
+			easyshop.html.jericho.Element e = infoSupp.getElementByOneProp("div", "class","outline");
+			easyshop.html.jericho.Element e2 = infoSupp.getElementByOneProp("div", "class","copyright");
+			String context = "";
+			if (e!=null&&e2!=null){
+				context = content.substring(e.getBegin(),e2.getEnd());
+			}
+//			StartTag tag = infoSupp.getNextStartTag(e.getEnd(), "p");
+//			if (tag!=null){
+//				context += tag.getElement().getContentText();	
+//				tag = infoSupp.getNextStartTag(tag.getElement().getEnd(), "p");
+//				context += tag.getElement().getContentText();
+//			}
+			return context;
+		}
 							
 		return null;
 	}
@@ -77,12 +119,14 @@ public class PageContentGetter {
 	public List<String> getHtmlContent(String url,String pageContent){
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
 		if (sitekeys.contains(sitekey)){
-			String textContent = getSpecSiteContent(sitekey,pageContent);
-			if (textContent!=null){
+			String htmlContext = getSpecSiteContent(sitekey,pageContent);
+			if (htmlContext!=null){
 				List<String> content = new ArrayList<String>();
-				textContent = textContent.trim();
-				content.add(textContent);
-				content.add(textContent);
+				htmlContext = htmlContext.trim();
+				DomPage domPage2 = HtmlBot.getDomPageByHtml(htmlContext);
+			    ContentExtractor contentExtractor = new ContentExtractor(domPage2);
+				content.add(contentExtractor.getText());
+				content.add(htmlContext);
 				return content;
 			}		
 			return null;
