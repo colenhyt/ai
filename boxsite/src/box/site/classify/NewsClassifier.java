@@ -104,7 +104,10 @@ public class NewsClassifier {
 					if (!ff.exists()) continue;
 					String pageContent = FileUtil.readFile(fileP);
 					List<String> cc = contentGetter.getHtmlContent(item.getUrl(), pageContent);
-					if (cc==null) continue;
+					if (cc==null) {
+						log.warn("could not find html context for: "+item.getUrl());
+						continue;
+					}
 					String pureContext = cc.get(0);
 					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
 				}

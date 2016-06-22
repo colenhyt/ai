@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 
@@ -127,60 +128,35 @@ public class SiteTermProcessor implements PageProcessor{
 //			processor.parseFromPage(url,"gb2312");
 //		}
 		
-		processor.processFilesTerms();
+		processor.processTrainingDataTerms();
 		
 	}
 	
-	public void processFilesTerms(){
-		List<File> files = FileUtil.getFiles(sitePagesPath);
-//		for (File f:files){
-//			String content = FileUtil.readFile(f);
-//			DomPage domPage = HtmlBot.getDomPageByHtml(content);
-//			Document doc = domPage.getDoc();
-//			Map<String,Integer>  mapTerms = getTerms(doc);
-//			String str = f.getName().substring(0,f.getName().indexOf(".html"));
-//			String fileName = siteTermsPath + "/"+ str+".json";
-//			FileUtil.writeFile(fileName, JSON.toJSONString(mapTerms));
-//			log.warn("get terms "+mapTerms.size());
-//		}
-		
-		Map<String,Integer> termsMap = new HashMap<String,Integer>();
-		files = FileUtil.getFiles(siteTermsPath);
-		for (File f:files){
-			String content = FileUtil.readFile(f);
-			Map<String,Integer> json = (Map<String,Integer>)JSON.parse(content);
-			for (String key:json.keySet()){
-				if (termsMap.containsKey(key))
-					termsMap.put(key, termsMap.get(key)+json.get(key));
-				else
-					termsMap.put(key, json.get(key));
+	//对下所有目录下的所有文件切词，并统计词频,排序:
+	public void processTrainingDataTerms(){
+		String rootPath = "data/training/";
+		List<File> folders = FileUtil.getFolders(rootPath);
+		for (File folder:folders){
+			Map<String,Integer> termsMap = new HashMap<String,Integer>();
+			String termPath = rootPath+folder.getName();
+			List<File> files = FileUtil.getFiles(folder.getAbsolutePath());
+			for (File f:files){
+				String content = FileUtil.readFile(f);
+				getWordTerms(content,termsMap);
 			}
-		}		
-		
-	  //通过比较器实现比较排序 
-		List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
-	  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
-	   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
-		   return mapping2.getValue().compareTo(mapping1.getValue()); 
-	   } 
-	  }); 
-		  
-//	  for(Map.Entry<String,Integer> mapping:mappingList){ 
-//		   System.out.println(mapping.getKey()+":"+mapping.getValue()); 
-//		  }	  
-		int count  = 50;
-		String fileHot = siteTermsPath+"_"+count+".json";
-		List<Map.Entry<String,Integer>> toplist = new ArrayList<Map.Entry<String,Integer>>();
-		for (int i=0;i<mappingList.size();i++){
-			Map.Entry<String,Integer> item = mappingList.get(i);
-			if (item.getKey().length()>1){
-				log.warn("keyword: "+JSON.toJSONString(item));
-				toplist.add(item);
-			}if (toplist.size()>count)break;
+			
+			  //通过比较器实现比较排序 
+				List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
+			  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
+			   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
+				   return mapping2.getValue().compareTo(mapping1.getValue()); 
+			   } 
+			  }); 
+			  
+			String fileName = termPath +".terms";
+			FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
+			log.warn(folder.getName()+" get terms "+termsMap.size());
 		}
-		FileUtil.writeFile(fileHot, JSON.toJSONString(toplist));
-		String fileName = siteTermsPath+".json";
-		FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
 	}
 
 	@Override
@@ -265,6 +241,34 @@ public class SiteTermProcessor implements PageProcessor{
 		return urls;
 	}
 	
+	public void getWordTerms(String word,Map<String,Integer> termsMap){
+		//切割分词:
+		List<SegToken> segToken = segmenter.process(word, SegMode.INDEX);
+		for (SegToken token:segToken){
+			String w = token.word;
+			if (w==null||w.trim().length()<=0) continue;
+			
+			//不记录数字
+			if (StringHelper.isNumber(w)) continue;
+			//不记录过长词:
+			if (w.trim().length()>25){
+				log.warn("发现过长词 :"+w);
+				continue;
+			}
+			//去掉常用停用词:
+			if (stoplistWords.contains(w)) continue;
+			//字符过滤:
+			String w1 = filter(w);
+			
+			if (w1.trim().length()<=0) continue;
+			
+			if (termsMap.containsKey(w1))
+				termsMap.put(w1, termsMap.get(w1).intValue()+1);
+			else
+				termsMap.put(w1, 1);
+		}		
+	}
+	
 	public Map<String,Integer> getTerms(Document doc){
 		Map<String,Integer> termsMap = new HashMap<String,Integer>();
 		
@@ -274,31 +278,7 @@ public class SiteTermProcessor implements PageProcessor{
 		for (String word:words){
 //			log.warn("words "+word);
 			if (word==null||word.trim().length()<=0) continue;
-			//切割分词:
-			List<SegToken> segToken = segmenter.process(word, SegMode.INDEX);
-			for (SegToken token:segToken){
-				String w = token.word;
-				if (w==null||w.trim().length()<=0) continue;
-				
-				//不记录数字
-				if (StringHelper.isNumber(w)) continue;
-				//不记录过长词:
-				if (w.trim().length()>25){
-					log.warn("发现过长词 :"+w);
-					continue;
-				}
-				//去掉常用停用词:
-				if (stoplistWords.contains(w)) continue;
-				//字符过滤:
-				String w1 = filter(w);
-				
-				if (w1.trim().length()<=0) continue;
-				
-				if (termsMap.containsKey(w1))
-					termsMap.put(w1, termsMap.get(w1).intValue()+1);
-				else
-					termsMap.put(w1, 1);
-			}
+			getWordTerms(word,termsMap);
 		}
 		return termsMap;
 	}
@@ -316,5 +296,58 @@ public class SiteTermProcessor implements PageProcessor{
 		// TODO Auto-generated method stub
 		return site;
 	}
+
+	//对某个目录下的所有文件切词，并统计词频,排序:
+		public void processFilesTerms(){
+			List<File> files = FileUtil.getFiles(sitePagesPath);
+	//		for (File f:files){
+	//			String content = FileUtil.readFile(f);
+	//			DomPage domPage = HtmlBot.getDomPageByHtml(content);
+	//			Document doc = domPage.getDoc();
+	//			Map<String,Integer>  mapTerms = getTerms(doc);
+	//			String str = f.getName().substring(0,f.getName().indexOf(".html"));
+	//			String fileName = siteTermsPath + "/"+ str+".json";
+	//			FileUtil.writeFile(fileName, JSON.toJSONString(mapTerms));
+	//			log.warn("get terms "+mapTerms.size());
+	//		}
+			
+			Map<String,Integer> termsMap = new HashMap<String,Integer>();
+			files = FileUtil.getFiles(siteTermsPath);
+			for (File f:files){
+				String content = FileUtil.readFile(f);
+				Map<String,Integer> json = (Map<String,Integer>)JSON.parse(content);
+				for (String key:json.keySet()){
+					if (termsMap.containsKey(key))
+						termsMap.put(key, termsMap.get(key)+json.get(key));
+					else
+						termsMap.put(key, json.get(key));
+				}
+			}		
+			
+		  //通过比较器实现比较排序 
+			List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
+		  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
+		   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
+			   return mapping2.getValue().compareTo(mapping1.getValue()); 
+		   } 
+		  }); 
+			  
+	//	  for(Map.Entry<String,Integer> mapping:mappingList){ 
+	//		   System.out.println(mapping.getKey()+":"+mapping.getValue()); 
+	//		  }	  
+			int count  = 50;
+			String fileHot = siteTermsPath+"_"+count+".json";
+			List<Map.Entry<String,Integer>> toplist = new ArrayList<Map.Entry<String,Integer>>();
+			for (int i=0;i<mappingList.size();i++){
+				Map.Entry<String,Integer> item = mappingList.get(i);
+				if (item.getKey().length()>1){
+					log.warn("keyword: "+JSON.toJSONString(item));
+					toplist.add(item);
+				}if (toplist.size()>count)break;
+			}
+			FileUtil.writeFile(fileHot, JSON.toJSONString(toplist));
+			String fileName = siteTermsPath+".json";
+			FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
+		}
 
 }
