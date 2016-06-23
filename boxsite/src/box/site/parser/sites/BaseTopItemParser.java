@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.hd.util.ImgGetter;
 import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
@@ -221,5 +223,16 @@ public class BaseTopItemParser implements ITopItemParser {
 		if (index>0)
 			realContext = realContext.substring(0,index);
 		return realContext;
+	}
+	
+	public void save(String rootPath,TopItem item){
+		String fileName = item.getUrl().hashCode()+".item";
+		
+		//根据时间item落地:
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(item.getContentTime());
+		String dateStr = c.get(Calendar.YEAR)+"-"+c.get(Calendar.MONTH)+"-"+c.get(Calendar.DAY_OF_MONTH);
+		String path = rootPath+"items/"+dateStr+"/"+fileName;
+		FileUtil.writeFile(path, JSON.toJSONString(item));		
 	}
 }

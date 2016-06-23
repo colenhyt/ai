@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.hd.util.ImgGetterThread;
+
 import com.alibaba.fastjson.JSON;
 
 import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
+import box.site.parser.sites.BaseTopItemParser;
 import box.site.processor.MultiPageTask;
 import es.util.FileUtil;
 
@@ -31,6 +34,8 @@ public class ProcessManager extends MgrBase {
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
 	private PageContentGetter contentGetter = new PageContentGetter();
+    private BaseTopItemParser parser = new BaseTopItemParser();
+	ImgGetterThread imgGetter = new ImgGetterThread();
 
 	public static ProcessManager getInstance() {
 		if (uniqueInstance == null) {
@@ -59,45 +64,6 @@ public class ProcessManager extends MgrBase {
 				savedUrlsMap.put(folder.getName(), siteurls3);
 			}			
 		}		
-	}
-	
-	public Map<Integer,List<TopItem>> processSaveItems(List<TopItem> newItems){
-
-		Map<Integer,List<TopItem>> mapitems = new HashMap<Integer,List<TopItem>>();
-		//topitem 入map库:
-		for (TopItem item:newItems){
-			List<TopItem> catItems = mapitems.get(item.getCat());
-			if (catItems==null){
-				catItems = new ArrayList<TopItem>();
-			}
-			catItems.add(item);
-			mapitems.put(item.getCat(), catItems);
-		}
-		
-		Date currDate = new Date();
-		//按日期入库,一天一个json:
-		Calendar c = Calendar.getInstance();
-		for (int catid:mapitems.keySet()){
-			c.setTime(currDate);
-			List<TopItem> citems = mapitems.get(catid);
-			
-			//topitem 落地
-			String datePath = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);
-			String itempath = itemPath+catid+"/"+datePath+"/"+currDate.getTime()+"_items.json";			
-			FileUtil.writeFile(itempath, JSON.toJSONString(citems));
-			
-			for (TopItem item2:citems){
-			//page移到历史库,删除当前网页 :
-			String fileName = item2.getUrl().hashCode()+".html";
-			String fileP = pagesPath+item2.getSitekey()+"/"+fileName;
-			String pageC = FileUtil.readFile(fileP);
-//			FileUtil.writeFile(hispath+item2.getSitekey()+"/"+fileName,pageC);
-//			FileUtil.del(fileP);		
-			}
-		}
-		
-		return mapitems;
-		
 	}
 	
 	public void spiderFinished(String sitekey){
@@ -184,24 +150,13 @@ public class ProcessManager extends MgrBase {
 				if (saves!=null&&saves.contains(url)) continue;
 				String filePath = pagesPath + sitekey + "/"+ url.hashCode()+".html";
 				String pageContent = FileUtil.readFile(filePath);
-				//获取正文:
-				List<String> contents = contentGetter.getHtmlContent(url,pageContent);
-				if (contents==null||contents.size()<=0){
-					log.warn("could not get content "+filePath);
+				
+				TopItem titem = parser.parse(url, pageContent);
+				if (item==null){
+					log.warn("page parse failed:"+url);
 					continue;
 				}
-				//获取标题:
-				String title = PageContentGetter.getTitle(pageContent);
-				if (title==null||title.trim().length()<=0){
-					log.warn("could not get title: "+filePath);
-					continue;
-				}
-				TopItem titem = new TopItem();
-				titem.setUrl(url);
-				titem.setId(url.hashCode());
-				titem.setContent(contents.get(0));
-				titem.setHtmlContent(contents.get(1));
-				titem.setCtitle(title);
+
 				//尚未分类，即可分类:
 				if (item.getCat()<=0) {
 					int catid = newsClassifier.testClassify(titem);
@@ -209,15 +164,8 @@ public class ProcessManager extends MgrBase {
 					titem.setCat(catid);
 					continue;
 				};
-				titem.setCat(item.getCat());
-				titem.setCrDate(new Date());
-				titem.setSitekey(sitekey);
-				File f = new File(filePath);
-				if (f.exists()){
-					titem.setContentTime(f.lastModified());
-				}
 				newItems.add(titem);
-				processItemsMap.put(titem.getId(),titem);
+				parser.save(rootPath, titem);
 			}
 			
 			if (newItems.size()<=0){
