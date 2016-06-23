@@ -73,9 +73,13 @@ public class PageContentGetter {
 			return infoSupp.getBlockByOneProp("div","id","contentText");
 		else if (sitekey.indexOf("huxiu.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","article_content");
-		else if (sitekey.indexOf("tmtpost.com")>=0)
-			return infoSupp.getBlock("article");
-		else if (sitekey.indexOf("sootoo.com")>=0)
+		else if (sitekey.indexOf("tmtpost.com")>=0){
+			String[]  strs = infoSupp.getBlocksByOneProp("div", "class", "inner");
+			if (strs.length>1)
+				return strs[1];
+			else
+				return infoSupp.getBlock("article");
+		}else if (sitekey.indexOf("sootoo.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","content");
 		else if (sitekey.indexOf("ifanr.com")>=0)
 			return infoSupp.getBlockByOneProp("article","class","o-single-content__body__content c-article-content s-single-article js-article");
