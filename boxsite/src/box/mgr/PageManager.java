@@ -15,6 +15,7 @@ import box.site.PageContentGetter;
 import box.site.model.TopItem;
 import box.site.model.User;
 import box.site.model.WebUrl;
+import cn.hd.util.ImgGetter;
 import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -129,8 +130,26 @@ public class PageManager extends MgrBase{
 			String title = contentGetter.getTitle(content);
 			item.setCtitle(title);
 			List<String> ccs = contentGetter.getHtmlContent(url, content);
-			if (ccs!=null)
-			item.setHtmlContent(ccs.get(1));
+			if (ccs!=null){
+				String context = ccs.get(1);
+				Set<String> imgurls = ImgGetter.findImgUrls(url, context);
+				for (String imgurl:imgurls){
+					String rimgUrl = imgurl;
+					if (imgurl.indexOf("http")<0){
+						String urlHead = url.substring(0,url.lastIndexOf("/"));
+						rimgUrl = urlHead+imgurl;
+					}
+					String fileType = rimgUrl.substring(rimgUrl.lastIndexOf("."));
+					String imgPath = "pics/"+sitekey+"/"+rimgUrl.hashCode()+fileType;
+					
+					File f = new File("c:/boxsite/"+imgPath);
+					if (f.exists()){
+						context = context.replace(imgurl, imgPath);
+					}
+				}
+				item.setHtmlContent(context);				
+			}
+
 		}
 			
 		return JSON.toJSONString(item);

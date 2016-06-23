@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import cn.hd.util.ImgGetter;
 import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
@@ -25,7 +26,8 @@ public class BaseTopItemParser implements ITopItemParser {
 	protected HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	protected NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,String> siteTitleEndWord = new HashMap<String,String>();
-
+	ImgGetter imgGetter = new ImgGetter();
+	
 	public BaseTopItemParser(){
 		//"_网易科技"
 		//cyzone: - 
@@ -163,6 +165,7 @@ public class BaseTopItemParser implements ITopItemParser {
 //		if (catid<=0)
 //			return null;
 		
+		imgGetter.get(url, titem.getHtmlContent());
 		
 		titem.setCrDate(new Date());
 		String urlDate = getUrlDate(url);

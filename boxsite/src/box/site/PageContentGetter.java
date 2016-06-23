@@ -12,8 +12,8 @@ import org.jsoup.select.Elements;
 import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.edu.hfut.dmic.htmlbot.contentextractor.ContentExtractor;
+import cn.hd.util.ImgGetterThread;
 import easyshop.html.HTMLInfoSupplier;
-import easyshop.html.jericho.StartTag;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
@@ -40,15 +40,22 @@ public class PageContentGetter {
 	}
 	
 	public static void main(String[] args){
-		String sitekey = "tmtpost.com";
-		String path = "data/pages/"+sitekey+"/1535882773.html";
-		String content = FileUtil.readFile(path);
+//		String sitekey = "tmtpost.com";
+//		String path = "data/pages/"+sitekey+"/1535882773.html";
+//		String content = FileUtil.readFile(path);
 		PageContentGetter getter = new PageContentGetter();
-//		System.out.println(content);
-		String cc = getter.getSpecSiteContent(sitekey, content);
-		System.out.println(cc);
+//		String cc = getter.getSpecSiteContent(sitekey, content);
+//		System.out.println(cc);
 //		List<String> cc2 = getter.getHtmlContent("http://"+sitekey, content);
 //		System.out.println(cc2.toString());
+		String url = "http://www.pintu360.com/article/35424.html";
+		String sitekey = URLStrHelper.getHost(url).toLowerCase();
+		String content = FileUtil.readFile("data/pages/"+sitekey+"/"+url.hashCode()+".html");
+		List<String> strs = getter.getHtmlContent(url,content);
+		ImgGetterThread task = new ImgGetterThread();
+		Thread t2=new Thread(task);
+		t2.start();
+		task.push(url, strs.get(1));		
 	}
 	
 	public static String getTitle(String pageContent){
