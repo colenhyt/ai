@@ -22,7 +22,7 @@ public class MultiPageTask implements Runnable {
 	@Override
 	public void run() {
 		SitePageGetProcessor p1 = new SitePageGetProcessor(this,url,count);
-        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
+        Spider.create(p1).addPipeline(new SiteURLsPipeline()).addPipeline(new SiteTopItemsPipeline()).run();
 	}
 
 }
