@@ -219,6 +219,8 @@ public class SitePageGetProcessor implements PageProcessor{
 		
 		
 		page.putField("PageUrls", urls);
+		page.putField("PageContent", pageContent);
+		page.putField("Url", page.getRequest().getUrl());
 		page.putField("DomainName", domainName);
 		log.warn("get page "+urls.size()+",pageCount:"+queryCount);
 		

@@ -28,7 +28,7 @@ public class PageManager extends MgrBase{
 	private static PageManager uniqueInstance = null;
 	private Set<String>	sitekeys;
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
-	private Map<String,List<TopItem>> viewListItemsMap = new HashMap<String,List<TopItem>>();
+	private Map<String,List<TopItem>> viewListItemsMap = Collections.synchronizedMap(new HashMap<String,List<TopItem>>());
 	private Map<Integer,TopItem> viewItemsMap = new HashMap<Integer,TopItem>();
 	private Map<Long, User>   userMap = new HashMap<Long,User>();
 	private boolean inited = false;
@@ -101,23 +101,26 @@ public class PageManager extends MgrBase{
 		
 	}
 	
+	public synchronized void pushNewItem(TopItem item){
+		String key = _keyPath(item.getContentTime(),item.getCat());
+		//放入viewItemMap内存:
+		List<TopItem> vitems = viewListItemsMap.get(key);
+		if (vitems==null){
+			vitems = Collections.synchronizedList(new ArrayList<TopItem>());
+		}
+		vitems.add(item);
+		Collections.sort(vitems);	
+		viewListItemsMap.put(key, vitems);	
+	}
+	
 	public void pushNewItems(Map<Integer,List<TopItem>> mapitems){
 		
-		Date currDate = new Date();
 		//按日期入内存库,一天一个json:
-		Calendar c = Calendar.getInstance();
 		for (int catid:mapitems.keySet()){
-			c.setTime(currDate);
 			List<TopItem> citems = mapitems.get(catid);
-			String key = _keyPath(c.getTime(),catid);
-			//放入viewItemMap内存:
-			List<TopItem> vitems = viewListItemsMap.get(key);
-			if (vitems==null){
-				vitems = new ArrayList<TopItem>();
+			for (TopItem item:citems){
+				pushNewItem(item);
 			}
-			vitems.addAll(citems);
-			Collections.sort(vitems);
-			viewListItemsMap.put(key, vitems);
 		}
 	}
 	
@@ -302,7 +305,7 @@ public class PageManager extends MgrBase{
 		if (currT==0)
 			currT = System.currentTimeMillis();
 		long findTime = Math.abs(currT);
-		String key = _keyPath(new Date(findTime),catid);
+		String key = _keyPath(findTime,catid);
 		if (!viewListItemsMap.containsKey(key)){
 			Calendar c = Calendar.getInstance();
 			long dateSec = 60*60*24*1000;
@@ -315,7 +318,7 @@ public class PageManager extends MgrBase{
 				if (dtime>System.currentTimeMillis()) break;
 				
 				c.setTimeInMillis(dtime);
-				key = _keyPath(c.getTime(),catid);
+				key = _keyPath(dtime,catid);
 				if (viewListItemsMap.containsKey(key)){
 					break;
 				}
@@ -455,9 +458,11 @@ public class PageManager extends MgrBase{
 		return JSON.toJSONString(sitekeys);
 	}
 	
-	private String _keyPath(Date currDate,int catid){
+	private String _keyPath(long time,int catid){
 		Calendar c = Calendar.getInstance();
-		c.setTime(currDate);
+		if (time<=0)
+			time = System.currentTimeMillis();
+		c.setTimeInMillis(time);
 		String datePath = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);
 		
 		String key = catid+"_"+datePath;

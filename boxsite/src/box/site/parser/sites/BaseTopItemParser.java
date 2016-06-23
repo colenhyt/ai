@@ -26,7 +26,6 @@ public class BaseTopItemParser implements ITopItemParser {
 	protected HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	protected NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,String> siteTitleEndWord = new HashMap<String,String>();
-	ImgGetter imgGetter = new ImgGetter();
 	
 	public BaseTopItemParser(){
 		//"_网易科技"
@@ -164,8 +163,6 @@ public class BaseTopItemParser implements ITopItemParser {
 //		int catid = newsClassifier.testClassify(titem);
 //		if (catid<=0)
 //			return null;
-		
-		imgGetter.get(url, titem.getHtmlContent());
 		
 		titem.setCrDate(new Date());
 		String urlDate = getUrlDate(url);

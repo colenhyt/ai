@@ -84,7 +84,7 @@ public class TopItem implements Comparable{
 	@Override
 	public int compareTo(Object o) {
 		TopItem item = (TopItem)o;
-		Long crd = item.getCrDate().getTime();
-		return crd.compareTo(this.getCrDate().getTime());
+		Long crd = item.getContentTime();
+		return crd.compareTo(this.getContentTime());
 	}
 }
