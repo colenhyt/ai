@@ -3,6 +3,7 @@ package box.mgr;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -106,7 +107,7 @@ public class ProcessManager extends MgrBase {
 	}
 	
 	@Override
-	public void update(){
+	public void process(){
 		//运转间隔
 		final int PROCESS_DURATION = 60 * 60 * 1000;		//1小时
 		
@@ -135,7 +136,7 @@ public class ProcessManager extends MgrBase {
 //		this.process();
 	}
 	
-	//获取正文，入库
+	//获取正文，items入库
 	public List<TopItem> processClassfiy(){
 		List<File> folders = FileUtil.getFolders(pagesPath);
 		
@@ -152,15 +153,15 @@ public class ProcessManager extends MgrBase {
 				String pageContent = FileUtil.readFile(filePath);
 				
 				TopItem titem = parser.parse(url, pageContent);
-				if (item==null){
+				if (titem==null){
 					log.warn("page parse failed:"+filePath);
 					continue;
 				}
 
 				//未找到分类:
-				if (item.getCat()<=0) {
+				if (titem.getCat()<=0) {
 					log.warn("could not classify :"+filePath);
-					continue;
+//					continue;
 				};
 				newItems.add(titem);
 				parser.save(rootPath, titem);
@@ -169,6 +170,9 @@ public class ProcessManager extends MgrBase {
 			if (newItems.size()<=0){
 				continue;
 			}
+			
+			if (newItems.size()>5)
+			 break;
 			
 			if (saves==null){
 				saves = new HashSet<String>();
@@ -191,6 +195,35 @@ public class ProcessManager extends MgrBase {
 
 	}
 
+	//产生对应日期的内容列表并落地
+	public void processListUrls(List<TopItem> items){
+		Map<String,List<TopItem>> newItemsMap = Collections.synchronizedMap(new HashMap<String,List<TopItem>>());
+		List<String> newsList = Collections.synchronizedList(new ArrayList<String>());
+		Date now = new Date();
+		Calendar c = Calendar.getInstance();
+		for (TopItem item:items){
+			long crtime = item.getContentTime();
+			c.setTimeInMillis(crtime);
+			String dateStr = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);
+			String fileName = listPath+item.getCat()+"/"+dateStr+"/"+now.getTime()+".list";
+			List<TopItem> list = newItemsMap.get(fileName);
+			if (list==null){
+				list = Collections.synchronizedList(new ArrayList<TopItem>());
+				newItemsMap.put(fileName, list);
+				newsList.add(fileName);
+			}
+			list.add(item);
+		}
+		
+		//list data(按日期)落地:
+		for (String listkey:newItemsMap.keySet()){
+			List<TopItem> itemlist = newItemsMap.get(listkey);
+			FileUtil.writeFile(listkey, JSON.toJSONString(itemlist));
+		}
+		//最新list落地，等待site获取:
+		FileUtil.writeFile(listPath+now.getTime()+".latest", JSON.toJSONString(newsList));
+	}
+	
 	private Set<String> _getFileUrls2(String filePath){
 		File urlfile = new File(filePath);
 		if (!urlfile.exists()) return null;
@@ -206,7 +239,8 @@ public class ProcessManager extends MgrBase {
 		ProcessManager.getInstance().init();
 		
 //		ProcessManager.getInstance().update();
-		ProcessManager.getInstance().processClassfiy();
+		List<TopItem> items =ProcessManager.getInstance().processClassfiy();
+		ProcessManager.getInstance().processListUrls(items);
 	}
 
 }

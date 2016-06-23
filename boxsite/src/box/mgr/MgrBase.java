@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 
 public class MgrBase extends java.util.TimerTask {
 	public static final String DATA_WEBSITE_DNA = "data_website_dna";
-	private Boolean isStart;
+	private Boolean isStart = false;
 
 	protected Logger  log = Logger.getLogger(getClass()); 
 	protected int tick = 0;
@@ -31,11 +31,12 @@ public class MgrBase extends java.util.TimerTask {
 	public RedisConfig redisCfg;
 	public JSONObject cfgObj;
 	public int maxStockAmount = 100000000;
-	protected String rootPath = "C:/boxsite/data/";
+	protected String rootPath = "d:/boxsite/data/";
 	protected String userFilePath = rootPath+"users.json";
 	protected String pagesPath = rootPath+"pages/";
 	protected String traniningpath = rootPath+"training/";
 	protected String itemPath = rootPath+"items/";
+	protected String listPath = rootPath+"list/";
 
 	public MgrBase(){
 		String path = "src/";
@@ -58,13 +59,13 @@ public class MgrBase extends java.util.TimerTask {
 		
 	}
 
-	public void update(){
+	public void process(){
 		
 	}
 	
 	@Override
 	public void run() {
-		this.update();
+		this.process();
 		
 	}
 
@@ -77,7 +78,7 @@ public class MgrBase extends java.util.TimerTask {
 		isStart = true;
 		
 		java.util.Timer timer = new java.util.Timer(true);  
-		timer.schedule(this, 3000,3000);   		
+		timer.schedule(this, 2000,2000);   		
 	}
 
 	protected Map<String,WebUrl> _getFileUrls(String filePath,String sitekey){

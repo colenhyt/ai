@@ -31,21 +31,15 @@ public class PageManager extends MgrBase{
 	private Map<String,List<TopItem>> viewListItemsMap = Collections.synchronizedMap(new HashMap<String,List<TopItem>>());
 	private Map<Integer,TopItem> viewItemsMap = new HashMap<Integer,TopItem>();
 	private Map<Long, User>   userMap = new HashMap<Long,User>();
+	private Set<String> loadedList = Collections.synchronizedSet(new HashSet<String>());
 	private boolean inited = false;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 	private PageContentGetter contentGetter = new PageContentGetter();
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		PageManager.getInstance().renameTrainingurlTitles();
-//		String retstr = PageManager.getInstance().getNews(664000350);
-//		System.out.println(retstr);
-		
-//		String filePath = "c:/boxsite/data/pages/ikanchai.com/-62796559.html";
-//		String pageContent = FileUtil.readFile(filePath);	
-//		List<String> pp = PageContentGetter.getHtmlContent(pageContent);
-//		System.out.println(pp);
-		//PageManager.getInstance().process();
+
+		PageManager.getInstance().process();
 
 	}
 
@@ -75,7 +69,7 @@ public class PageManager extends MgrBase{
 		
 		//load view topitems:
 		viewListItemsMap = new HashMap<String,List<TopItem>>();
-		List<File> catfs = FileUtil.getFolders(itemPath);
+		List<File> catfs = FileUtil.getFolders(listPath);
 		for (File f:catfs){
 			List<File> subitemPaths = FileUtil.getFolders(f.getAbsolutePath());
 			
@@ -87,8 +81,10 @@ public class PageManager extends MgrBase{
 					List<TopItem> items = new ArrayList<TopItem>();
 					for (File itemf:itemfiles){
 						String cc = FileUtil.readFile(itemf);
-						if (cc!=null&&cc.trim().length()>0)
-							StringUtil.json2List(cc, items,TopItem.class);	
+						if (cc!=null&&cc.trim().length()>0){
+							StringUtil.json2List(cc, items,TopItem.class);
+							loadedList.add(key+"_"+itemf.getName());
+						}
 					}
 					Collections.sort(items);
 					for (TopItem item:items){
@@ -107,10 +103,10 @@ public class PageManager extends MgrBase{
 		List<TopItem> vitems = viewListItemsMap.get(key);
 		if (vitems==null){
 			vitems = Collections.synchronizedList(new ArrayList<TopItem>());
+			viewListItemsMap.put(key, vitems);
 		}
 		vitems.add(item);
 		Collections.sort(vitems);	
-		viewListItemsMap.put(key, vitems);	
 	}
 	
 	public void pushNewItems(Map<Integer,List<TopItem>> mapitems){
@@ -166,6 +162,8 @@ public class PageManager extends MgrBase{
 		TopItem item = viewItemsMap.get(itemid);
 		if (item!=null){
 			return JSON.toJSONString(item);
+		}else {
+			
 		}
 		
 		return null;
@@ -293,9 +291,35 @@ public class PageManager extends MgrBase{
 		return null;
 	}
 	
-	//定期扫最新的items:
+	//定期扫最新的latest:
+	@Override
 	public void process(){
-
+		log.warn("load latest list");
+		List<File> files = FileUtil.getFiles(listPath);
+		for (File f:files){
+			if (!f.getName().endsWith(".latest")) continue;
+			String lcontent = FileUtil.readFile(f);
+			List<String> liststr = (List<String>)JSON.parse(lcontent);
+			for (String str:liststr){
+				String[] parts = str.split("/");
+				int catid = Integer.parseInt(parts[4]);
+				String keystr = catid+"_"+parts[5];
+				String filestr = keystr+"_"+parts[6];
+				if (loadedList.contains(filestr)) continue;
+				
+				String listcontent = FileUtil.readFile(str);
+				List<TopItem> newlist = Collections.synchronizedList(new ArrayList<TopItem>());
+				StringUtil.json2List(listcontent, newlist,TopItem.class);	
+				List<TopItem> vitems = viewListItemsMap.get(keystr);
+				if (vitems==null){
+					vitems = Collections.synchronizedList(new ArrayList<TopItem>());
+					viewListItemsMap.put(keystr, vitems);
+				}
+				vitems.addAll(newlist);
+				Collections.sort(vitems);	
+			}
+					
+		}
 	}
 	
 	//发现有内容的最新的一个目录
@@ -333,11 +357,6 @@ public class PageManager extends MgrBase{
 		
 	}
 
-	@Override
-	public void update(){
-		this.process();
-	}
-	
 	public void renameTrainingurlTitles(){
 		Set<String> sites = new HashSet<String>();
 		sites.add("tmtpost.com");

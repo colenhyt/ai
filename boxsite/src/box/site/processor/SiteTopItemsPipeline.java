@@ -39,22 +39,18 @@ public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipelin
 			log.warn("page parse failed:"+url);
 			return;
 		}
-		
-		String fileName = item.getUrl().hashCode()+".item";
-		if (item.getCat()<=0){
-			String path = rootPath+"wrongitems/"+sitekey+"/"+fileName;
-			FileUtil.writeFile(path, JSON.toJSONString(item));
-			return;
-		}
-		
-		//异步下载正文中的img资源
-		if (item.getHtmlContent()!=null){
-			imgGetter.push(url, item.getHtmlContent());
-		}
-		
+	
 		parser.save(rootPath, item);
 		
-		PageManager.getInstance().pushNewItem(item);
+		if (item.getCat()>0){
+			
+			//异步下载正文中的img资源
+			if (item.getHtmlContent()!=null){
+				imgGetter.push(url, item.getHtmlContent());
+			}
+			
+			PageManager.getInstance().pushNewItem(item);
+		}
 	}
 
 }
