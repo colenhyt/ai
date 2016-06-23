@@ -162,10 +162,12 @@ public class BaseTopItemParser implements ITopItemParser {
 		titem.setId(url.hashCode());
 		titem.setContent(contents.get(0));
 		titem.setHtmlContent(filterContext(sitekey,contents.get(1)));
-//		int catid = newsClassifier.testClassify(titem);
-//		if (catid<=0)
-//			return null;
+		int catid = newsClassifier.testClassify(titem);
+		if (catid<=0){
+		}
+		log.warn("classify catid"+catid+":"+url);
 		
+		titem.setCat(catid);
 		titem.setCrDate(new Date());
 		String urlDate = getUrlDate(url);
 		long  ctime = getSpecTime(urlDate);

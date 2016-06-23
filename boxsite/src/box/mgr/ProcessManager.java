@@ -153,15 +153,13 @@ public class ProcessManager extends MgrBase {
 				
 				TopItem titem = parser.parse(url, pageContent);
 				if (item==null){
-					log.warn("page parse failed:"+url);
+					log.warn("page parse failed:"+filePath);
 					continue;
 				}
 
-				//尚未分类，即可分类:
+				//未找到分类:
 				if (item.getCat()<=0) {
-					int catid = newsClassifier.testClassify(titem);
-					if (catid<=0) continue;
-					titem.setCat(catid);
+					log.warn("could not classify :"+filePath);
 					continue;
 				};
 				newItems.add(titem);
@@ -185,8 +183,8 @@ public class ProcessManager extends MgrBase {
 			}
 			savedUrlsMap.put(sitekey, saves);
 			
-			FileUtil.writeFile(pagesPath+sitekey+"_urls.json", JSON.toJSONString(urls));
-			FileUtil.writeFile(pagesPath+sitekey+"_done_urls.json", JSON.toJSONString(saves));		
+//			FileUtil.writeFile(pagesPath+sitekey+"_urls.json", JSON.toJSONString(urls));
+//			FileUtil.writeFile(pagesPath+sitekey+"_done_urls.json", JSON.toJSONString(saves));		
 		}
 		
 		return newItems;
@@ -208,7 +206,7 @@ public class ProcessManager extends MgrBase {
 		ProcessManager.getInstance().init();
 		
 //		ProcessManager.getInstance().update();
-		ProcessManager.getInstance().processSpiders();
+		ProcessManager.getInstance().processClassfiy();
 	}
 
 }
