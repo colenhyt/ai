@@ -154,22 +154,18 @@ public class NewsClassifier {
 		}
 	}
 	
-	private InstanceList initPipe(TopItem item){
+	private InstanceList initPipe(int catid,TopItem item){
 		Pipe instancePipe = new SerialPipes (new Pipe[] {
 				new Target2Label (),							  // Target String -> class label
 				new CharSequence2GBKTokenSequence (),  // Data String -> TokenSequence
 				new TokenSequenceRemoveStopwords (),// Remove stopwords from sequence
 				new TokenSequence2FeatureSequence(),// Replace each Token with a feature index
-				new FeatureSequence2FeatureVector(),// Collapse word order into a "feature vector"
-				new PrintInputAndTarget(),
+				new FeatureSequence2WeightFeatureVector(catid),// Collapse word order into a "feature vector"
 			});		
 		
-		StringBuffer sb = new StringBuffer (item.getContent().length());
-		sb.append(item.getContent());
-		Instance inst = new Instance(sb,item.getCat(),item.getId(),item.getContent());
 		// Create an empty list of the training instances
 		InstanceList ilist = new InstanceList (instancePipe);
-		ilist.add(inst);
+		ilist.addThruPipe (new StringIterator (item.getContent(), String.valueOf(item.getId())));
 //		ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
 		
 		return ilist;
@@ -202,14 +198,19 @@ public class NewsClassifier {
 	public int testClassify(TopItem item){
 		double accur = 0;
 		int testCatid = -1;
+		try {
 		for (int catid:classifyMap.keySet()){
 			Classifier classifier = classifyMap.get(catid);
-			double acc1 = classifier.getAccuracy(initPipe(item));
+			double acc1 = classifier.getAccuracy(initPipe(catid,item));
 			acc1 += getTitleAccura(item,catid);
 			if (acc1>0.8&&acc1>accur){
 				accur = acc1;
 				testCatid = catid;
 			}
+		}
+		}catch (Exception e){
+			log.warn("item classify failed:"+e.getMessage());
+			e.printStackTrace();
 		}
 		return testCatid;
 	}
