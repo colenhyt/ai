@@ -20,6 +20,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.PlainText;
 import box.mgr.ProcessManager;
 import box.site.model.WebUrl;
+import box.site.parser.sites.MultiPageTask;
 import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -37,21 +38,23 @@ public class SitePageGetProcessor implements PageProcessor{
 	public String startUrl;
 	String domainName;
 	private String pagesPath;
-	public Set<String> notDownloadurls;
-	public Set<String> doneDownloadurls;
-	public Set<String> allDownloadUrls;
+	public Set<String> notDownloadurlsSet;
+	public Set<String> doneDownloadurlSet;
+	public Set<String> allDownloadUrlSet;
 	private Set<String> urlRegs = new HashSet<String>();
 	private Map<String,WebUrl> webitemMap = new HashMap<String,WebUrl>();
 	String urlPath;
 	private Site site;
+	private int CURRENT_DOWNLOAD_COUNT = 50;		//当次下载数量限制:
+	private int currCount = 0;		//当前下载数量
 	int maxpagecount;
 	
 	public SitePageGetProcessor(MultiPageTask task,String _startUrl,int _maxCount){
 		mainThread = task;
 		
-		maxpagecount = 50;
+		maxpagecount = -1;
 		if (_maxCount>0)
-			maxpagecount = _maxCount;
+			CURRENT_DOWNLOAD_COUNT = _maxCount;
 		
 		startUrl = _startUrl;
 		domainName = URLStrHelper.getHost(startUrl).toLowerCase();
@@ -85,13 +88,13 @@ public class SitePageGetProcessor implements PageProcessor{
 			}
 		}
 		
-		allDownloadUrls = new HashSet<String>();
-		notDownloadurls = new HashSet<String>();
-		doneDownloadurls = new HashSet<String>();
+		allDownloadUrlSet = new HashSet<String>();
+		notDownloadurlsSet = new HashSet<String>();
+		doneDownloadurlSet = new HashSet<String>();
 		String doneContent = FileUtil.readFile(pagesPath+"_done_urls.json");
 		if (doneContent!=null&&doneContent.trim().length()>0){
 			List<String> doneUrls = (List<String>)JSON.parse(doneContent);
-			doneDownloadurls.addAll(doneUrls);
+			doneDownloadurlSet.addAll(doneUrls);
 		}
 		
 		
@@ -99,14 +102,14 @@ public class SitePageGetProcessor implements PageProcessor{
 		String urlcontent = FileUtil.readFile(urlPath);
 		if (urlcontent!=null&&urlcontent.trim().length()>0){
 			List<String> urls = (List<String>)JSON.parse(urlcontent);
-			allDownloadUrls.addAll(urls);
+			allDownloadUrlSet.addAll(urls);
 			for (String url:urls){
-				if (doneDownloadurls.contains(url)) continue;
+				if (doneDownloadurlSet.contains(url)) continue;
 				
 				String fileName = url.hashCode()+".html";
 				File f = new File(pagesPath+"/"+fileName);
 				if (f.exists()) {
-					doneDownloadurls.add(url);
+					doneDownloadurlSet.add(url);
 					continue;
 				}
 				//优先下载已分类url:
@@ -115,14 +118,14 @@ public class SitePageGetProcessor implements PageProcessor{
 //					if (item.getCat()>0)
 //						notDownloadurls.add(url);
 //				}
-				notDownloadurls.add(url);
+				notDownloadurlsSet.add(url);
 			}
 		}
-		if (notDownloadurls.size()>0){
-			Object[] urlstrs = notDownloadurls.toArray();
-			startUrl = (String)urlstrs[0];
-		}
-		allDownloadUrls.add(startUrl);
+//		if (notDownloadurls.size()>0){
+//			Object[] urlstrs = notDownloadurls.toArray();
+//			startUrl = (String)urlstrs[0];
+//		}
+		allDownloadUrlSet.add(startUrl);
 		
 		site = new Site();
 		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
@@ -144,10 +147,11 @@ public class SitePageGetProcessor implements PageProcessor{
 
 	@Override
 	public void process(Page page) {
+		currCount++;
 		
 		page.putField("MaxPageCount", maxpagecount);
 		
-		doneDownloadurls.add(page.getRequest().getUrl());
+		doneDownloadurlSet.add(page.getRequest().getUrl());
 		String pageContent = page.getRawText();
 		String charset = page.getCharset();
 		if (page.getCharset().equalsIgnoreCase("gbk")||page.getCharset().equalsIgnoreCase("gb2312")){
@@ -162,36 +166,44 @@ public class SitePageGetProcessor implements PageProcessor{
 		String pagePath = pagesPath +"/"+fileName;
 		FileUtil.writeFile(pagePath, pageContent,charset);
 		
-		List<File> files = FileUtil.getFiles(pagesPath);
-		queryCount = files.size();
-		if (queryCount>=maxpagecount){
-			log.warn("页面下载完成，总共有页面 "+queryCount);
+		if (CURRENT_DOWNLOAD_COUNT>0&&currCount>=CURRENT_DOWNLOAD_COUNT){
+			log.warn("页面下载完成，当次下载页面数: "+currCount);
 			mainThread.finishCallback(domainName);
-			return;
+			return;			
+		}
+		
+		if (maxpagecount>0){
+			List<File> files = FileUtil.getFiles(pagesPath);
+			queryCount = files.size();
+			if (queryCount>=maxpagecount){
+				log.warn("页面下载完成，总共有页面 "+queryCount);
+				mainThread.finishCallback(domainName);
+				return;
+			}
 		}
 		
 		List<String> requests = new ArrayList<String>();
-		if (notDownloadurls.size()>0){
-			requests.addAll(notDownloadurls);
-			queryCount += notDownloadurls.size();
-			notDownloadurls.clear();
-		}
-		
-		//根据正则表达式找link:
+		//根据正则表达式找link,先下载当前页links:
 		for (String regUrl:urlRegs){
 			List<String> links = page.getHtml().links().regex(regUrl).all();
 			 Set<String> newurls = new HashSet<String>();
 			 for (String url:links){
 				 if (url.toLowerCase().indexOf(domainName)<0) continue;
-				 if (doneDownloadurls.contains(url)) continue;
-				 if (allDownloadUrls.contains(url)) continue;
+				 if (doneDownloadurlSet.contains(url)) continue;
+				 if (allDownloadUrlSet.contains(url)) continue;
 				 newurls.add(url);
 			 }	
-			 allDownloadUrls.addAll(newurls);
+			 allDownloadUrlSet.addAll(newurls);
 			 requests.addAll(newurls);
 			 queryCount += newurls.size();
-			 if (queryCount>=maxpagecount)
+			 if (maxpagecount>0&&queryCount>=maxpagecount)
 				 break;
+		}
+		
+		if (notDownloadurlsSet.size()>0){
+			requests.addAll(notDownloadurlsSet);
+			queryCount += notDownloadurlsSet.size();
+			notDownloadurlsSet.clear();
 		}
 		
 		//找到合法url,并塞入下载链接:
@@ -210,7 +222,7 @@ public class SitePageGetProcessor implements PageProcessor{
 //			 queryCount += newurls.size();
 //		}
 		
-		 FileUtil.writeFile(urlPath, JSON.toJSONString(allDownloadUrls));
+		 FileUtil.writeFile(urlPath, JSON.toJSONString(allDownloadUrlSet));
 		 
 		page.addTargetRequests(requests);	
 		

@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.hd.util.ImgGetterThread;
-
 import com.alibaba.fastjson.JSON;
 
 import box.site.PageContentGetter;
@@ -20,7 +18,8 @@ import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
-import box.site.processor.MultiPageTask;
+import box.site.parser.sites.ImgGetterThread;
+import box.site.parser.sites.MultiPageTask;
 import es.util.FileUtil;
 
 public class ProcessManager extends MgrBase {
@@ -97,12 +96,12 @@ public class ProcessManager extends MgrBase {
 //		sites.add("http://it.sohu.com");
 //		sites.add("http://tech.ifeng.com/");
 //		sites.add("http://www.geekpark.net/");
-//		sites.add("http://techcrunch.cn/");
-		sites.add("http://www.ebrun.com/");
+		sites.add("http://techcrunch.cn/");
+//		sites.add("http://www.ebrun.com/");
 		
 		runningSpiderCount = sites.size();
 		for (String site:sites){
-			MultiPageTask task = new MultiPageTask(this,site,20);
+			MultiPageTask task = new MultiPageTask(this,site,5);
 			Thread t2=new Thread(task);
 			t2.start();
 		}

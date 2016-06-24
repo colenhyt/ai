@@ -15,7 +15,7 @@ import box.site.PageContentGetter;
 import box.site.model.TopItem;
 import box.site.model.User;
 import box.site.model.WebUrl;
-import cn.hd.util.ImgGetter;
+import box.site.parser.sites.ImgGetter;
 import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;

@@ -37,7 +37,7 @@ user.prototype = {
 	  
 	var dataParam = "sessionid="+sessionid;
 	try    {
-		$.ajax({type:"post",url:"/boxsite/user.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"user.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
 		g_user.userdata = jsonstr;
 		store.set("newsuser",jsonstr);
@@ -56,7 +56,7 @@ newslist.prototype = {
   init: function(){
    var catid = getPar("catid");
    if (catid){
-     g_currcat = catid;
+     g_currcat = parseInt(catid);
    }else
      g_currcat = 1;
     
@@ -152,7 +152,7 @@ newslist.prototype = {
      stime = starttime;
 	var dataParam = "cat="+catid+"&starttime="+stime;
 	try    {
-		$.ajax({type:"post",url:"/boxsite/news.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"news.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
 		g_newslistview.additem(1,jsonstr);
 		}});
@@ -167,7 +167,7 @@ newslist.prototype = {
   getnewscount: function () {
 	var dataParam = "type=2&cat="+g_currcat+"&starttime="+g_lastqueryup[g_currcat];
 	try    {
-		$.ajax({type:"post",url:"/boxsite/news.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"news.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
 		var count = parseInt(jsonstr);
 		}});
@@ -178,7 +178,7 @@ newslist.prototype = {
   getnews: function (itemid) {
 	var dataParam = "item="+itemid;
 	try    {
-		$.ajax({type:"post",url:"/boxsite/news.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"news.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
 		g_newslistview.viewitem(jsonstr);
 		}});
@@ -204,13 +204,14 @@ newslistview.prototype = {
         	var timeStr = (dd.getMonth()+1)+"-"+dd.getDate();
         	var li= document.createElement("li"); 
         	var shorttitle = item.ctitle;
+        	var link = "news.html?itemid="+item.id+"&catid="+item.cat;
         	  if (shorttitle.length>20)
         	    shorttitle = shorttitle.substring(0,20)+"..";   
         	var content = "";
-        	content += "<div>";
+        	content += "<div onclick=\"window.open('"+link+"','_self')\">";
         	content += "<span>"
 //        	content += "<a href='javascript:g_newslist.getnews("+item.id+")'>"+shorttitle+"</a>"
-        	content += "<a href='news.html?itemid="+item.id+"&catid="+item.cat+"'>"+shorttitle+"</a>"
+        	content += "<a href='"+link+"'>"+shorttitle+"</a>"
         	content += "</span><br>";
         	content += "<span style='font-size:10px'>";
         	content += g_sitekeys[item.sitekey]+" "+timeStr;

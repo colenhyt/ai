@@ -9,10 +9,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import box.site.parser.sites.ImgGetterThread;
 import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.edu.hfut.dmic.htmlbot.contentextractor.ContentExtractor;
-import cn.hd.util.ImgGetterThread;
 import easyshop.html.HTMLInfoSupplier;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;

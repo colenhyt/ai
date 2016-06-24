@@ -1,4 +1,4 @@
-package cn.hd.util;
+package box.site.parser.sites;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.hd.util.FileUtil;
 import es.util.url.URLStrHelper;
 
 public class ImgGetter {

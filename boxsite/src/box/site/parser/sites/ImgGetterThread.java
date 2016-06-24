@@ -1,4 +1,4 @@
-package cn.hd.util;
+package box.site.parser.sites;
 
 import java.util.Collections;
 import java.util.HashMap;

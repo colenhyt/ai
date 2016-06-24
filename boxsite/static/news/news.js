@@ -24,7 +24,7 @@ news.prototype = {
 	  dataParam = "url="+url;
 	  
 	try    {
-		$.ajax({type:"post",url:"/boxsite/news.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"news.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
 		g_news.viewitem(jsonstr);
 		}});

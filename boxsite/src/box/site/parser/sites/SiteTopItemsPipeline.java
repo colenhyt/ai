@@ -1,4 +1,4 @@
-package box.site.processor;
+package box.site.parser.sites;
 
 import java.util.Calendar;
 
@@ -11,9 +11,7 @@ import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.utils.FilePersistentBase;
 import box.mgr.PageManager;
 import box.site.model.TopItem;
-import box.site.parser.sites.BaseTopItemParser;
 import cl.util.FileUtil;
-import cn.hd.util.ImgGetterThread;
 
 import com.alibaba.fastjson.JSON;
 

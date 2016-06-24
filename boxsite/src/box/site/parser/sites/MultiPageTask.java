@@ -1,6 +1,8 @@
-package box.site.processor;
+package box.site.parser.sites;
 
 import box.mgr.ProcessManager;
+import box.site.processor.SitePageGetProcessor;
+import box.site.processor.SiteURLsPipeline;
 import us.codecraft.webmagic.Spider;
 
 public class MultiPageTask implements Runnable {
