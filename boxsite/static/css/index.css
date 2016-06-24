@@ -11,6 +11,15 @@ body {
 	font-family:helvetica;
 }
 
+a{ 
+  font-size:22px;
+  color:#000000;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+a:hover{ text-decoration:none;}
+
 #header {
 	position:absolute;
 	top:0; left:0;

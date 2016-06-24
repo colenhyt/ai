@@ -37,6 +37,7 @@ public class PageContentGetter {
 		sitekeys.add("sootoo.com");
 		sitekeys.add("techweb.com.cn");
 		sitekeys.add("tmtpost.com");
+		sitekeys.add("ifeng.com");
 	}
 	
 	public static void main(String[] args){
@@ -76,6 +77,8 @@ public class PageContentGetter {
 			return infoSupp.getDivByClassValue("hl_content");
 		else if (sitekey.indexOf("iyiou.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","post_description");
+		else if (sitekey.indexOf("ifeng.com")>=0)
+			return infoSupp.getBlockByOneProp("div","id","main_content");
 		else if (sitekey.indexOf("sohu.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","contentText");
 		else if (sitekey.indexOf("huxiu.com")>=0)

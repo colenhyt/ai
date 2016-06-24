@@ -94,7 +94,8 @@ public class ProcessManager extends MgrBase {
 //		sites.add("http://tech.163.com");
 //		sites.add("http://tech.qq.com/");
 //		sites.add("http://tech.sina.com.cn/");
-		sites.add("http://it.sohu.com");
+//		sites.add("http://it.sohu.com");
+		sites.add("http://tech.ifeng.com/");
 		
 		runningSpiderCount = sites.size();
 		for (String site:sites){
@@ -239,8 +240,9 @@ public class ProcessManager extends MgrBase {
 		ProcessManager.getInstance().init();
 		
 //		ProcessManager.getInstance().update();
-		List<TopItem> items =ProcessManager.getInstance().processClassfiy();
-		ProcessManager.getInstance().processListUrls(items);
+		ProcessManager.getInstance().processSpiders();
+//		List<TopItem> items =ProcessManager.getInstance().processClassfiy();
+//		ProcessManager.getInstance().processListUrls(items);
 	}
 
 }

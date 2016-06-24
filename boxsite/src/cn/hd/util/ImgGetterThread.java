@@ -22,7 +22,7 @@ public class ImgGetterThread implements Runnable{
 				}
 				urls.clear();
 			try {
-				System.out.println("sleep");
+//				System.out.println("img getter wait...");
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

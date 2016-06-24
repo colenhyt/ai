@@ -86,33 +86,33 @@ public class NewsClassifier {
 	public void trainingClassifiers(){
 		//搬移已分类page到training path:
 		String path = "data/pages/";
-		List<File> files = FileUtil.getFiles(path);
-		for (File f:files){
-			if (f.getName().indexOf(".json")<0)continue;
-			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-			String urlsContent = FileUtil.readFile(f);
-			if (urlsContent!=null&&urlsContent.trim().length()>0){
-				log.warn("push training data: "+sitekey);
-				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
-				for (String url:urls.keySet()){
-					JSONObject json = urls.get(url);
-					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-					if (item.getCat()<=0) continue;
-					String fileName = item.getUrl().hashCode()+".html";
-					String fileP = path+sitekey+"/"+fileName;
-					File ff = new File(fileP);
-					if (!ff.exists()) continue;
-					String pageContent = FileUtil.readFile(fileP);
-					List<String> cc = contentGetter.getHtmlContent(item.getUrl(), pageContent);
-					if (cc==null) {
-						log.warn("could not find html context for: "+item.getUrl());
-						continue;
-					}
-					String pureContext = cc.get(0);
-					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
-				}
-			}
-		}
+//		List<File> files = FileUtil.getFiles(path);
+//		for (File f:files){
+//			if (f.getName().indexOf(".json")<0)continue;
+//			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
+//			String urlsContent = FileUtil.readFile(f);
+//			if (urlsContent!=null&&urlsContent.trim().length()>0){
+//				log.warn("push training data: "+sitekey);
+//				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
+//				for (String url:urls.keySet()){
+//					JSONObject json = urls.get(url);
+//					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
+//					if (item.getCat()<=0) continue;
+//					String fileName = item.getUrl().hashCode()+".html";
+//					String fileP = path+sitekey+"/"+fileName;
+//					File ff = new File(fileP);
+//					if (!ff.exists()) continue;
+//					String pageContent = FileUtil.readFile(fileP);
+//					List<String> cc = contentGetter.getHtmlContent(item.getUrl(), pageContent);
+//					if (cc==null) {
+//						log.warn("could not find html context for: "+item.getUrl());
+//						continue;
+//					}
+//					String pureContext = cc.get(0);
+//					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
+//				}
+//			}
+//		}
 		
 		List<File> folders = FileUtil.getFolders(trainingPath);
 		for (File f:folders){
@@ -135,9 +135,15 @@ public class NewsClassifier {
 			String directories = trainingPath+"/"+catid;
 			ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
 	
+			InstanceList[] ilists = ilist.split (new double[] {.8, .2});
 			// Create a classifier trainer, and use it to create a classifier
 			ClassifierTrainer naiveBayesTrainer = new NaiveBayesTrainer ();	
-			Classifier classifier = naiveBayesTrainer.train (ilist);
+			Classifier classifier = naiveBayesTrainer.train (ilists[0]);
+			TopItem item = new TopItem();
+			double acc1 = classifier.getAccuracy(ilists[0]);
+			log.warn("classify:"+ acc1);
+			double acc2 = classifier.getAccuracy(ilists[1]);
+			log.warn("classify:"+ acc2);
 			String filename = trainingPath+"/"+catid+".classifier";
 			log.warn("build classfier:"+ filename);
 			//保存:
@@ -161,11 +167,12 @@ public class NewsClassifier {
 				new TokenSequenceRemoveStopwords (),// Remove stopwords from sequence
 				new TokenSequence2FeatureSequence(),// Replace each Token with a feature index
 				new FeatureSequence2WeightFeatureVector(catid),// Collapse word order into a "feature vector"
+//				new PrintInputAndTarget(),
 			});		
 		
 		// Create an empty list of the training instances
 		InstanceList ilist = new InstanceList (instancePipe);
-		ilist.addThruPipe (new StringIterator (item.getContent(), String.valueOf(item.getId())));
+		ilist.addThruPipe (new StringIterator (item.getContent(), "data\\training\\51"));
 //		ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
 		
 		return ilist;

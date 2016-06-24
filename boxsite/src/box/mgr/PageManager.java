@@ -39,7 +39,11 @@ public class PageManager extends MgrBase{
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
 
-		PageManager.getInstance().process();
+//		PageManager.getInstance().resetTrainingurls();
+		
+		String url = "http://tech.ifeng.com/a/20160624/41628054_0.shtml";
+		String reg = "http://tech.ifeng.com/a/[0-9]+/[0-9]+_[0-9].shtml";
+		System.out.println(url.matches(reg));
 
 	}
 
@@ -156,9 +160,6 @@ public class PageManager extends MgrBase{
 	}
 	
 	public String getNews(int itemid){
-		if (itemid<0)
-			return null;
-		
 		TopItem item = viewItemsMap.get(itemid);
 		if (item!=null){
 			return JSON.toJSONString(item);
@@ -316,6 +317,9 @@ public class PageManager extends MgrBase{
 					viewListItemsMap.put(keystr, vitems);
 				}
 				vitems.addAll(newlist);
+				for (TopItem item:newlist){
+					viewItemsMap.put(item.getId(), item);
+				}
 				Collections.sort(vitems);	
 			}
 					

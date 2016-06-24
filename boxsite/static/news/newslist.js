@@ -9,19 +9,29 @@ var g_moveendy = 0;
 var g_moveflag = false;
 
 var g_newscats = [
-[1,'热点'],
-[2,'市场'],
-[3,'产品'],
-[4,'公司'],
-[5,'人物'],
-[6,'创投'],
+[1,"综合"],[11,"动态"],[21,"产品"],[31,"分析"],[41,"运营"],[51,"创投"]
 ];
 
 
 var g_sitekeys = {
 "huxiu.com":"虎嗅",
-"iwacai.com":"爱挖柴",
-"iheima.com":"i黑马"
+"ikanchai.com":"爱砍柴",
+"iheima.com":"i黑马",
+"163.com":"网易科技",
+"cyzone.cn":"创业邦",
+"ifanr.com":"爱范儿",
+"ifeng.com":"凤凰网",
+"iyiou.com":"亿欧网",
+"leiphone.com":"雷锋网",
+"pintu360.com":"品图评论",
+"qq.com":"腾讯科技",
+"sina.com.cn":"新浪科技",
+"sohu.com":"搜狐科技",
+"sootoo.com":"速途图",
+"techweb.com.cn":"",
+"tmtpost.com":"钛媒体",
+"geekpark":"极客公园",
+
 };
 
 function moveDirection(startX,startY,endX,endY){
@@ -74,7 +84,7 @@ newslist.prototype = {
    var content = "";
    for (var i=0;i<g_newscats.length;i++){
     var list = g_newscats[i];
-   content += "<li id='navlist"+(i+1)+"'";
+   content += "<li id='navlist"+list[0]+"'";
    if (i==0)
     content += " style='display:inline-block;background-color:#0095BB;height:60px'";
    content += "><a href='javascript:g_newslist.getlist("+list[0]+")'>"+list[1]+"</a></li> "
@@ -142,7 +152,7 @@ newslist.prototype = {
 	};	
   },
   getlist: function (catid,starttime) {
-    if (catid<=0||catid>6) return;
+    if (catid<=0) return;
     
     var lasttag = document.getElementById('navlist'+g_currcat);
     lasttag.style.backgroundColor = "";
@@ -204,14 +214,21 @@ newslistview.prototype = {
         var ul= document.getElementById('thelist');
         for (var i=0;i<newslist.length;i++){
         	var item = newslist[i];
+        	var dd = new Date(item.contentTime);
+        	var timeStr = (dd.getMonth()+1)+"-"+dd.getDate();
         	var li= document.createElement("li"); 
-        	var shorttitle = item.content.substring(0,10);   
+        	var shorttitle = item.ctitle;
+        	  if (shorttitle.length>20)
+        	    shorttitle = shorttitle.substring(0,20)+"..";   
         	var content = "";
-        	//content += "<div>";
-        	content += "<a href='javascript:g_newslist.getnews("+item.id+")'>"+shorttitle+"</a><br>";
-        	//content += "来源:"+g_sitekeys[item.sitekey];
-        	//content += "</div>";
+        	content += "<div>";
+        	content += "<span style='font-size:20px'>"
+        	content += "<a href='javascript:g_newslist.getnews("+item.id+")'>"+shorttitle+"</a>"
+        	content += "</span><br>";
+        	content += g_sitekeys[item.sitekey]+" "+timeStr;
+        	content += "</div>";
             li.innerHTML=content;  
+            li.style.height = "90px";
             li.id=id;  
             ul.appendChild(li);           
         }

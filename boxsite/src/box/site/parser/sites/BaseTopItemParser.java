@@ -64,6 +64,7 @@ public class BaseTopItemParser implements ITopItemParser {
 		siteTitleEndWord.put("techcrunch.cn", "|");
 		siteTitleEndWord.put("techweb.com.cn", "_Techweb");
 		siteTitleEndWord.put("tmtpost.com", "-钛媒体官方网站");
+		siteTitleEndWord.put("ifeng.com", "_凤凰科技");
 	}
 	public long getSpecTime(String yyyyMMddStr){
 		Date date = new Date();
@@ -109,6 +110,8 @@ public class BaseTopItemParser implements ITopItemParser {
 			return parts[1]+parts[2];
 		else if (url.indexOf("sohu.com")>=0)
 			return parts[1];
+		else if (url.indexOf("ifeng.com")>=0)
+			return parts[2];
 		else if (url.indexOf("techweb.com.cn")>=0)
 			return parts[2].replace("-", "");
 		else if (url.indexOf("techcrunch.cn")>=0)
@@ -161,9 +164,10 @@ public class BaseTopItemParser implements ITopItemParser {
 		titem.setId(url.hashCode());
 		titem.setContent(contents.get(0));
 		titem.setHtmlContent(filterContext(sitekey,contents.get(1)));
-		int catid = newsClassifier.testClassify(titem);
-		if (catid<=0){
-		}
+		int catid = 0;
+//		catid = newsClassifier.testClassify(titem);
+//		if (catid<=0){
+//		}
 		log.warn("classify catid: "+catid+":"+url);
 		
 		titem.setCat(catid);
@@ -236,9 +240,9 @@ public class BaseTopItemParser implements ITopItemParser {
 		}
 		
 		//根据时间item落地:
-		Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(item.getContentTime());
-		String dateStr = c.get(Calendar.YEAR)+"-"+c.get(Calendar.MONTH)+"-"+c.get(Calendar.DAY_OF_MONTH);
+//		Calendar c = Calendar.getInstance();
+//		c.setTimeInMillis(item.getContentTime());
+//		String dateStr = c.get(Calendar.YEAR)+"-"+c.get(Calendar.MONTH)+"-"+c.get(Calendar.DAY_OF_MONTH);
 		String path = rootPath+"items/"+item.getCat()+"/"+fileName;
 		FileUtil.writeFile(path, JSON.toJSONString(item));		
 	}
