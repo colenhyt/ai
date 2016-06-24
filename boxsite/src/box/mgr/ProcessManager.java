@@ -95,7 +95,10 @@ public class ProcessManager extends MgrBase {
 //		sites.add("http://tech.qq.com/");
 //		sites.add("http://tech.sina.com.cn/");
 //		sites.add("http://it.sohu.com");
-		sites.add("http://tech.ifeng.com/");
+//		sites.add("http://tech.ifeng.com/");
+//		sites.add("http://www.geekpark.net/");
+//		sites.add("http://techcrunch.cn/");
+		sites.add("http://www.ebrun.com/");
 		
 		runningSpiderCount = sites.size();
 		for (String site:sites){

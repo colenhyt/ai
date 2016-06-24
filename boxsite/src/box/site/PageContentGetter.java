@@ -38,6 +38,8 @@ public class PageContentGetter {
 		sitekeys.add("techweb.com.cn");
 		sitekeys.add("tmtpost.com");
 		sitekeys.add("ifeng.com");
+		sitekeys.add("geekpark.net");
+		sitekeys.add("techcrunch.cn");
 	}
 	
 	public static void main(String[] args){
@@ -49,7 +51,7 @@ public class PageContentGetter {
 //		System.out.println(cc);
 //		List<String> cc2 = getter.getHtmlContent("http://"+sitekey, content);
 //		System.out.println(cc2.toString());
-		String url = "http://www.pintu360.com/article/35424.html";
+		String url = "http://www.geekpark.net/topics/215888";
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
 		String content = FileUtil.readFile("data/pages/"+sitekey+"/"+url.hashCode()+".html");
 		List<String> strs = getter.getHtmlContent(url,content);
@@ -75,7 +77,9 @@ public class PageContentGetter {
 			return infoSupp.getDivByClassValue("content");
 		else if (sitekey.indexOf("ikanchai.com")>=0)
 			return infoSupp.getDivByClassValue("hl_content");
-		else if (sitekey.indexOf("iyiou.com")>=0)
+		else if (sitekey.indexOf("techcrunch.cn")>=0){
+			return infoSupp.getDivByClassValue("article-entry text");
+		}else if (sitekey.indexOf("iyiou.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","post_description");
 		else if (sitekey.indexOf("ifeng.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","main_content");
@@ -97,6 +101,8 @@ public class PageContentGetter {
 			return infoSupp.getDivByClassValue("content_txt");
 		else if (sitekey.indexOf("pintu360.com")>=0)
 			return infoSupp.getDivByClassValue("article-body");
+		else if (sitekey.indexOf("geekpark.net")>=0)
+			return infoSupp.getBlockByOneProp("article","id","article-body");
 		else if (sitekey.indexOf("cyzone.cn")>=0)
 			return infoSupp.getDivByClassValue("article-content");
 		else if (sitekey.indexOf("leiphone.com")>=0)

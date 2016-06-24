@@ -66,7 +66,7 @@ public class BaseTopItemParser implements ITopItemParser {
 		siteTitleEndWord.put("tmtpost.com", "-钛媒体官方网站");
 		siteTitleEndWord.put("ifeng.com", "_凤凰科技");
 	}
-	public long getSpecTime(String yyyyMMddStr){
+	public long _formateTime(String yyyyMMddStr){
 		Date date = new Date();
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
@@ -97,7 +97,7 @@ public class BaseTopItemParser implements ITopItemParser {
 	//http://it.sohu.com/20160621/n455545381.shtml
 	//http://techcrunch.cn/2016/06/01/recently-confirmed-myspace-hack-could-be-the-largest-yet/#disqus_thread
 	//http://www.techweb.com.cn/news/2015-11-26/2232572.shtml
-	public String getUrlDate(String url){
+	public String getSiteUrlDate(String url){
 		String[] parts = url.replace("//", "").split("/");
 		try {
 		if (url.indexOf("163.com")>=0)
@@ -172,8 +172,8 @@ public class BaseTopItemParser implements ITopItemParser {
 		
 		titem.setCat(catid);
 		titem.setCrDate(new Date());
-		String urlDate = getUrlDate(url);
-		long  ctime = getSpecTime(urlDate);
+		String urlDate = getSiteUrlDate(url);
+		long  ctime = _formateTime(urlDate);
 		titem.setContentTime(ctime);
 		
 		return titem;
@@ -195,8 +195,10 @@ public class BaseTopItemParser implements ITopItemParser {
 //		urls.add("http://tech.sina.com.cn/d/2016-06-13/doc-ifxszmaa1937784.shtml");
 //		urls.add("http://it.sohu.com/20160617/n454977133.shtml");
 //		urls.add("http://www.sootoo.com/content/458819.shtml");
-		urls.add("http://app.techweb.com.cn/android/2015-12-28/2248034.shtml");
-		urls.add("http://www.tmtpost.com/1451151.html");
+//		urls.add("http://app.techweb.com.cn/android/2015-12-28/2248034.shtml");
+//		urls.add("http://www.tmtpost.com/1451151.html");
+//		urls.add("http://www.geekpark.net/topics/215888");
+		urls.add("http://techcrunch.cn/2016/06/23/mrelief-is-helping-ensure-low-income-kids-get-access-to-meals-this-summer/");
 		
 		Calendar c = Calendar.getInstance();
 		for (String url:urls){
@@ -220,11 +222,14 @@ public class BaseTopItemParser implements ITopItemParser {
 			index = realContext.indexOf("</span></p>");
 		}else if (sitekey.indexOf("ikanchai.com")>=0){
 			index = realContext.indexOf("<script");
+		}else if (sitekey.indexOf("geekpark.net")>=0){
+			index = realContext.indexOf("<script");
 		}else if (sitekey.indexOf("techweb.com")>=0){
 			index = realContext.indexOf("<b>您可能也感兴趣");
 		}else if (sitekey.indexOf("tmtpost.com")>=0){
 			int start = realContext.indexOf("<p class=\"post-abstract\">");
 		} 
+		
 		if (index>0)
 			realContext = realContext.substring(0,index);
 		return realContext;
