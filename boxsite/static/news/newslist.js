@@ -48,6 +48,14 @@ user.prototype = {
 }
 
 newslist = function(options){
+ this.data = {};
+ this.name = "newslist";
+ var data = store.get(this.name);
+ if (data!=null){
+   this.data = data;
+ }else {
+   store.set(this.name,this.data);
+ }
 }
 
 newslist.prototype = {
