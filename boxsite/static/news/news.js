@@ -2,16 +2,24 @@
 news = function(options){
 }
 
+var g_catid = 1;
+
 news.prototype = {
 
   init:function(){
+    var catid = getPar("catid");
+   if (catid!=null)
+     g_catid = catid;
    var itemid = getPar("itemid");
     var url = getPar("url");
   	 g_news.getnews(itemid,url);
+  	 
+  	 var tag = document.getElementById("backnav");
+  	 tag.href="index-app.html?catid="+g_catid;
   },
  
   getnews: function (itemid,url) {
-	var dataParam = "item="+itemid;
+	var dataParam = "itemid="+itemid;
 	if (!itemid&&url)
 	  dataParam = "url="+url;
 	  
@@ -26,8 +34,10 @@ news.prototype = {
      
   viewitem: function (item) {
     var content = "";
-    content += "<h>"+item.ctitle+"</h>";
-    content += "<div>来源:"+g_sitekeys[item.sitekey]+"</div>";
+    var dd = new Date(item.contentTime);
+    var timeStr = dd.Format("yyyy-MM-dd hh:mm:ss");
+    content += "<h style='font-size:35px;font-weight:bold;'>"+item.ctitle+"</h>";
+    content += "<div style='font-size:12px;padding-top:7px'>来源:"+g_sitekeys[item.sitekey]+" 时间:"+timeStr+"</div>";
     content += "<div>"+item.htmlContent+"</div>";
     
     var tag = document.getElementById("content");

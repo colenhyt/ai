@@ -215,7 +215,6 @@ public class ProcessManager extends MgrBase {
 			}
 			list.add(item);
 		}
-		
 		//list data(按日期)落地:
 		for (String listkey:newItemsMap.keySet()){
 			List<TopItem> itemlist = newItemsMap.get(listkey);

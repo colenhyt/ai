@@ -8,32 +8,6 @@ var g_movestarty = 0;
 var g_moveendy = 0;
 var g_moveflag = false;
 
-var g_newscats = [
-[1,"综合"],[11,"动态"],[21,"产品"],[31,"分析"],[41,"运营"],[51,"创投"]
-];
-
-
-var g_sitekeys = {
-"huxiu.com":"虎嗅",
-"ikanchai.com":"爱砍柴",
-"iheima.com":"i黑马",
-"163.com":"网易科技",
-"cyzone.cn":"创业邦",
-"ifanr.com":"爱范儿",
-"ifeng.com":"凤凰网",
-"iyiou.com":"亿欧网",
-"leiphone.com":"雷锋网",
-"pintu360.com":"品图评论",
-"qq.com":"腾讯科技",
-"sina.com.cn":"新浪科技",
-"sohu.com":"搜狐科技",
-"sootoo.com":"速途图",
-"techweb.com.cn":"",
-"tmtpost.com":"钛媒体",
-"geekpark":"极客公园",
-
-};
-
 function moveDirection(startX,startY,endX,endY){
 	//阀值:
   var validLen = 80;
@@ -80,12 +54,17 @@ newslist.prototype = {
  loaded:true,
  
   init: function(){
+   var catid = getPar("catid");
+   if (catid){
+     g_currcat = catid;
+   }else
+     g_currcat = 1;
     
    var content = "";
    for (var i=0;i<g_newscats.length;i++){
     var list = g_newscats[i];
    content += "<li id='navlist"+list[0]+"'";
-   if (i==0)
+   if (list[0]==g_currcat)
     content += " style='display:inline-block;background-color:#0095BB;height:60px'";
    content += "><a href='javascript:g_newslist.getlist("+list[0]+")'>"+list[1]+"</a></li> "
    }
@@ -154,6 +133,8 @@ newslist.prototype = {
   getlist: function (catid,starttime) {
     if (catid<=0) return;
     
+    if (!g_currcat)
+      g_currcat = 1;
     var lasttag = document.getElementById('navlist'+g_currcat);
     lasttag.style.backgroundColor = "";
     
@@ -162,6 +143,9 @@ newslist.prototype = {
     currtag.style.backgroundColor = "#0095BB";
     
     g_currcat = catid;
+    
+    var ul= document.getElementById('thelist');
+    ul.innerHTML = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
     
     var stime = 0;
     if (starttime!=null&&starttime>0)
@@ -210,8 +194,10 @@ newslistview = function(options){
 newslistview.prototype = {
  
     additem:function(id,jsonText) {  
+      
     	var newslist = jsonText.news;  
         var ul= document.getElementById('thelist');
+        ul.innerHTML = "";
         for (var i=0;i<newslist.length;i++){
         	var item = newslist[i];
         	var dd = new Date(item.contentTime);
@@ -222,10 +208,13 @@ newslistview.prototype = {
         	    shorttitle = shorttitle.substring(0,20)+"..";   
         	var content = "";
         	content += "<div>";
-        	content += "<span style='font-size:20px'>"
-        	content += "<a href='javascript:g_newslist.getnews("+item.id+")'>"+shorttitle+"</a>"
+        	content += "<span>"
+//        	content += "<a href='javascript:g_newslist.getnews("+item.id+")'>"+shorttitle+"</a>"
+        	content += "<a href='news.html?itemid="+item.id+"&catid="+item.cat+"'>"+shorttitle+"</a>"
         	content += "</span><br>";
+        	content += "<span style='font-size:10px'>";
         	content += g_sitekeys[item.sitekey]+" "+timeStr;
+        	content += "</span>"
         	content += "</div>";
             li.innerHTML=content;  
             li.style.height = "90px";
