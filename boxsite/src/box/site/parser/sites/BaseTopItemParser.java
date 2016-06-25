@@ -8,16 +8,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
-
-import com.alibaba.fastjson.JSON;
 
 import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.parser.ITopItemParser;
 import cn.hd.util.FileUtil;
+
+import com.alibaba.fastjson.JSON;
+
 import easyshop.html.HTMLInfoSupplier;
 import es.util.url.URLStrHelper;
 
@@ -27,6 +29,7 @@ public class BaseTopItemParser implements ITopItemParser {
 	protected HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	protected NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,String> siteTitleEndWord = new HashMap<String,String>();
+    Random random = new Random();
 	
 	public BaseTopItemParser(){
 		//"_网易科技"
@@ -164,7 +167,15 @@ public class BaseTopItemParser implements ITopItemParser {
 		titem.setId(url.hashCode());
 		titem.setContent(contents.get(0));
 		titem.setHtmlContent(filterContext(sitekey,contents.get(1)));
-		int catid = 0;
+		List<Integer> catids = new ArrayList<Integer>();
+		catids.add(1);
+		catids.add(11);
+		catids.add(21);
+		catids.add(31);
+		catids.add(41);
+		catids.add(51);
+		int r1 = random.nextInt(6);
+		int catid = catids.get(r1);
 //		catid = newsClassifier.testClassify(titem);
 //		if (catid<=0){
 //		}

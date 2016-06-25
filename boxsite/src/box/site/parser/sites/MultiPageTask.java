@@ -9,23 +9,29 @@ public class MultiPageTask implements Runnable {
 	private String url;
 	private int count = 0;
 	private ProcessManager mgr;
+	private Spider spider;
 
 	public MultiPageTask(ProcessManager _mgr,String urlstr,int c){
 		count = c;
 		url = urlstr;
 		mgr = _mgr;
+		
+		SitePageGetProcessor p1 = new SitePageGetProcessor(this,url,count);
+      spider = Spider.create(p1);
+      spider.addPipeline(new SiteURLsPipeline());
+      spider.addPipeline(new SiteTopItemsPipeline());
+//		spider = Spider.create(p1).addPipeline(new SiteURLsPipeline());		
 	}
 
 	public void finishCallback(String sitekey){
 		mgr.spiderFinished(sitekey);
+		spider.stop();
 		Thread.currentThread().stop();
 	}
 	
 	@Override
 	public void run() {
-		SitePageGetProcessor p1 = new SitePageGetProcessor(this,url,count);
-//        Spider.create(p1).addPipeline(new SiteURLsPipeline()).addPipeline(new SiteTopItemsPipeline()).run();
-        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
+		spider.run();
 	}
 
 }

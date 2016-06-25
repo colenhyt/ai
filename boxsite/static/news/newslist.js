@@ -67,6 +67,11 @@ newslist.prototype = {
      g_currcat = parseInt(catid);
    }else
      g_currcat = 1;
+     
+    var from = getPar("from");
+    if (from){
+     g_lastqueryup[g_currcat] = 0;
+    }
     
    var content = "";
    for (var i=0;i<g_newscats.length;i++){
@@ -80,7 +85,7 @@ newslist.prototype = {
    tag.innerHTML = content;
    
    var d = new Date();
-   g_lastqueryup[g_currcat] = d.getTime();
+   //g_lastqueryup[g_currcat] = d.getTime();
    
    var obj = document.getElementById('wrapper');
 	obj.addEventListener('touchstart', function(event) {

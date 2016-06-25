@@ -52,6 +52,8 @@ public class SitePageGetProcessor implements PageProcessor{
 	public SitePageGetProcessor(MultiPageTask task,String _startUrl,int _maxCount){
 		mainThread = task;
 		
+		currCount = 0;
+		
 		maxpagecount = -1;
 		if (_maxCount>0)
 			CURRENT_DOWNLOAD_COUNT = _maxCount;

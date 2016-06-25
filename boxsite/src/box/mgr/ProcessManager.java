@@ -26,9 +26,9 @@ public class ProcessManager extends MgrBase {
 	private static ProcessManager uniqueInstance = null;
 	private Set<String>	sitekeys = new HashSet<String>();
 	private boolean inited = false;
-	private boolean running = false;
+	private boolean running = true;
 	private int runningSpiderCount = 0;
-	private int processStep = 0;
+	private boolean processStart = false;
 	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
@@ -68,10 +68,21 @@ public class ProcessManager extends MgrBase {
 	
 	public void spiderFinished(String sitekey){
 		runningSpiderCount--;
+		log.warn(sitekey+ " this time finished");
+		
 		if (runningSpiderCount>0) return;
 		
-		processStep = 1;
-//		Thread.currentThread().notifyAll();			
+		log.warn("all sites spiders finished,sleep..");
+		
+		//运转间隔
+		final int PROCESS_DURATION = 10 * 1000;		//1小时:60 * 60 * 1000;
+		try {
+			Thread.sleep(PROCESS_DURATION);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		processStart = false;
 	}
 	
 	public void processSpiders(){
@@ -94,11 +105,12 @@ public class ProcessManager extends MgrBase {
 //		sites.add("http://tech.qq.com/");
 //		sites.add("http://tech.sina.com.cn/");
 //		sites.add("http://it.sohu.com");
-//		sites.add("http://tech.ifeng.com/");
+		sites.add("http://tech.ifeng.com/");
 //		sites.add("http://www.geekpark.net/");
-		sites.add("http://techcrunch.cn/");
+//		sites.add("http://techcrunch.cn/");
 //		sites.add("http://www.ebrun.com/");
 		
+		log.warn("spiders start,sites:"+sites.size());
 		runningSpiderCount = sites.size();
 		for (String site:sites){
 			MultiPageTask task = new MultiPageTask(this,site,5);
@@ -111,32 +123,19 @@ public class ProcessManager extends MgrBase {
 	
 	@Override
 	public void process(){
-		//运转间隔
-		final int PROCESS_DURATION = 60 * 60 * 1000;		//1小时
 		
 		try {
 			while (running){
-				if (processStep==0){
+				if (!processStart){
 					this.processSpiders();
-					Thread.currentThread().wait();
-				}else if (processStep==1){
-					int a = 10;
-					a++;
-//					//文章分类:
-//					List<TopItem> newitems = processClassfiy();
-//					//save:
-//					Map<Integer,List<TopItem>> mapitems = processSaveItems(newitems);
-//					//放入当前内存:
-//					PageManager.getInstance().pushNewItems(mapitems);					
+					processStart = true;
 				}
-				
-				Thread.sleep(PROCESS_DURATION);
+				Thread.sleep(1000*5);
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}			
-//		this.process();
 	}
 	
 	//获取正文，items入库
@@ -240,8 +239,8 @@ public class ProcessManager extends MgrBase {
 	public static void main(String[] args) {
 		ProcessManager.getInstance().init();
 		
-//		ProcessManager.getInstance().update();
-		ProcessManager.getInstance().processSpiders();
+		ProcessManager.getInstance().process();
+//		ProcessManager.getInstance().processSpiders();
 //		List<TopItem> items =ProcessManager.getInstance().processClassfiy();
 //		ProcessManager.getInstance().processListUrls(items);
 	}

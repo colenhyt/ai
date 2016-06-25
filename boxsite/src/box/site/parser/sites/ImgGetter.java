@@ -14,10 +14,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 import cn.hd.util.FileUtil;
 import es.util.url.URLStrHelper;
 
 public class ImgGetter {
+	protected Logger  log = Logger.getLogger(getClass());
+	
 	public static String filePath(String httpUrl){
 		String fileName = httpUrl.substring(httpUrl.lastIndexOf("/"));
 		fileName = httpUrl.hashCode()+ fileName.substring(fileName.lastIndexOf("."));
@@ -54,13 +58,13 @@ public class ImgGetter {
 			}
 			file.close();
 			in.close();
-			System.out.println("图片获取成功:"+path);
+			log.warn("图片获取成功:"+path);
 		} catch (MalformedURLException e) {
-			System.out.println("图片获取失败:"+e.getMessage());
+			log.warn("图片获取失败:"+e.getMessage());
 		} catch (FileNotFoundException e) {
-			System.out.println("图片获取失败:"+e.getMessage());
+			log.warn("图片获取失败:"+e.getMessage());
 		} catch (IOException e) {
-			System.out.println("图片获取失败:"+e.getMessage());
+			log.warn("图片获取失败:"+e.getMessage());
 		}
 	}
 
@@ -72,14 +76,14 @@ public class ImgGetter {
 		Pattern pattern = Pattern.compile(searchImgReg);
 		Matcher matcher = pattern.matcher(content);
 		while (matcher.find()) {
-			System.out.println(matcher.group(3));
+			//System.out.println(matcher.group(3));
 			imgUrls.add(matcher.group(3));
 		}
 
 		pattern = Pattern.compile(searchImgReg2);
 		matcher = pattern.matcher(content);
 		while (matcher.find()) {
-			System.out.println(matcher.group(3));
+			//System.out.println(matcher.group(3));
 			imgUrls.add(matcher.group(3));
 		}
 		return imgUrls;

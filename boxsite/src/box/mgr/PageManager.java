@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import box.site.PageContentGetter;
@@ -188,8 +188,11 @@ public class PageManager extends MgrBase{
 		
 		List<TopItem> retitems = new ArrayList<TopItem>();
 		
-		//每次返回5条:
-		int perCount = 5;
+		//每次随机返回5-15条:
+		int max=15;
+        int min=5;
+        Random random = new Random();
+        int perCount = random.nextInt(max)%(max-min+1) + min;
 		if (startTime>0){			//最新
 			int starti = 0;
 			int ii = 0;
@@ -337,7 +340,7 @@ public class PageManager extends MgrBase{
 		if (!viewListItemsMap.containsKey(key)){
 			Calendar c = Calendar.getInstance();
 			long dateSec = 60*60*24*1000;
-			for (int i=1;i<6;i++){
+			for (int i=1;i<9;i++){
 				long du = dateSec*i;
 				long dtime = findTime - du;
 				if (currTime>0)

@@ -15,7 +15,7 @@ news.prototype = {
   	 g_news.getnews(itemid,url);
   	 
   	 var tag = document.getElementById("backnav");
-  	 tag.href="index-app.html?catid="+g_catid;
+  	 tag.href="index-app.html?catid="+g_catid+"&from=1";
   },
  
   getnews: function (itemid,url) {
