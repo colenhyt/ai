@@ -69,6 +69,10 @@ public class MgrBase extends java.util.TimerTask {
 		
 	}
 
+	public String getRootPath(){
+		return rootPath;
+	}
+	
 	public void process(){
 		
 	}

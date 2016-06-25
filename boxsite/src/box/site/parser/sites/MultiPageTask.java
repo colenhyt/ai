@@ -24,14 +24,15 @@ public class MultiPageTask implements Runnable {
 	}
 
 	public void finishCallback(String sitekey){
-		mgr.spiderFinished(sitekey);
 		spider.stop();
-		Thread.currentThread().stop();
+		spider.close();
+		mgr.spiderFinished(sitekey);
+//		Thread.currentThread().stop();
 	}
 	
 	@Override
 	public void run() {
-		spider.run();
+			spider.run();
 	}
 
 }

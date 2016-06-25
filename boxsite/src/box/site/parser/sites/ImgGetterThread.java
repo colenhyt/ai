@@ -15,15 +15,17 @@ public class ImgGetterThread implements Runnable{
 	}
 	
 	@Override
-	public synchronized void run() {
+	public void run() {
 		while (running){
+			synchronized(this){
 				for (String url:urls.keySet()){
 					getter.get(url, urls.get(url));
 				}
 				urls.clear();
+			}
 			try {
 				System.out.println("img getter wait...");
-				Thread.sleep(5000);
+				Thread.sleep(8000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

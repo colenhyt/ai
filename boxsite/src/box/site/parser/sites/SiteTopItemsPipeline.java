@@ -19,9 +19,10 @@ public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipelin
     private Logger log = LoggerFactory.getLogger(getClass());
     private BaseTopItemParser parser = new BaseTopItemParser();
 	ImgGetterThread imgGetter = new ImgGetterThread();
-    private String rootPath = "c:/boxsite/data/";
+    private String rootPath = null;
 
 	public SiteTopItemsPipeline(){
+		rootPath = PageManager.getInstance().getRootPath();
 		Thread thread = new Thread(imgGetter);
 		thread.start();
 	}
