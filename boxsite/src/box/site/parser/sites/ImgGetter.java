@@ -22,28 +22,25 @@ import es.util.url.URLStrHelper;
 public class ImgGetter {
 	protected Logger  log = Logger.getLogger(getClass());
 	
-	public static String filePath(String httpUrl){
+	public static String filePath(String sitekey,String httpUrl){
 		String fileName = httpUrl.substring(httpUrl.lastIndexOf("/"));
 		fileName = httpUrl.hashCode()+ fileName.substring(fileName.lastIndexOf("."));
-		String domainName = URLStrHelper.getHost(httpUrl).toLowerCase();
-		return "pics/"+domainName+"/"+fileName;		
+		return "pics/"+sitekey+"/"+fileName;		
 	}
 	
-	public void getHtmlPicture(String httpUrl) {
+	public void getHtmlPicture(String sitekey,String httpUrl) {
 		URL url;
 		BufferedInputStream in;
 		FileOutputStream file;
 		try {
-			String path = ImgGetter.filePath(httpUrl);
+			String path = ImgGetter.filePath(sitekey,httpUrl);
 			
 			File ff = new File(path);
 			if (ff.exists()){
-				System.out.println("图片已存在"+httpUrl);
+//				log.warn("图片已存在"+httpUrl);
 				return;
 			}
 			
-			System.out.println("取网络图片");
-
 			url = new URL(httpUrl);
 
 			in = new BufferedInputStream(url.openStream());
@@ -91,13 +88,14 @@ public class ImgGetter {
 	
 	public void get(String url, String content)  {
 		Set<String> imgurls = findImgUrls(url,content);
+		String sitekey = URLStrHelper.getHost(url).toLowerCase();
 		for (String imgUrl:imgurls){
 			if (imgUrl.indexOf("http")<0){
 				String urlHead = url.substring(0,url.lastIndexOf("/"));
 				imgUrl = urlHead+imgUrl;
 				
 			}
-			this.getHtmlPicture(imgUrl);
+			this.getHtmlPicture(sitekey,imgUrl);
 		}
 	}
 

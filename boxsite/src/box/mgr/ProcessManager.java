@@ -75,7 +75,7 @@ public class ProcessManager extends MgrBase {
 		log.warn("all sites spiders finished,sleep..");
 		
 		//运转间隔
-		final int PROCESS_DURATION = 60 *60 * 1000;		//1小时:60 * 60 * 1000;
+		final int PROCESS_DURATION = 5 * 1000;		//1小时:60 * 60 * 1000;
 		try {
 			Thread.sleep(PROCESS_DURATION);
 		} catch (InterruptedException e) {
@@ -113,7 +113,7 @@ public class ProcessManager extends MgrBase {
 		log.warn("spiders start,sites:"+sites.size());
 		runningSpiderCount = sites.size();
 		for (String site:sites){
-			MultiPageTask task = new MultiPageTask(this,site,30);
+			MultiPageTask task = new MultiPageTask(this,site,3);
 			Thread t2=new Thread(task);
 			t2.start();
 		}
