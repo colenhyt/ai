@@ -160,7 +160,7 @@ newslist.prototype = {
      stime = starttime;
 	var dataParam = "cat="+catid+"&starttime="+stime;
 	try    {
-		$.ajax({type:"post",url:"news.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"newslist.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
 		g_newslistview.additem(1,jsonstr);
 		}});
@@ -175,7 +175,7 @@ newslist.prototype = {
   getnewscount: function () {
 	var dataParam = "type=2&cat="+g_currcat+"&starttime="+g_lastqueryup[g_currcat];
 	try    {
-		$.ajax({type:"post",url:"news.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"newslist.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
 		var count = parseInt(jsonstr);
 		}});

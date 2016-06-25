@@ -138,9 +138,11 @@ public class NewsClassifier {
 			InstanceList[] ilists = ilist.split (new double[] {.8, .2});
 			// Create a classifier trainer, and use it to create a classifier
 			ClassifierTrainer naiveBayesTrainer = new NaiveBayesTrainer ();	
-			Classifier classifier = naiveBayesTrainer.train (ilists[0]);
+			Classifier classifier = naiveBayesTrainer.train (ilist);
 			TopItem item = new TopItem();
-			double acc1 = classifier.getAccuracy(ilists[0]);
+			item.setContent("黄颖天");
+			InstanceList ilist2 = initPipe(2,item);
+			double acc1 = classifier.getAccuracy(ilist2);
 			log.warn("classify:"+ acc1);
 			double acc2 = classifier.getAccuracy(ilists[1]);
 			log.warn("classify:"+ acc2);
@@ -172,7 +174,7 @@ public class NewsClassifier {
 		
 		// Create an empty list of the training instances
 		InstanceList ilist = new InstanceList (instancePipe);
-		ilist.addThruPipe (new StringIterator (item.getContent(), "data\\training\\51"));
+		ilist.addThruPipe (new StringIterator (item.getContent(), "data\\training\\2"));
 //		ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
 		
 		return ilist;

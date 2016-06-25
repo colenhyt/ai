@@ -36,9 +36,9 @@ news.prototype = {
     var content = "";
     var dd = new Date(item.contentTime);
     var timeStr = dd.Format("yyyy-MM-dd hh:mm:ss");
-    content += "<h style='font-size:35px;font-weight:bold;'>"+item.ctitle+"</h>";
-    content += "<div style='font-size:12px;padding-top:7px'>来源:"+g_sitekeys[item.sitekey]+" 时间:"+timeStr+"</div>";
-    content += "<div>"+item.htmlContent+"</div>";
+    content += "<h style='font-size:35px;font-weight:bold;padding-top:10px;padding-left:10px'>"+item.ctitle+"</h>";
+    content += "<div style='font-size:12px;padding-top:12px;padding-left:10px'>来源:"+g_sitekeys[item.sitekey]+" 时间:"+timeStr+"</div>";
+    content += "<div style='padding-left:10px'>"+item.htmlContent+"</div>";
     
     var tag = document.getElementById("content");
     tag.innerHTML = content;

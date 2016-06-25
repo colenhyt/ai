@@ -54,7 +54,17 @@ public class MgrBase extends java.util.TimerTask {
 			}
 		}
 		cfgObj = JSON.parseObject(cfgstr);
+		String rpath = cfgObj.getString("rootPath");
+		if (rpath!=null){
+			rootPath = rpath;
+			userFilePath = rootPath+"users.json";
+			pagesPath = rootPath+"pages/";
+			traniningpath = rootPath+"training/";
+			itemPath = rootPath+"items/";
+			listPath = rootPath+"list/";			
+		}
 		String cfgstr0 = cfgObj.getString("redisCfg");
+		if (cfgstr0!=null)
 		redisCfg = JSON.parseObject(cfgstr0, RedisConfig.class);
 		
 	}
