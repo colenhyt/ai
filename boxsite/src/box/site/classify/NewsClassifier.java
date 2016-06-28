@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,12 +17,9 @@ import org.apache.log4j.Logger;
 
 import box.site.PageContentGetter;
 import box.site.model.TopItem;
-import box.site.model.WebUrl;
-import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.NaiveBayesTrainer;
-import cc.mallet.pipe.FeatureSequence2FeatureVector;
 import cc.mallet.pipe.Input2CharSequence;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.PrintInputAndTarget;
@@ -36,11 +32,11 @@ import cc.mallet.pipe.iterator.FileIterator;
 import cc.mallet.pipe.iterator.UnlabeledFileIterator;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.Label;
 import cc.mallet.types.Labeling;
 import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
@@ -72,22 +68,16 @@ public class NewsClassifier {
 			comSet.addAll(companyList);
 		}
 		
-		List<File> classifierFiles = FileUtil.getFiles(trainingPath);
-//		try {
-//		for (File f:classifierFiles){
-//			int endindex = f.getName().indexOf(".classifier");
-//			if (endindex<0) continue;
-//			String fn = f.getName().substring(0,endindex);
-//			int catid = Integer.valueOf(fn);
-//			FileInputStream fis = new FileInputStream(f);
-//           ObjectInputStream ois = new ObjectInputStream(fis);  
-//            Classifier classifier = (Classifier) ois.readObject(); 
-//            classifyMap.put(catid, classifier);
-//		}
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}  
+		File classifyFile = new File(trainingPath+"news.classifier");
+		try {
+			FileInputStream fis = new FileInputStream(classifyFile);
+           ObjectInputStream ois = new ObjectInputStream(fis);  
+           classifier = (Classifier) ois.readObject(); 
+           ois.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
 	}
 	
 	public void trainingClassifiers(){
@@ -147,7 +137,7 @@ public class NewsClassifier {
 		ClassifierTrainer naiveBayesTrainer = new NaiveBayesTrainer ();	
 		Classifier classifier = naiveBayesTrainer.train (ilist);
 		TopItem item = new TopItem();
-		item.setContent("创业");
+		item.setContent("李彦宏马云");
 		
 		Iterator<Instance> i2 = new StringIterator (item.getContent(), null);
 		Iterator<Instance> iterator0 = 
@@ -235,7 +225,7 @@ public class NewsClassifier {
 		
 		// Create an empty list of the training instances
 		InstanceList ilist = new InstanceList (instancePipe);
-//		ilist.addThruPipe (new StringIterator (item.getContent(), null));
+		ilist.addThruPipe (new StringIterator (item.getContent(), null));
 //		ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
 		
 		return ilist;
@@ -269,15 +259,33 @@ public class NewsClassifier {
 		double accur = 0;
 		int testCatid = -1;
 		try {
-		for (int catid:classifyMap.keySet()){
-			Classifier classifier = classifyMap.get(catid);
-			double acc1 = classifier.getAccuracy(initPipe(catid,item));
-			acc1 += getTitleAccura(item,catid);
-			if (acc1>0.8&&acc1>accur){
-				accur = acc1;
-				testCatid = catid;
+			Iterator<Instance> i2 = new StringIterator (item.getContent(), null);
+			Iterator<Instance> iterator0 = 
+					classifier.getInstancePipe().newIteratorFrom(i2);
+			
+			if (iterator0.hasNext()) {
+				Instance instance = iterator0.next();
+				Labeling labeling = 
+						classifier.classify(instance).getLabeling();
+				
+				Label catLabel = null;
+				double catValue = 0;
+				for (int location = 0; location < labeling.numLocations(); location++) {
+					Label label = labeling.labelAtLocation(location);
+					double value = labeling.valueAtLocation(location);
+					if (catValue<=0||value>catValue){
+						catLabel = label;
+					}
+				}				
+				if (catLabel!=null){
+					String strLabel = catLabel.toString();
+					String[] strs = strLabel.split("/");
+					String post = strs[strs.length-1];	
+					if (post.matches("[0-9]+"))
+						testCatid = Integer.valueOf(post);
+				}
 			}
-		}
+			
 		}catch (Exception e){
 			log.warn("item classify failed:"+e.getMessage());
 			e.printStackTrace();

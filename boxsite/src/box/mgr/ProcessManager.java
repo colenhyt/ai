@@ -29,6 +29,8 @@ public class ProcessManager extends MgrBase {
 	private boolean running = true;
 	private int runningSpiderCount = 0;
 	private boolean processStart = false;
+	//最新批次topitems:
+	private List<TopItem> newTopitemList = Collections.synchronizedList(new ArrayList<TopItem>());
 	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
@@ -74,6 +76,9 @@ public class ProcessManager extends MgrBase {
 		
 		log.warn("all sites spiders finished,sleep..");
 		
+		//处理该频次新增topitem:
+		boolean hasNew = processListUrls(newTopitemList);
+		
 		//运转间隔
 		final int PROCESS_DURATION = 5 * 1000;		//1小时:60 * 60 * 1000;
 		try {
@@ -83,6 +88,10 @@ public class ProcessManager extends MgrBase {
 			e.printStackTrace();
 		}
 		processStart = false;
+	}
+	
+	public synchronized void pushNewItem(TopItem item){
+		newTopitemList.add(item);
 	}
 	
 	public void processSpiders(){
@@ -198,8 +207,8 @@ public class ProcessManager extends MgrBase {
 	}
 
 	//产生对应日期的内容列表并落地
-	public void processListUrls(List<TopItem> items){
-		Map<String,List<TopItem>> newItemsMap = Collections.synchronizedMap(new HashMap<String,List<TopItem>>());
+	public boolean processListUrls(List<TopItem> items){
+		Map<String,List<Integer>> newItemsMap = Collections.synchronizedMap(new HashMap<String,List<Integer>>());
 		List<String> newsList = Collections.synchronizedList(new ArrayList<String>());
 		Date now = new Date();
 		Calendar c = Calendar.getInstance();
@@ -208,21 +217,22 @@ public class ProcessManager extends MgrBase {
 			c.setTimeInMillis(crtime);
 			String dateStr = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DAY_OF_MONTH);
 			String fileName = listPath+item.getCat()+"/"+dateStr+"/"+now.getTime()+".list";
-			List<TopItem> list = newItemsMap.get(fileName);
+			List<Integer> list = newItemsMap.get(fileName);
 			if (list==null){
-				list = Collections.synchronizedList(new ArrayList<TopItem>());
+				list = Collections.synchronizedList(new ArrayList<Integer>());
 				newItemsMap.put(fileName, list);
 				newsList.add(fileName);
 			}
-			list.add(item);
+			list.add(item.getUrl().hashCode());
 		}
 		//list data(按日期)落地:
 		for (String listkey:newItemsMap.keySet()){
-			List<TopItem> itemlist = newItemsMap.get(listkey);
+			List<Integer> itemlist = newItemsMap.get(listkey);
 			FileUtil.writeFile(listkey, JSON.toJSONString(itemlist));
 		}
 		//最新list落地，等待site获取:
 		FileUtil.writeFile(listPath+now.getTime()+".latest", JSON.toJSONString(newsList));
+		return newsList.size()>0;
 	}
 	
 	private Set<String> _getFileUrls2(String filePath){

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 
@@ -27,10 +28,10 @@ import es.util.url.URLStrHelper;
 public class PageManager extends MgrBase{
 	private static PageManager uniqueInstance = null;
 	private Set<String>	sitekeys;
-	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
+	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = Collections.synchronizedMap(new HashMap<String,Map<String,WebUrl>>());
 	private Map<String,List<TopItem>> viewListItemsMap = Collections.synchronizedMap(new HashMap<String,List<TopItem>>());
-	private Map<Integer,TopItem> viewItemsMap = new HashMap<Integer,TopItem>();
-	private Map<Long, User>   userMap = new HashMap<Long,User>();
+	private Map<Integer,TopItem> viewItemsMap = Collections.synchronizedMap(new HashMap<Integer,TopItem>());
+	private Map<Long, User>   userMap = Collections.synchronizedMap(new HashMap<Long,User>());
 	private Set<String> loadedList = Collections.synchronizedSet(new HashSet<String>());
 	private boolean inited = false;
 	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
@@ -38,7 +39,6 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-
 //		PageManager.getInstance().resetTrainingurls();
 		
 		String url = "http://tech.ifeng.com/a/20160624/41628054_0.shtml";
@@ -99,29 +99,6 @@ public class PageManager extends MgrBase{
 			}
 		}
 		
-	}
-	
-	public synchronized void pushNewItem(TopItem item){
-		String key = _keyPath(item.getContentTime(),item.getCat());
-		//放入viewItemMap内存:
-		List<TopItem> vitems = viewListItemsMap.get(key);
-		if (vitems==null){
-			vitems = Collections.synchronizedList(new ArrayList<TopItem>());
-			viewListItemsMap.put(key, vitems);
-		}
-		vitems.add(item);
-		Collections.sort(vitems);	
-	}
-	
-	public void pushNewItems(Map<Integer,List<TopItem>> mapitems){
-		
-		//按日期入内存库,一天一个json:
-		for (int catid:mapitems.keySet()){
-			List<TopItem> citems = mapitems.get(catid);
-			for (TopItem item:citems){
-				pushNewItem(item);
-			}
-		}
 	}
 	
 	public String getNews2(String url){
@@ -484,7 +461,7 @@ public class PageManager extends MgrBase{
 		return JSON.toJSONString(sitekeys);
 	}
 	
-	private String _keyPath(long time,int catid){
+	protected String _keyPath(long time,int catid){
 		Calendar c = Calendar.getInstance();
 		if (time<=0)
 			time = System.currentTimeMillis();

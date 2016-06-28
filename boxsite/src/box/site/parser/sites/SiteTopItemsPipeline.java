@@ -10,6 +10,7 @@ import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.utils.FilePersistentBase;
 import box.mgr.PageManager;
+import box.mgr.ProcessManager;
 import box.site.model.TopItem;
 import cl.util.FileUtil;
 
@@ -48,6 +49,7 @@ public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipelin
 				imgGetter.push(url, item.getHtmlContent());
 			}
 			
+			ProcessManager.getInstance().pushNewItem(item);
 			//PageManager.getInstance().pushNewItem(item);
 		}
 	}
