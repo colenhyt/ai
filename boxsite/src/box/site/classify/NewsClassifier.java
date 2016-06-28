@@ -5,8 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +19,7 @@ import org.apache.log4j.Logger;
 import box.site.PageContentGetter;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
+import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.NaiveBayesTrainer;
@@ -29,8 +33,10 @@ import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.TokenSequenceLowercase;
 import cc.mallet.pipe.TokenSequenceRemoveStopwords;
 import cc.mallet.pipe.iterator.FileIterator;
+import cc.mallet.pipe.iterator.UnlabeledFileIterator;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.Labeling;
 import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -52,6 +58,7 @@ public class NewsClassifier {
 	private Map<Integer,Classifier>	classifyMap = new HashMap<Integer,Classifier>();
 	JiebaSegmenter segmenter = new JiebaSegmenter();
 	private PageContentGetter contentGetter = new PageContentGetter();
+	private Classifier classifier;
 	
 	public NewsClassifier(){
 		String content = FileUtil.readFile(trainingPath+"people.json");
@@ -66,21 +73,21 @@ public class NewsClassifier {
 		}
 		
 		List<File> classifierFiles = FileUtil.getFiles(trainingPath);
-		try {
-		for (File f:classifierFiles){
-			int endindex = f.getName().indexOf(".classifier");
-			if (endindex<0) continue;
-			String fn = f.getName().substring(0,endindex);
-			int catid = Integer.valueOf(fn);
-			FileInputStream fis = new FileInputStream(f);
-           ObjectInputStream ois = new ObjectInputStream(fis);  
-            Classifier classifier = (Classifier) ois.readObject(); 
-            classifyMap.put(catid, classifier);
-		}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
+//		try {
+//		for (File f:classifierFiles){
+//			int endindex = f.getName().indexOf(".classifier");
+//			if (endindex<0) continue;
+//			String fn = f.getName().substring(0,endindex);
+//			int catid = Integer.valueOf(fn);
+//			FileInputStream fis = new FileInputStream(f);
+//           ObjectInputStream ois = new ObjectInputStream(fis);  
+//            Classifier classifier = (Classifier) ois.readObject(); 
+//            classifyMap.put(catid, classifier);
+//		}
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}  
 	}
 	
 	public void trainingClassifiers(){
@@ -113,53 +120,107 @@ public class NewsClassifier {
 //				}
 //			}
 //		}
+		Pipe instancePipe = new SerialPipes (new Pipe[] {
+				new Target2Label (),							  // Target String -> class label
+				new Input2CharSequence (),				  // Data File -> String containing contents
+				//new CharSubsequence (CharSubsequence.SKIP_HEADER), // Remove UseNet or email header
+				new CharSequence2GBKTokenSequence (),  // Data String -> TokenSequence
+				new TokenSequenceLowercase (),		  // TokenSequence words lowercased
+				new TokenSequenceRemoveStopwords (),// Remove stopwords from sequence
+				new TokenSequence2FeatureSequence(),// Replace each Token with a feature index
+				new FeatureSequence2WeightFeatureVector(11),// Collapse word order into a "weight feature vector"
+//				new PrintInputAndTarget(),
+			});
 		
 		List<File> folders = FileUtil.getFolders(trainingPath);
+		InstanceList ilist = new InstanceList (instancePipe);
 		for (File f:folders){
 			int catid = Integer.valueOf(f.getName());
 			
-			Pipe instancePipe = new SerialPipes (new Pipe[] {
-					new Target2Label (),							  // Target String -> class label
-					new Input2CharSequence (),				  // Data File -> String containing contents
-					//new CharSubsequence (CharSubsequence.SKIP_HEADER), // Remove UseNet or email header
-					new CharSequence2GBKTokenSequence (),  // Data String -> TokenSequence
-					new TokenSequenceLowercase (),		  // TokenSequence words lowercased
-					new TokenSequenceRemoveStopwords (),// Remove stopwords from sequence
-					new TokenSequence2FeatureSequence(),// Replace each Token with a feature index
-					new FeatureSequence2WeightFeatureVector(catid),// Collapse word order into a "weight feature vector"
-//					new PrintInputAndTarget(),
-				});
-			
 			// Create an empty list of the training instances
-			InstanceList ilist = new InstanceList (instancePipe);
 			String directories = trainingPath+"/"+catid;
 			ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
 	
-			InstanceList[] ilists = ilist.split (new double[] {.8, .2});
+//			InstanceList[] ilists = ilist.split (new double[] {.8, .2});
 			// Create a classifier trainer, and use it to create a classifier
-			ClassifierTrainer naiveBayesTrainer = new NaiveBayesTrainer ();	
-			Classifier classifier = naiveBayesTrainer.train (ilist);
-			TopItem item = new TopItem();
-			item.setContent("黄颖天");
-			InstanceList ilist2 = initPipe(2,item);
-			double acc1 = classifier.getAccuracy(ilist2);
-			log.warn("classify:"+ acc1);
-			double acc2 = classifier.getAccuracy(ilists[1]);
-			log.warn("classify:"+ acc2);
-			String filename = trainingPath+"/"+catid+".classifier";
-			log.warn("build classfier:"+ filename);
-			//保存:
-			try {
-				ObjectOutputStream oos = new ObjectOutputStream
-					(new FileOutputStream (filename));
-				oos.writeObject (classifier);
-				oos.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new IllegalArgumentException ("Couldn't write classifier to filename "+
-													filename);
-			}		
 		}
+		ClassifierTrainer naiveBayesTrainer = new NaiveBayesTrainer ();	
+		Classifier classifier = naiveBayesTrainer.train (ilist);
+		TopItem item = new TopItem();
+		item.setContent("创业");
+		
+		Iterator<Instance> i2 = new StringIterator (item.getContent(), null);
+		Iterator<Instance> iterator0 = 
+				classifier.getInstancePipe().newIteratorFrom(i2);
+		
+//		InstanceList ilist2 = initPipe(21,item);
+//		ilist2.
+//		double acc1 = classifier.getAccuracy(ilist2);
+		
+		while (iterator0.hasNext()) {
+			Instance instance = iterator0.next();
+			Labeling labeling = 
+					classifier.classify(instance).getLabeling();
+			log.warn("class:"+1);
+		}
+		
+//		log.warn("classify:"+ acc1);
+		
+		
+		File[] directories = new File[1];
+		List<File> files = FileUtil.getFolders("C:\\boxsite\\data\\training\\2");
+//		for (int i = 0; i < files.size(); i++) {
+			directories[0] = new File("C:\\boxsite\\data\\2");
+//		}
+		Iterator<Instance> fileIterator = new UnlabeledFileIterator (directories);
+		Iterator<Instance> iterator = 
+			classifier.getInstancePipe().newIteratorFrom(fileIterator);
+		
+		// Write classifications to the output file
+		PrintStream out = null;
+
+			out = System.out;
+
+		// gdruck@cs.umass.edu
+		// Stop growth on the alphabets. If this is not done and new
+		// features are added, the feature and classifier parameter
+		// indices will not match.  
+		classifier.getInstancePipe().getDataAlphabet().stopGrowth();
+		classifier.getInstancePipe().getTargetAlphabet().stopGrowth();
+		
+		while (iterator.hasNext()) {
+			Instance instance = iterator.next();
+			
+			Labeling labeling = 
+				classifier.classify(instance).getLabeling();
+
+			StringBuilder output = new StringBuilder();
+			output.append(instance.getName());
+
+			for (int location = 0; location < labeling.numLocations(); location++) {
+				output.append("\t" + labeling.labelAtLocation(location));
+				output.append("\t" + labeling.valueAtLocation(location));
+			}
+
+			out.println(output);
+		}
+		
+//		initPipe(2,item)
+//		double acc2 = classifier.getAccuracy(ilists[1]);
+//		log.warn("classify:"+ acc2);
+		String filename = trainingPath+"/news.classifier";
+		log.warn("build classfier:"+ filename);
+		//保存:
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream
+				(new FileOutputStream (filename));
+			oos.writeObject (classifier);
+			oos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException ("Couldn't write classifier to filename "+
+												filename);
+		}		
 	}
 	
 	private InstanceList initPipe(int catid,TopItem item){
@@ -169,12 +230,12 @@ public class NewsClassifier {
 				new TokenSequenceRemoveStopwords (),// Remove stopwords from sequence
 				new TokenSequence2FeatureSequence(),// Replace each Token with a feature index
 				new FeatureSequence2WeightFeatureVector(catid),// Collapse word order into a "feature vector"
-//				new PrintInputAndTarget(),
+				new PrintInputAndTarget(),
 			});		
 		
 		// Create an empty list of the training instances
 		InstanceList ilist = new InstanceList (instancePipe);
-		ilist.addThruPipe (new StringIterator (item.getContent(), "data\\training\\2"));
+//		ilist.addThruPipe (new StringIterator (item.getContent(), null));
 //		ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
 		
 		return ilist;
