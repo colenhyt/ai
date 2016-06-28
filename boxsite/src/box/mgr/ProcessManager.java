@@ -98,21 +98,21 @@ public class ProcessManager extends MgrBase {
 	
 		//spider:
 		Set<String> sites = new HashSet<String>();
-//		sites.add("http://www.tmtpost.com");
-//		sites.add("http://www.leiphone.com");
-//		sites.add("http://www.huxiu.com");
-//		sites.add("http://www.iheima.com/");
+		sites.add("http://www.tmtpost.com");
+		sites.add("http://www.leiphone.com");
+		sites.add("http://www.huxiu.com");
+		sites.add("http://www.iheima.com/");
 //		sites.add("http://www.pintu360.com/");
-//		sites.add("http://www.ikanchai.com/");
-//		sites.add("http://www.iyiou.com/");
-//		sites.add("http://www.techweb.com.cn/");
-//		sites.add("http://www.ifanr.com/");
-//		sites.add("http://www.cyzone.cn/");
-//		sites.add("http://www.sootoo.com/");
+		sites.add("http://www.ikanchai.com/");
+		sites.add("http://www.iyiou.com/");
+		sites.add("http://www.techweb.com.cn/");
+		sites.add("http://www.ifanr.com/");
+		sites.add("http://www.cyzone.cn/");
+		sites.add("http://www.sootoo.com/");
 		
 //		sites.add("http://tech.163.com");
 //		sites.add("http://tech.qq.com/");
-		sites.add("http://tech.sina.com.cn/");
+//		sites.add("http://tech.sina.com.cn/");
 //		sites.add("http://it.sohu.com");
 //		sites.add("http://tech.ifeng.com/");
 //		sites.add("http://www.geekpark.net/");
@@ -122,7 +122,7 @@ public class ProcessManager extends MgrBase {
 		log.warn("spiders start,sites:"+sites.size());
 		runningSpiderCount = sites.size();
 		for (String site:sites){
-			MultiPageTask task = new MultiPageTask(this,site,3);
+			MultiPageTask task = new MultiPageTask(this,site,300);
 			Thread t2=new Thread(task);
 			t2.start();
 		}

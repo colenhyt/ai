@@ -69,15 +69,15 @@ public class NewsClassifier {
 		}
 		
 		File classifyFile = new File(trainingPath+"news.classifier");
-		try {
-			FileInputStream fis = new FileInputStream(classifyFile);
-           ObjectInputStream ois = new ObjectInputStream(fis);  
-           classifier = (Classifier) ois.readObject(); 
-           ois.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
+//		try {
+//			FileInputStream fis = new FileInputStream(classifyFile);
+//           ObjectInputStream ois = new ObjectInputStream(fis);  
+//           classifier = (Classifier) ois.readObject(); 
+//           ois.close();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}  
 	}
 	
 	public void trainingClassifiers(){
