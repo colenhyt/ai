@@ -79,7 +79,7 @@ newslist.prototype = {
    content += "<li id='navlist"+list[0]+"'";
    if (list[0]==g_currcat)
     content += " style='display:inline-block;background-color:#0095BB;height:60px'";
-   content += "><a href='javascript:g_newslist.getlist("+list[0]+")'>"+list[1]+"</a></li> "
+   content += "><a href='javascript:g_newslist.viewlist("+list[0]+")'>"+list[1]+"</a></li> "
    }
    var tag = document.getElementById("nav");
    tag.innerHTML = content;
@@ -105,9 +105,9 @@ newslist.prototype = {
 	     g_moveendy = event.changedTouches[0].clientY;
 	       var moveDir = moveDirection(g_movestartx,g_moveendx,g_movestarty,g_moveendy);
 	       if (moveDir==2){
-	        g_newslist.getlist(g_currcat+1);
+	        g_newslist.viewlist(g_currcat+1);
 	       }else if (moveDir==3){
-	        g_newslist.getlist(g_currcat-1);
+	        g_newslist.viewlist(g_currcat-1);
 	       }
 	       
 	     g_moveflag = false;
@@ -131,9 +131,9 @@ newslist.prototype = {
 	 g_moveendy = event.clientY;	
 	       var moveDir = moveDirection(g_movestartx,g_moveendx,g_movestarty,g_moveendy);
 	       if (moveDir==2){
-	        g_newslist.getlist(g_currcat+1);
+	        g_newslist.viewlist(g_currcat+1);
 	       }else if (moveDir==3){
-	        g_newslist.getlist(g_currcat-1);
+	        g_newslist.viewlist(g_currcat-1);
 	       }	 
 	 
 	 g_moveflag = false;
@@ -143,7 +143,7 @@ newslist.prototype = {
 	 g_moveflag = true;
 	};	
   },
-  getlist: function (catid,starttime) {
+  viewlist: function (catid,starttime) {
     if (catid<=0) return;
     
     if (!g_currcat)
@@ -157,6 +157,32 @@ newslist.prototype = {
     
     g_currcat = catid;
     
+    var items = this.data[catid];
+    if (items!=null&&items.length>0){
+     g_newslistview.renderlist(1,items);
+     this.querynewscount();
+    }else {
+      this.querylist(catid,starttime);
+    }
+ 
+  },
+  
+  appendlist:function(catid,newlist){
+   var list = this.data[catid];
+   if (list==null||list.length==0)
+    list = [];
+    
+    for (var i=0;i<newlist.length;i++){
+     list.push(newlist[i]);
+    }
+	
+	store.set(this.name,this.data);
+	
+	g_newslistview.renderlist(1,list);
+   
+  },
+  
+  querylist:function(catid,starttime){
     var ul= document.getElementById('thelist');
     ul.innerHTML = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
     
@@ -167,17 +193,13 @@ newslist.prototype = {
 	try    {
 		$.ajax({type:"post",url:"newslist.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
-		g_newslistview.additem(1,jsonstr);
+		g_news.appendlist(catid,jsonstr.news);
 		}});
 	}   catch  (e)   {
-	}   
+	}     
   },
   
-  getcurrlist: function () {
-   g_newslist.getlist(g_currcat,g_lastqueryup[g_currcat]);
-  },  
- 
-  getnewscount: function () {
+  querynewscount: function () {
 	var dataParam = "type=2&cat="+g_currcat+"&starttime="+g_lastqueryup[g_currcat];
 	try    {
 		$.ajax({type:"post",url:"newslist.jsp",data:dataParam,success:function(data){
@@ -206,9 +228,8 @@ newslistview = function(options){
 
 newslistview.prototype = {
  
-    additem:function(id,jsonText) {  
+    renderlist:function(id,newslist) {  
       
-    	var newslist = jsonText.news;  
         var ul= document.getElementById('thelist');
         ul.innerHTML = "";
         for (var i=0;i<newslist.length;i++){
@@ -251,5 +272,4 @@ var g_newslist = new newslist();
 var g_newslistview = new newslistview();
 
 g_newslist.init();
-g_newslist.getcurrlist();
-g_newslist.getnewscount();
+g_newslist.viewlist(g_currcat,g_lastqueryup[g_currcat]);
