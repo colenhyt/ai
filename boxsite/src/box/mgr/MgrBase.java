@@ -37,6 +37,7 @@ public class MgrBase extends java.util.TimerTask {
 	protected String traniningpath = rootPath+"training/";
 	protected String itemPath = rootPath+"items/";
 	protected String listPath = rootPath+"list/";
+	protected String dictPath = rootPath+"dict/";
 
 	public MgrBase(){
 		String path = "src/";

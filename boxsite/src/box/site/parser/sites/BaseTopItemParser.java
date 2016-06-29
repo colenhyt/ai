@@ -250,7 +250,7 @@ public class BaseTopItemParser implements ITopItemParser {
 		String fileName = item.getUrl().hashCode()+".item";
 		
 		if (item.getCat()<=0){
-			String path = rootPath+"wrongitems/"+item.getSitekey()+"/"+fileName;
+			String path = rootPath+"wrongitems/"+item.getCat()+"/"+item.getSitekey()+"/"+fileName;
 			FileUtil.writeFile(path, JSON.toJSONString(item));
 			return;
 		}

@@ -1,30 +1,40 @@
 package box.site.parser.sites;
 
-import java.util.Calendar;
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import box.mgr.PageManager;
+import box.mgr.ProcessManager;
+import box.site.model.TopItem;
+import box.site.model.WebUrl;
+import es.util.FileUtil;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.utils.FilePersistentBase;
-import box.mgr.PageManager;
-import box.mgr.ProcessManager;
-import box.site.model.TopItem;
-import cl.util.FileUtil;
-
-import com.alibaba.fastjson.JSON;
 
 public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipeline {
     private Logger log = LoggerFactory.getLogger(getClass());
     private BaseTopItemParser parser = new BaseTopItemParser();
 	ImgGetterThread imgGetter = new ImgGetterThread();
+	private ProcessManager processMgr;
     private String rootPath = null;
 
 	public SiteTopItemsPipeline(){
 		rootPath = PageManager.getInstance().getRootPath();
 		Thread thread = new Thread(imgGetter);
+		processMgr = ProcessManager.getInstance();
+		processMgr.init();
+
 		thread.start();
 	}
 	
@@ -39,7 +49,16 @@ public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipelin
 			log.warn("page parse failed:"+url);
 			return;
 		}
-	
+		
+		//查找相似文档:
+		if (item.getCat()>0){
+			boolean hasSim = processMgr.hasDocSim(item.getCat(), item.getContent());
+			if (hasSim){
+				log.warn("simulate doc exist ");
+				item.setCat(-2);
+			}
+		}
+		
 		parser.save(rootPath, item);
 		
 		if (item.getCat()>0){

@@ -1,6 +1,7 @@
 package box.mgr;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
@@ -20,6 +22,7 @@ import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
 import box.site.parser.sites.ImgGetterThread;
 import box.site.parser.sites.MultiPageTask;
+import cn.hd.util.SimHash;
 import es.util.FileUtil;
 
 public class ProcessManager extends MgrBase {
@@ -31,6 +34,7 @@ public class ProcessManager extends MgrBase {
 	private boolean processStart = false;
 	//最新批次topitems:
 	private List<TopItem> newTopitemList = Collections.synchronizedList(new ArrayList<TopItem>());
+	private Map<Integer,Map<Integer,String>>	pageSimHashMap = Collections.synchronizedMap(new HashMap<Integer,Map<Integer,String>>());
 	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
@@ -66,6 +70,22 @@ public class ProcessManager extends MgrBase {
 				savedUrlsMap.put(folder.getName(), siteurls3);
 			}			
 		}		
+		
+		List<File> dictFiles = FileUtil.getFiles(dictPath);
+		for (File f:dictFiles){
+			String content = FileUtil.readFile(f);
+    		if (content!=null&&content.trim().length()>0){
+    			String catstr = f.getName().substring(0,f.getName().indexOf("."));
+    			int catid = Integer.valueOf(catstr);
+    			Map<Integer,String>  catDictMap = Collections.synchronizedMap(new HashMap<Integer,String>());
+    			Map<Integer,JSONObject> jsonstr = (Map<Integer,JSONObject>)JSON.parseObject(content, HashMap.class);
+    			for (Integer itemid:jsonstr.keySet()){
+    				JSONObject jsonobj = jsonstr.get(itemid);
+    				catDictMap.put(itemid, jsonobj.toString());
+    			}
+    			pageSimHashMap.put(catid, catDictMap);
+    		}			
+		}		
 	}
 	
 	public void spiderFinished(String sitekey){
@@ -99,24 +119,26 @@ public class ProcessManager extends MgrBase {
 		//spider:
 		Set<String> sites = new HashSet<String>();
 		sites.add("http://www.tmtpost.com");
-		sites.add("http://www.leiphone.com");
-		sites.add("http://www.huxiu.com");
-		sites.add("http://www.iheima.com/");
+//		sites.add("http://www.leiphone.com");
+//		sites.add("http://www.huxiu.com");
+//		sites.add("http://www.iheima.com/");
 //		sites.add("http://www.pintu360.com/");
-		sites.add("http://www.ikanchai.com/");
-		sites.add("http://www.iyiou.com/");
-		sites.add("http://www.techweb.com.cn/");
-		sites.add("http://www.ifanr.com/");
-		sites.add("http://www.cyzone.cn/");
-		sites.add("http://www.sootoo.com/");
+//		sites.add("http://www.ikanchai.com/");
+//		sites.add("http://www.iyiou.com/");
+//		sites.add("http://www.techweb.com.cn/");
+//		sites.add("http://www.ifanr.com/");
+//		sites.add("http://www.cyzone.cn/");
+//		sites.add("http://www.sootoo.com/");
 		
 //		sites.add("http://tech.163.com");
 //		sites.add("http://tech.qq.com/");
 //		sites.add("http://tech.sina.com.cn/");
-//		sites.add("http://it.sohu.com");
+		sites.add("http://it.sohu.com");
 //		sites.add("http://tech.ifeng.com/");
 //		sites.add("http://www.geekpark.net/");
-//		sites.add("http://techcrunch.cn/");
+		sites.add("http://techcrunch.cn/");
+		
+		
 //		sites.add("http://www.ebrun.com/");
 		
 		log.warn("spiders start,sites:"+sites.size());
@@ -130,6 +152,22 @@ public class ProcessManager extends MgrBase {
 	
 	}
 	
+	public boolean hasDocSim(int catid,String pageContent){
+		Map<Integer,String> catDictMap = pageSimHashMap.get(catid);
+		if (catDictMap==null)
+			return false;
+		
+		try {
+			SimHash sim = new SimHash(pageContent, 64);
+			for (String strSim:catDictMap.values()){
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 	@Override
 	public void process(){
 		
