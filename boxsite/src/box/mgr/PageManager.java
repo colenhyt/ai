@@ -304,7 +304,7 @@ public class PageManager extends MgrBase{
 			item.setSitekey("huxiu.com");
 			item.setContentTime(System.currentTimeMillis());
 			item.setId(1);
-			retitems.add(item);			
+//			retitems.add(item);			
 		}
 
 		
