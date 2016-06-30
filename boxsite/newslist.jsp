@@ -29,7 +29,7 @@ int catid = Integer.valueOf(catstr);
 if (typestr==null)
   jsonstr = PageManager.getInstance().getNewslist(catid,itemid,dir,count);
  else
-  jsonstr = PageManager.getInstance().getNewsCount(catid,itemid,dir,count);
+  jsonstr = PageManager.getInstance().getNewsCount(catid,itemid,dir);
 
 response.getWriter().print(jsonstr);
 %>

@@ -160,14 +160,14 @@ newslist.prototype = {
     var items = this.data[catid];
     if (items!=null&&items.length>0){
      g_newslistview.renderlist(1,items);
-     this.querynewscount();
-    }else {
-	    var m_dir = 1;
-	    if (dir!=null)
-	      m_dir = dir;
-	    
-      this.querylist(catid,m_dir);
+     //this.querynewscount();
     }
+    
+    var m_dir = 1;
+    if (dir!=null)
+      m_dir = dir;
+    
+  this.querylist(catid,m_dir);
  
   },
   
@@ -181,6 +181,7 @@ newslist.prototype = {
      list.push(newlist[i]);
     }
     }
+	this.data[catid] = list;
 	
 	store.set(this.name,this.data);
 	
@@ -193,10 +194,13 @@ newslist.prototype = {
   var items = this.data[catid];
   if (items!=null&&items.length>0){
    if (dir==1)
-     itemid = items[0];
+     itemid = items[0].id;
    else
-     itemid = items[items.length-1];
+     itemid = items[items.length-1].id;
   }
+  if (itemid==0)
+  	dir = -1;
+  	
     var ul= document.getElementById('thelist');
     ul.innerHTML = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
     
@@ -283,4 +287,4 @@ var g_newslist = new newslist();
 var g_newslistview = new newslistview();
 
 g_newslist.init();
-g_newslist.viewlist(g_currcat,g_lastqueryup[g_currcat]);
+g_newslist.viewlist(g_currcat);

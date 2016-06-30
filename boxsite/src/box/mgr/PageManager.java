@@ -43,12 +43,22 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		PageManager.getInstance()._findNewsitems(51, 0, 1, -1);
+		int itemid = 0;
+		int dir = 1;
+		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
+		itemid = -2053154274 ; //		,-1873341786
+		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
+		PageManager.getInstance()._findNewsitems(51, itemid, dir, 34);
+		PageManager.getInstance()._findNewsitems(51, itemid, -1, 34);
+		PageManager.getInstance()._findNewsitems(51, itemid, 1, 34);
+		itemid = -1873341786 ; //		,-1873341786
+		PageManager.getInstance()._findNewsitems(51, itemid, 1, 34);
+		PageManager.getInstance()._findNewsitems(51, itemid, -1, 34);
 //		PageManager.getInstance().resetTrainingurls();
 		
 		String url = "http://tech.ifeng.com/a/20160624/41628054_0.shtml";
 		String reg = "http://tech.ifeng.com/a/[0-9]+/[0-9]+_[0-9].shtml";
-		System.out.println(url.matches(reg));
+//		System.out.println(url.matches(reg));
 
 	}
 
@@ -123,8 +133,8 @@ public class PageManager extends MgrBase{
 					List<TopItem> itemidlist = new ArrayList<TopItem>();
 					StringUtil.json2List(content, itemidlist, TopItem.class);
 					for (TopItem item:itemidlist){
-						catItemIdMap.put(timeName, item.getId());
-						catTimeItemMap.put(item.getId(), timeName);
+						catItemIdMap.put(item.getContentTime(), item.getId());
+						catTimeItemMap.put(item.getId(), item.getContentTime());
 					}					
 //					for (int itemid:itemidlist){
 //						catItemIdMap.put(timeName, itemid);
@@ -181,9 +191,9 @@ public class PageManager extends MgrBase{
 		return null;
 	}
 	
-	public String getNewsCount(int catid,int itemid,int dir,int count){
+	public String getNewsCount(int catid,int itemid,int dir){
 	  int newsCount = 0;
-	  List<TopItem> retitems = _findNewsitems(catid,itemid,dir,count);
+	  List<TopItem> retitems = _findNewsitems(catid,itemid,dir,-1);
 	  if (retitems!=null)
 		  newsCount = retitems.size();
 	  
@@ -191,33 +201,32 @@ public class PageManager extends MgrBase{
 	}
 	
 	public List<TopItem> _findNewsitems(int catid,int itemid,int dir,int count){
-		//循环5天取有内容的当天topitem:
 		List<TopItem> citems = new ArrayList<TopItem>();
-		
+
 		Map<Integer,Long> timeMap = catItemIdTimeMap.get(catid);
 		Map<Long,Integer> itemMap = timeSortedCatsItemIdMap.get(catid);
 		if (timeMap==null||itemMap.size()<=0||itemMap==null||itemMap.size()<=0)
 			return null;
 		
 		Long timeLine = null;
+		int index = -1;
 		if (itemid==0){
-			dir = -1;
+			index = 0;
 			for (Long tl:itemMap.keySet()){
 				timeLine = tl;
 				break;
 			}
-		}else
+		}else {
 			timeLine = timeMap.get(itemid);
-		
-		if (timeLine==null)
-			return null;
-		
-		if (!itemMap.containsKey(timeLine))
-			return null;
+			if (timeLine==null)
+				return null;
+			
+			if (!itemMap.containsKey(timeLine))
+				return null;
+		}
 		
 		Long[] times = new Long[itemMap.keySet().size()];
 		itemMap.keySet().toArray(times);
-		int index = -1;
 		for (int i=0;i<times.length;i++){
 			if (times[i].longValue()==timeLine.longValue()){
 				index = i;
@@ -226,9 +235,15 @@ public class PageManager extends MgrBase{
 		}
 		
 		
-		//如果没有确定数量,每次随机返回5-15条:
-		int perCount = count;
-		if (perCount<0){
+		int perCount = -1;
+		if (count>0){							//指定数量
+			if (dir==1){
+				perCount = index>count?count:index;		//取较小值
+			}else {
+				int size = times.length - index;
+				perCount = size>count?count:size;		//取较小值
+			}
+		}else{									//如果没有确定数量,每次随机返回5-15(最多)条:		
 			int max=15;
 	        int min=5;
 	        //向前
@@ -240,24 +255,39 @@ public class PageManager extends MgrBase{
 	        	max = size>max?max:size;
 	        	min = size>min?min:size;
 	        }
+	        if (max<=0||min<=0){
+				log.warn("max or min is error:max:"+max+",min:"+min);
+				return null;	        	
+	        }
 	        Random random = new Random();
 	        perCount = random.nextInt(max)%(max-min+1) + min;
 		}
+		if (perCount<=0){
+			log.warn("perCount is 0");
+			return null;
+		}
 		
-		int start = index-perCount;
-		int end = index;
-        if (dir!=1){
+		int start = -1;
+		int end = -1;
+        if (dir==1){
+    		start = index-perCount;
+    		end = index;        	
+        }else{
         	start = index;
         	end = index+ perCount;
         }
 		
+        if (start<0||end<0){
+        	log.warn("index error:start:"+start+",end:"+end);
+        	return null;
+        }
 		List<TopItem> retitems = new ArrayList<TopItem>();
     	for (int j=start;j<end;j++){
     		int itemid2 = itemMap.get(times[j]);
     		TopItem item = viewItemsMap.get(itemid2);
     		retitems.add(item);
     	}
-		
+		log.warn("size: "+retitems.size());
 		return retitems;
 	}
 	
