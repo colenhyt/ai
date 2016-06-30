@@ -201,8 +201,6 @@ public class PageManager extends MgrBase{
 	}
 	
 	public List<TopItem> _findNewsitems(int catid,int itemid,int dir,int count){
-		List<TopItem> citems = new ArrayList<TopItem>();
-
 		Map<Integer,Long> timeMap = catItemIdTimeMap.get(catid);
 		Map<Long,Integer> itemMap = timeSortedCatsItemIdMap.get(catid);
 		if (timeMap==null||itemMap.size()<=0||itemMap==null||itemMap.size()<=0)
@@ -296,6 +294,19 @@ public class PageManager extends MgrBase{
 			return null;
 		
 		List<TopItem> retitems = _findNewsitems(catid,itemid,dir,count);
+		retitems = new ArrayList<TopItem>();
+		for (int i=0;i<3;i++){
+			TopItem item = new TopItem();
+			item.setCat(51);
+			item.setHtmlContent("aaa");
+			item.setUrl("http://");
+			item.setCtitle("a"+i+":"+System.currentTimeMillis());
+			item.setSitekey("huxiu.com");
+			item.setContentTime(System.currentTimeMillis());
+			item.setId(1);
+			retitems.add(item);			
+		}
+
 		
 		String newstr = JSON.toJSONString(retitems);
 		String retstr = "{'cat':"+catid+",'news':"+newstr+",'itemid':"+itemid+",'dir':"+dir+"}";

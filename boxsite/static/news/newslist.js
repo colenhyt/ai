@@ -167,26 +167,13 @@ newslist.prototype = {
     if (dir!=null)
       m_dir = dir;
     
-  this.querylist(catid,m_dir);
+    if (m_dir==1){
+		var pullDownEl = document.getElementById('pullDown');
+		pullDownEl.className = 'loading';
+		pullDownEl.querySelector('.pullDownLabel').innerHTML = '加载中...';				
+		pullDownAction();
+    }
  
-  },
-  
-  appendlist:function(catid,newlist,dir){
-   var list = this.data[catid];
-   if (list==null||list.length==0)
-    list = [];
-    
-    if (newlist!=null){
-    for (var i=0;i<newlist.length;i++){
-     list.push(newlist[i]);
-    }
-    }
-	this.data[catid] = list;
-	
-	store.set(this.name,this.data);
-	
-	g_newslistview.renderlist(1,list);
-   
   },
   
   querylist:function(catid,dir){
@@ -201,8 +188,8 @@ newslist.prototype = {
   if (itemid==0)
   	dir = -1;
   	
-    var ul= document.getElementById('thelist');
-    ul.innerHTML = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
+//    var ul= document.getElementById('thelist');
+//    ul.innerHTML = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
     
 	var dataParam = "cat="+catid+"&itemid="+itemid+"&dir="+dir;
 	try    {
@@ -213,7 +200,33 @@ newslist.prototype = {
 	}   catch  (e)   {
 	}     
   },
-  
+
+  appendlist:function(catid,newlist,dir){
+    if (newlist==null||newslist.length<=0){
+      return;
+    }
+    
+    var list = this.data[catid];
+   if (list==null||list.length==0)
+    list = [];
+    
+    if (dir==1)	{
+    	for (var i=newlist.length-1;i>=0;i--){
+    	  list.splice(0,0,newlist[i]);
+    	}
+    }else {			//放到后面
+	    for (var i=0;i<newlist.length;i++){
+	     list.push(newlist[i]);
+	    }
+    }
+    
+	this.data[catid] = list;
+	store.set(this.name,this.data);
+	
+	g_newslistview.addlist(dir,list);
+   
+  },
+    
   querynewscount: function () {
 	var dataParam = "type=2&cat="+g_currcat+"&starttime="+g_lastqueryup[g_currcat];
 	try    {
@@ -242,34 +255,31 @@ newslistview = function(options){
 }
 
 newslistview.prototype = {
- 
+ 	addlist:function(dir,newslist){
+        var ul= document.getElementById('thelist');
+        //头插入
+        if (dir==1){
+          var e = ul.firstChild();
+          for (var i=newslist.length-1;i>=0;i++){
+           var newElement = this.itemElement(newslist[i]);
+           ul.insertBefore(newElement,e);
+           e = newElement;
+          }
+        }else {
+        	for (var i=0;i<newslist.length;i++){
+        	 var newElement = this.itemElement(newslist[i]);
+        	 ul.appendChild(newElement);
+        	}
+        }
+ 	},
+ 	
     renderlist:function(id,newslist) {  
       
         var ul= document.getElementById('thelist');
         ul.innerHTML = "";
         for (var i=0;i<newslist.length;i++){
-        	var item = newslist[i];
-        	var dd = new Date(item.contentTime);
-        	var timeStr = (dd.getMonth()+1)+"-"+dd.getDate();
-        	var li= document.createElement("li"); 
-        	var shorttitle = item.ctitle;
-        	var link = "news.html?itemid="+item.id+"&catid="+item.cat;
-        	  if (shorttitle.length>20)
-        	    shorttitle = shorttitle.substring(0,20)+"..";   
-        	var content = "";
-        	content += "<div onclick=\"window.open('"+link+"','_self')\">";
-        	content += "<span>"
-//        	content += "<a href='javascript:g_newslist.getnews("+item.id+")'>"+shorttitle+"</a>"
-        	content += "<a href='"+link+"'>"+shorttitle+"</a>"
-        	content += "</span><br>";
-        	content += "<span style='font-size:10px'>";
-        	content += g_sitekeys[item.sitekey]+" "+timeStr;
-        	content += "</span>"
-        	content += "</div>";
-            li.innerHTML=content;  
-            li.style.height = "90px";
-            li.id=id;  
-            ul.appendChild(li);           
+            var e = this.itemElement(newslist[i]);  
+            ul.appendChild(e);           
         }
  
     },
@@ -277,7 +287,30 @@ newslistview.prototype = {
     viewitem:function(item) {  
     	//alert(item.content);
     },    
-}
+	
+ 	itemElement:function(item){
+       	var dd = new Date(item.contentTime);
+    	var timeStr = (dd.getMonth()+1)+"-"+dd.getDate();
+    	var shorttitle = item.ctitle;
+    	var link = "news.html?itemid="+item.id+"&catid="+item.cat;
+    	  if (shorttitle.length>20)
+    	    shorttitle = shorttitle.substring(0,20)+"..";   
+    	var content = "";
+    	content += "<div onclick=\"window.open('"+link+"','_self')\">";
+    	content += "<span>"
+    	content += "<a href='"+link+"'>"+shorttitle+"</a>"
+    	content += "</span><br>";
+    	content += "<span style='font-size:10px'>";
+    	content += g_sitekeys[item.sitekey]+" "+timeStr;
+    	content += "</span>"
+    	content += "</div>"; 	
+    	var li= document.createElement("li"); 
+        li.innerHTML= content;  
+        li.style.height = "90px";
+        li.id = item.id;  
+    	return li;
+ 	},
+ }
 
 var g_user = new user();
 g_user.login();
