@@ -1,7 +1,5 @@
 
 var g_currcat = 1;
-var g_lastqueryup = {};
-var g_lastquerydown = {};
 var g_movestartx = 0;
 var g_moveendx = 0;
 var g_movestarty = 0;
@@ -69,9 +67,6 @@ newslist.prototype = {
      g_currcat = 1;
      
     var from = getPar("from");
-    if (from){
-     g_lastqueryup[g_currcat] = 0;
-    }
     
    var content = "";
    for (var i=0;i<g_newscats.length;i++){
@@ -85,7 +80,6 @@ newslist.prototype = {
    tag.innerHTML = content;
    
    var d = new Date();
-   //g_lastqueryup[g_currcat] = d.getTime();
    
    var obj = document.getElementById('wrapper');
 	obj.addEventListener('touchstart', function(event) {
@@ -228,7 +222,7 @@ newslist.prototype = {
   },
     
   querynewscount: function () {
-	var dataParam = "type=2&cat="+g_currcat+"&starttime="+g_lastqueryup[g_currcat];
+	var dataParam = "type=2&cat="+g_currcat;
 	try    {
 		$.ajax({type:"post",url:"newslist.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);

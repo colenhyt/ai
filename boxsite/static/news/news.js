@@ -1,5 +1,13 @@
 
 news = function(options){
+ this.data = {};
+ this.name = "news";
+ var data = store.get(this.name);
+ if (data!=null){
+   this.data = data;
+ }else {
+   store.set(this.name,this.data);
+ }
 }
 
 var g_catid = 1;
@@ -19,19 +27,36 @@ news.prototype = {
   },
  
   getnews: function (itemid,url) {
+  	var item = this.data[itemid];
+  	if (item!=null){
+  	  this.viewitem(item);
+  	  return;
+  	}
+  	
 	var dataParam = "itemid="+itemid;
 	if (!itemid&&url)
 	  dataParam = "url="+url;
 	  
 	try    {
 		$.ajax({type:"post",url:"news.jsp",data:dataParam,success:function(data){
-		var jsonstr = cfeval(data);
-		g_news.viewitem(jsonstr);
+		var item = cfeval(data);
+		g_news.getnewsCallback(item);
 		}});
 	}   catch  (e)   {
 	}   
   },
      
+  getnewsCallback: function (item) {
+  	if (item==null) {
+  		return;
+  	}
+  	
+  		this.data[item.id] = item;
+  		store.set(this.name,this.data);
+  		
+		this.viewitem(item); 
+  },
+  
   viewitem: function (item) {
     var content = "";
     var dd = new Date(item.contentTime);

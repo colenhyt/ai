@@ -1,8 +1,5 @@
 
 var g_currcat = 0;
-var g_lastqueryup = {};
-var g_lastquerydown = {};
-
 
 var g_newscats = [
 [1,"综合"],[11,"动态"],[21,"产品"],[31,"分析"],[41,"运营"],[51,"创投"]
