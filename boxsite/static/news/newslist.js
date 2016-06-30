@@ -143,7 +143,7 @@ newslist.prototype = {
 	 g_moveflag = true;
 	};	
   },
-  viewlist: function (catid,starttime) {
+  viewlist: function (catid,dir) {
     if (catid<=0) return;
     
     if (!g_currcat)
@@ -162,18 +162,24 @@ newslist.prototype = {
      g_newslistview.renderlist(1,items);
      this.querynewscount();
     }else {
-      this.querylist(catid,starttime);
+	    var m_dir = 1;
+	    if (dir!=null)
+	      m_dir = dir;
+	    
+      this.querylist(catid,m_dir);
     }
  
   },
   
-  appendlist:function(catid,newlist){
+  appendlist:function(catid,newlist,dir){
    var list = this.data[catid];
    if (list==null||list.length==0)
     list = [];
     
+    if (newlist!=null){
     for (var i=0;i<newlist.length;i++){
      list.push(newlist[i]);
+    }
     }
 	
 	store.set(this.name,this.data);
@@ -182,18 +188,23 @@ newslist.prototype = {
    
   },
   
-  querylist:function(catid,starttime){
+  querylist:function(catid,dir){
+  var itemid = 0;
+  var items = this.data[catid];
+  if (items!=null&&items.length>0){
+   if (dir==1)
+     itemid = items[0];
+   else
+     itemid = items[items.length-1];
+  }
     var ul= document.getElementById('thelist');
     ul.innerHTML = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
     
-    var stime = 0;
-    if (starttime!=null&&starttime>0)
-     stime = starttime;
-	var dataParam = "cat="+catid+"&starttime="+stime;
+	var dataParam = "cat="+catid+"&itemid="+itemid+"&dir="+dir;
 	try    {
 		$.ajax({type:"post",url:"newslist.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
-		g_news.appendlist(catid,jsonstr.news);
+		g_newslist.appendlist(catid,jsonstr.news,jsonstr.dir);
 		}});
 	}   catch  (e)   {
 	}     

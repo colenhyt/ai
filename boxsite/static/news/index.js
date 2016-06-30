@@ -10,9 +10,8 @@ var myScroll,
  */
 function pullDownAction () {
 	setTimeout(function () {	// <-- Simulate network congestion, remove setTimeout from production!
-		g_newslist.getlist(g_currcat,g_lastqueryup[g_currcat]);
-		var d = new Date();
-		g_lastqueryup[g_currcat] = d.getTime();
+	  
+		g_newslist.querylist(g_currcat,1);
 
 		myScroll.refresh();		//数据加载完成后，调用界面更新方法   Remember to refresh when contents are loaded (ie: on ajax completion)
 	}, 1000);	// <-- Simulate network congestion, remove setTimeout from production!
@@ -24,9 +23,7 @@ function pullDownAction () {
  */
 function pullUpAction () {
 	setTimeout(function () {	// <-- Simulate network congestion, remove setTimeout from production!
-		g_newslist.getlist(g_currcat,g_lastquerydown[g_currcat]);
-		var d = new Date();
-		g_lastquerydown[g_currcat] = d.getTime();
+		g_newslist.querylist(g_currcat,-1);
 		
 		myScroll.refresh();		// 数据加载完成后，调用界面更新方法 Remember to refresh when contents are loaded (ie: on ajax completion)
 	}, 1000);	// <-- Simulate network congestion, remove setTimeout from production!

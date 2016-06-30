@@ -22,11 +22,11 @@ public class StringUtil {
 	 }   
 	
 	
-	public static <T> void json2List(String jsonStr,List<T> strSet,Class cls){
-		Set<JSONObject> objs = JSON.parseObject(jsonStr,HashSet.class);
+	public static <T> void json2List(String jsonStr,List<T> list,Class cls){
+		List<JSONObject> objs = JSON.parseObject(jsonStr,List.class);
 		for (JSONObject obj:objs){
 			T t = (T)JSON.parseObject(obj.toJSONString(),cls);
-			strSet.add(t);
+			list.add(t);
 		}
 	}	
 	

@@ -13,14 +13,16 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.alibaba.fastjson.JSON;
-
 import box.site.PageContentGetter;
 import box.site.model.TopItem;
 import box.site.model.User;
 import box.site.model.WebUrl;
 import box.site.parser.sites.ImgGetter;
 import cn.hd.util.StringUtil;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import easyshop.html.HTMLInfoSupplier;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;
@@ -31,6 +33,7 @@ public class PageManager extends MgrBase{
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = Collections.synchronizedMap(new HashMap<String,Map<String,WebUrl>>());
 //	private Map<String,List<TopItem>> viewListItemsMap = Collections.synchronizedMap(new HashMap<String,List<TopItem>>());
 	private Map<Integer,Map<Long,Integer>> timeSortedCatsItemIdMap;
+	private Map<Integer,Map<Integer,Long>>  catItemIdTimeMap = Collections.synchronizedMap(new HashMap<Integer,Map<Integer,Long>>());
 	private Map<Integer,TopItem> viewItemsMap = Collections.synchronizedMap(new HashMap<Integer,TopItem>());
 	private Map<Long, User>   userMap = Collections.synchronizedMap(new HashMap<Long,User>());
 	private Set<String> loadedList = Collections.synchronizedSet(new HashSet<String>());
@@ -40,6 +43,7 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
+		PageManager.getInstance()._findNewsitems(51, 0, 1, -1);
 //		PageManager.getInstance().resetTrainingurls();
 		
 		String url = "http://tech.ifeng.com/a/20160624/41628054_0.shtml";
@@ -81,32 +85,6 @@ public class PageManager extends MgrBase{
 		}
 		
 		//load view topitems:
-//		viewListItemsMap = new HashMap<String,List<TopItem>>();
-//		List<File> catfs = FileUtil.getFolders(listPath);
-//		for (File f:catfs){
-//			List<File> subitemPaths = FileUtil.getFolders(f.getAbsolutePath());
-//			
-//			for (File datepath:subitemPaths){
-//				
-//				String key = f.getName()+"_"+datepath.getName();
-//				List<File> itemfiles = FileUtil.getFiles(datepath.getAbsolutePath());
-//				if (itemfiles.size()>0){
-//					List<TopItem> items = new ArrayList<TopItem>();
-//					for (File itemf:itemfiles){
-//						String cc = FileUtil.readFile(itemf);
-//						if (cc!=null&&cc.trim().length()>0){
-//							StringUtil.json2List(cc, items,TopItem.class);
-//							loadedList.add(key+"_"+itemf.getName());
-//						}
-//					}
-//					Collections.sort(items);
-//					for (TopItem item:items){
-//						viewItemsMap.put(item.getId(), item);
-//					}
-//					viewListItemsMap.put(key, items);
-//				}
-//			}
-//		}
 		List<File> catfs = FileUtil.getFolders(itemPath);
 		for (File f:catfs){
 			if (!f.getName().matches("[0-9]+"))continue;
@@ -114,11 +92,12 @@ public class PageManager extends MgrBase{
 			for (File itemF:itemfiles){
 				int itemid = Integer.valueOf(itemF.getName().substring(0,itemF.getName().indexOf(".")));
 				String content = FileUtil.readFile(itemF);
-				TopItem item = (TopItem)JSON.parse(content);
+				TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
 				viewItemsMap.put(itemid, item);
 			}
 		}
 		
+		//load item time list:
 		timeSortedCatsItemIdMap = Collections.synchronizedMap(new HashMap<Integer,Map<Long,Integer>>());
 		List<File> catfs2 = FileUtil.getFolders(listPath);
 		for (File f:catfs2){
@@ -126,9 +105,14 @@ public class PageManager extends MgrBase{
 			int catid = Integer.valueOf(f.getName());
 			Map<Long,Integer> catItemIdMap = timeSortedCatsItemIdMap.get(catid);
 			if (catItemIdMap==null){
-				catItemIdMap = new TreeMap<Long,Integer>(new MapIntKeyComparator());
+				catItemIdMap = Collections.synchronizedMap(new TreeMap<Long,Integer>(new MapIntKeyComparator()));
 				timeSortedCatsItemIdMap.put(catid, catItemIdMap);
 			}
+			Map<Integer,Long> catTimeItemMap = catItemIdTimeMap.get(catid);
+			if (catTimeItemMap==null){
+				catTimeItemMap = Collections.synchronizedMap(new HashMap<Integer,Long>());
+				catItemIdTimeMap.put(catid, catTimeItemMap);
+			}			
 			List<File> subitemPaths = FileUtil.getFolders(f.getAbsolutePath());
 			
 			for (File datepath:subitemPaths){
@@ -136,9 +120,16 @@ public class PageManager extends MgrBase{
 				for (File itemF:itemfiles){
 					long timeName = Long.valueOf(itemF.getName().substring(0,itemF.getName().indexOf(".")));
 					String content = FileUtil.readFile(itemF);
-					List<Integer> itemidlist = (List<Integer>)JSON.parse(content);
-					for (int itemid:itemidlist)
-						catItemIdMap.put(timeName, itemid);
+					List<TopItem> itemidlist = new ArrayList<TopItem>();
+					StringUtil.json2List(content, itemidlist, TopItem.class);
+					for (TopItem item:itemidlist){
+						catItemIdMap.put(timeName, item.getId());
+						catTimeItemMap.put(item.getId(), timeName);
+					}					
+//					for (int itemid:itemidlist){
+//						catItemIdMap.put(timeName, itemid);
+//						catTimeItemMap.put(itemid, timeName);
+//					}
 				}
 			}
 		}
@@ -190,101 +181,94 @@ public class PageManager extends MgrBase{
 		return null;
 	}
 	
-	public String getNewsCount(int catid,long startTime){
+	public String getNewsCount(int catid,int itemid,int dir,int count){
 	  int newsCount = 0;
-	  List<TopItem> retitems = _findNewsitems(catid,startTime);
+	  List<TopItem> retitems = _findNewsitems(catid,itemid,dir,count);
 	  if (retitems!=null)
 		  newsCount = retitems.size();
 	  
 	  return String.valueOf(newsCount);
 	}
 	
-	private List<TopItem> _findNewsitems(int catid,long startTime){
+	public List<TopItem> _findNewsitems(int catid,int itemid,int dir,int count){
 		//循环5天取有内容的当天topitem:
 		List<TopItem> citems = new ArrayList<TopItem>();
-		boolean get = __findLatestItems(catid,startTime,citems);
-		if (!get)
-			return citems;
+		
+		Map<Integer,Long> timeMap = catItemIdTimeMap.get(catid);
+		Map<Long,Integer> itemMap = timeSortedCatsItemIdMap.get(catid);
+		if (timeMap==null||itemMap.size()<=0||itemMap==null||itemMap.size()<=0)
+			return null;
+		
+		Long timeLine = null;
+		if (itemid==0){
+			dir = -1;
+			for (Long tl:itemMap.keySet()){
+				timeLine = tl;
+				break;
+			}
+		}else
+			timeLine = timeMap.get(itemid);
+		
+		if (timeLine==null)
+			return null;
+		
+		if (!itemMap.containsKey(timeLine))
+			return null;
+		
+		Long[] times = new Long[itemMap.keySet().size()];
+		itemMap.keySet().toArray(times);
+		int index = -1;
+		for (int i=0;i<times.length;i++){
+			if (times[i].longValue()==timeLine.longValue()){
+				index = i;
+				break;
+			}
+		}
+		
+		
+		//如果没有确定数量,每次随机返回5-15条:
+		int perCount = count;
+		if (perCount<0){
+			int max=15;
+	        int min=5;
+	        //向前
+	        if (dir==1){
+	        	max = index>max?max:index;
+	        	min = index>min?min:index;
+	        }else {
+	        	int size = times.length - index;
+	        	max = size>max?max:size;
+	        	min = size>min?min:size;
+	        }
+	        Random random = new Random();
+	        perCount = random.nextInt(max)%(max-min+1) + min;
+		}
+		
+		int start = index-perCount;
+		int end = index;
+        if (dir!=1){
+        	start = index;
+        	end = index+ perCount;
+        }
 		
 		List<TopItem> retitems = new ArrayList<TopItem>();
-		
-		//每次随机返回5-15条:
-		int max=15;
-        int min=5;
-        Random random = new Random();
-        int perCount = random.nextInt(max)%(max-min+1) + min;
-		if (startTime>0){			//最新
-			int starti = 0;
-			int ii = 0;
-			for (int i=0;i<citems.size();i++){				
-				if (citems.get(i).getContentTime()>=startTime){
-					starti = i;
-					break;
-				}
-			}
-			//从后往前
-			for (int j=starti;j<citems.size();j++){
-				if (ii>=perCount) break;
-				retitems.add(citems.get(j));
-				ii++;				
-			}
-			//跨后一日:
-			if (retitems.size()<perCount){
-				startTime += 3600*24*1000;
-				List<TopItem> citems2 = new ArrayList<TopItem>();
-				__findLatestItems(catid,startTime,citems2);
-				int pcount = perCount - retitems.size();
-				int maxi = citems2.size()>pcount?pcount:citems2.size()-1;
-				for (int i=0;i<maxi;i++){
-					retitems.add(citems2.get(i));
-				}
-			}			
-		}else {
-			int starti = citems.size()-1;
-			//初次获取，返回30条:
-			if (startTime==0){
-				perCount = 30;		//首次，30条
-			}else {
-				startTime = 0 - startTime;
-				for (int i=citems.size()-1;i>=0;i--){				
-					if (citems.get(i).getContentTime()<=startTime){
-						starti = i;
-						break;
-					}
-				}
-				
-			}
-			int ii = 0;
-			//从前往后:
-			for (int i=starti;i>=0;i--){
-				if (ii>=perCount) break;
-				retitems.add(citems.get(i));
-				ii++;
-			}
-			//跨前一日
-			if (startTime<0&&retitems.size()<perCount){
-				startTime -= 3600*24*1000;
-				List<TopItem> citems2 = new ArrayList<TopItem>();
-				__findLatestItems(catid,startTime,citems2);
-				int pcount = perCount - retitems.size();
-				int maxi = citems2.size()>pcount?pcount:citems2.size()-1;
-				for (int i=maxi;i>=0;i--){
-					retitems.add(citems2.get(i));
-				}				
-			}
-		}		
+    	for (int j=start;j<end;j++){
+    		int itemid2 = itemMap.get(times[j]);
+    		TopItem item = viewItemsMap.get(itemid2);
+    		retitems.add(item);
+    	}
 		
 		return retitems;
 	}
 	
-	public String getNewslist(int catid,long startTime){
+	public String getNewslist(int catid,int itemid,int dir,int count){
 		if (catid<0)
 			return null;
 		
-		List<TopItem> retitems = _findNewsitems(catid,startTime);
+		List<TopItem> retitems = _findNewsitems(catid,itemid,dir,count);
 		
 		String newstr = JSON.toJSONString(retitems);
-		String retstr = "{'cat':"+catid+",'news':"+newstr+",'startTime':"+startTime+"}";
+		String retstr = "{'cat':"+catid+",'news':"+newstr+",'itemid':"+itemid+",'dir':"+dir+"}";
 		return retstr;
 	}
 	
@@ -334,8 +318,10 @@ public class PageManager extends MgrBase{
 				String listcontent = FileUtil.readFile(str);
 				List<Integer> newlist = (List<Integer>)JSON.parse(listcontent);
 				Map<Long,Integer> catItemIdMap = timeSortedCatsItemIdMap.get(catid);
+				Map<Integer,Long> catTimeMap = catItemIdTimeMap.get(catid);
 				for (int itemid:newlist){
 					catItemIdMap.put(itTime, itemid);
+					catTimeMap.put(itemid, itTime);
 				}
 			}
 					
