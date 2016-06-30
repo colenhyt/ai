@@ -34,7 +34,7 @@ public class ProcessManager extends MgrBase {
 	private boolean processStart = false;
 	//最新批次topitems:
 	private List<TopItem> newTopitemList = Collections.synchronizedList(new ArrayList<TopItem>());
-	private Map<Integer,Map<Integer,String>>	pageSimHashMap = Collections.synchronizedMap(new HashMap<Integer,Map<Integer,String>>());
+	private Map<Integer,Map<String,String>>	pageSimHashMap = Collections.synchronizedMap(new HashMap<Integer,Map<String,String>>());
 	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
@@ -77,11 +77,10 @@ public class ProcessManager extends MgrBase {
     		if (content!=null&&content.trim().length()>0){
     			String catstr = f.getName().substring(0,f.getName().indexOf("."));
     			int catid = Integer.valueOf(catstr);
-    			Map<Integer,String>  catDictMap = Collections.synchronizedMap(new HashMap<Integer,String>());
-    			Map<Integer,JSONObject> jsonstr = (Map<Integer,JSONObject>)JSON.parseObject(content, HashMap.class);
-    			for (Integer itemid:jsonstr.keySet()){
-    				JSONObject jsonobj = jsonstr.get(itemid);
-    				catDictMap.put(itemid, jsonobj.toString());
+    			Map<String,String>  catDictMap = Collections.synchronizedMap(new HashMap<String,String>());
+    			Map<String,JSONObject> jsonstr = (Map<String,JSONObject>)JSON.parseObject(content, HashMap.class);
+    			for (String simStr:jsonstr.keySet()){
+    				catDictMap.put(simStr, simStr);
     			}
     			pageSimHashMap.put(catid, catDictMap);
     		}			
@@ -153,20 +152,33 @@ public class ProcessManager extends MgrBase {
 	}
 	
 	public boolean hasDocSim(int catid,String pageContent){
-		Map<Integer,String> catDictMap = pageSimHashMap.get(catid);
+		boolean has = false;
+		Map<String,String> catDictMap = pageSimHashMap.get(catid);
 		if (catDictMap==null)
-			return false;
+			return has;
 		
 		try {
 			SimHash sim = new SimHash(pageContent, 64);
-			for (String strSim:catDictMap.values()){
+			List<String> simStrs = sim.toTables();
+			for (String simStr:simStrs){
+				if (catDictMap.containsKey(simStr)){
+					has = true;
+					break;
+				}
+			}
+			if (!has){
+				for (String simStr:simStrs){
+					catDictMap.put(simStr, simStr);
+				}
+				String fileName = dictPath+catid+".dict";
+				FileUtil.writeFile(fileName, JSON.toJSONString(catDictMap));
 			}
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		return has;
 	}
 	@Override
 	public void process(){

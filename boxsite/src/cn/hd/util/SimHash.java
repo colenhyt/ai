@@ -111,9 +111,8 @@ public class SimHash {
         }
     }
 
-    public int hammingDistance(SimHash other) {
-
-        BigInteger x = this.intSimHash.xor(other.intSimHash);
+    public static int hammingDistance(BigInteger current,BigInteger other){
+        BigInteger x = current.xor(other);
         int tot = 0;
 
         // 统计x中二进制位数为1的个数
@@ -125,7 +124,11 @@ public class SimHash {
             tot += 1;
             x = x.and(x.subtract(new BigInteger("1")));
         }
-        return tot;
+        return tot;    	
+    }
+    
+    public int hammingDistance(SimHash other) {
+    	return SimHash.hammingDistance(this.intSimHash, other.intSimHash);
     }
 
     public int getDistance(String str1, String str2) {
@@ -173,6 +176,14 @@ public class SimHash {
         return characters;
     }
 
+    //等分为4份，每份16位
+    public List<String> toTables(){
+    	List<String> simStrs = new ArrayList<String>();
+    	for (int i=0;i<4;i++){
+    		simStrs.add(this.strSimHash.substring(i*16, (i+1)*16));
+    	}
+    	return simStrs;
+    }
     public static void main(String[] args) throws IOException {
         String s = "传统的 hash 算法只负责将原始内容尽量均匀随机地映射为一个签名值，"
                 + "原理上相当于伪随机数产生算法。产生的两个签名，如果相等，说明原始内容在一定概 率 下是相等的；"
@@ -181,6 +192,7 @@ public class SimHash {
                 + "对相似的内容产生的签名也相近，是更为艰难的任务，因为它的签名值除了提供原始内容是否相等的信息外，"
                 + "还能额外提供不相等的 原始内容的差异程度的信息。";
         SimHash hash1 = new SimHash(s, 64);
+        System.out.println(hash1.toTables().toString());
         System.out.println(hash1.intSimHash + " --- " + hash1.intSimHash.bitLength());
         // 计算 海明距离 在 3 以内的各块签名的 hash 值
         hash1.subByDistance(hash1, 3);
