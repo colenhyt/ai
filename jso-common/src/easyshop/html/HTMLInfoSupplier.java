@@ -89,6 +89,23 @@ public class HTMLInfoSupplier {
 		init(null,content,encode);
 	}
 	
+	public void init(String url,String strContent){
+		this.urlStr=url;
+		this.content=content;
+		this.strContent= strContent;
+		this.totalJerio=new Source(strContent);
+		
+		jsoupDoc = Jsoup.parse(this.strContent);		
+	}
+	
+	public void init(String strContent){
+		this.content=content;
+		this.strContent= strContent;
+		this.totalJerio=new Source(strContent);
+		
+		jsoupDoc = Jsoup.parse(this.strContent);		
+	}
+	
 	public void init(String _urlstr,byte[] content,String encode){
 		try {
 		this.urlStr=_urlstr;
