@@ -87,6 +87,23 @@ public class ProcessManager extends MgrBase {
 		}		
 	}
 	
+	public void tesSimHash(){
+		List<File> folders = FileUtil.getFolders(pagesPath);
+		for (File folder:folders){
+			List<File> files = FileUtil.getFiles(folder.getAbsolutePath());
+			for (File file:files){
+				String strCode = file.getName().substring(0,file.getName().indexOf("."));
+				String pageContent = FileUtil.readFile(file);
+				TopItem item = parser.parse(strCode, pageContent);
+				if (item==null){
+					log.warn("could not parse: "+strCode);
+					continue;
+				}
+				log.warn("parse "+folder.getName()+",file "+strCode);
+				this.hasDocSim(1, strCode, item.getContent());
+			}
+		}
+	}
 	public void spiderFinished(String sitekey){
 		runningSpiderCount--;
 		log.warn(sitekey+ " spider finished");
@@ -151,14 +168,17 @@ public class ProcessManager extends MgrBase {
 	
 	}
 	
-	public boolean hasDocSim(int catid,String url,String pageContent){
+	public boolean hasDocSim(int catid,String url,String blockContent){
 		boolean has = false;
 		Map<String,String> catDictMap = pageSimHashMap.get(catid);
-		if (catDictMap==null)
-			return has;
+		if (catDictMap==null){
+			//return has;
+			catDictMap = new HashMap<String,String>();
+			pageSimHashMap.put(catid, catDictMap);
+		}
 		
 		try {
-			SimHash sim = new SimHash(pageContent, 64);
+			SimHash sim = new SimHash(blockContent, 64);
 			List<String> simStrs = sim.toTables();
 			PageManager pageMgr = PageManager.getInstance();
 			pageMgr.init();
@@ -169,7 +189,7 @@ public class ProcessManager extends MgrBase {
 					String content = pageMgr.getNews2(relUrl);
 					TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
 					log.warn("相似文档 : "+catDictMap.get(simStr)+",内容:"+item.getContent());
-					log.warn("新文档 : "+catDictMap.get(simStr)+",当前内容:"+pageContent);
+					log.warn("新文档 : "+catDictMap.get(simStr)+",当前内容:"+blockContent);
 					break;
 				}
 			}
@@ -306,7 +326,8 @@ public class ProcessManager extends MgrBase {
 	public static void main(String[] args) {
 		ProcessManager.getInstance().init();
 		
-		ProcessManager.getInstance().process();
+		ProcessManager.getInstance().tesSimHash();
+//		ProcessManager.getInstance().process();
 //		ProcessManager.getInstance().processSpiders();
 //		List<TopItem> items =ProcessManager.getInstance().processClassfiy();
 //		ProcessManager.getInstance().processListUrls(items);

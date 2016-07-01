@@ -168,14 +168,14 @@ public class BaseTopItemParser implements ITopItemParser {
 		titem.setContent(contents.get(0));
 		titem.setHtmlContent(filterContext(sitekey,contents.get(1)));
 		List<Integer> catids = new ArrayList<Integer>();
-		catids.add(1);
-		catids.add(11);
-		catids.add(21);
-		catids.add(31);
-		catids.add(41);
-		catids.add(51);
-		int r1 = random.nextInt(6);
-		int catid = catids.get(r1);
+//		catids.add(1);
+//		catids.add(11);
+//		catids.add(21);
+//		catids.add(31);
+//		catids.add(41);
+//		catids.add(51);
+//		int r1 = random.nextInt(6);
+		int catid = 0;
 //		catid = newsClassifier.testClassify(titem);
 //		if (catid<=0){
 //		}
