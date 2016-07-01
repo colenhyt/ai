@@ -13,16 +13,14 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
-import box.site.PageContentGetter;
+import com.alibaba.fastjson.JSON;
+
 import box.site.model.TopItem;
 import box.site.model.User;
 import box.site.model.WebUrl;
+import box.site.parser.sites.BaseTopItemParser;
 import box.site.parser.sites.ImgGetter;
 import cn.hd.util.StringUtil;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import easyshop.html.HTMLInfoSupplier;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;
@@ -38,22 +36,23 @@ public class PageManager extends MgrBase{
 	private Map<Long, User>   userMap = Collections.synchronizedMap(new HashMap<Long,User>());
 	private Set<String> loadedList = Collections.synchronizedSet(new HashSet<String>());
 	private boolean inited = false;
-	HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
-	private PageContentGetter contentGetter = new PageContentGetter();
+	private BaseTopItemParser parser = new BaseTopItemParser();
+	private HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
+		PageManager.getInstance().renameTrainingurlTitles();
 		int itemid = 0;
 		int dir = 1;
-		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
-		itemid = -2053154274 ; //		,-1873341786
-		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
-		PageManager.getInstance()._findNewsitems(51, itemid, dir, 34);
-		PageManager.getInstance()._findNewsitems(51, itemid, -1, 34);
-		PageManager.getInstance()._findNewsitems(51, itemid, 1, 34);
-		itemid = -1873341786 ; //		,-1873341786
-		PageManager.getInstance()._findNewsitems(51, itemid, 1, 34);
-		PageManager.getInstance()._findNewsitems(51, itemid, -1, 34);
+//		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
+//		itemid = -2053154274 ; //		,-1873341786
+//		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
+//		PageManager.getInstance()._findNewsitems(51, itemid, dir, 34);
+//		PageManager.getInstance()._findNewsitems(51, itemid, -1, 34);
+//		PageManager.getInstance()._findNewsitems(51, itemid, 1, 34);
+//		itemid = -1873341786 ; //		,-1873341786
+//		PageManager.getInstance()._findNewsitems(51, itemid, 1, 34);
+//		PageManager.getInstance()._findNewsitems(51, itemid, -1, 34);
 //		PageManager.getInstance().resetTrainingurls();
 		
 		String url = "http://tech.ifeng.com/a/20160624/41628054_0.shtml";
@@ -147,15 +146,13 @@ public class PageManager extends MgrBase{
 	
 	public String getNews2(String url){
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
-		String content = FileUtil.readFile(pagesPath+sitekey+"/"+url.hashCode()+".html");
+		int code = url.hashCode();
+		String content = FileUtil.readFile(pagesPath+sitekey+"/"+code+".html");
 		TopItem item = new TopItem();
 		item.setUrl(url);
 		if (content.trim().length()>0){
-			String title = contentGetter.getTitle(content);
-			item.setCtitle(title);
-			List<String> ccs = contentGetter.getHtmlContent(url, content);
-			if (ccs!=null){
-				String context = ccs.get(1);
+			item = parser.parse(url, content);
+				String context = item.getHtmlContent();
 				Set<String> imgurls = ImgGetter.findImgUrls(url, context);
 				for (String imgurl:imgurls){
 					String rimgUrl = imgurl;
@@ -164,15 +161,14 @@ public class PageManager extends MgrBase{
 						rimgUrl = urlHead+imgurl;
 					}
 					String fileType = rimgUrl.substring(rimgUrl.lastIndexOf("."));
-					String imgPath = "pics/"+sitekey+"/"+rimgUrl.hashCode()+fileType;
+					String imgFilePath = sitekey+"/"+rimgUrl.hashCode()+fileType;
 					
-					File f = new File("c:/boxsite/"+imgPath);
+					File f = new File(imgPath+imgFilePath);
 					if (f.exists()){
 						context = context.replace(imgurl, imgPath);
 					}
 				}
 				item.setHtmlContent(context);				
-			}
 
 		}
 			
@@ -390,15 +386,25 @@ public class PageManager extends MgrBase{
 
 	public void renameTrainingurlTitles(){
 		Set<String> sites = new HashSet<String>();
-		sites.add("tmtpost.com");
+//		sites.add("tmtpost.com");
+//		sites.add("163.com");
+//		sites.add("qq.com");
+		sites.add("cyzone.cn");
+		sites.add("geekpark.net");
+//		sites.add("");
+//		sites.add("");
 		for (String sitekey:allSiteUrlsMap.keySet()){
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
 			if (sites.contains(sitekey)){
 				for (WebUrl item:siteUrlsMap.values()){
+					if (item.getUrl().equalsIgnoreCase("http://tech.163.com/13/0719/10/94521A24000915I3.html")){
+						int t = 10;
+					}
 					String ppath = pagesPath + sitekey + "/"+ item.getUrl().hashCode()+".html";
 					String fcontent = FileUtil.readFile(ppath);
 					if (fcontent.trim().length()<=0) continue;
-					htmlHelper.init(fcontent.getBytes());
+					log.warn("page size "+fcontent.length());
+					htmlHelper.init(fcontent);
 					String title = htmlHelper.getTitleContent();
 					if (title!=null)						
 						item.setText(title);					

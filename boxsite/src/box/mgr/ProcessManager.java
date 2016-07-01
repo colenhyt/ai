@@ -151,7 +151,7 @@ public class ProcessManager extends MgrBase {
 	
 	}
 	
-	public boolean hasDocSim(int catid,String pageContent){
+	public boolean hasDocSim(int catid,String url,String pageContent){
 		boolean has = false;
 		Map<String,String> catDictMap = pageSimHashMap.get(catid);
 		if (catDictMap==null)
@@ -160,15 +160,22 @@ public class ProcessManager extends MgrBase {
 		try {
 			SimHash sim = new SimHash(pageContent, 64);
 			List<String> simStrs = sim.toTables();
+			PageManager pageMgr = PageManager.getInstance();
+			pageMgr.init();
 			for (String simStr:simStrs){
 				if (catDictMap.containsKey(simStr)){
 					has = true;
+					String relUrl = catDictMap.get(simStr);
+					String content = pageMgr.getNews2(relUrl);
+					TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
+					log.warn("相似文档 : "+catDictMap.get(simStr)+",内容:"+item.getContent());
+					log.warn("新文档 : "+catDictMap.get(simStr)+",当前内容:"+pageContent);
 					break;
 				}
 			}
 			if (!has){
 				for (String simStr:simStrs){
-					catDictMap.put(simStr, simStr);
+					catDictMap.put(simStr, url);
 				}
 				String fileName = dictPath+catid+".dict";
 				FileUtil.writeFile(fileName, JSON.toJSONString(catDictMap));

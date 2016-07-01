@@ -68,10 +68,14 @@ public class PageContentGetter {
 	}
 	
 	public String getSpecSiteContent(String sitekey,String content){
-		infoSupp.init(content.getBytes());
-		if (sitekey.indexOf("163.com")>=0)
-			return infoSupp.getDivByClassValue("post_text");
-		else if (sitekey.indexOf("qq.com")>=0)
+		infoSupp.init(content);
+		if (sitekey.indexOf("163.com")>=0){
+			String cc = infoSupp.getDivByClassValue("post_text");
+			if (cc==null){
+				cc = infoSupp.getBlockByOneProp("div","id","endText");
+			}
+			return cc;
+		}else if (sitekey.indexOf("qq.com")>=0)
 			return infoSupp.getBlockByOneProp("div","id","Cnt-Main-Article-QQ");
 		else if (sitekey.indexOf("sina.com")>=0)
 			return infoSupp.getDivByClassValue("content");

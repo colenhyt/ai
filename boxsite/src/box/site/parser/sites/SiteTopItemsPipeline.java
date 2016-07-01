@@ -52,7 +52,7 @@ public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipelin
 		
 		//查找相似文档:
 		if (item.getCat()>0){
-			boolean hasSim = processMgr.hasDocSim(item.getCat(), item.getContent());
+			boolean hasSim = processMgr.hasDocSim(item.getCat(), item.getUrl(),item.getContent());
 			if (hasSim){
 				log.warn("simulate doc exist ");
 				item.setCat(-2);

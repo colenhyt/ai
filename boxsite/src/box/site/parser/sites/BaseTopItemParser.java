@@ -141,7 +141,7 @@ public class BaseTopItemParser implements ITopItemParser {
 	
 	@Override
 	public TopItem parse(String url,String pageContent) {
-		infoSupp.init(pageContent.getBytes());
+		infoSupp.init(pageContent);
 		List<String> contents = contentGetter.getHtmlContent(url,pageContent);
 		if (contents==null||contents.size()<=0){
 			log.warn("could not get html content "+url.hashCode());
