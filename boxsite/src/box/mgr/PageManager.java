@@ -289,6 +289,8 @@ public class PageManager extends MgrBase{
 		if (catid<0)
 			return null;
 		
+		init();
+		
 		List<TopItem> retitems = _findNewsitems(catid,itemid,dir,count);
 //		retitems = new ArrayList<TopItem>();
 		for (int i=0;i<3;i++){

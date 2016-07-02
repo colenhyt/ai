@@ -71,9 +71,9 @@ newslist.prototype = {
    var content = "";
    for (var i=0;i<g_newscats.length;i++){
     var list = g_newscats[i];
-   content += "<li id='navlist"+list[0]+"'";
+   content += "<li id='navlist"+list[0]+"' ";
    if (list[0]==g_currcat)
-    content += " style='display:inline-block;background-color:#0095BB;height:60px'";
+    content += " style='display:inline-block;background-color:#0095BB;height:60px;'";
    content += "><a href='javascript:g_newslist.viewlist("+list[0]+")'>"+list[1]+"</a></li> "
    }
    var tag = document.getElementById("nav");

@@ -13,7 +13,6 @@ if (dirstr!=null)
  dir = Integer.valueOf(dirstr);
  
 int itemid = 0;
-System.out.println(itemidstr);
 if (itemidstr!=null&&!itemidstr.equals("undefined")){
  itemid = Integer.valueOf(itemidstr);
 }

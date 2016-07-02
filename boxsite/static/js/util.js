@@ -96,10 +96,10 @@ function isLegalValue(vv){
 	return vv.length>0&&vv!="initial";
 }
 
-function outputCssStyles(css_file_name,per) {
+function resetCssStyles(per) {
 	var tar;
 	for (key in document.styleSheets){
-		var index = document.styleSheets[key].href.indexOf(css_file_name);
+		var index = document.styleSheets[key].href.indexOf("index");
 		if (index>0){
 			tar = document.styleSheets[key];
 			break;
@@ -110,50 +110,28 @@ function outputCssStyles(css_file_name,per) {
 		
 	rss = tar.cssRules?tar.cssRules:tar.rules  
 	
+	var reg = new RegExp("[0-9]+px"); 
+	
+	var tt = "NaNpx";
+	//alert(!reg.test(tt));
+	
 	var content = "";
-
 	for(i=0;i<rss.length;i++ )  
 	{  
 	 style = rss[i]; 
-	 	content += style.selectorText.toLowerCase()+"{"
 	 	for (param in style.style){
+	 		if (param=="cssText") continue;
 			var value = style.style[param];
-	 		if (isLegalName(param)&&isLegalValue(value)){
-	 		 value = value.replace('(http://localhost:8080/cf/',"('../../");
-	 		 value = value.replace('.png)',".png')");
+			if (!typeof(value)=="string"||!reg.test(value)) continue;
 			 var index = value.indexOf("px");
-			 if (index>0){
 			  var pxva = value.substr(0,index);
-			  value = parseInt(parseInt(pxva)*per)+"px";
-			  //g_msg.tip(pxva);
-			 }
-	 			//content += param+":"+value+";";
-			if (param=='backgroundSize')
-			{
-				content += uncamelize(param,'-')+":100% 100%;";
-	 			content += "-moz-background-size:100% 100%;";
-			}else
-				content += uncamelize(param,'-')+":"+value+";";
-				 			
-//		 		if (param=='backgroundOrigin'){
-//		 			alert(style.style[param]);
-//		 		}
-	 		}
+			  var intV = parseInt(pxva);
+			  if (intV<=0) continue;
+			  value = parseInt(intV*per)+"px";
+			  style.style[param] = value;
 	 	} 
-	 	content += "}<br><br>";
 	}	
-	//alert(content);
-	return content;	
-}
-
-function outputCssFiles(twidth) {
-	var tag = document.createElement("DIV");
-	var per = (twidth/640);
-	tag.innerHTML = outputCssStyles("cf640.css",per);
-	tag.style.color = "#000000"
-	tag.width = "500px"
-    tag.height = "600px";
-    document.body.appendChild(tag);	
+	var t = 1;
 }
 
 function stringToBytes (str) {  
