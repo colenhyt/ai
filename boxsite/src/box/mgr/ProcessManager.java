@@ -2,6 +2,7 @@ package box.mgr;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -192,21 +193,36 @@ public class ProcessManager extends MgrBase {
 		try {
 			SimHash sim = new SimHash(blockContent, 64);
 			List<String> simStrs = sim.toTables();
-			for (String simStr:simStrs){
-				if (catDictMap.containsKey(simStr)){
+//			for (String simStr:simStrs){
+//				if (catDictMap.containsKey(simStr)){
+//					has = true;
+//					String relUrl = catDictMap.get(simStr);
+//					String content = pageMgr.getNews2(relUrl);
+//					TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
+//					log.warn("相似文档 : "+catDictMap.get(simStr)+",相似内容:"+item.getContent());
+//					log.warn("新文档 : "+catDictMap.get(simStr)+",当前内容:"+blockContent);
+//					break;
+//				}
+//			}
+			for (String dictStr:catDictMap.keySet()){
+				BigInteger simHash = BigInteger.valueOf(Long.valueOf(dictStr));
+				BigInteger thisHash = sim.simHash();
+				if (SimHash.hammingDistance(simHash, thisHash)<=3){
 					has = true;
-					String relUrl = catDictMap.get(simStr);
+					String relUrl = catDictMap.get(dictStr);
 					String content = pageMgr.getNews2(relUrl);
 					TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
-					log.warn("相似文档 : "+catDictMap.get(simStr)+",相似内容:"+item.getContent());
-					log.warn("新文档 : "+catDictMap.get(simStr)+",当前内容:"+blockContent);
+					log.warn("相似文档 : "+dictStr+",相似内容:"+item.getContent());
+					log.warn("新文档 : "+sim.simHash()+",当前内容:"+blockContent);
 					break;
 				}
 			}
 			if (!has){
-				for (String simStr:simStrs){
-					catDictMap.put(simStr, url);
-				}
+				String strSim = String.valueOf(sim.simHash());
+				catDictMap.put(strSim, url);
+//				for (String simStr:simStrs){
+//					catDictMap.put(simStr, url);
+//				}
 //				String fileName = dictPath+catid+".dict";
 //				FileUtil.writeFile(fileName, JSON.toJSONString(catDictMap));
 			}

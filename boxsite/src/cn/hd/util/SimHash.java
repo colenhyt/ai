@@ -246,14 +246,18 @@ public class SimHash {
         int dis2 = hash1.getDistance(hash1.strSimHash, hash3.strSimHash);
         System.out.println(hash1.hammingDistance(hash3) + " " + dis2);
         
-        String ac = FileUtil.readFile("c:/boxsite/data/pages/a.txt");
-        SimHash sim1 = new SimHash(ac,64);
-        String bc = FileUtil.readFile("c:/boxsite/data/pages/b.txt");
-        SimHash simb = new SimHash(bc,64);
-        System.out.println(sim1.hammingDistance(simb));
-        System.out.println(simb.hammingDistance(sim1));
+//        String ac = FileUtil.readFile("c:/boxsite/data/pages/a.txt");
+//        SimHash sim1 = new SimHash(ac,64);
+//        String bc = FileUtil.readFile("c:/boxsite/data/pages/b.txt");
+//        SimHash simb = new SimHash(bc,64);
+//        System.out.println(sim1.hammingDistance(simb));
+//        System.out.println(simb.hammingDistance(sim1));
+        long l = 2305846963108970637L;
+        long l2 = 2305846892242043021L;
+        BigInteger bg = BigInteger.valueOf(l);
+        BigInteger bg2 = BigInteger.valueOf(l2);
         
-        System.out.println(simb.hammingDistance("0010011011001000101110110011111100011001110000000000000000000100","1110111011111001011101010100000000000000010000000000000000000100"));
+        System.out.println(SimHash.hammingDistance(bg,bg2));
         
     }
 }
