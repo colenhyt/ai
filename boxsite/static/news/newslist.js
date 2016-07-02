@@ -151,6 +151,9 @@ newslist.prototype = {
     
     g_currcat = catid;
     
+        var ul= document.getElementById('thelist');
+        ul.innerHTML = "";
+    
     var items = this.data[catid];
     if (items!=null&&items.length>0){
      g_newslistview.renderlist(1,items);
@@ -291,10 +294,10 @@ newslistview.prototype = {
     	    shorttitle = shorttitle.substring(0,20)+"..";   
     	var content = "";
     	content += "<div onclick=\"window.open('"+link+"','_self')\">";
-    	content += "<span>"
+    	content += "<span style='font-size:150%;font-weight:bold'>"
     	content += "<a href='"+link+"'>"+shorttitle+"</a>"
     	content += "</span><br>";
-    	content += "<span style='font-size:10px'>";
+    	content += "<span style='font-size:50%'>";
     	content += g_sitekeys[item.sitekey]+" "+timeStr;
     	content += "</span>"
     	content += "</div>"; 	

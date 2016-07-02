@@ -45,11 +45,31 @@ a:hover{ text-decoration:none;}
 	text-shadow:0 -1px 0 rgba(0,0,0,0.5);
 }
 
-ul#nav{ width:100%; height:60px; margin:0 auto} 
-ul#nav li{display:inline; height:60px} 
-ul#nav li a{display:inline-block; padding:0 10px; height:60px;
- color:#FFF; font-family:"\5FAE\8F6F\96C5\9ED1"; font-size:100%} 
-ul#nav li a:hover{padding:0 10px;background:#0095BB}/*设置鼠标滑过或悬停时变化的背景颜色*/ 
+ul#nav{ 
+	width:100%; 
+	height:60px; 
+	margin:0 auto;
+} 
+
+ul#nav li{
+	display:inline; 
+	height:60px;
+} 
+
+ul#nav li a{
+	display:inline-block; 
+	padding:0 10px; 
+	height:60px;
+	color:#FFF; 
+	font-family:"\5FAE\8F6F\96C5\9ED1"; 
+	font-size:100%
+} 
+
+/*设置鼠标滑过或悬停时变化的背景颜色*/ 
+ul#nav li a:hover{
+	padding:0 10px;
+	background:#0095BB;
+}
 
 #footer {
 	position:absolute;
