@@ -72,35 +72,44 @@ public class ProcessManager extends MgrBase {
 		}		
 		
 		List<File> dictFiles = FileUtil.getFiles(dictPath);
-		for (File f:dictFiles){
-			String content = FileUtil.readFile(f);
-    		if (content!=null&&content.trim().length()>0){
-    			String catstr = f.getName().substring(0,f.getName().indexOf("."));
-    			int catid = Integer.valueOf(catstr);
-    			Map<String,String>  catDictMap = Collections.synchronizedMap(new HashMap<String,String>());
-    			Map<String,JSONObject> jsonstr = (Map<String,JSONObject>)JSON.parseObject(content, HashMap.class);
-    			for (String simStr:jsonstr.keySet()){
-    				catDictMap.put(simStr, simStr);
-    			}
-    			pageSimHashMap.put(catid, catDictMap);
-    		}			
-		}		
+//		for (File f:dictFiles){
+//			String content = FileUtil.readFile(f);
+//    		if (content!=null&&content.trim().length()>0){
+//    			String catstr = f.getName().substring(0,f.getName().indexOf("."));
+//    			int catid = Integer.valueOf(catstr);
+//    			Map<String,String>  catDictMap = Collections.synchronizedMap(new HashMap<String,String>());
+//    			Map<String,JSONObject> jsonstr = (Map<String,JSONObject>)JSON.parseObject(content, HashMap.class);
+//    			for (String simStr:jsonstr.keySet()){
+//    				catDictMap.put(simStr, simStr);
+//    			}
+//    			pageSimHashMap.put(catid, catDictMap);
+//    		}			
+//		}		
 	}
 	
 	public void tesSimHash(){
-		List<File> folders = FileUtil.getFolders(pagesPath);
-		for (File folder:folders){
-			List<File> files = FileUtil.getFiles(folder.getAbsolutePath());
-			for (File file:files){
-				String strCode = file.getName().substring(0,file.getName().indexOf("."));
-				String pageContent = FileUtil.readFile(file);
-				TopItem item = parser.parse(strCode, pageContent);
+		List<File> urlFiles = FileUtil.getFiles(pagesPath);
+		for (File urlF:urlFiles){
+			int index = urlF.getName().indexOf(".urls");
+			if (index<=0) continue;
+			String sitekey = urlF.getName().substring(0,index);
+			String urlContent = FileUtil.readFile(urlF);
+			List<String> urls = (List<String>)JSON.parse(urlContent);
+			Set<String> urlSet = new HashSet<String>();
+			urlSet.addAll(urls);
+			for (String url:urls){
+				String filePath = pagesPath+sitekey+"/"+url.hashCode()+".html";
+				String pageContent = FileUtil.readFile(filePath);
+				if (pageContent.trim().length()<=0) continue;
+				log.warn("parse "+url);
+				TopItem item = parser.parse(url, pageContent);
 				if (item==null){
-					log.warn("could not parse: "+strCode);
+					//log.warn("could not parse: "+strCode);
 					continue;
 				}
-				log.warn("parse "+folder.getName()+",file "+strCode);
-				this.hasDocSim(1, strCode, item.getContent());
+//				log.warn("parse "+sitekey+",file "+url);
+				this.hasDocSim(1, url, item.getContent());				
+				
 			}
 		}
 	}
@@ -169,6 +178,9 @@ public class ProcessManager extends MgrBase {
 	}
 	
 	public boolean hasDocSim(int catid,String url,String blockContent){
+		PageManager pageMgr = PageManager.getInstance();
+		pageMgr.init();
+		
 		boolean has = false;
 		Map<String,String> catDictMap = pageSimHashMap.get(catid);
 		if (catDictMap==null){
@@ -180,15 +192,13 @@ public class ProcessManager extends MgrBase {
 		try {
 			SimHash sim = new SimHash(blockContent, 64);
 			List<String> simStrs = sim.toTables();
-			PageManager pageMgr = PageManager.getInstance();
-			pageMgr.init();
 			for (String simStr:simStrs){
 				if (catDictMap.containsKey(simStr)){
 					has = true;
 					String relUrl = catDictMap.get(simStr);
 					String content = pageMgr.getNews2(relUrl);
 					TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
-					log.warn("相似文档 : "+catDictMap.get(simStr)+",内容:"+item.getContent());
+					log.warn("相似文档 : "+catDictMap.get(simStr)+",相似内容:"+item.getContent());
 					log.warn("新文档 : "+catDictMap.get(simStr)+",当前内容:"+blockContent);
 					break;
 				}
@@ -197,8 +207,8 @@ public class ProcessManager extends MgrBase {
 				for (String simStr:simStrs){
 					catDictMap.put(simStr, url);
 				}
-				String fileName = dictPath+catid+".dict";
-				FileUtil.writeFile(fileName, JSON.toJSONString(catDictMap));
+//				String fileName = dictPath+catid+".dict";
+//				FileUtil.writeFile(fileName, JSON.toJSONString(catDictMap));
 			}
 			
 		} catch (IOException e) {
@@ -325,7 +335,6 @@ public class ProcessManager extends MgrBase {
 
 	public static void main(String[] args) {
 		ProcessManager.getInstance().init();
-		
 		ProcessManager.getInstance().tesSimHash();
 //		ProcessManager.getInstance().process();
 //		ProcessManager.getInstance().processSpiders();

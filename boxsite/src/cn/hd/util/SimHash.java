@@ -111,6 +111,24 @@ public class SimHash {
         }
     }
 
+    public static int hammingDistance(String currStr,String otherStr){
+    	BigInteger current = new BigInteger("0");
+    	char bb = 1;
+    	char tt = 1;
+    	boolean t = (bb==tt);
+    	for (int i=0;i<currStr.length();i++){
+    		String a = currStr.substring(i);
+    		if (i<currStr.length()-1)
+    			a = currStr.substring(i,i+1);
+    		if (Integer.valueOf(a)==1){
+    			current.add(new BigInteger("1").shiftLeft(i));
+    		}
+    	}
+    	
+    	BigInteger other = BigInteger.valueOf(Long.valueOf(otherStr));
+    	return hammingDistance(current,other);
+    }
+    
     public static int hammingDistance(BigInteger current,BigInteger other){
         BigInteger x = current.xor(other);
         int tot = 0;
@@ -227,5 +245,15 @@ public class SimHash {
         // 根据鸽巢原理（也成抽屉原理，见组合数学），如果两个签名的海明距离在 3 以内，它们必有一块签名subByDistance()完全相同。
         int dis2 = hash1.getDistance(hash1.strSimHash, hash3.strSimHash);
         System.out.println(hash1.hammingDistance(hash3) + " " + dis2);
+        
+        String ac = FileUtil.readFile("c:/boxsite/data/pages/a.txt");
+        SimHash sim1 = new SimHash(ac,64);
+        String bc = FileUtil.readFile("c:/boxsite/data/pages/b.txt");
+        SimHash simb = new SimHash(bc,64);
+        System.out.println(sim1.hammingDistance(simb));
+        System.out.println(simb.hammingDistance(sim1));
+        
+        System.out.println(simb.hammingDistance("0010011011001000101110110011111100011001110000000000000000000100","1110111011111001011101010100000000000000010000000000000000000100"));
+        
     }
 }

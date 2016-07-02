@@ -141,6 +141,9 @@ public class BaseTopItemParser implements ITopItemParser {
 	
 	@Override
 	public TopItem parse(String url,String pageContent) {
+		if (url.equals("-1080988586")){
+			int t = 10;
+		}
 		infoSupp.init(pageContent);
 		List<String> contents = contentGetter.getHtmlContent(url,pageContent);
 		if (contents==null||contents.size()<=0){
@@ -179,7 +182,7 @@ public class BaseTopItemParser implements ITopItemParser {
 //		catid = newsClassifier.testClassify(titem);
 //		if (catid<=0){
 //		}
-		log.warn("classify catid: "+catid+":"+url);
+//		log.warn("classify catid: "+catid+":"+url);
 		
 		titem.setCat(catid);
 		titem.setCrDate(new Date());

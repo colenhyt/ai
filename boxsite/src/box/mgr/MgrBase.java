@@ -64,6 +64,7 @@ public class MgrBase extends java.util.TimerTask {
 			traniningpath = rootPath+"training/";
 			itemPath = rootPath+"items/";
 			listPath = rootPath+"list/";	
+			dictPath = rootPath+"dict/";
 			imgPath = rootPath+"pics/";
 		}
 		String cfgstr0 = cfgObj.getString("redisCfg");
