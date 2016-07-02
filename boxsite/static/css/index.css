@@ -5,17 +5,21 @@ body,ul,li {
 }
 
 body {
-	font-size:12px;
+	font-size:18px;
 	-webkit-user-select:none;
     -webkit-text-size-adjust:none;
 	font-family:helvetica;
 }
 
 a{ 
-  font-size:22px;
+  font-size:120%;
   color:#000000;
   font-weight:bold;
   text-decoration:none;
+}
+
+a.title {
+  font-size:150%;
 }
 
 a:hover{ text-decoration:none;}
@@ -31,7 +35,6 @@ a:hover{ text-decoration:none;}
 	background-image:-o-linear-gradient(top, #fe96c9, #d51875 5%, #7b0a2e);
 	padding:0;
 	color:#eee;
-	font-size:18px;
 	text-align:center;
 }
 
