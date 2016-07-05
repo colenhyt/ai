@@ -8,6 +8,8 @@
 <title>科技快报</title>
  <script src="dist/js/jquery-2.0.3.min.js"></script>
  <script src="dist/js/store.js"></script>
+<script src="dist/js/ShareSDK.js"></script>
+  <script src="dist/js/shareutil.js"></script>
  <link rel="stylesheet" href="static/css/index.css" type="text/css" />
 <script type="application/javascript" src="static/js/util.js"></script>
 <script type="application/javascript" src="static/news/common.js"></script>
@@ -34,9 +36,12 @@
 }
 </style>
 </head>
-<body>
+<body onload='initShareSDK()'>
 <div id="header2">
- <div style='margin-top:10px;margin-left:20px;'>   <a id='backnav' href="javascript:history.go(-1)"><</a></div>
+ <div style='margin-top:10px;margin-left:20px;'>   
+ <a id='backnav' href="javascript:history.go(-1)"><</a>
+ <a id='backnav2' href="javascript:showShareMenuClickHandler()">...</a>
+ </div>
 <hr style="height:1px;border:none;border-top:1px solid #555555;margin-top:10px" />
 </div>
 <div id="content" style="padding-top:60px">
