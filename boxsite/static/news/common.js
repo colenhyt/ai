@@ -1,5 +1,13 @@
+var SiteUrl = "http://202.69.27.238:8081/boxsite"
+
+var Share_Img = SiteUrl+"/static/img/app_icon_share.png"
 
 var g_currcat = 0;
+
+var Share_Title = "科技早报每日分享"
+
+var Share_Text = "科技早报"
+
 
 var g_newscats = [
 [1,"综合"],[11,"动态"],[21,"产品"],[31,"分析"],[41,"运营"],[51,"创投"]
