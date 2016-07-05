@@ -87,7 +87,7 @@ public class SimHash {
             }
         }
         this.strSimHash = simHashBuffer.toString();
-        System.out.println(this.strSimHash + " length " + this.strSimHash.length());
+//        System.out.println(this.strSimHash + " length " + this.strSimHash.length());
         return fingerprint;
     }
 
@@ -211,7 +211,7 @@ public class SimHash {
                 + "还能额外提供不相等的 原始内容的差异程度的信息。";
         SimHash hash1 = new SimHash(s, 64);
         System.out.println(hash1.toTables().toString());
-        System.out.println(hash1.intSimHash + " --- " + hash1.intSimHash.bitLength());
+       // System.out.println(hash1.intSimHash + " --- " + hash1.intSimHash.bitLength());
         // 计算 海明距离 在 3 以内的各块签名的 hash 值
         hash1.subByDistance(hash1, 3);
 
@@ -222,7 +222,7 @@ public class SimHash {
                 + "对相似的内容产生的签名也相近，是更为艰难的任务，因为它的签名值除了提供原始内容是否相等的信息外，"
                 + "干扰1还能额外提供不相等的 原始内容的差异程度的信息。";
         SimHash hash2 = new SimHash(s, 64);
-        System.out.println(hash2.intSimHash + "  " + hash2.intSimHash.bitCount());
+      //  System.out.println(hash2.intSimHash + "  " + hash2.intSimHash.bitCount());
         hash1.subByDistance(hash2, 3);
 
         // 首句前添加一句话，并加入四个干扰串
@@ -235,23 +235,25 @@ public class SimHash {
                 + "要设计一个 hash 算法，对相似的内容产生的签名也相近，是更为艰难的任务，因为它的签名值除了提供原始"
                 + "内容是否相等的信息外，干扰1还能额外提供不相等的 原始再来干扰2内容的差异程度的信息。";
         SimHash hash3 = new SimHash(s, 64);
-        System.out.println(hash3.intSimHash + "  " + hash3.intSimHash.bitCount());
+       // System.out.println(hash3.intSimHash + "  " + hash3.intSimHash.bitCount());
         hash1.subByDistance(hash3, 3);
 
         System.out.println("============================");
 
         int dis = hash1.getDistance(hash1.strSimHash, hash2.strSimHash);
-        System.out.println(hash1.hammingDistance(hash2) + " " + dis);
+       // System.out.println(hash1.hammingDistance(hash2) + " " + dis);
         // 根据鸽巢原理（也成抽屉原理，见组合数学），如果两个签名的海明距离在 3 以内，它们必有一块签名subByDistance()完全相同。
         int dis2 = hash1.getDistance(hash1.strSimHash, hash3.strSimHash);
-        System.out.println(hash1.hammingDistance(hash3) + " " + dis2);
+       // System.out.println(hash1.hammingDistance(hash3) + " " + dis2);
         
-//        String ac = FileUtil.readFile("c:/boxsite/data/pages/a.txt");
-//        SimHash sim1 = new SimHash(ac,64);
-//        String bc = FileUtil.readFile("c:/boxsite/data/pages/b.txt");
-//        SimHash simb = new SimHash(bc,64);
-//        System.out.println(sim1.hammingDistance(simb));
-//        System.out.println(simb.hammingDistance(sim1));
+        String ac = FileUtil.readFile("c:/boxsite/data/pages/a.txt");
+        int ll = ac.length();
+        SimHash sim1 = new SimHash(ac.substring(0,500),64);
+        String bc = FileUtil.readFile("c:/boxsite/data/pages/b.txt");
+        int ll2 = bc.length();
+        SimHash simb = new SimHash(bc.substring(0,500),64);
+        System.out.println(sim1.hammingDistance(simb));
+        System.out.println(simb.hammingDistance(sim1));
         long l = 2305846963108970637L;
         long l2 = 2305846892242043021L;
         BigInteger bg = BigInteger.valueOf(l);

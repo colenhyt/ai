@@ -73,19 +73,16 @@ public class ProcessManager extends MgrBase {
 		}		
 		
 		List<File> dictFiles = FileUtil.getFiles(dictPath);
-//		for (File f:dictFiles){
-//			String content = FileUtil.readFile(f);
-//    		if (content!=null&&content.trim().length()>0){
-//    			String catstr = f.getName().substring(0,f.getName().indexOf("."));
-//    			int catid = Integer.valueOf(catstr);
-//    			Map<String,String>  catDictMap = Collections.synchronizedMap(new HashMap<String,String>());
-//    			Map<String,JSONObject> jsonstr = (Map<String,JSONObject>)JSON.parseObject(content, HashMap.class);
-//    			for (String simStr:jsonstr.keySet()){
-//    				catDictMap.put(simStr, simStr);
-//    			}
-//    			pageSimHashMap.put(catid, catDictMap);
-//    		}			
-//		}		
+		for (File f:dictFiles){
+			String content = FileUtil.readFile(f);
+    		if (content!=null&&content.trim().length()>0){
+    			String catstr = f.getName().substring(0,f.getName().indexOf("."));
+    			int catid = Integer.valueOf(catstr);
+    			Map<String,String>  catDictMap = Collections.synchronizedMap(new HashMap<String,String>());
+    			catDictMap = (Map<String,String>)JSON.parseObject(content, HashMap.class);
+    			pageSimHashMap.put(catid, catDictMap);
+    		}			
+		}		
 	}
 	
 	public void tesSimHash(){
@@ -191,40 +188,33 @@ public class ProcessManager extends MgrBase {
 		}
 		
 		try {
-			SimHash sim = new SimHash(blockContent, 64);
-			List<String> simStrs = sim.toTables();
-//			for (String simStr:simStrs){
-//				if (catDictMap.containsKey(simStr)){
-//					has = true;
-//					String relUrl = catDictMap.get(simStr);
-//					String content = pageMgr.getNews2(relUrl);
-//					TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
-//					log.warn("相似文档 : "+catDictMap.get(simStr)+",相似内容:"+item.getContent());
-//					log.warn("新文档 : "+catDictMap.get(simStr)+",当前内容:"+blockContent);
-//					break;
-//				}
-//			}
+			String currContent;
+			if (blockContent.length()>300)
+				currContent = blockContent.substring(0,300);
+			else
+				currContent = blockContent;
+			SimHash sim = new SimHash(currContent, 64);
 			for (String dictStr:catDictMap.keySet()){
 				BigInteger simHash = BigInteger.valueOf(Long.valueOf(dictStr));
 				BigInteger thisHash = sim.simHash();
-				if (SimHash.hammingDistance(simHash, thisHash)<=3){
+				if (SimHash.hammingDistance(simHash, thisHash)<=1){
 					has = true;
-					String relUrl = catDictMap.get(dictStr);
-					String content = pageMgr.getNews2(relUrl);
-					TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
-					log.warn("相似文档 : "+dictStr+",相似内容:"+item.getContent());
-					log.warn("新文档 : "+sim.simHash()+",当前内容:"+blockContent);
+//					String relUrl = catDictMap.get(dictStr);
+//					String content = pageMgr.getNews2(relUrl);
+//					TopItem item = (TopItem)JSON.parseObject(content, TopItem.class);
+//					log.warn("相似文档 : "+dictStr+",相似内容:"+item.getContent());
+//					log.warn("新文档 : "+sim.simHash()+",当前内容:"+blockContent);
 					break;
 				}
 			}
 			if (!has){
 				String strSim = String.valueOf(sim.simHash());
 				catDictMap.put(strSim, url);
-//				for (String simStr:simStrs){
-//					catDictMap.put(simStr, url);
-//				}
-//				String fileName = dictPath+catid+".dict";
-//				FileUtil.writeFile(fileName, JSON.toJSONString(catDictMap));
+				if (catDictMap.size()%10==0)
+				{
+					String fileName = dictPath+catid+".dict";
+					FileUtil.writeFile(fileName, JSON.toJSONString(catDictMap));
+				}
 			}
 			
 		} catch (IOException e) {
