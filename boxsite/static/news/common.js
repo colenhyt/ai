@@ -123,4 +123,43 @@ function initScreen(){
 	resetCssStyles(SIZEPER);		
 }
 
+
+user = function(options){
+
+}
+
+user.prototype = {
+	userdata:{},
+	login:function(){
+	  var sessionid = 0;
+	  var userdata2 = store.get("newsuser");
+	  if (userdata2!=null){
+	    sessionid = userdata2.sessionid;
+	    userdata = userdata2;
+	  };
+	  
+	var dataParam = "sessionid="+sessionid;
+	try    {
+		$.ajax({type:"post",url:"user.jsp",data:dataParam,success:function(data){
+		var jsonstr = cfeval(data);
+		g_user.userdata = jsonstr;
+		store.set("newsuser",jsonstr);
+		}});
+	}   catch  (e)   {
+	} 	  
+	},
+	
+	addFavor:function(item){
+	 var items = this.userdata[item.cat];
+	 if (items==null)
+	   items = [];
+	 items.push(item);
+	 this.userdata[item.cat] = items;
+	 store.set("newsuser",this.userdata);
+	},
+}
+
 initScreen();
+
+var g_user = new user();
+g_user.login();

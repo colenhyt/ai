@@ -11,6 +11,7 @@ news = function(options){
 }
 
 var g_catid = 1;
+var g_currItemId = 0;
 
 news.prototype = {
 
@@ -19,6 +20,8 @@ news.prototype = {
    if (catid!=null)
      g_catid = catid;
    var itemid = getPar("itemid");
+   g_currItemId = itemid;
+   
     var url = getPar("url");
   	 g_news.getnews(itemid,url);
   	 
@@ -55,6 +58,34 @@ news.prototype = {
   		store.set(this.name,this.data);
   		
 		this.viewitem(item); 
+  },
+  
+  add2Favor： function(){
+  	var userdata = g_user.userdata;
+  	var sessionid = -1;
+  	if (userdata!=null)
+  	  sessionid = userdata.sessionid;
+  	  
+ 	  dataParam = "itemid="+g_currItemId+"&sessionid="+sessionid;
+	  
+	  
+    var data = store.get("newslist");
+    var list = data[g_catid];
+    if (list!=null){
+      for (var i=0;i<list.length;i++){
+        if (list[i].id==g_currItemId){
+         g_user.addFavor(list[i]);
+         break;
+        }
+      }
+    }	  
+	
+//	try    {
+//		$.ajax({type:"post",url:"favor.jsp",data:dataParam,success:function(data){
+//		var item = cfeval(data);
+//		}});
+//	}   catch  (e)   {
+//	}  
   },
   
   viewitem: function (item) {

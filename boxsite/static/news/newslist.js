@@ -20,30 +20,6 @@ function moveDirection(startX,startY,endX,endY){
   	return 3;		//right;
 }
 
-user = function(options){
-
-}
-
-user.prototype = {
-	userdata:{},
-	login:function(){
-	  var sessionid = 0;
-	  var userdata = store.get("newsuser");
-	  if (userdata!=null){
-	    sessionid = userdata.sessionid;
-	  };
-	  
-	var dataParam = "sessionid="+sessionid;
-	try    {
-		$.ajax({type:"post",url:"user.jsp",data:dataParam,success:function(data){
-		var jsonstr = cfeval(data);
-		g_user.userdata = jsonstr;
-		store.set("newsuser",jsonstr);
-		}});
-	}   catch  (e)   {
-	} 	  
-	},
-}
 
 newslist = function(options){
  this.data = {};
@@ -171,6 +147,27 @@ newslist.prototype = {
 		pullDownAction();
     }
  
+  },
+  
+  viewfavors: function (catid) {
+    var items = this.userdata[catid];
+    g_newslistview.renderlist(1,items);
+  },  
+  
+  queryfavors:function(){
+  	var userdata = g_user.userdata;
+  	var sessionid = -1;
+  	if (userdata!=null)
+  	  sessionid = userdata.sessionid;
+  	    
+	var dataParam = "type=1&sessionid="+sessionid;
+	try    {
+		$.ajax({type:"post",url:"favor.jsp",data:dataParam,success:function(data){
+		var jsonstr = cfeval(data);
+		g_newslist.appendlist(catid,jsonstr.news,jsonstr.dir);
+		}});
+	}   catch  (e)   {
+	}      
   },
   
   querylist:function(catid,dir){
@@ -308,9 +305,6 @@ newslistview.prototype = {
     	return li;
  	},
  }
-
-var g_user = new user();
-g_user.login();
 
 var g_newslist = new newslist();
 
