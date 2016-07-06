@@ -13,14 +13,16 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.alibaba.fastjson.JSON;
-
 import box.site.model.TopItem;
 import box.site.model.User;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
 import box.site.parser.sites.ImgGetter;
 import cn.hd.util.StringUtil;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import easyshop.html.HTMLInfoSupplier;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;
@@ -83,6 +85,15 @@ public class PageManager extends MgrBase{
 		
 		sitekeys = new HashSet<String>();
 		
+		String userContent = FileUtil.readFile(userFilePath);
+		if (userContent.trim().length()>0){
+			Map<Long,JSONObject> data = (Map<Long,JSONObject>)JSON.parse(userContent);
+			for (Long sessionId:data.keySet()){
+				JSONObject json = data.get(sessionId);
+				User user = (User)JSON.parseObject(json.toJSONString(), User.class);
+				userMap.put(sessionId, user);
+			}
+		}
 		List<File> folders = FileUtil.getFolders(pagesPath);
 		for (File folder:folders){
 			sitekeys.add(folder.getName());
@@ -391,17 +402,14 @@ public class PageManager extends MgrBase{
 //		sites.add("tmtpost.com");
 //		sites.add("163.com");
 //		sites.add("qq.com");
-		sites.add("cyzone.cn");
-		sites.add("geekpark.net");
-//		sites.add("");
-//		sites.add("");
+//		sites.add("cyzone.cn");
+//		sites.add("geekpark.net");
+		sites.add("techcrunch.cn");
+		sites.add("techweb.com.cn");
 		for (String sitekey:allSiteUrlsMap.keySet()){
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
 			if (sites.contains(sitekey)){
 				for (WebUrl item:siteUrlsMap.values()){
-					if (item.getUrl().equalsIgnoreCase("http://tech.163.com/13/0719/10/94521A24000915I3.html")){
-						int t = 10;
-					}
 					String ppath = pagesPath + sitekey + "/"+ item.getUrl().hashCode()+".html";
 					String fcontent = FileUtil.readFile(ppath);
 					if (fcontent.trim().length()<=0) continue;
@@ -475,6 +483,8 @@ public class PageManager extends MgrBase{
 				itemstr = String.valueOf(itemid);
 			else
 				itemstr += ","+itemid;
+			
+			FileUtil.writeFile(userFilePath,JSON.toJSONString(userMap));			
 		}
 		return null;
 	}
