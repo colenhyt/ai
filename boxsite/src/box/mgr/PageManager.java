@@ -459,7 +459,7 @@ public class PageManager extends MgrBase{
 	}
 
 	//获取收藏列表:
-	public String getFavos(long clientSessionid){
+	public String getFavors(long clientSessionid){
 		User user = userMap.get(clientSessionid);
 		if (user!=null){
 			String itemstr = user.getFavos();
@@ -477,16 +477,25 @@ public class PageManager extends MgrBase{
 	
 	//收藏文章
 	public String addFavo(long clientSessionid,int itemid){
+		if (clientSessionid<=0)
+			return null;
+		
 		User user = userMap.get(clientSessionid);
-		if (user!=null){
-			String itemstr = user.getFavos();
-			if (itemstr==null)
-				itemstr = String.valueOf(itemid);
-			else
-				itemstr += ","+itemid;
-			
-			FileUtil.writeFile(userFilePath,JSON.toJSONString(userMap));			
+		if (user==null){
+			user = new User();
+			user.setSessionid(clientSessionid);
+			userMap.put(user.getSessionid(),user);				
 		}
+		
+		String itemstr = user.getFavos();
+		if (itemstr==null)
+			itemstr = String.valueOf(itemid);
+		else if (itemstr.indexOf(String.valueOf(itemid))<0){
+			itemstr += ","+itemid;
+		}
+		user.setFavos(itemstr);			
+		
+		FileUtil.writeFile(userFilePath,JSON.toJSONString(userMap));			
 		return null;
 	}
 	

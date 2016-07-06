@@ -60,13 +60,11 @@ news.prototype = {
 		this.viewitem(item); 
   },
   
-  add2Favor： function(){
+  add2Favor:function(){
   	var userdata = g_user.userdata;
   	var sessionid = -1;
   	if (userdata!=null)
   	  sessionid = userdata.sessionid;
-  	  
- 	  dataParam = "itemid="+g_currItemId+"&sessionid="+sessionid;
 	  
 	  
     var data = store.get("newslist");
@@ -80,12 +78,14 @@ news.prototype = {
       }
     }	  
 	
-//	try    {
-//		$.ajax({type:"post",url:"favor.jsp",data:dataParam,success:function(data){
-//		var item = cfeval(data);
-//		}});
-//	}   catch  (e)   {
-//	}  
+  	  
+ 	  dataParam = "itemid="+g_currItemId+"&sessionid="+sessionid;
+	try    {
+		$.ajax({type:"post",url:"favor.jsp",data:dataParam,success:function(data){
+		var item = cfeval(data);
+		}});
+	}   catch  (e)   {
+	}  
   },
   
   viewitem: function (item) {

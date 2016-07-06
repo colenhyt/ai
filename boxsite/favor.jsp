@@ -20,7 +20,7 @@ if (itemstr!=null&&!itemstr.equalsIgnoreCase("false")){
 PageManager.getInstance().init();
 
 String jsonstr = "";
-if (itemid==1){
+if (typeid==1){
  jsonstr = PageManager.getInstance().getFavors(sessionid);
 }else{
  jsonstr = PageManager.getInstance().addFavo(sessionid,itemid);

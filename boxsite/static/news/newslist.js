@@ -150,8 +150,10 @@ newslist.prototype = {
   },
   
   viewfavors: function (catid) {
-    var items = this.userdata[catid];
-    g_newslistview.renderlist(1,items);
+    var userdata = store.get("newsuser");
+    var items = userdata[catid];
+    if (items!=null)
+     g_newslistview.renderlist(1,items);
   },  
   
   queryfavors:function(){
