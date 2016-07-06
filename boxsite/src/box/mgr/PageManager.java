@@ -87,9 +87,10 @@ public class PageManager extends MgrBase{
 		
 		String userContent = FileUtil.readFile(userFilePath);
 		if (userContent.trim().length()>0){
-			Map<Long,JSONObject> data = (Map<Long,JSONObject>)JSON.parse(userContent);
-			for (Long sessionId:data.keySet()){
-				JSONObject json = data.get(sessionId);
+			Map<String,JSONObject> data = (Map<String,JSONObject>)JSON.parse(userContent);
+			for (String sessionIdStr:data.keySet()){
+				Long  sessionId = Long.valueOf(sessionIdStr);
+				JSONObject json = data.get(sessionIdStr);
 				User user = (User)JSON.parseObject(json.toJSONString(), User.class);
 				userMap.put(sessionId, user);
 			}
