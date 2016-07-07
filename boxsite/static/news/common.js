@@ -2,6 +2,8 @@ var SiteUrl = "http://202.69.27.238:8081/boxsite"
 
 var Share_Img = SiteUrl+"/static/img/app_icon_share.png"
 
+var Share_Url = SiteUrl+"/dl.html"
+
 var g_currcat = 0;
 
 var Share_Title = "科技早报每日分享"
