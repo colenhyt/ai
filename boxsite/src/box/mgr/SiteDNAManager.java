@@ -53,8 +53,8 @@ public class SiteDNAManager extends MgrBase {
 	
 	//增加item url正则表达式
 	public void testAndAddSiteItemUrlReg(String url,String regStr){
-		if (url.matches(regStr)){
-			log.warn("wrong reg "+regStr+",url:"+url);
+		if (!url.matches(regStr)){
+			log.warn("wrong reg: "+regStr+",url:"+url);
 			return;
 		}
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
@@ -67,10 +67,23 @@ public class SiteDNAManager extends MgrBase {
 		toSave(dna);
 	}
 
+	public boolean testDna(String content,TagDNA tagDna){
+		
+		return false;
+	}
+	
 	//增加item 内容页 tag特征
 	public void testAndAddItemTagDNA(String testUrl,String dnaStr){
+		String content = downloader.download(testUrl);
+		if (content==null)
+			return;
+		
 		String sitekey = URLStrHelper.getHost(testUrl).toLowerCase();
 		TagDNA tagDna = (TagDNA)JSON.parseObject(dnaStr,TagDNA.class);
+		boolean test = testDna(content,tagDna);
+		if (!test)
+			return;
+		
 		ContentDNA dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
 			dna = new ContentDNA();
