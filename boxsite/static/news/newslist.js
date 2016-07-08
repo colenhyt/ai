@@ -46,11 +46,12 @@ newslist.prototype = {
     
    var content = "";
    for (var i=0;i<g_newscats.length;i++){
+    var index = i+1;
     var list = g_newscats[i];
-   content += "<li id='navlist"+list[0]+"' ";
-   if (list[0]==g_currcat)
+   content += "<li id='navlist"+index+"' ";
+   if (index==g_currcat)
     content += " style='display:inline-block;background-color:#0095BB;height:60px;'";
-   content += "><a href='javascript:g_newslist.viewlist("+list[0]+")'>"+list[1]+"</a></li> "
+   content += "><a href='javascript:g_newslist.viewlist("+index+")'>"+list+"</a></li> "
    }
    var tag = document.getElementById("nav");
    tag.innerHTML = content;

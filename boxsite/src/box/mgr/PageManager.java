@@ -43,7 +43,7 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		PageManager.getInstance().renameTrainingurlTitles();
+		PageManager.getInstance().resetTrainingurls();
 		int itemid = 0;
 		int dir = 1;
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);

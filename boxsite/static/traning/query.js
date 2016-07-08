@@ -2,6 +2,11 @@ var g_currurls = {};
 var g_sitekey = "";
 var g_type = 0;
 
+var g_newscats = [
+"综合","业界","热点","看法","访谈","创新","科技","硬件","极客","设计","运营","大公司",
+"股价","人物","公司","项目","移动","O2O","电商","大数据","风投","融资","创业"
+];
+
 function querySitekeys()
 {
 	var dataParam = "type=2";
@@ -65,22 +70,24 @@ function queryUrlsRst(data)
 	 content += "<td width=680><a href='news.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
 	 content += "<td><div style='font-size:21px'>"
 	 
-	 var cats = [[1,"综合"],[11,"动态"],[21,"产品"],[31,"分析"],[41,"运营"],[51,"创投"],[-1,"无效"]];
-	 
 	 if (data[i].cat==0)
 	 	content += "<input type='radio' name='url_"+data[i].id+"' id='0_"+data[i].id+"' value='0' checked><label for='0_"+data[i].id+"'>复位</lable>";
 	 else
 	 	 content += "<input type='radio' name='url_"+data[i].id+"' id='0_"+data[i].id+"' value='0'><label for='0_"+data[i].id+"'>复位</lable>";
 	 
-	 for (var k=0;k<cats.length;k++){
- 	     var cat = cats[k][0];
+	 content += "<br>";
+	 
+	 for (var k=0;k<g_newscats.length;k++){
+ 	     var cat = k+1;
 	     var id = cat+"_"+data[i].id;
 	     
 		 if (cat==data[i].cat)
-		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"' checked><label for='"+id+"'>"+cats[k][1]+"</label>";
+		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"' checked><label for='"+id+"'>"+g_newscats[k]+"</label>";
 		 else
-		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"'><label for='"+id+"'>"+cats[k][1]+"</label> ";
+		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"'><label for='"+id+"'>"+g_newscats[k]+"</label> ";
 		  
+		  if (cat%8==0)
+		   content += "<br>";
 	 }
 
 	 content += "</div></td>"
