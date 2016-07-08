@@ -1,32 +1,40 @@
 package box.site.model;
 
-public class ContentDNA {
-	String tagName;
-	String propName;
-	public String getTagName() {
-		return tagName;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class ContentDNA implements Serializable{
+	public Set<String> getItemUrlRegs() {
+		return itemUrlRegs;
 	}
-	public void setTagName(String tagName) {
-		this.tagName = tagName;
+	public void setItemUrlRegs(Set<String> itemUrlRegs) {
+		this.itemUrlRegs = itemUrlRegs;
 	}
-	public String getPropName() {
-		return propName;
+	public void addItemUrlReg(String urlReg){
+		this.itemUrlRegs.add(urlReg);
 	}
-	public void setPropName(String propName) {
-		this.propName = propName;
+	
+	public List<TagDNA> getTagDNAs() {
+		return tagDNAs;
 	}
-	public String getPropValue() {
-		return propValue;
+	public void setTagDNAs(List<TagDNA> tagDNAs) {
+		this.tagDNAs = tagDNAs;
 	}
-	public void setPropValue(String propValue) {
-		this.propValue = propValue;
+	
+	public void addTagDNA(TagDNA tagDNA){
+		this.tagDNAs.add(tagDNA);
 	}
-	public String getKeyword() {
-		return keyword;
+	
+	Set<String> itemUrlRegs = new HashSet<String>();
+	List<TagDNA> tagDNAs = new ArrayList<TagDNA>();
+	String sitekey;
+	public String getSitekey() {
+		return sitekey;
 	}
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
+	public void setSitekey(String sitekey) {
+		this.sitekey = sitekey;
 	}
-	String propValue;
-	String keyword;
 }

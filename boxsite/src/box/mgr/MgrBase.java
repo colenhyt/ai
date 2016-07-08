@@ -39,6 +39,7 @@ public class MgrBase extends java.util.TimerTask {
 	protected String listPath = rootPath+"list/";
 	protected String dictPath = rootPath+"dict/";
 	protected String imgPath = rootPath+"pics/";
+	protected String dnaPath = rootPath+"dna/";
 
 	public MgrBase(){
 		String path = "src/";
@@ -66,6 +67,7 @@ public class MgrBase extends java.util.TimerTask {
 			listPath = rootPath+"list/";	
 			dictPath = rootPath+"dict/";
 			imgPath = rootPath+"pics/";
+			dnaPath = rootPath+"dna/";
 		}
 		String cfgstr0 = cfgObj.getString("redisCfg");
 		if (cfgstr0!=null)
