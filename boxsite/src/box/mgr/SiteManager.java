@@ -426,7 +426,6 @@ public class SiteManager extends MgrBase{
 	}
 	
 	public String querySearchCount(String wordlist,String sitekey){
-		String key = String.valueOf(wordlist.hashCode());
 		int count = 0;
 		Set<String> words = StringHelper.getStrArray(wordlist, ",");
 		for (String word:words){
