@@ -351,22 +351,22 @@ public class SiteManager extends MgrBase{
 	
 	public String getHotwords2(){
 		Set<String> wordset = new HashSet<String>();
-		List<File> files = FileUtil.getFiles(itemPath+"baidu/");
+		List<File> files = FileUtil.getFiles(sitePath+"baidu/");
 		for (File f:files){
 			String name = f.getName();
-			name = name.replace("%20", ",").replace(".items", "");
+			name = name.replace("%20", ",").replace(".sites", "");
 			wordset.add(name);
 		}
-		files = FileUtil.getFiles(itemPath+"bing/");
+		files = FileUtil.getFiles(sitePath+"bing/");
 		for (File f:files){
 			String name = f.getName();
-			name = name.replace("%20", ",").replace(".items", "");
+			name = name.replace("%20", ",").replace(".sites", "");
 			wordset.add(name);
 		}
-		files = FileUtil.getFiles(itemPath+"sogou/");
+		files = FileUtil.getFiles(sitePath+"sogou/");
 		for (File f:files){
 			String name = f.getName();
-			name = name.replace("%20", ",").replace(".items", "");
+			name = name.replace("%20", ",").replace(".sites", "");
 			wordset.add(name);
 		}
 		
@@ -421,7 +421,7 @@ public class SiteManager extends MgrBase{
 		List<Website> list = new ArrayList<Website>();
 		word = word.replace(",", "%20");
 		Set<String>  siteset = new HashSet<String>();
-		String path = itemPath + "baidu/"+word+".items";
+		String path = sitePath + "baidu/"+word+".sites";
 		String content = FileUtil.readFile(path);
 		if (content.trim().length()>0){
 			List<String> stritems = (List<String>)JSON.parse(content);
@@ -434,7 +434,7 @@ public class SiteManager extends MgrBase{
 				}
 			}
 		}
-		path = itemPath + "bing/"+word+".items";
+		path = sitePath + "bing/"+word+".sites";
 		content = FileUtil.readFile(path);
 		if (content.trim().length()>0){
 			List<String> stritems = (List<String>)JSON.parse(content);
@@ -447,7 +447,7 @@ public class SiteManager extends MgrBase{
 				}
 			}
 		}
-		path = itemPath + "sogou/"+word+".items";
+		path = sitePath + "sogou/"+word+".sites";
 		content = FileUtil.readFile(path);
 		if (content.trim().length()>0){
 			List<String> stritems = (List<String>)JSON.parse(content);

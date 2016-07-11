@@ -19,8 +19,8 @@ import es.util.FileUtil;
 
 public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 	protected Logger  log = Logger.getLogger(getClass());
-	String sitepath = "data/items/";
-	String path = "data/list/";
+	String sitepath = "data/sites/";
+	String listpath = "data/list/";
 	private int reTry = 0;
 
 	@Override
@@ -32,11 +32,11 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 		if (maxCountStr!=null)
 			maxCount = ((Integer)maxCountStr).intValue();
 		
-		if (path.indexOf(siteKey)<0)
-			path += siteKey+"/";
-		File folder = new File(path);
+		if (listpath.indexOf(siteKey)<0)
+			listpath += siteKey+"/";
+		File folder = new File(listpath);
 		if (!folder.exists())
-			FileUtil.mkdir(path);
+			FileUtil.mkdir(listpath);
 		
 		if (sitepath.indexOf(siteKey)<0)
 			sitepath += siteKey+"/";
@@ -46,12 +46,12 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 			FileUtil.mkdir(sitepath);
 		
 		//save sites:
-		Set<String> items = (Set<String>)resultItems.get("items");
+		Set<String> items = (Set<String>)resultItems.get("sites");
 		log.warn("找到新sites: "+items.size());
 		
 		Set<String> allitems = new HashSet<String>();
 		if (items.size()>0){
-			String spath = sitepath +searchWord+".items";
+			String spath = sitepath +searchWord+".sites";
 			String content = FileUtil.readFile(spath);
 			if (content!=null&&content.trim().length()>0){
 				List<String> durls = (List<String>)JSON.parse(content);
@@ -71,27 +71,32 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 		
 		if (allitems.size()>maxCount&&maxCount>0){
 			log.warn("规定数量达到  "+maxCount);
-			System.exit(0);
+			ProcessCallback callback = (ProcessCallback)resultItems.get("callback");
+			if (callback!=null)
+				callback.onSpiderDone(siteKey);
+			else
+				Thread.currentThread().stop();
+			return;
 		}
 		
 		//save search urls:
 		Set<String> searchUrls = (Set<String>)resultItems.get("searchUrls");
 		if (searchUrls!=null&&searchUrls.size()>0){
-			String searchpath = path + searchWord+".json";
+			String searchpath = listpath + searchWord+".json";
 			FileUtil.writeFile(searchpath, JSON.toJSONString(searchUrls));
 		}
 		
 		//save done urls:
 		Set<String> doneurls = (Set<String>)resultItems.get("doneUrls");
 		if (doneurls!=null&&doneurls.size()>0){
-			String donepath = path + searchWord+"_done.json";
+			String donepath = listpath + searchWord+"_done.json";
 			FileUtil.writeFile(donepath, JSON.toJSONString(doneurls));
 		}
 		
 		//save related word:
 		Set<String> relateWords = (Set<String>)resultItems.get("relateWords");
 		if (relateWords!=null&&relateWords.size()>0){
-			String relatepath = path + searchWord+"_relate.json";
+			String relatepath = listpath + searchWord+"_relate.json";
 			FileUtil.writeFile(relatepath, JSON.toJSONString(relateWords));		
 		}
 	}

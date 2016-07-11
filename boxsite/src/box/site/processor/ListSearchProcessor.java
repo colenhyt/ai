@@ -8,20 +8,20 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSON;
-
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import box.mgr.SiteManager;
-import cn.hd.util.StringUtil;
+
+import com.alibaba.fastjson.JSON;
+
 import es.download.flow.DownloadContext;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
 public class ListSearchProcessor implements PageProcessor{
 	protected Logger  log = Logger.getLogger(getClass());
+	private ProcessCallback callback;
 	private String startUrl;
 	private IItemFinder searchDoer;
 	String domainName;
@@ -34,7 +34,9 @@ public class ListSearchProcessor implements PageProcessor{
 	private int maxCount = -1;
 	private Site site;
 
-	public void init(String _siteKey,String _word,int _maxCount){
+	public void init(String _siteKey,String _word,int _maxCount,ProcessCallback _callback){
+		
+		callback = _callback;
 		
 		maxCount = _maxCount;
 		
@@ -172,6 +174,7 @@ public class ListSearchProcessor implements PageProcessor{
 		searchUrls.remove(page.getRequest().getUrl());
 		
 		page.putField("siteKey", siteKey);
+		page.putField("callback", callback);
 		page.putField("maxCount", maxCount);
 		page.putField("searchWord", keyWord);
 		page.putField("searchUrls", searchUrls);

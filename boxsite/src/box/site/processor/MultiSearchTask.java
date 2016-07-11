@@ -17,8 +17,8 @@ public class MultiSearchTask implements Runnable {
 	@Override
 	public void run() {
 		ListSearchProcessor p1 = new ListSearchProcessor();
-		p1.init(siteStr, searchWord, count);
-        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
+//		p1.init(siteStr, searchWord, count);
+//        Spider.create(p1).addPipeline(new SiteURLsPipeline()).run();
 	}
 
 }

@@ -117,7 +117,7 @@ public class SogouSiteFinder implements IItemFinder {
 //			contentGetter.fillSiteInfo(site);
 			sites.add(JSON.toJSONString(site));
 		}		
-		page.putField("items", sites);
+		page.putField("sites", sites);
 		
 		//2. find paging urls:
 		String regx = ".*s.*query=.*&page=[0-9]*.*";
