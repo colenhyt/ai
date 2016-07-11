@@ -14,9 +14,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
+import redis.clients.jedis.Jedis;
 import box.site.SitePageDealing;
 import box.site.db.SiteService;
 import box.site.model.Website;
@@ -27,8 +25,12 @@ import box.site.model.Websitewords;
 import box.site.model.Wordrelation;
 import cn.hd.util.FileUtil;
 import cn.hd.util.RedisClient;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
-import redis.clients.jedis.Jedis;
 
 public class SiteManager extends MgrBase{
 	
@@ -417,50 +419,73 @@ public class SiteManager extends MgrBase{
 		return JSON.toJSONString(list);
 	}
 	
+	public String searchWordGroupSites(String wordlist){
+		String key = String.valueOf(wordlist.hashCode());
+		SiteSearchManager.getInstance().addNewWords(key, wordlist, true);
+		return null;
+	}
+	
+	public String querySearchCount(String wordlist,String sitekey){
+		String key = String.valueOf(wordlist.hashCode());
+		int count = 0;
+		Set<String> words = StringHelper.getStrArray(wordlist, ",");
+		for (String word:words){
+			int c = SiteSearchManager.getInstance().querySiteCount(word, sitekey);
+			count += c;
+		}
+		
+		return String.valueOf(count);
+	}
+	
 	public String querySites2(String word,int page){
-		List<Website> list = new ArrayList<Website>();
-		word = word.replace(",", "%20");
 		Set<String>  siteset = new HashSet<String>();
-		String path = sitePath + "baidu/"+word+".sites";
-		String content = FileUtil.readFile(path);
-		if (content.trim().length()>0){
-			List<String> stritems = (List<String>)JSON.parse(content);
-			for (String str:stritems){
-				JSONObject obj = JSONObject.parseObject(str);
-				Website item = (Website)JSON.toJavaObject(obj, Website.class);
-				if (!siteset.contains(item.getUrl())){
-					siteset.add(item.getUrl());
-					list.add(item);
-				}
-			}
-		}
-		path = sitePath + "bing/"+word+".sites";
-		content = FileUtil.readFile(path);
-		if (content.trim().length()>0){
-			List<String> stritems = (List<String>)JSON.parse(content);
-			for (String str:stritems){
-				JSONObject obj = JSONObject.parseObject(str);
-				Website item = (Website)JSON.toJavaObject(obj, Website.class);
-				if (!siteset.contains(item.getUrl())){
-					siteset.add(item.getUrl());
-					list.add(item);
-				}
-			}
-		}
-		path = sitePath + "sogou/"+word+".sites";
-		content = FileUtil.readFile(path);
-		if (content.trim().length()>0){
-			List<String> stritems = (List<String>)JSON.parse(content);
-			for (String str:stritems){
-				JSONObject obj = JSONObject.parseObject(str);
-				Website item = (Website)JSON.toJavaObject(obj, Website.class);
-				if (!siteset.contains(item.getUrl())){
-					siteset.add(item.getUrl());
-					list.add(item);
-				}
-			}
-		}		
+		List<Website> list = queryWordSites(word,siteset);
 		return JSON.toJSONString(list);
+	}
+	
+	public String queryWordGroupSites(String key){
+		List<Website> sites = new ArrayList<Website>();
+		Set<String>  siteset = new HashSet<String>();
+		
+		String content = FileUtil.readFile(listPath+key+".wordgroup");
+		if (content.trim().length()>0){
+			List<String> wordList = (List<String>)JSON.parse(content);
+			for (String word:wordList){
+				List<Website> list = queryWordSites(word,siteset);
+				sites.addAll(list);
+			}
+		}
+		
+		return JSON.toJSONString(sites);
+	}
+	
+	
+	private List<Website> queryWordSites(String word,Set<String> siteset){
+		List<Website> list = new ArrayList<Website>();
+		
+		Set<String> searchEngines = Collections.synchronizedSet(new HashSet<String>());
+		searchEngines.add("baidu");
+		searchEngines.add("bing");
+		searchEngines.add("sogou");
+		
+		word = word.replace(",", "%20");
+		for (String sitekey:searchEngines){
+			String path = sitePath + sitekey +"/"+word+".sites";
+			String content = FileUtil.readFile(path);
+			if (content.trim().length()>0){
+				List<String> stritems = (List<String>)JSON.parse(content);
+				for (String str:stritems){
+					JSONObject obj = JSONObject.parseObject(str);
+					Website item = (Website)JSON.toJavaObject(obj, Website.class);
+					if (!siteset.contains(item.getUrl())){
+						siteset.add(item.getUrl());
+						list.add(item);
+					}
+				}
+			}			
+		}
+	
+		return list;
 	}
 	
 	public int deleteWordid(int wordid,int siteid){

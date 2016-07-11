@@ -18,19 +18,37 @@ import cl.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
 
+import es.util.string.StringHelper;
+
 public class SiteSearchManager extends MgrBase implements ProcessCallback{
 	Map<String,List<String>> wordsMap = Collections.synchronizedMap(new HashMap<String,List<String>>());
 	Queue<String> wordsQueue = new LinkedBlockingQueue<String>();
 	Set<String> serchEngines = Collections.synchronizedSet(new HashSet<String>());
 	Set<String> doneWordSet = Collections.synchronizedSet(new HashSet<String>());
 	Map<String,Spider> searchSpiders = Collections.synchronizedMap(new HashMap<String,Spider>());
+	private boolean isStart = false;
+	private boolean isInit = false;
+	private int MIN_SEARCH_SITE_COUNT = 5;		//最少查找数量
 
+	private static SiteSearchManager uniqueInstance = null;
+
+	public static SiteSearchManager getInstance() {
+		if (uniqueInstance == null) {
+			uniqueInstance = new SiteSearchManager();
+		}
+		return uniqueInstance;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
 	
 	public void init(){
+		if (isInit) return;
+		
+		isInit = true;
+		
 		List<File> wordFiles = FileUtil.getFiles(listPath);
 		for (File f:wordFiles){
 			int index = f.getName().lastIndexOf(".wordgroup");
@@ -48,14 +66,10 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 	}
 	
 	//两两拆分到wordsMap
-	public void addNewWords(String key,String wordlist){
-		Set<String> words =new HashSet<String>();
-		String[] strs = wordlist.split(",");
-		for (int i=0;i<strs.length;i++){
-			for (int j=i+1;j<strs.length;j++){
-				words.add(strs[i]+","+strs[j]);
-			}
-		}
+	public void addNewWords(String key,String wordlist,boolean startSearch){
+		init();
+		
+		Set<String> words = StringHelper.getStrArray(wordlist, ",");
 		
 		List<String> currstrs = wordsMap.get(key);
 		if (currstrs==null){
@@ -67,6 +81,10 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 			wordsQueue.addAll(words);
 		}
 		
+		if (!isStart&&startSearch){
+			isStart = true;
+			process();
+		}
 	}
 	
 	public void onSpiderDone(String sitekey){
@@ -74,6 +92,7 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 		if (spider!=null){
 			spider.stop();
 			spider.close();
+			log.warn("spider "+sitekey+" search done");
 			searchSpiders.remove(sitekey);
 		}
 		
@@ -108,9 +127,9 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 		}
 		
 		for (String engine:serchEngines){
-			System.out.println("spider :"+engine);
+			System.out.println("spider search start:"+engine);
 			ListSearchProcessor p1 = new ListSearchProcessor();
-			p1.init(engine, searchWord, 5,this);
+			p1.init(engine, searchWord, MIN_SEARCH_SITE_COUNT,this);
 			Spider spider = Spider.create(p1);
 			searchSpiders.put(engine, spider);
 			spider.runAsync();
