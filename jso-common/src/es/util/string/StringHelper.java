@@ -143,6 +143,17 @@ public class StringHelper {
 		return false;			
 	}
 	
+	public static Set<String> getStrArray(String wordlist,String split){
+		Set<String> words =new HashSet<String>();
+		String[] strs = wordlist.split(split);
+		for (int i=0;i<strs.length;i++){
+			for (int j=i+1;j<strs.length;j++){
+				words.add(strs[i]+","+strs[j]);
+			}
+		}
+		return words;
+	}
+	
 	public static boolean match1atLeast(String str,String[] pats){
 		for (int i=0;i<pats.length;i++){
 			if (Pattern.matches(pats[i],str)) 
