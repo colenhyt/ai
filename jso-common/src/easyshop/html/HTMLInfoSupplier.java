@@ -453,6 +453,26 @@ public class HTMLInfoSupplier {
 		return null;
 	}
 	
+	public String getContentByTagDna(TagDNA dna){
+		if (dna.getType()==TagDNA.TAG_TYPE_TAG_AND_PROP){
+			return this.getBlockByOneProp(dna.getTag(), dna.getPropName(), dna.getPropValue());
+		}else if (dna.getType()==TagDNA.TAG_TYPE_TAG){
+			return this.getBlock(dna.getTag());
+		}else if (dna.getType()==TagDNA.TAG_TYPE_TAG_AND_PROP_KEY){
+			return this.getBlockByOnePropAndKey(dna.getTag(), dna.getPropName(), dna.getPropValue(),dna.getKeyword());
+		}else if (dna.getType()==TagDNA.TAG_TYPE_TAG_KEY){
+			return this.getBlock(dna.getTag(), dna.getKeyword());
+		}else if (dna.getType()==TagDNA.TAG_TYPE_TAG1START_AND_TAG2END){
+			String[] strs = dna.getStartTagStr().split(",");
+			String[] strs2 = dna.getEndTagStr().split(",");
+			easyshop.html.jericho.Element e = getElementByOneProp(strs[0], strs[1],strs[2]);
+			easyshop.html.jericho.Element e2 = getElementByOneProp(strs2[0], strs2[1],strs2[2]);
+			if (e!=null&&e2!=null){
+				return this.strContent.substring(e.getBegin(),e2.getEnd());
+			}
+		}
+		return null;
+	}
 	public String getBlock(String tagName){
         List list = totalJerio.findAllStartTags(tagName);
         for (Iterator it=list.iterator();it.hasNext();) {
