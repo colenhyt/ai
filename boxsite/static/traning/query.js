@@ -4,7 +4,7 @@ var g_type = 0;
 
 var g_newscats = [
 "综合","业界","热点","政策","八卦","观点","访谈","专题","创新","产品","设计","运营","大公司",
-"股价","人物","公司","项目","移动","O2O","电商","大数据","风投","融资","创业","无效"
+"股价","人物","公司","项目","移动","O2O","电商","大数据","风投","融资","创业","管理","无效"
 ];
 
 function querySitekeys()
@@ -67,8 +67,8 @@ function queryUrlsRst(data)
 	  if (i%2==0)
 	    color = "white";
 	 content += "<tr style='font-size:23px;padding-top:5px;background:"+color+"'>"
-//	 content += "<td width=680><a href='news.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
-	 content += "<td width=680><a href='dnagetter.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
+	 content += "<td width=680><a href='news.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
+//	 content += "<td width=680><a href='dnagetter.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
 	 content += "<td><div style='font-size:21px'>"
 	 
 	 if (data[i].cat==0)
