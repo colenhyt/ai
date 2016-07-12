@@ -64,18 +64,15 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 		}else {
 			reTry++;
 			if (reTry>20){
-				log.warn("尝试次数 20,已无法找到新item");
-				System.exit(0);
+				log.warn("尝试次数 20,已无法找到新site");
+				exit(resultItems);
+				return;
 			}
 		}
 		
 		if (allitems.size()>maxCount&&maxCount>0){
 			log.warn("规定数量达到  "+maxCount);
-			ProcessCallback callback = (ProcessCallback)resultItems.get("callback");
-			if (callback!=null)
-				callback.onSpiderDone(siteKey);
-			else
-				Thread.currentThread().stop();
+			exit(resultItems);
 			return;
 		}
 		
@@ -101,4 +98,12 @@ public class ListSearchPipeline extends FilePersistentBase  implements Pipeline{
 		}
 	}
 
+	private void exit(ResultItems resultItems){
+		String siteKey = (String)resultItems.get("siteKey");
+		ProcessCallback callback = (ProcessCallback)resultItems.get("callback");
+		if (callback!=null)
+			callback.onSpiderDone(siteKey);
+		else
+			Thread.currentThread().stop();		
+	}
 }
