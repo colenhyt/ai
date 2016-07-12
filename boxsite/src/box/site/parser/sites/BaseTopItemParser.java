@@ -1,9 +1,13 @@
 package box.site.parser.sites;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
+import box.site.model.ContentDNA;
 import box.site.model.TopItem;
 import box.site.parser.ITopItemParser;
 import cn.hd.util.FileUtil;
@@ -29,6 +34,7 @@ public class BaseTopItemParser implements ITopItemParser {
 	protected HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	protected NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,String> siteTitleEndWord = new HashMap<String,String>();
+	private Map<String,ContentDNA> siteDNAMap = Collections.synchronizedMap(new HashMap<String,ContentDNA>());
     Random random = new Random();
 	
 	public BaseTopItemParser(){
@@ -68,6 +74,24 @@ public class BaseTopItemParser implements ITopItemParser {
 		siteTitleEndWord.put("techweb.com.cn", "_Techweb");
 		siteTitleEndWord.put("tmtpost.com", "-钛媒体官方网站");
 		siteTitleEndWord.put("ifeng.com", "_凤凰科技");
+		
+		List<File> files = FileUtil.getFiles("data/dna/");
+		try {		
+		for (File file:files){
+			String sitekey = file.getName().substring(0,file.getName().lastIndexOf(".dna"));
+//			String content= FileUtil.readFile(file);
+//			ContentDNA dna =(ContentDNA)JSON.parse(content);
+			FileInputStream fis = new FileInputStream(file);
+	           ObjectInputStream ois = new ObjectInputStream(fis);  
+	           ContentDNA  dna = (ContentDNA) ois.readObject(); 
+	           ois.close();			
+			siteDNAMap.put(sitekey, dna);
+		}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  		
+		
 	}
 	public long _formateTime(String yyyyMMddStr){
 		Date date = new Date();
@@ -144,19 +168,20 @@ public class BaseTopItemParser implements ITopItemParser {
 		if (url.equals("-1080988586")){
 			int t = 10;
 		}
-		infoSupp.init(pageContent);
-		List<String> contents = contentGetter.getHtmlContent(url,pageContent);
+		
+		String sitekey = URLStrHelper.getHost(url).toLowerCase();
+		List<String> contents = contentGetter.getHtmlContent(url,pageContent,siteDNAMap.get(sitekey));
 		if (contents==null||contents.size()<=0){
 			log.warn("could not get html content "+url.hashCode());
 			return null;
 		}
 		
+		infoSupp.init(pageContent);
 		String title = infoSupp.getTitleContent();
 		if (title==null){
 			log.debug("could not get page title:"+url.hashCode());
 			return null;
 		}
-		String sitekey = URLStrHelper.getHost(url).toLowerCase();
 		if (siteTitleEndWord.containsKey(sitekey)){
 			String endKey = siteTitleEndWord.get(sitekey);
 			if (title.indexOf(endKey)>0)
@@ -196,7 +221,7 @@ public class BaseTopItemParser implements ITopItemParser {
 	public static void main(String[] args){
 		BaseTopItemParser parser = new BaseTopItemParser();
 		List<String> urls = new ArrayList<String>();
-//		urls.add("http://tech.163.com/16/0621/01/BQ21OD8C00097U7R.html");
+		urls.add("http://tech.163.com/16/0626/09/BQFOIBRU00097U81.html");
 //		urls.add("http://www.cyzone.cn/a/20080729/39758.html");
 //		urls.add("http://www.huxiu.com/article/112978/1.html?f=member_article");
 //		urls.add("http://www.ifanr.com/118139");
@@ -212,7 +237,7 @@ public class BaseTopItemParser implements ITopItemParser {
 //		urls.add("http://app.techweb.com.cn/android/2015-12-28/2248034.shtml");
 //		urls.add("http://www.tmtpost.com/1451151.html");
 //		urls.add("http://www.geekpark.net/topics/215888");
-		urls.add("http://techcrunch.cn/2016/06/23/mrelief-is-helping-ensure-low-income-kids-get-access-to-meals-this-summer/");
+//		urls.add("http://techcrunch.cn/2016/06/23/mrelief-is-helping-ensure-low-income-kids-get-access-to-meals-this-summer/");
 		
 		Calendar c = Calendar.getInstance();
 		for (String url:urls){

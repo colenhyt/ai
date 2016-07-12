@@ -1,6 +1,10 @@
 package box.mgr;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +14,7 @@ import java.util.Set;
 import us.codecraft.webmagic.Spider;
 import box.site.model.ContentDNA;
 import box.site.processor.SiteUrlGetProcessor;
+import cc.mallet.classify.Classifier;
 import cn.hd.util.FileUtil;
 import cn.hd.util.PageDownloader;
 
@@ -43,12 +48,22 @@ public class SiteDNAManager extends MgrBase {
 	public void init(){
 		
 		List<File> files = FileUtil.getFiles(dnaPath);
+		try {
 		for (File file:files){
 			String content = FileUtil.readFile(file);
 			String sitekey = file.getName().substring(0,file.getName().lastIndexOf(".dna"));
-			ContentDNA dna = (ContentDNA)JSON.parseObject(content, ContentDNA.class);
+			
+			FileInputStream fis = new FileInputStream(file);
+           ObjectInputStream ois = new ObjectInputStream(fis);  
+           ContentDNA  dna = (ContentDNA) ois.readObject(); 
+           ois.close();
+			//ContentDNA dna = (ContentDNA)JSON.parseObject(content, ContentDNA.class);
 			siteContentDNAMap.put(sitekey, dna);
 		}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  			
 	}
 	
 	//获取某个网站某个数量站内链接，为parse dna提供数据
@@ -117,8 +132,10 @@ public class SiteDNAManager extends MgrBase {
 		ContentDNA dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
 			dna = new ContentDNA();
+			dna.setSitekey(sitekey);
 			siteContentDNAMap.put(sitekey, dna);
 		}
+		
 		dna.addTagDNA(tagDna);
 		toSave(dna);
 		
@@ -138,8 +155,20 @@ public class SiteDNAManager extends MgrBase {
 	
 	//落地保存:
 	public void toSave(ContentDNA dna){
-		String content = JSON.toJSONString(dna);
 		String sitekey = dna.getSitekey();
-		FileUtil.writeFile(dnaPath+sitekey+".dna", content);
+		String fileName = dnaPath+sitekey+".dna";
+		
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream
+				(new FileOutputStream (fileName));
+			oos.writeObject (dna);
+			oos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException ("Couldn't write classifier to filename "+
+					fileName);
+		}		
+//		String content = JSON.toJSONString(dna);
+		//FileUtil.writeFile(fileName, content);
 	}
 }

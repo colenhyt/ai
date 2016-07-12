@@ -9,11 +9,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import box.site.model.ContentDNA;
 import box.site.parser.sites.ImgGetterThread;
 import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.edu.hfut.dmic.htmlbot.contentextractor.ContentExtractor;
 import easyshop.html.HTMLInfoSupplier;
+import easyshop.html.TagDNA;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
@@ -54,7 +56,7 @@ public class PageContentGetter {
 		String url = "http://www.geekpark.net/topics/215888";
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
 		String content = FileUtil.readFile("data/pages/"+sitekey+"/"+url.hashCode()+".html");
-		List<String> strs = getter.getHtmlContent(url,content);
+		List<String> strs = getter.getHtmlContent(url,content,null);
 		ImgGetterThread task = new ImgGetterThread();
 		Thread t2=new Thread(task);
 		t2.start();
@@ -135,21 +137,27 @@ public class PageContentGetter {
 	}
 	
 	
-	public List<String> getHtmlContent(String url,String pageContent){
-		String sitekey = URLStrHelper.getHost(url).toLowerCase();
-		if (sitekeys.contains(sitekey)){
-			String htmlContext = getSpecSiteContent(sitekey,pageContent);
-			if (htmlContext!=null){
-				List<String> content = new ArrayList<String>();
-				htmlContext = htmlContext.trim();
-				DomPage domPage2 = HtmlBot.getDomPageByHtml(htmlContext);
-			    ContentExtractor contentExtractor = new ContentExtractor(domPage2);
-				content.add(contentExtractor.getText());
-				content.add(htmlContext);
-				return content;
-			}		
-			return null;
+	public List<String> getHtmlContent(String url,String pageContent,ContentDNA dna){
+		List<String> content = new ArrayList<String>();
+		String htmlContext = null;
+		if (dna!=null){
+			infoSupp.init(pageContent);
+			List<TagDNA> tagDnas = dna.getTagDNAs();
+			htmlContext = infoSupp.getContentByTagDnas(tagDnas);
+		}else {
+			String sitekey = URLStrHelper.getHost(url).toLowerCase();
+			if (sitekeys.contains(sitekey)){
+				htmlContext = getSpecSiteContent(sitekey,pageContent);
+			}
 		}
+		if (htmlContext!=null){
+			htmlContext = htmlContext.trim();
+			DomPage domPage2 = HtmlBot.getDomPageByHtml(htmlContext);
+		    ContentExtractor contentExtractor = new ContentExtractor(domPage2);
+			content.add(contentExtractor.getText());
+			content.add(htmlContext);
+			return content;
+		}		
 
 		
 		String textContent = PageContentGetter.getContent(pageContent);
@@ -202,7 +210,6 @@ public class PageContentGetter {
 		}
 		if (htmlContent!=null)
 			htmlContent = htmlContent.trim();
-		List<String> content = new ArrayList<String>();
 		content.add(textContent);
 		content.add(htmlContent);
 		return content;
