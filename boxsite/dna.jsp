@@ -9,11 +9,16 @@ SiteDNAManager.getInstance().init();
 
 String jsonstr = "";
 if (regstr==null&&tagdnastr==null)
- jsonstr = PageManager.getInstance().queryTestUrls(urlstr);
+ jsonstr = SiteDNAManager.getInstance().queryTestUrls(urlstr);
 else if (tagdnastr==null)
- jsonstr = PageManager.getInstance().testAndAddSiteItemUrlReg(urlstr,regstr);
-else
- jsonstr = PageManager.getInstance().testAndAddItemTagDNA(urlstr,tagdnastr);
+ jsonstr = SiteDNAManager.getInstance().addSiteItemUrlReg(urlstr,regstr);
+else {
+ int tagtype = -1;
+ String typestr = request.getParameter("tagtype");
+ if (typestr!=null)
+  tagtype = Integer.valueOf(typestr);
+ jsonstr = SiteDNAManager.getInstance().addItemTagDNA(urlstr,tagdnastr,tagtype);
+}
 
 response.getWriter().print(jsonstr);
 %>
