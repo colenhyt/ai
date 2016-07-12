@@ -1,6 +1,8 @@
 package easyshop.html;
 
-public class TagDNA {
+import java.io.Serializable;
+
+public class TagDNA implements Serializable{
 	public final static int TAG_TYPE_TAG = 0;			//<article />形态
 	public final static int TAG_TYPE_TAG_KEY = 1;		//<article>key</article>形态
 	public final static int TAG_TYPE_TAG_AND_PROP = 2;	//<div class=''>形态

@@ -453,6 +453,16 @@ public class HTMLInfoSupplier {
 		return null;
 	}
 	
+	public String getContentByTagDnas(List<TagDNA> dnas){
+		String context = null;
+		for (TagDNA dna:dnas){
+			context = this.getContentByTagDna(dna);
+			if (context!=null&&context.trim().length()>0)
+				break;
+		}
+		return context;
+	}
+	
 	public String getContentByTagDna(TagDNA dna){
 		if (dna.getType()==TagDNA.TAG_TYPE_TAG_AND_PROP){
 			return this.getBlockByOneProp(dna.getTag(), dna.getPropName(), dna.getPropValue());
