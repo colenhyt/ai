@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import easyshop.html.TagDNA;
+
 public class ContentDNA implements Serializable{
 	public Set<String> getItemUrlRegs() {
 		return itemUrlRegs;

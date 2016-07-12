@@ -9,19 +9,21 @@ import java.util.Set;
 
 import us.codecraft.webmagic.Spider;
 import box.site.model.ContentDNA;
-import box.site.model.TagDNA;
 import box.site.processor.SiteUrlGetProcessor;
 import cn.hd.util.FileUtil;
 import cn.hd.util.PageDownloader;
 
 import com.alibaba.fastjson.JSON;
 
+import easyshop.html.HTMLInfoSupplier;
+import easyshop.html.TagDNA;
 import es.util.url.URLStrHelper;
 
 public class SiteDNAManager extends MgrBase {
 	Map<String,ContentDNA> siteContentDNAMap = new HashMap<String,ContentDNA>();
 	private PageDownloader downloader = new PageDownloader();
 	private static SiteDNAManager uniqueInstance = null;
+	static HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 
 	public static SiteDNAManager getInstance() {
 		if (uniqueInstance == null) {
@@ -33,7 +35,7 @@ public class SiteDNAManager extends MgrBase {
 	public static void main(String[] args) {
 		SiteDNAManager.getInstance().init();
 		String url = "http://tech.163.com/16/0626/09/BQFOIBRU00097U81.html";
-		String dnastr = "{'tag':'div','propName':'class','propValue':'xxx'}";
+		String dnastr = "{'tag':'div','propName':'class','propValue':'post_text'}";
 		int tagtype = 2;
 		SiteDNAManager.getInstance().addItemTagDNA(url, dnastr, tagtype);
 	}
@@ -91,17 +93,12 @@ public class SiteDNAManager extends MgrBase {
 		return "true";
 	}
 
-	public boolean testDna(String content,TagDNA tagDna){
-		
-		return false;
-	}
-	
 	//增加item 内容页 tag特征
 	public String addItemTagDNA(String testUrl,String dnaStr,int tagType){
 		String sitekey = URLStrHelper.getHost(testUrl).toLowerCase();
 		String content = null;
 		content = FileUtil.readFile(pagesPath+sitekey+"/"+testUrl.hashCode()+".html");
-		if (content.trim().length()<0){
+		if (content==null||content.trim().length()<0){
 			content = downloader.download(testUrl);
 		}
 		
@@ -110,9 +107,12 @@ public class SiteDNAManager extends MgrBase {
 		
 		TagDNA tagDna = (TagDNA)JSON.parseObject(dnaStr,TagDNA.class);
 		tagDna.setType(tagType);
-		boolean test = testDna(content,tagDna);
-		if (!test)
+		infoSupp.init(content);
+		String context = infoSupp.getContentByTagDna(tagDna);		
+		if (context==null||context.trim().length()<=0){
+			log.warn("could not find context "+testUrl+",dna:"+dnaStr);
 			return null;
+		}
 		
 		ContentDNA dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
