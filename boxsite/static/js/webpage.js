@@ -54,8 +54,9 @@ Webpage.prototype.fillItems = function(sitelist)
   content += "<td><a href='"+url+"' target=blank>"+name+"</a></td>";
   content += "<td>alexa:"+alexa+"</td>";
   content += "<td>bdrank:"+bdrank+"</td>";
-  content += "<td><a href='javascript:g_webpage.deleteWord("+item.wordid+","+item.siteid+")'>删除该关键字关联</a></td>";
-  content += "<td><input name='myranks' type='input' size=10 value='"+myrank+"' onfocus='rankonfocus("+i+")'/></td>";
+//  content += "<td><a href='javascript:g_webpage.deleteWord("+item.wordid+","+item.siteid+")'>删除该关键字关联</a></td>";
+//  content += "<td><input name='myranks' type='input' size=10 value='"+myrank+"' onfocus='rankonfocus("+i+")'/></td>";
+  content += "<td><a href='dnagetter.html?url="+url+"' target=_blank>定义特征</a></td>";
   content += "<td><input name='siteids' type='hidden' value='"+item.siteid+"' /></td>";
   
   content += "</tr>"
@@ -68,7 +69,11 @@ Webpage.prototype.fillItems = function(sitelist)
 
 Webpage.prototype.load = function(){
  var word = getPar("word");
+ var wordlist = getPar("wordlist");
  var dataParam = "word="+word;
+ if (wordlist!=null)
+  dataParam = "wordlist="+wordlist;
+  
  this.queryData(dataParam);
  
  var tag = document.getElementById("searchword");

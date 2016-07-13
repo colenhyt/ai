@@ -47,6 +47,35 @@ Main.prototype.findWords = function()
 	}
 }
 
+
+Main.prototype.fillWordlist = function(wordlist)
+{
+ var content = "";
+
+ for (var i=0;i<wordlist.length;i++){
+  var item = wordlist[i];
+  content += "<a href='/boxsite/webpage.html?wordlist="+item+"'>"+item+"</a>,";
+  if (i%8==0)
+    content += "<br>";
+ }
+      var tag = document.getElementById("hotwordlist");
+	  tag.innerHTML=content;	
+}
+
+Main.prototype.findWordlist = function()
+{
+	var dataParam = "type=2";
+	try    {
+		$.ajax({type:"post",url:"/boxsite/data_get.jsp",data:dataParam,success:function(data){
+		var datas = cfeval(data);
+		g_main.fillWordlist(datas);
+		}});
+	}   catch  (e)   {
+	   return false;
+	}
+}
+
 var g_main = new Main();
 g_main.findWords();
+g_main.findWordlist();
 

@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import us.codecraft.webmagic.Spider;
+import box.site.processor.ListSearchPipeline;
 import box.site.processor.ListSearchProcessor;
 import box.site.processor.ProcessCallback;
 import cl.util.FileUtil;
@@ -28,7 +29,7 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 	Map<String,Spider> searchSpiders = Collections.synchronizedMap(new HashMap<String,Spider>());
 	private boolean isStart = false;
 	private boolean isInit = false;
-	private int MIN_SEARCH_SITE_COUNT = 5;		//最少查找数量
+	private int MIN_SEARCH_SITE_COUNT = 2;		//最少查找数量
 
 	private static SiteSearchManager uniqueInstance = null;
 
@@ -40,8 +41,8 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		SiteSearchManager.getInstance().init();
+		SiteSearchManager.getInstance().process();
 	}
 	
 	public void init(){
@@ -61,8 +62,8 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 		}
 		
 		serchEngines.add("baidu");
-		serchEngines.add("bing");
-		serchEngines.add("sogou");
+//		serchEngines.add("bing");
+//		serchEngines.add("sogou");
 	}
 	
 	//两两拆分到wordsMap
@@ -91,8 +92,8 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 		Spider spider = searchSpiders.get(sitekey);
 		if (spider!=null){
 			spider.stop();
-			spider.close();
-			log.warn("spider "+sitekey+" search done");
+			//spider.close();
+			log.warn("spider("+sitekey+") search done");
 			searchSpiders.remove(sitekey);
 		}
 		
@@ -131,6 +132,7 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 			ListSearchProcessor p1 = new ListSearchProcessor();
 			p1.init(engine, searchWord, MIN_SEARCH_SITE_COUNT,this);
 			Spider spider = Spider.create(p1);
+			spider.addPipeline(new ListSearchPipeline());
 			searchSpiders.put(engine, spider);
 			spider.runAsync();
 		}

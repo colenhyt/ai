@@ -60,7 +60,9 @@ public class SiteManager extends MgrBase{
 	}
 	
 	public static void main(String[] args){
-		SiteManager.getInstance().pushSiteTerms2DB();
+//		SiteManager.getInstance().pushSiteTerms2DB();
+		String str ="投资,公司,创业,用户,产品,平台,互联网";
+		SiteManager.getInstance().searchWordGroupSites(str);
 	}
 	
 	public SiteManager(){
@@ -351,29 +353,16 @@ public class SiteManager extends MgrBase{
 		return JSON.toJSONString(words);
 	}
 	
-	public String getHotwords2(){
-		Set<String> wordset = new HashSet<String>();
-		List<File> files = FileUtil.getFiles(sitePath+"baidu/");
-		for (File f:files){
-			String name = f.getName();
-			name = name.replace("%20", ",").replace(".sites", "");
-			wordset.add(name);
-		}
-		files = FileUtil.getFiles(sitePath+"bing/");
-		for (File f:files){
-			String name = f.getName();
-			name = name.replace("%20", ",").replace(".sites", "");
-			wordset.add(name);
-		}
-		files = FileUtil.getFiles(sitePath+"sogou/");
-		for (File f:files){
-			String name = f.getName();
-			name = name.replace("%20", ",").replace(".sites", "");
-			wordset.add(name);
-		}
-		
+	public String getHotwordlist(){
 		List<String> words = new ArrayList<String>();
-		words.addAll(wordset);
+			List<File> files = FileUtil.getFiles(listPath);
+			for (File f:files){
+				String name = f.getName();
+				int index = name.lastIndexOf(".wordgroup");
+				if (index<0) continue;
+				words.add(name.substring(0,index));
+			}
+		
 		return JSON.toJSONString(words);
 	}
 	
@@ -520,5 +509,26 @@ public class SiteManager extends MgrBase{
 		}
 		service.DBCommit();
 		log.warn("网站导入完成 ,增加数:"+addCount);
+	}
+
+	public String getHotwords2(){
+		Set<String> searchEngines = Collections.synchronizedSet(new HashSet<String>());
+		searchEngines.add("baidu");
+		searchEngines.add("bing");
+		searchEngines.add("sogou");
+		
+		Set<String> wordset = new HashSet<String>();
+		for (String sitekey:searchEngines){
+			List<File> files = FileUtil.getFiles(sitePath+sitekey+"/");
+			for (File f:files){
+				String name = f.getName();
+				name = name.replace("%20", ",").replace(".sites", "");
+				wordset.add(name);
+			}
+		}
+		
+		List<String> words = new ArrayList<String>();
+		words.addAll(wordset);
+		return JSON.toJSONString(words);
 	}
 }
