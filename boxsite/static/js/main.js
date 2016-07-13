@@ -76,6 +76,18 @@ Main.prototype.findWordlist = function()
 	}
 }
 
+Main.prototype.searchWordlist = function()
+{
+	var tag = document.getElementById("search_wordlist");
+	var dataParam = "type=3&wordlist="+tag.value;
+	try    {
+		$.ajax({type:"post",url:"/boxsite/data_get.jsp",data:dataParam,success:function(data){
+		}});
+	}   catch  (e)   {
+	   return false;
+	}
+}
+
 var g_main = new Main();
 g_main.findWords();
 g_main.findWordlist();

@@ -10,8 +10,12 @@ if (typestr!=null){
 String jsonstr = null;
 if (type==1)
  jsonstr = SiteManager.getInstance().getHotwords2();
-else 
+else if (type==2)
  jsonstr = SiteManager.getInstance().getHotwordlist();
+else {
+ String wordlist = request.getParameter("wordlist");
+ jsonstr = SiteManager.getInstance().searchWordGroupSites(wordlist);
+}
  
 response.getWriter().print(jsonstr);
 %>
