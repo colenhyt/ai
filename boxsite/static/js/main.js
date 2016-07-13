@@ -52,9 +52,10 @@ Main.prototype.fillWordlist = function(wordlist)
 {
  var content = "";
 
- for (var i=0;i<wordlist.length;i++){
-  var item = wordlist[i];
-  content += "<a href='/boxsite/webpage.html?wordlist="+item+"'>"+item+"</a>,";
+ for (var i=0;i<wordlist.length;i+=2){
+  var itemstr = wordlist[i];
+  var itemid = wordlist[i+1];
+  content += "<a href='/boxsite/webpage.html?wordlist="+itemid+"'>"+itemstr+"</a>;";
   if (i%8==0)
     content += "<br>";
  }

@@ -27,6 +27,7 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 	Set<String> serchEngines = Collections.synchronizedSet(new HashSet<String>());
 	Set<String> doneWordSet = Collections.synchronizedSet(new HashSet<String>());
 	Map<String,Spider> searchSpiders = Collections.synchronizedMap(new HashMap<String,Spider>());
+	Set<String> wordlistSet = Collections.synchronizedSet(new HashSet<String>());
 	private boolean isStart = false;
 	private boolean isInit = false;
 	private int MIN_SEARCH_SITE_COUNT = 2;		//最少查找数量
@@ -61,6 +62,12 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 			wordsQueue.addAll(wordList);
 		}
 		
+		String content = FileUtil.readFile(listPath+"sites.wordlist");
+		if (content.trim().length()>0){
+			List<String> words = (List<String>)JSON.parse(content);
+			wordlistSet.addAll(words);
+		}
+		
 		serchEngines.add("baidu");
 //		serchEngines.add("bing");
 //		serchEngines.add("sogou");
@@ -76,11 +83,15 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 		if (currstrs==null){
 			String pageContent = JSON.toJSONString(words);
 			FileUtil.writeFile(listPath+key+".wordgroup",pageContent);
+			
+			
 			currstrs = new ArrayList<String>();
 			currstrs.addAll(words);
 			wordsMap.put(key, currstrs);
 			wordsQueue.addAll(words);
 		}
+		wordlistSet.add(wordlist);
+		FileUtil.writeFile(listPath+"sites.wordlist", JSON.toJSONString(wordlistSet));
 		
 		if (!isStart&&startSearch){
 			isStart = true;

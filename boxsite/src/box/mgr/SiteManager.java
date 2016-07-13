@@ -355,13 +355,14 @@ public class SiteManager extends MgrBase{
 	
 	public String getHotwordlist(){
 		List<String> words = new ArrayList<String>();
-			List<File> files = FileUtil.getFiles(listPath);
-			for (File f:files){
-				String name = f.getName();
-				int index = name.lastIndexOf(".wordgroup");
-				if (index<0) continue;
-				words.add(name.substring(0,index));
+		String content = FileUtil.readFile(listPath+"sites.wordlist");
+		if (content.trim().length()>0){
+			List<String> wordlist = (List<String>)JSON.parse(content);
+			for (String str:wordlist){
+				words.add(str);
+				words.add(String.valueOf(str.hashCode()));
 			}
+		}
 		
 		return JSON.toJSONString(words);
 	}
@@ -410,7 +411,7 @@ public class SiteManager extends MgrBase{
 	
 	public String searchWordGroupSites(String wordlist){
 		String key = String.valueOf(wordlist.hashCode());
-		SiteSearchManager.getInstance().addNewWords(key, wordlist, true);
+		SiteSearchManager.getInstance().addNewWords(key, wordlist, false);
 		return null;
 	}
 	
