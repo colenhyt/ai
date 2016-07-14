@@ -185,10 +185,15 @@ newslist.prototype = {
   if (itemid==0)
   	dir = -1;
   	
+  	var userdata = g_user.userdata;
+  	var sessionid = -1;
+  	if (userdata!=null)
+  	  sessionid = userdata.sessionid;
+  	    	
 //    var ul= document.getElementById('thelist');
 //    ul.innerHTML = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
     
-	var dataParam = "cat="+catid+"&itemid="+itemid+"&dir="+dir;
+	var dataParam = "sessionid="+sessionid+"&cat="+catid+"&itemid="+itemid+"&dir="+dir;
 	try    {
 		$.ajax({type:"post",url:"newslist.jsp",data:dataParam,success:function(data){
 		var jsonstr = cfeval(data);
