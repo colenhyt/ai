@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import box.site.model.TopItem;
 import box.site.model.User;
+import box.site.model.UserView;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
 import box.site.parser.sites.ImgGetter;
@@ -36,6 +37,7 @@ public class PageManager extends MgrBase{
 	private Map<Integer,Map<Integer,Long>>  catItemIdTimeMap = Collections.synchronizedMap(new HashMap<Integer,Map<Integer,Long>>());
 	private Map<Integer,TopItem> viewItemsMap = Collections.synchronizedMap(new HashMap<Integer,TopItem>());
 	private Map<Long, User>   userMap = Collections.synchronizedMap(new HashMap<Long,User>());
+	private Map<Long, List<UserView>>   userViewsMap = Collections.synchronizedMap(new HashMap<Long,List<UserView>>());
 	private Set<String> loadedList = Collections.synchronizedSet(new HashSet<String>());
 	private boolean inited = false;
 	private BaseTopItemParser parser = new BaseTopItemParser();
@@ -118,6 +120,17 @@ public class PageManager extends MgrBase{
 			}
 		}
 		
+		List<File> files = FileUtil.getFiles(userPath);
+		for (File viewF:files){
+			int index = viewF.getName().lastIndexOf(".views");
+			if (index<0)continue;
+			long userid = Long.valueOf(viewF.getName().substring(0,index));
+			String content = FileUtil.readFile(viewF);
+			List<UserView> itemidlist = new ArrayList<UserView>();
+			StringUtil.json2List(content, itemidlist, UserView.class);
+			userViewsMap.put(userid, itemidlist);
+		}
+		
 		//load item time list:
 		timeSortedCatsItemIdMap = Collections.synchronizedMap(new HashMap<Integer,Map<Long,Integer>>());
 		List<File> catfs2 = FileUtil.getFolders(listPath);
@@ -188,9 +201,24 @@ public class PageManager extends MgrBase{
 		
 	}
 	
-	public String getNews(int itemid){
+	public String getNews(long clientSessionid,int itemid){
 		TopItem item = viewItemsMap.get(itemid);
 		if (item!=null){
+			//log view:
+			if (clientSessionid>0){
+				List<UserView>  viewlist = userViewsMap.get(clientSessionid);
+				if (viewlist==null){
+					viewlist = new ArrayList<UserView>();
+				}
+				UserView view = new UserView();
+				view.setUserid(clientSessionid);
+				view.setTime(System.currentTimeMillis());
+				view.setItemid(itemid);
+				viewlist.add(view);
+				userViewsMap.put(clientSessionid, viewlist);
+				
+				FileUtil.writeFile(userPath+clientSessionid+".views", JSON.toJSONString(viewlist));
+			}
 			return JSON.toJSONString(item);
 		}else {
 			
