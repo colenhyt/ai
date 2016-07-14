@@ -40,6 +40,12 @@ news.prototype = {
 	if (!itemid&&url)
 	  dataParam = "url="+url;
 	  
+	var sessionid = g_user.userdata.sessionid;
+	if (!sessionid)
+	  sessionid = -1;
+	  
+	dataParam += "&sessionid="+sessionid;
+	
 	try    {
 		$.ajax({type:"post",url:"news.jsp",data:dataParam,success:function(data){
 		var item = cfeval(data);
