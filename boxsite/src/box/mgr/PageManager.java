@@ -37,7 +37,8 @@ public class PageManager extends MgrBase{
 	private Map<Integer,Map<Integer,Long>>  catItemIdTimeMap = Collections.synchronizedMap(new HashMap<Integer,Map<Integer,Long>>());
 	private Map<Integer,TopItem> viewItemsMap = Collections.synchronizedMap(new HashMap<Integer,TopItem>());
 	private Map<Long, User>   userMap = Collections.synchronizedMap(new HashMap<Long,User>());
-	private Map<Long, List<UserView>>   userViewsMap = Collections.synchronizedMap(new HashMap<Long,List<UserView>>());
+//	private Map<Long, List<UserView>>   userViewsMap = Collections.synchronizedMap(new HashMap<Long,List<UserView>>());
+	private Map<String,Set<Integer>>   userViewCountMap = Collections.synchronizedMap(new HashMap<String,Set<Integer>>());
 	private Set<String> loadedList = Collections.synchronizedSet(new HashSet<String>());
 	private boolean inited = false;
 	private BaseTopItemParser parser = new BaseTopItemParser();
@@ -45,7 +46,7 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		PageManager.getInstance().getNews(-1, -1870262194);
+		PageManager.getInstance().getNews(10, 192492392);
 		//PageManager.getInstance().resetTrainingurls();
 		int itemid = 0;
 		int dir = 1;
@@ -125,11 +126,16 @@ public class PageManager extends MgrBase{
 		for (File viewF:files){
 			int index = viewF.getName().lastIndexOf(".views");
 			if (index<0)continue;
-			long userid = Long.valueOf(viewF.getName().substring(0,index));
+			String key = viewF.getName().substring(0,index);
+			//long userid = Long.valueOf(viewF.getName().substring(0,index));
 			String content = FileUtil.readFile(viewF);
-			List<UserView> itemidlist = new ArrayList<UserView>();
-			StringUtil.json2List(content, itemidlist, UserView.class);
-			userViewsMap.put(userid, itemidlist);
+//			List<UserView> itemidlist = new ArrayList<UserView>();
+//			StringUtil.json2List(content, itemidlist, UserView.class);
+//			userViewsMap.put(userid, itemidlist);
+			Set<Integer> itemids = new HashSet<Integer>();
+			List<Integer> itemidlist =(List<Integer>)JSON.parse(content);
+			itemids.addAll(itemidlist);
+			userViewCountMap.put(key,itemids);
 		}
 		
 		//load item time list:
@@ -208,30 +214,16 @@ public class PageManager extends MgrBase{
 			//log view:
 			if (clientSessionid>0)
 			{
-				List<UserView>  viewlist = userViewsMap.get(clientSessionid);
-				UserView view = null;
-				if (viewlist==null){
-					viewlist = new ArrayList<UserView>();
+				String key = clientSessionid+"_"+item.getCat();
+				Set<Integer>  viewset = userViewCountMap.get(key);
+				if (viewset==null){
+					viewset = new HashSet<Integer>();
+					userViewCountMap.put(key, viewset);
 				}
-				for (UserView v:viewlist){
-					if (v.getItemid()==itemid){
-						view = v;
-						
-					}
+				if (!viewset.contains(itemid)){
+					viewset.add(itemid);
+					FileUtil.writeFile(userPath+key+".views", JSON.toJSONString(viewset));
 				}
-				if (view==null){
-					view = new UserView();
-					view.setUserid(clientSessionid);
-					view.setTime(System.currentTimeMillis());
-					view.setItemid(itemid);
-					viewlist.add(view);
-				}else {
-					view.setTime(System.currentTimeMillis());
-					view.setScale(view.getScale()+1);
-				}
-				userViewsMap.put(clientSessionid, viewlist);
-				
-				FileUtil.writeFile(userPath+clientSessionid+".views", JSON.toJSONString(viewlist));
 			}
 			return JSON.toJSONString(item);
 		}else {
