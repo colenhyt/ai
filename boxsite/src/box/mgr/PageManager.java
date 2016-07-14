@@ -45,7 +45,8 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		PageManager.getInstance().resetTrainingurls();
+		PageManager.getInstance().getNews(-1, -1870262194);
+		//PageManager.getInstance().resetTrainingurls();
 		int itemid = 0;
 		int dir = 1;
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
@@ -205,16 +206,29 @@ public class PageManager extends MgrBase{
 		TopItem item = viewItemsMap.get(itemid);
 		if (item!=null){
 			//log view:
-			if (clientSessionid>0){
+			if (clientSessionid>0)
+			{
 				List<UserView>  viewlist = userViewsMap.get(clientSessionid);
+				UserView view = null;
 				if (viewlist==null){
 					viewlist = new ArrayList<UserView>();
 				}
-				UserView view = new UserView();
-				view.setUserid(clientSessionid);
-				view.setTime(System.currentTimeMillis());
-				view.setItemid(itemid);
-				viewlist.add(view);
+				for (UserView v:viewlist){
+					if (v.getItemid()==itemid){
+						view = v;
+						
+					}
+				}
+				if (view==null){
+					view = new UserView();
+					view.setUserid(clientSessionid);
+					view.setTime(System.currentTimeMillis());
+					view.setItemid(itemid);
+					viewlist.add(view);
+				}else {
+					view.setTime(System.currentTimeMillis());
+					view.setScale(view.getScale()+1);
+				}
 				userViewsMap.put(clientSessionid, viewlist);
 				
 				FileUtil.writeFile(userPath+clientSessionid+".views", JSON.toJSONString(viewlist));

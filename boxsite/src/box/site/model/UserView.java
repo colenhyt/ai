@@ -21,5 +21,12 @@ public class UserView {
 		this.userid = userid;
 	}
 	long time;
+	int scale = 1;
+	public int getScale() {
+		return scale;
+	}
+	public void setScale(int scale) {
+		this.scale = scale;
+	}
 	int itemid;
 }
