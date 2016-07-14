@@ -13,9 +13,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
+import box.news.NewsRecommender;
 import box.site.model.TopItem;
 import box.site.model.User;
-import box.site.model.UserView;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
 import box.site.parser.sites.ImgGetter;
@@ -38,8 +38,10 @@ public class PageManager extends MgrBase{
 	private Map<Integer,TopItem> viewItemsMap = Collections.synchronizedMap(new HashMap<Integer,TopItem>());
 	private Map<Long, User>   userMap = Collections.synchronizedMap(new HashMap<Long,User>());
 //	private Map<Long, List<UserView>>   userViewsMap = Collections.synchronizedMap(new HashMap<Long,List<UserView>>());
-	private Map<String,Set<Integer>>   userViewCountMap = Collections.synchronizedMap(new HashMap<String,Set<Integer>>());
+	private Map<String,Set<Integer>>   userViewsMap = Collections.synchronizedMap(new HashMap<String,Set<Integer>>());
+	public final static int NEWS_CAT_REC = 1000;		//推荐分类
 	private Set<String> loadedList = Collections.synchronizedSet(new HashSet<String>());
+	private NewsRecommender commendar = new NewsRecommender();
 	private boolean inited = false;
 	private BaseTopItemParser parser = new BaseTopItemParser();
 	private HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
@@ -122,20 +124,15 @@ public class PageManager extends MgrBase{
 			}
 		}
 		
-		List<File> files = FileUtil.getFiles(userPath);
+		List<File> files = FileUtil.getFiles(viewPath,"views");
 		for (File viewF:files){
 			int index = viewF.getName().lastIndexOf(".views");
-			if (index<0)continue;
 			String key = viewF.getName().substring(0,index);
-			//long userid = Long.valueOf(viewF.getName().substring(0,index));
 			String content = FileUtil.readFile(viewF);
-//			List<UserView> itemidlist = new ArrayList<UserView>();
-//			StringUtil.json2List(content, itemidlist, UserView.class);
-//			userViewsMap.put(userid, itemidlist);
 			Set<Integer> itemids = new HashSet<Integer>();
 			List<Integer> itemidlist =(List<Integer>)JSON.parse(content);
 			itemids.addAll(itemidlist);
-			userViewCountMap.put(key,itemids);
+			userViewsMap.put(key,itemids);
 		}
 		
 		//load item time list:
@@ -208,6 +205,23 @@ public class PageManager extends MgrBase{
 		
 	}
 	
+	//推荐新闻输出
+	public String getRecNewslist(long clientSessionid,int itemid){
+		String key = clientSessionid+"_"+NEWS_CAT_REC;
+		Set<Integer> currids = userViewsMap.get(key);
+		List<Integer> itemids = commendar.recNews(clientSessionid,currids);
+		if (currids==null||currids.size()<=0){
+			currids = new HashSet<Integer>();
+			userViewsMap.put(key, currids);
+		}
+		if (itemids.size()>0){
+			currids.addAll(itemids);
+			FileUtil.writeFile(viewPath+key+".views", JSON.toJSONString(currids));
+		}
+		
+		return JSON.toJSONString(itemids);
+	}
+	
 	public String getNews(long clientSessionid,int itemid){
 		TopItem item = viewItemsMap.get(itemid);
 		if (item!=null){
@@ -215,14 +229,14 @@ public class PageManager extends MgrBase{
 			if (clientSessionid>0)
 			{
 				String key = clientSessionid+"_"+item.getCat();
-				Set<Integer>  viewset = userViewCountMap.get(key);
+				Set<Integer>  viewset = userViewsMap.get(key);
 				if (viewset==null){
 					viewset = new HashSet<Integer>();
-					userViewCountMap.put(key, viewset);
+					userViewsMap.put(key, viewset);
 				}
 				if (!viewset.contains(itemid)){
 					viewset.add(itemid);
-					FileUtil.writeFile(userPath+key+".views", JSON.toJSONString(viewset));
+					FileUtil.writeFile(viewPath+key+".views", JSON.toJSONString(viewset));
 				}
 			}
 			return JSON.toJSONString(item);
@@ -331,11 +345,16 @@ public class PageManager extends MgrBase{
 		return retitems;
 	}
 	
-	public String getNewslist(int catid,int itemid,int dir,int count){
+	public String getNewslist(long clientSessionid,int catid,int itemid,int dir,int count){
 		if (catid<0)
 			return null;
 		
 		init();
+		
+		//推荐分类
+		if (catid==NEWS_CAT_REC){
+			return getRecNewslist(clientSessionid,itemid);
+		}
 		
 		List<TopItem> retitems = _findNewsitems(catid,itemid,dir,count);
 //		retitems = new ArrayList<TopItem>();
@@ -350,7 +369,6 @@ public class PageManager extends MgrBase{
 			item.setId(1);
 //			retitems.add(item);			
 		}
-
 		
 		String newstr = JSON.toJSONString(retitems);
 		String retstr = "{'cat':"+catid+",'news':"+newstr+",'itemid':"+itemid+",'dir':"+dir+"}";
