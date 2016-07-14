@@ -14,6 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import us.codecraft.webmagic.Spider;
 import box.site.processor.ListSearchPipeline;
 import box.site.processor.ListSearchProcessor;
+import box.site.processor.MultiSearchTask;
 import box.site.processor.ProcessCallback;
 import cl.util.FileUtil;
 
@@ -26,11 +27,11 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 	Queue<String> wordsQueue = new LinkedBlockingQueue<String>();
 	Set<String> serchEngines = Collections.synchronizedSet(new HashSet<String>());
 	Set<String> doneWordSet = Collections.synchronizedSet(new HashSet<String>());
-	Map<String,Spider> searchSpiders = Collections.synchronizedMap(new HashMap<String,Spider>());
+	Map<String,String> searchSpiders = Collections.synchronizedMap(new HashMap<String,String>());
 	Set<String> wordlistSet = Collections.synchronizedSet(new HashSet<String>());
 	private boolean isStart = false;
 	private boolean isInit = false;
-	private int MIN_SEARCH_SITE_COUNT = 2;		//最少查找数量
+	private int MIN_SEARCH_SITE_COUNT = 1;		//最少查找数量
 
 	private static SiteSearchManager uniqueInstance = null;
 
@@ -69,7 +70,7 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 		}
 		
 		serchEngines.add("baidu");
-//		serchEngines.add("bing");
+		serchEngines.add("bing");
 //		serchEngines.add("sogou");
 	}
 	
@@ -100,13 +101,8 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 	}
 	
 	public void onSpiderDone(String sitekey){
-		Spider spider = searchSpiders.get(sitekey);
-		if (spider!=null){
-			spider.stop();
-			//spider.close();
-			log.warn("spider("+sitekey+") search done");
-			searchSpiders.remove(sitekey);
-		}
+		searchSpiders.remove(sitekey);
+		log.warn("spider("+sitekey+") search done,currsize:"+searchSpiders.size());
 		
 		//next word search:
 		if (searchSpiders.size()<=0){
@@ -139,13 +135,11 @@ public class SiteSearchManager extends MgrBase implements ProcessCallback{
 		}
 		
 		for (String engine:serchEngines){
-			System.out.println("spider search start:"+engine);
-			ListSearchProcessor p1 = new ListSearchProcessor();
-			p1.init(engine, searchWord, MIN_SEARCH_SITE_COUNT,this);
-			Spider spider = Spider.create(p1);
-			spider.addPipeline(new ListSearchPipeline());
-			searchSpiders.put(engine, spider);
-			spider.runAsync();
+			searchSpiders.put(engine, engine);
+			System.out.println("spider("+engine+") search start for:"+searchWord);
+			MultiSearchTask task = new MultiSearchTask(engine,searchWord,MIN_SEARCH_SITE_COUNT);
+			Thread t2=new Thread(task);
+			t2.start();
 		}
 		
 	}

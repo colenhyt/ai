@@ -411,7 +411,7 @@ public class SiteManager extends MgrBase{
 	
 	public String searchWordGroupSites(String wordlist){
 		String key = String.valueOf(wordlist.hashCode());
-		SiteSearchManager.getInstance().addNewWords(key, wordlist, false);
+		SiteSearchManager.getInstance().addNewWords(key, wordlist, true);
 		return null;
 	}
 	

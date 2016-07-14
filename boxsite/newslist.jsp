@@ -7,7 +7,11 @@ String itemidstr = request.getParameter("itemid");
 String typestr = request.getParameter("type");
 String dirstr = request.getParameter("dir");
 String countstr = request.getParameter("count");
-
+String sessionstr = request.getParameter("sessionid");
+long sessionid = -1;
+if (sessionstr!=null)
+  sessionid = Long.valueOf(sessionstr);
+  
 int dir = 1;
 if (dirstr!=null)
  dir = Integer.valueOf(dirstr);
@@ -26,7 +30,7 @@ PageManager.getInstance().init();
 String jsonstr = "";
 int catid = Integer.valueOf(catstr);
 if (typestr==null)
-  jsonstr = PageManager.getInstance().getNewslist(catid,itemid,dir,count);
+  jsonstr = PageManager.getInstance().getNewslist(sessionid,catid,itemid,dir,count);
  else
   jsonstr = PageManager.getInstance().getNewsCount(catid,itemid,dir);
 
