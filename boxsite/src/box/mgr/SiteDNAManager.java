@@ -56,19 +56,12 @@ public class SiteDNAManager extends MgrBase {
 	public void init(){
 		
 		List<File> files = FileUtil.getFiles(dnaPath);
-		try {
 		for (File file:files){
-			String sitekey = file.getName();
-			FileInputStream fis = new FileInputStream(file);
-           ObjectInputStream ois = new ObjectInputStream(fis);  
-           ContentDNA  dna = (ContentDNA) ois.readObject(); 
-           ois.close();
+			String sitekey = file.getName().substring(0,file.getName().indexOf(".dna"));
+			String content = FileUtil.readFile(file); 
+           ContentDNA  dna = JSON.parseObject(content,ContentDNA.class);
            siteContentDNAMap.put(sitekey, dna);
 		}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  			
 	}
 	
 	//获取某个网站某个数量站内链接，为parse dna提供数据
@@ -103,7 +96,8 @@ public class SiteDNAManager extends MgrBase {
 		}
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
 		ContentDNA dna = siteContentDNAMap.get(sitekey);
-		if (dna==null){
+		if (dna==null)
+		{
 			dna = new ContentDNA();
 			dna.setSitekey(sitekey);
 			siteContentDNAMap.put(sitekey, dna);

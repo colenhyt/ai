@@ -1,12 +1,12 @@
 package box.site.getter;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -19,20 +19,17 @@ import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.edu.hfut.dmic.htmlbot.contentextractor.ContentExtractor;
 import cn.hd.util.FileUtil;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.TagDNA;
 import es.util.url.URLStrHelper;
 
 public class BasicSiteContentGetter implements ISiteContentGetter{
+	protected Logger  log = Logger.getLogger(getClass()); 
 	HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
-	private String itemHtmlContent,itemPureContent;
+	protected String itemHtmlContent,itemPureContent;
 	Set<String> sitekeys = new HashSet<String>();
-	private String sitekey = null;
-	private ContentDNA dna;
+	protected String sitekey = null;
+	protected ContentDNA dna;
 
 	public BasicSiteContentGetter(){
 		sitekeys.add("163.com");
@@ -70,16 +67,7 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 			Set<String> itemUrlRegs = dna.getItemUrlRegs();
 			//根据正则表达式找link,先下载当前页links:
 			for (String regUrl:itemUrlRegs){
-				List<String> links2 = null;
-				if (sitekey.indexOf("36kr.com")>=0){
-					int start = pageContent.indexOf("props=");
-					int end = pageContent.indexOf("</script>", start);
-					String listContent = pageContent.substring(start+"props=".length(),end);
-					JSONObject json = JSON.parseObject(listContent);
-					
-				}else
-					links2 = page.getHtml().links().regex(regUrl).all();		
-				
+				List<String> links2 = page.getHtml().links().regex(regUrl).all();		
 				links.addAll(links2);
 			}			
 		}else {
@@ -101,7 +89,7 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 	}
 
 	@Override
-	public boolean itemParse(Page page) {
+	public boolean parseItem(Page page) {
 		String url = page.getRequest().getUrl();
 		String pageContent = page.getRawText();
 		sitekey = URLStrHelper.getHost(url).toLowerCase();
@@ -126,9 +114,9 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 		}
 		if (htmlContext!=null){
 			htmlContext = htmlContext.trim();
+		    itemHtmlContent = htmlContext;
 			DomPage domPage2 = HtmlBot.getDomPageByHtml(htmlContext);
 		    ContentExtractor contentExtractor = new ContentExtractor(domPage2);
-		    itemHtmlContent = htmlContext;
 		    itemPureContent = contentExtractor.getText();
 			return true;
 		}		
@@ -251,14 +239,20 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 
 	public static void main(String[] args) {
 	
-		String content = FileUtil.readFile("data/pages/36kr.com/1322533216.html");
-		BasicSiteContentGetter getter = new BasicSiteContentGetter();
-		Page page = new Page();
-		page.setRawText(content);
-		Request req = new Request();
-		req.setUrl("http://36kr.com");
-		page.setRequest(req);
-		List<String> urls = getter.findItemUrls(page);
+		List<File> files = FileUtil.getFiles("data/pages/36kr.com");
+		ISiteContentGetter getter = SiteContentGetterFactory.createGetter("36kr.com");
+		for (File file:files){
+			String content = FileUtil.readFile(file);
+			Page page = new Page();
+			page.setRawText(content);
+			Request req = new Request();
+			req.setUrl("http://36kr.com/newsflashes");
+			page.setRequest(req);
+			boolean a = getter.parseItem(page);
+			System.out.println(getter.getItemHtmlContent());			
+		}
+
+		//List<String> urls = getter.findItemUrls(page);
 	}
 
 

@@ -154,11 +154,11 @@ public class SitePageGetProcessor implements PageProcessor{
 		boolean bb = url.matches(reg);
 		System.out.println(bb);
 		
-		url = "http://36kr.com/";
-		SitePageGetProcessor process = new SitePageGetProcessor(null,url,2);
+		url = "http://tech.163.com/";
+		SitePageGetProcessor process = new SitePageGetProcessor(null,url,20);
 		Spider.create(process).addPipeline(new SiteURLsPipeline()).run();
 		
-		String content = FileUtil.readFile("data/pages/36kr.com/1322533216.html");
+		//String content = FileUtil.readFile("data/pages/36kr.com/1322533216.html");
 		
 	}
 
@@ -203,22 +203,17 @@ public class SitePageGetProcessor implements PageProcessor{
 		}
 		
 		List<String> requests = new ArrayList<String>();
-		//根据正则表达式找link,先下载当前页links:
-		for (String regUrl:urlRegs){
-			List<String> links = _findRegUrls(sitekey,page,regUrl);
-			 Set<String> newurls = new HashSet<String>();
-			 for (String url:links){
-				 if (url.toLowerCase().indexOf(sitekey)<0) continue;
-				 if (doneDownloadurlSet.contains(url)) continue;
-				 if (allDownloadUrlSet.contains(url)) continue;
-				 newurls.add(url);
-			 }	
-			 allDownloadUrlSet.addAll(newurls);
-			 requests.addAll(newurls);
-			 queryCount += newurls.size();
-			 if (maxpagecount>0&&queryCount>=maxpagecount)
-				 break;
-		}
+		List<String> links = urlsGetter.findItemUrls(page);
+		 Set<String> newurls = new HashSet<String>();
+		 for (String url:links){
+			 if (url.toLowerCase().indexOf(sitekey)<0) continue;
+			 if (doneDownloadurlSet.contains(url)) continue;
+			 if (allDownloadUrlSet.contains(url)) continue;
+			 newurls.add(url);
+		 }	
+		 allDownloadUrlSet.addAll(newurls);
+		 requests.addAll(newurls);
+		 queryCount += newurls.size();
 		
 		if (notDownloadurlsSet.size()>0){
 			requests.addAll(notDownloadurlsSet);

@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.fastjson.JSON;
+
+import cl.util.FileUtil;
 import easyshop.html.TagDNA;
 
 public class ContentDNA implements Serializable{
@@ -46,32 +49,25 @@ public class ContentDNA implements Serializable{
 	}
 	
 	public static ContentDNA read(String sitekey,String basicPath){
-		ContentDNA  dna = null;
-		try {
-			String file = basicPath+"dna/"+sitekey+".dna";
-			FileInputStream fis = new FileInputStream(file);
-           ObjectInputStream ois = new ObjectInputStream(fis);  
-           dna = (ContentDNA) ois.readObject(); 
-           ois.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+		String file = basicPath+"dna/"+sitekey+".dna";
+		String content = FileUtil.readFile(file); 
+        ContentDNA  dna = JSON.parseObject(content,ContentDNA.class);
 		return dna;
 	}
 	
 	public void toSave(String basicPath) {
 		String fileName = basicPath+sitekey+".dna";
 		
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream
-				(new FileOutputStream (fileName));
-			oos.writeObject (this);
-			oos.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException ("Couldn't write classifier to filename "+
-					fileName);
-		}	
+		FileUtil.writeFile(fileName, JSON.toJSONString(this));
+//		try {
+//			ObjectOutputStream oos = new ObjectOutputStream
+//				(new FileOutputStream (fileName));
+//			oos.writeObject (this);
+//			oos.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new IllegalArgumentException ("Couldn't write classifier to filename "+
+//					fileName);
+//		}	
 	}	
 }

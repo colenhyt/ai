@@ -74,6 +74,7 @@ public class BaseTopItemParser implements ITopItemParser {
 		siteTitleEndWord.put("techweb.com.cn", "_Techweb");
 		siteTitleEndWord.put("tmtpost.com", "-钛媒体官方网站");
 		siteTitleEndWord.put("ifeng.com", "_凤凰科技");
+		siteTitleEndWord.put("36kr.com", "_36氪");
 		
 		List<File> files = FileUtil.getFiles("data/dna/");
 		try {		
