@@ -16,6 +16,7 @@ public class SiteContentGetterFactory {
 				fis = new FileInputStream(file);
 		        ObjectInputStream ois = new ObjectInputStream(fis);  
 		        getter = (ISiteContentGetter) ois.readObject(); 
+		        ois.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
