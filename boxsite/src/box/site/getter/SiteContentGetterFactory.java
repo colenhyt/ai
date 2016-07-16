@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
 
-public class SiteUrlsGetterFactory {
+public class SiteContentGetterFactory {
 
 	public static ISiteContentGetter findGetter(String sitekey,String basicFilePath){
 		File file = new File(basicFilePath+"dna/"+sitekey+".dna");

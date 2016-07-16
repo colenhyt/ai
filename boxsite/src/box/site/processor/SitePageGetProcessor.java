@@ -19,7 +19,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.PlainText;
 import box.site.getter.ISiteContentGetter;
-import box.site.getter.SiteUrlsGetterFactory;
+import box.site.getter.SiteContentGetterFactory;
 import box.site.model.WebUrl;
 import box.site.parser.sites.MultiPageTask;
 import cn.hd.util.FileUtil;
@@ -65,7 +65,7 @@ public class SitePageGetProcessor implements PageProcessor{
 		startUrl = _startUrl;
 		sitekey = URLStrHelper.getHost(startUrl).toLowerCase();
 		
-		SiteUrlsGetterFactory getterFac = new SiteUrlsGetterFactory();
+		SiteContentGetterFactory getterFac = new SiteContentGetterFactory();
 		
 		urlsGetter = getterFac.findGetter(sitekey,"data/");
 		

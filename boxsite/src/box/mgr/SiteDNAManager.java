@@ -14,7 +14,7 @@ import java.util.Set;
 import us.codecraft.webmagic.Spider;
 import box.site.getter.BasicSiteContentGetter;
 import box.site.getter.ISiteContentGetter;
-import box.site.getter.SiteUrlsGetterFactory;
+import box.site.getter.SiteContentGetterFactory;
 import box.site.model.ContentDNA;
 import box.site.processor.SiteUrlGetProcessor;
 import cn.hd.util.FileUtil;
@@ -104,7 +104,7 @@ public class SiteDNAManager extends MgrBase {
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
 		ISiteContentGetter dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
-			dna = SiteUrlsGetterFactory.findGetter(sitekey, rootPath);
+			dna = SiteContentGetterFactory.findGetter(sitekey, rootPath);
 			dna.setSitekey(sitekey);
 			siteContentDNAMap.put(sitekey, dna);
 		}	
@@ -136,7 +136,7 @@ public class SiteDNAManager extends MgrBase {
 		
 		ISiteContentGetter dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
-			dna = SiteUrlsGetterFactory.findGetter(sitekey, rootPath);
+			dna = SiteContentGetterFactory.findGetter(sitekey, rootPath);
 			dna.setSitekey(sitekey);
 			siteContentDNAMap.put(sitekey, dna);
 		}
