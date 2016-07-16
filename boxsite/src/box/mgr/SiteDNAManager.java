@@ -12,9 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 import us.codecraft.webmagic.Spider;
+import box.site.getter.BasicSiteContentGetter;
+import box.site.getter.ISiteContentGetter;
+import box.site.getter.SiteUrlsGetterFactory;
 import box.site.model.ContentDNA;
 import box.site.processor.SiteUrlGetProcessor;
-import cc.mallet.classify.Classifier;
 import cn.hd.util.FileUtil;
 import cn.hd.util.PageDownloader;
 
@@ -25,7 +27,7 @@ import easyshop.html.TagDNA;
 import es.util.url.URLStrHelper;
 
 public class SiteDNAManager extends MgrBase {
-	Map<String,ContentDNA> siteContentDNAMap = new HashMap<String,ContentDNA>();
+	Map<String,ISiteContentGetter> siteContentDNAMap = new HashMap<String,ISiteContentGetter>();
 	private PageDownloader downloader = new PageDownloader();
 	private static SiteDNAManager uniqueInstance = null;
 	static HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
@@ -39,26 +41,29 @@ public class SiteDNAManager extends MgrBase {
 	
 	public static void main(String[] args) {
 		SiteDNAManager.getInstance().init();
-		String url = "http://tech.163.com/16/0626/09/BQFOIBRU00097U81.html";
-		String dnastr = "{'tag':'div','propName':'class','propValue':'post_text'}";
-		int tagtype = 2;
-		SiteDNAManager.getInstance().addItemTagDNA(url, dnastr, tagtype);
+	
+		List<File> dnafiles = FileUtil.getFiles("dna/");
+		for (File file:dnafiles){
+			String content = FileUtil.readFile(file);
+			List<String> urls = (List<String>)JSON.parse(content);
+			String url = "http://www."+file.getName().substring(0,file.getName().indexOf(".json"));
+			SiteDNAManager.getInstance().addSiteItemUrlReg(url, urls.get(0));
+		}
+		
+		//SiteDNAManager.getInstance().addItemTagDNA(url, dnastr, tagtype);
 	}
 	
 	public void init(){
 		
-		List<File> files = FileUtil.getFiles(dnaPath);
+		List<File> files = FileUtil.getFiles(getterPath);
 		try {
 		for (File file:files){
-			String content = FileUtil.readFile(file);
-			String sitekey = file.getName().substring(0,file.getName().lastIndexOf(".dna"));
-			
+			String sitekey = file.getName();
 			FileInputStream fis = new FileInputStream(file);
            ObjectInputStream ois = new ObjectInputStream(fis);  
-           ContentDNA  dna = (ContentDNA) ois.readObject(); 
+           ISiteContentGetter  dna = (ISiteContentGetter) ois.readObject(); 
            ois.close();
-			//ContentDNA dna = (ContentDNA)JSON.parseObject(content, ContentDNA.class);
-			siteContentDNAMap.put(sitekey, dna);
+           siteContentDNAMap.put(sitekey, dna);
 		}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -97,14 +102,14 @@ public class SiteDNAManager extends MgrBase {
 			return null;
 		}
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
-		ContentDNA dna = siteContentDNAMap.get(sitekey);
+		ISiteContentGetter dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
-			dna = new ContentDNA();
+			dna = SiteUrlsGetterFactory.findGetter(sitekey, rootPath);
 			dna.setSitekey(sitekey);
 			siteContentDNAMap.put(sitekey, dna);
 		}	
 		dna.addItemUrlReg(regStr);
-		toSave(dna);
+		dna.toSave(getterPath);
 		return "true";
 	}
 
@@ -129,15 +134,15 @@ public class SiteDNAManager extends MgrBase {
 			return null;
 		}
 		
-		ContentDNA dna = siteContentDNAMap.get(sitekey);
+		ISiteContentGetter dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
-			dna = new ContentDNA();
+			dna = SiteUrlsGetterFactory.findGetter(sitekey, rootPath);
 			dna.setSitekey(sitekey);
 			siteContentDNAMap.put(sitekey, dna);
 		}
 		
 		dna.addTagDNA(tagDna);
-		toSave(dna);
+		dna.toSave(getterPath);
 		
 		return "true";
 	}
@@ -156,7 +161,7 @@ public class SiteDNAManager extends MgrBase {
 	//落地保存:
 	public void toSave(ContentDNA dna){
 		String sitekey = dna.getSitekey();
-		String fileName = dnaPath+sitekey+".dna";
+		String fileName = getterPath+sitekey+".dna";
 		
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream

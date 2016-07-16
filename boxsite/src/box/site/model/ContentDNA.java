@@ -30,9 +30,9 @@ public class ContentDNA implements Serializable{
 		this.tagDNAs.add(tagDNA);
 	}
 	
-	Set<String> itemUrlRegs = new HashSet<String>();
-	List<TagDNA> tagDNAs = new ArrayList<TagDNA>();
-	String sitekey;
+	protected Set<String> itemUrlRegs = new HashSet<String>();
+	protected List<TagDNA> tagDNAs = new ArrayList<TagDNA>();
+	protected String sitekey;
 	public String getSitekey() {
 		return sitekey;
 	}

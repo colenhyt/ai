@@ -18,7 +18,8 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.PlainText;
-import box.mgr.ProcessManager;
+import box.site.getter.ISiteContentGetter;
+import box.site.getter.SiteUrlsGetterFactory;
 import box.site.model.WebUrl;
 import box.site.parser.sites.MultiPageTask;
 import cn.hd.util.FileUtil;
@@ -26,6 +27,7 @@ import cn.hd.util.FileUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
@@ -36,18 +38,20 @@ public class SitePageGetProcessor implements PageProcessor{
 	private MultiPageTask mainThread;
 	int queryCount;
 	public String startUrl;
-	String domainName;
+	String sitekey;
 	private String pagesPath;
 	public Set<String> notDownloadurlsSet;
 	public Set<String> doneDownloadurlSet;
 	public Set<String> allDownloadUrlSet;
 	private Set<String> urlRegs = new HashSet<String>();
 	private Map<String,WebUrl> webitemMap = new HashMap<String,WebUrl>();
+	HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	String urlPath;
 	private Site site;
 	private int CURRENT_DOWNLOAD_COUNT = 50;		//当次下载数量限制:
 	private int currCount = 0;		//当前下载数量
 	int maxpagecount;
+	private ISiteContentGetter urlsGetter;
 	
 	public SitePageGetProcessor(MultiPageTask task,String _startUrl,int _maxCount){
 		mainThread = task;
@@ -59,23 +63,27 @@ public class SitePageGetProcessor implements PageProcessor{
 			CURRENT_DOWNLOAD_COUNT = _maxCount;
 		
 		startUrl = _startUrl;
-		domainName = URLStrHelper.getHost(startUrl).toLowerCase();
+		sitekey = URLStrHelper.getHost(startUrl).toLowerCase();
 		
-		pagesPath = "data/pages/"+domainName;
+		SiteUrlsGetterFactory getterFac = new SiteUrlsGetterFactory();
+		
+		urlsGetter = getterFac.findGetter(sitekey,"data/");
+		
+		pagesPath = "data/pages/"+sitekey;
 		
 			
 		List<File> files = FileUtil.getFiles(pagesPath);
 		queryCount = files.size();
 		
 		urlRegs = new HashSet<String>();
-		String regpath = "dna/" + domainName+".json";
+		String regpath = "dna/" + sitekey+".json";
 		String regc = FileUtil.readFile(regpath);
 		if (regc!=null&&regc.trim().length()>0){
 			List<String> regs = (List<String>)JSON.parse(regc);
 			urlRegs.addAll(regs);
 		}
 		
-		String weburlpath = "data/pages/" + domainName+"_urls.json";
+		String weburlpath = "data/pages/" + sitekey+"_urls.json";
 		String weburlc = FileUtil.readFile(weburlpath);
 		if (weburlc!=null&&weburlc.trim().length()>0){
 			Map<String,JSONObject> jsonstr = (Map<String,JSONObject>)JSON.parseObject(weburlc, HashMap.class);
@@ -145,6 +153,13 @@ public class SitePageGetProcessor implements PageProcessor{
 		String reg = "http://tech.163.com/[0-9]+/[0-9]+/[0-9]+/[a-zA-Z0-9]+.html";
 		boolean bb = url.matches(reg);
 		System.out.println(bb);
+		
+		url = "http://36kr.com/";
+		SitePageGetProcessor process = new SitePageGetProcessor(null,url,2);
+		Spider.create(process).addPipeline(new SiteURLsPipeline()).run();
+		
+		String content = FileUtil.readFile("data/pages/36kr.com/1322533216.html");
+		
 	}
 
 	@Override
@@ -170,7 +185,10 @@ public class SitePageGetProcessor implements PageProcessor{
 		
 		if (CURRENT_DOWNLOAD_COUNT>0&&currCount>=CURRENT_DOWNLOAD_COUNT){
 			log.warn("页面下载完成，当次下载页面数: "+currCount);
-			mainThread.finishCallback(domainName);
+			if (mainThread!=null)
+				mainThread.finishCallback(sitekey);
+			else
+				System.exit(0);
 			return;			
 		}
 		
@@ -179,7 +197,7 @@ public class SitePageGetProcessor implements PageProcessor{
 			queryCount = files.size();
 			if (queryCount>=maxpagecount){
 				log.warn("页面下载完成，总共有页面 "+queryCount);
-				mainThread.finishCallback(domainName);
+				mainThread.finishCallback(sitekey);
 				return;
 			}
 		}
@@ -187,10 +205,10 @@ public class SitePageGetProcessor implements PageProcessor{
 		List<String> requests = new ArrayList<String>();
 		//根据正则表达式找link,先下载当前页links:
 		for (String regUrl:urlRegs){
-			List<String> links = page.getHtml().links().regex(regUrl).all();
+			List<String> links = _findRegUrls(sitekey,page,regUrl);
 			 Set<String> newurls = new HashSet<String>();
 			 for (String url:links){
-				 if (url.toLowerCase().indexOf(domainName)<0) continue;
+				 if (url.toLowerCase().indexOf(sitekey)<0) continue;
 				 if (doneDownloadurlSet.contains(url)) continue;
 				 if (allDownloadUrlSet.contains(url)) continue;
 				 newurls.add(url);
@@ -235,8 +253,8 @@ public class SitePageGetProcessor implements PageProcessor{
 		page.putField("PageUrls", urls);
 		page.putField("PageContent", pageContent);
 		page.putField("Url", page.getRequest().getUrl());
-		page.putField("DomainName", domainName);
-		log.warn("get page "+urls.size()+",pageCount:"+queryCount);
+		page.putField("DomainName", sitekey);
+	//	log.warn("get page "+urls.size()+",pageCount:"+queryCount);
 		
 		try {
 			Thread.sleep(500);
@@ -247,6 +265,18 @@ public class SitePageGetProcessor implements PageProcessor{
 //		
 	}
 
+	private List<String> _findRegUrls(String _sitekey,Page page,String regUrl){
+		List<String> links = null;
+		if (_sitekey.indexOf("36kr.com")>0){
+			int start = page.getRawText().indexOf("props=");
+			int end = page.getRawText().indexOf("</script>", start);
+			String listContent = page.getRawText().substring(start+"props=".length(),end);
+			
+		}else
+			links = page.getHtml().links().regex(regUrl).all();
+		return links;
+	}
+	
 	public void parseFromPage(String urlstr,String charset){
 		String fileName = urlstr.hashCode()+".html";
 		String pagePath = pagesPath +"/"+fileName;	
@@ -275,7 +305,7 @@ public class SitePageGetProcessor implements PageProcessor{
 		Elements els = page.getHtml().getDocument().getElementsByTag("a");
 		for (Element e:els){
 			String link = e.attr("href");
-			if (link.toLowerCase().indexOf(domainName)<0) continue;
+			if (link.toLowerCase().indexOf(sitekey)<0) continue;
 			if (!isReg(link)) continue;
 			String text = e.text();
 			if (text==null||text.trim().length()<=0) continue;
