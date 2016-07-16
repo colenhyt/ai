@@ -1,5 +1,10 @@
 package box.site.model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,4 +44,34 @@ public class ContentDNA implements Serializable{
 	public void setSitekey(String sitekey) {
 		this.sitekey = sitekey;
 	}
+	
+	public static ContentDNA read(String sitekey,String basicPath){
+		ContentDNA  dna = null;
+		try {
+			String file = basicPath+"dna/"+sitekey+".dna";
+			FileInputStream fis = new FileInputStream(file);
+           ObjectInputStream ois = new ObjectInputStream(fis);  
+           dna = (ContentDNA) ois.readObject(); 
+           ois.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return dna;
+	}
+	
+	public void toSave(String basicPath) {
+		String fileName = basicPath+sitekey+".dna";
+		
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream
+				(new FileOutputStream (fileName));
+			oos.writeObject (this);
+			oos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException ("Couldn't write classifier to filename "+
+					fileName);
+		}	
+	}	
 }

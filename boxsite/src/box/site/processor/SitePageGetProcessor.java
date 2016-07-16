@@ -67,7 +67,7 @@ public class SitePageGetProcessor implements PageProcessor{
 		
 		SiteContentGetterFactory getterFac = new SiteContentGetterFactory();
 		
-		urlsGetter = getterFac.findGetter(sitekey,"data/");
+		urlsGetter = getterFac.createGetter(sitekey);
 		
 		pagesPath = "data/pages/"+sitekey;
 		

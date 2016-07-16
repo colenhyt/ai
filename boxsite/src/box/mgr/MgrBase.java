@@ -40,7 +40,7 @@ public class MgrBase extends java.util.TimerTask {
 	protected String viewPath = rootPath+"views/";
 	protected String dictPath = rootPath+"dict/";
 	protected String imgPath = rootPath+"pics/";
-	protected String getterPath = rootPath+"getter/";
+	protected String dnaPath = rootPath+"dna/";
 	protected String sitePath = rootPath+"sites/";
 
 	public MgrBase(){
@@ -69,7 +69,7 @@ public class MgrBase extends java.util.TimerTask {
 			listPath = rootPath+"list/";	
 			dictPath = rootPath+"dict/";
 			imgPath = rootPath+"pics/";
-			getterPath = rootPath+"getter/";
+			dnaPath = rootPath+"dna/";
 			sitePath = rootPath+"sites/";
 			viewPath = rootPath+"views/";
 		}

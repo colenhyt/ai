@@ -27,10 +27,12 @@ import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.TagDNA;
 import es.util.url.URLStrHelper;
 
-public class BasicSiteContentGetter extends ContentDNA implements ISiteContentGetter{
+public class BasicSiteContentGetter implements ISiteContentGetter{
 	HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	private String itemHtmlContent,itemPureContent;
 	Set<String> sitekeys = new HashSet<String>();
+	private String sitekey = null;
+	private ContentDNA dna;
 
 	public BasicSiteContentGetter(){
 		sitekeys.add("163.com");
@@ -58,22 +60,33 @@ public class BasicSiteContentGetter extends ContentDNA implements ISiteContentGe
 		String url = page.getRequest().getUrl();
 		String pageContent = page.getRawText();
 		sitekey = URLStrHelper.getHost(url).toLowerCase();
-		
 		List<String> links = new ArrayList<String>();
-		//根据正则表达式找link,先下载当前页links:
-		for (String regUrl:itemUrlRegs){
-			List<String> links2 = null;
-			if (sitekey.indexOf("36kr.com")>0){
-				int start = pageContent.indexOf("props=");
-				int end = pageContent.indexOf("</script>", start);
-				String listContent = pageContent.substring(start+"props=".length(),end);
-				JSONObject json = JSON.parseObject(listContent);
-				
-			}else
-				links2 = page.getHtml().links().regex(regUrl).all();		
-			
-			links.addAll(links2);
+		
+		if (dna==null){
+			dna = ContentDNA.read(sitekey, "data/");
 		}
+		
+		if (dna!=null){
+			Set<String> itemUrlRegs = dna.getItemUrlRegs();
+			//根据正则表达式找link,先下载当前页links:
+			for (String regUrl:itemUrlRegs){
+				List<String> links2 = null;
+				if (sitekey.indexOf("36kr.com")>=0){
+					int start = pageContent.indexOf("props=");
+					int end = pageContent.indexOf("</script>", start);
+					String listContent = pageContent.substring(start+"props=".length(),end);
+					JSONObject json = JSON.parseObject(listContent);
+					
+				}else
+					links2 = page.getHtml().links().regex(regUrl).all();		
+				
+				links.addAll(links2);
+			}			
+		}else {
+			List<String> links2 = page.getHtml().links().all();		
+			links.addAll(links2);			
+		}
+
 		return links;
 	}
 
@@ -93,8 +106,15 @@ public class BasicSiteContentGetter extends ContentDNA implements ISiteContentGe
 		String pageContent = page.getRawText();
 		sitekey = URLStrHelper.getHost(url).toLowerCase();
 		
+		if (dna==null){
+			dna = ContentDNA.read(sitekey, "data/");
+		}
+		
+		if (dna==null)
+			return false;
+		
 		String htmlContext = null;
-		List<TagDNA> tagDnas = getTagDNAs();
+		List<TagDNA> tagDnas = dna.getTagDNAs();
 		if (tagDnas!=null&&tagDnas.size()>0){
 			infoSupp.init(pageContent);
 			htmlContext = infoSupp.getContentByTagDnas(tagDnas);
@@ -170,21 +190,7 @@ public class BasicSiteContentGetter extends ContentDNA implements ISiteContentGe
 		return true;
 	}
 
-	@Override
-	public void toSave(String basicPath) {
-		String fileName = basicPath+sitekey;
-		
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream
-				(new FileOutputStream (fileName));
-			oos.writeObject (this);
-			oos.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException ("Couldn't write classifier to filename "+
-					fileName);
-		}	
-	}
+
 
 	private String getSpecSiteContent(String content){
 		infoSupp.init(content);

@@ -27,7 +27,7 @@ import easyshop.html.TagDNA;
 import es.util.url.URLStrHelper;
 
 public class SiteDNAManager extends MgrBase {
-	Map<String,ISiteContentGetter> siteContentDNAMap = new HashMap<String,ISiteContentGetter>();
+	Map<String,ContentDNA> siteContentDNAMap = new HashMap<String,ContentDNA>();
 	private PageDownloader downloader = new PageDownloader();
 	private static SiteDNAManager uniqueInstance = null;
 	static HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
@@ -55,13 +55,13 @@ public class SiteDNAManager extends MgrBase {
 	
 	public void init(){
 		
-		List<File> files = FileUtil.getFiles(getterPath);
+		List<File> files = FileUtil.getFiles(dnaPath);
 		try {
 		for (File file:files){
 			String sitekey = file.getName();
 			FileInputStream fis = new FileInputStream(file);
            ObjectInputStream ois = new ObjectInputStream(fis);  
-           ISiteContentGetter  dna = (ISiteContentGetter) ois.readObject(); 
+           ContentDNA  dna = (ContentDNA) ois.readObject(); 
            ois.close();
            siteContentDNAMap.put(sitekey, dna);
 		}
@@ -102,14 +102,14 @@ public class SiteDNAManager extends MgrBase {
 			return null;
 		}
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
-		ISiteContentGetter dna = siteContentDNAMap.get(sitekey);
+		ContentDNA dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
-			dna = SiteContentGetterFactory.findGetter(sitekey, rootPath);
+			dna = new ContentDNA();
 			dna.setSitekey(sitekey);
 			siteContentDNAMap.put(sitekey, dna);
 		}	
 		dna.addItemUrlReg(regStr);
-		dna.toSave(getterPath);
+		dna.toSave(dnaPath);
 		return "true";
 	}
 
@@ -134,15 +134,15 @@ public class SiteDNAManager extends MgrBase {
 			return null;
 		}
 		
-		ISiteContentGetter dna = siteContentDNAMap.get(sitekey);
+		ContentDNA dna = siteContentDNAMap.get(sitekey);
 		if (dna==null){
-			dna = SiteContentGetterFactory.findGetter(sitekey, rootPath);
+			dna = new ContentDNA();
 			dna.setSitekey(sitekey);
 			siteContentDNAMap.put(sitekey, dna);
 		}
 		
 		dna.addTagDNA(tagDna);
-		dna.toSave(getterPath);
+		dna.toSave(dnaPath);
 		
 		return "true";
 	}
@@ -156,24 +156,5 @@ public class SiteDNAManager extends MgrBase {
 		
 		
 		return null;
-	}
-	
-	//落地保存:
-	public void toSave(ContentDNA dna){
-		String sitekey = dna.getSitekey();
-		String fileName = getterPath+sitekey+".dna";
-		
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream
-				(new FileOutputStream (fileName));
-			oos.writeObject (dna);
-			oos.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException ("Couldn't write classifier to filename "+
-					fileName);
-		}		
-//		String content = JSON.toJSONString(dna);
-		//FileUtil.writeFile(fileName, content);
 	}
 }

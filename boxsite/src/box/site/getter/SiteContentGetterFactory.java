@@ -5,31 +5,32 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
 
-public class SiteContentGetterFactory {
+import org.apache.log4j.Logger;
 
-	public static ISiteContentGetter findGetter(String sitekey,String basicFilePath){
-		File file = new File(basicFilePath+"dna/"+sitekey+".dna");
+public class SiteContentGetterFactory {
+	protected Logger  log = Logger.getLogger(getClass());
+
+	public static ISiteContentGetter createGetter(String sitekey){
 		ISiteContentGetter getter = null;
-		if (file.exists()){
-			FileInputStream fis;
-			try {
-				fis = new FileInputStream(file);
-		        ObjectInputStream ois = new ObjectInputStream(fis);  
-		        getter = (ISiteContentGetter) ois.readObject(); 
-		        ois.close();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		sitekey = sitekey.replace(".", "_");
+		try {
+			Class clazz = Class.forName("box.site.getter."+sitekey+"Getter");
+			if (clazz!=null){
+				//动态创建对象
+				Object obj=clazz.newInstance();
+				getter = (ISiteContentGetter)obj;
+			}else {
+				getter = new BasicSiteContentGetter();
 			}
-		}else {
-			getter = new BasicSiteContentGetter();
-			getter.setSitekey(sitekey);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return getter;
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		SiteContentGetterFactory.createGetter("BasicSiteContent");
 
 	}
 
