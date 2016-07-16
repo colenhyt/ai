@@ -13,6 +13,6 @@ public interface ISiteContentGetter {
 	
 	public String getItemPureContent();
 	
-	public boolean parseItem(Page page);
+	public boolean parseItem(String url,String pageContent);
 	
 }

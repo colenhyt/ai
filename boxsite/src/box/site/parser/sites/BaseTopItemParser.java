@@ -1,8 +1,6 @@
 package box.site.parser.sites;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +16,8 @@ import org.apache.log4j.Logger;
 
 import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
-import box.site.model.ContentDNA;
+import box.site.getter.ISiteContentGetter;
+import box.site.getter.SiteContentGetterFactory;
 import box.site.model.TopItem;
 import box.site.parser.ITopItemParser;
 import cn.hd.util.FileUtil;
@@ -34,7 +33,7 @@ public class BaseTopItemParser implements ITopItemParser {
 	protected HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	protected NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,String> siteTitleEndWord = new HashMap<String,String>();
-	private Map<String,ContentDNA> siteDNAMap = Collections.synchronizedMap(new HashMap<String,ContentDNA>());
+	private Map<String,ISiteContentGetter> siteDNAMap = Collections.synchronizedMap(new HashMap<String,ISiteContentGetter>());
     Random random = new Random();
 	
 	public BaseTopItemParser(){
@@ -80,13 +79,8 @@ public class BaseTopItemParser implements ITopItemParser {
 		try {		
 		for (File file:files){
 			String sitekey = file.getName().substring(0,file.getName().lastIndexOf(".dna"));
-//			String content= FileUtil.readFile(file);
-//			ContentDNA dna =(ContentDNA)JSON.parse(content);
-			FileInputStream fis = new FileInputStream(file);
-	           ObjectInputStream ois = new ObjectInputStream(fis);  
-	           ContentDNA  dna = (ContentDNA) ois.readObject(); 
-	           ois.close();			
-			siteDNAMap.put(sitekey, dna);
+			ISiteContentGetter getter = SiteContentGetterFactory.createGetter(sitekey);
+			siteDNAMap.put(sitekey, getter);
 		}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -166,13 +160,11 @@ public class BaseTopItemParser implements ITopItemParser {
 	
 	@Override
 	public TopItem parse(String url,String pageContent) {
-		if (url.equals("-1080988586")){
-			int t = 10;
-		}
-		
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
-		List<String> contents = contentGetter.getHtmlContent(url,pageContent,siteDNAMap.get(sitekey));
-		if (contents==null||contents.size()<=0){
+		
+		ISiteContentGetter getter = siteDNAMap.get(sitekey);
+		boolean parsed = getter.parseItem(url,pageContent);
+		if (!parsed){
 			log.warn("could not get html content "+url.hashCode());
 			return null;
 		}
@@ -194,8 +186,8 @@ public class BaseTopItemParser implements ITopItemParser {
 		titem.setSitekey(sitekey);
 		titem.setUrl(url);
 		titem.setId(url.hashCode());
-		titem.setContent(contents.get(0));
-		titem.setHtmlContent(filterContext(sitekey,contents.get(1)));
+		titem.setContent(getter.getItemPureContent());
+		titem.setHtmlContent(filterContext(sitekey,getter.getItemHtmlContent()));
 		List<Integer> catids = new ArrayList<Integer>();
 //		catids.add(1);
 //		catids.add(11);

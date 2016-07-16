@@ -89,9 +89,7 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 	}
 
 	@Override
-	public boolean parseItem(Page page) {
-		String url = page.getRequest().getUrl();
-		String pageContent = page.getRawText();
+	public boolean parseItem(String url,String pageContent) {
 		sitekey = URLStrHelper.getHost(url).toLowerCase();
 		
 		if (dna==null){
@@ -243,12 +241,7 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 		ISiteContentGetter getter = SiteContentGetterFactory.createGetter("36kr.com");
 		for (File file:files){
 			String content = FileUtil.readFile(file);
-			Page page = new Page();
-			page.setRawText(content);
-			Request req = new Request();
-			req.setUrl("http://36kr.com/newsflashes");
-			page.setRequest(req);
-			boolean a = getter.parseItem(page);
+			boolean a = getter.parseItem("http://36kr.com/newsflashes",content);
 			System.out.println(getter.getItemHtmlContent());			
 		}
 

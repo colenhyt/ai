@@ -119,7 +119,7 @@ public class SiteDNAManager extends MgrBase {
 		if (content==null)
 			return null;
 		
-		TagDNA tagDna = (TagDNA)JSON.parseObject(dnaStr,TagDNA.class);
+		TagDNA tagDna = JSON.parseObject(dnaStr,TagDNA.class);
 		tagDna.setType(tagType);
 		infoSupp.init(content);
 		String context = infoSupp.getContentByTagDna(tagDna);		

@@ -49,9 +49,7 @@ public class cfkr_comGetter extends BasicSiteContentGetter {
 	}
 
 	@Override
-	public boolean parseItem(Page page) {
-		String url = page.getRequest().getUrl();
-		String pageContent = page.getRawText();
+	public boolean parseItem(String url,String pageContent) {
 		sitekey = URLStrHelper.getHost(url).toLowerCase();
 		
 		String startKey = "props=";
