@@ -43,7 +43,7 @@ public class PageManager extends MgrBase{
 	private Set<String> loadedList = Collections.synchronizedSet(new HashSet<String>());
 	private NewsRecommender commendar = new NewsRecommender();
 	private boolean inited = false;
-	private BaseTopItemParser parser = new BaseTopItemParser();
+	private BaseTopItemParser parser;
 	private HTMLInfoSupplier htmlHelper = new HTMLInfoSupplier();
 
 	public static void main(String[] args) {
@@ -90,6 +90,8 @@ public class PageManager extends MgrBase{
 		inited = true;
 		
 		sitekeys = new HashSet<String>();
+		
+		parser = new BaseTopItemParser(dnaPath);
 		
 		String userContent = FileUtil.readFile(userFilePath);
 		if (userContent.trim().length()>0){

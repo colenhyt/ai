@@ -14,7 +14,6 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
 import box.site.getter.ISiteContentGetter;
 import box.site.getter.SiteContentGetterFactory;
@@ -29,14 +28,13 @@ import es.util.url.URLStrHelper;
 
 public class BaseTopItemParser implements ITopItemParser {
 	protected Logger  log = Logger.getLogger(getClass());
-	protected PageContentGetter contentGetter = new PageContentGetter();
 	protected HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	protected NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,String> siteTitleEndWord = new HashMap<String,String>();
 	private Map<String,ISiteContentGetter> siteDNAMap = Collections.synchronizedMap(new HashMap<String,ISiteContentGetter>());
     Random random = new Random();
 	
-	public BaseTopItemParser(){
+	public BaseTopItemParser(String dnaPath){
 		//"_网易科技"
 		//cyzone: - 
 		//geekpark:| 极客公园
@@ -75,11 +73,11 @@ public class BaseTopItemParser implements ITopItemParser {
 		siteTitleEndWord.put("ifeng.com", "_凤凰科技");
 		siteTitleEndWord.put("36kr.com", "_36氪");
 		
-		List<File> files = FileUtil.getFiles("data/dna/");
+		List<File> files = FileUtil.getFiles(dnaPath);
 		try {		
 		for (File file:files){
 			String sitekey = file.getName().substring(0,file.getName().lastIndexOf(".dna"));
-			ISiteContentGetter getter = SiteContentGetterFactory.createGetter(sitekey);
+			ISiteContentGetter getter = SiteContentGetterFactory.createGetter(sitekey,dnaPath);
 			siteDNAMap.put(sitekey, getter);
 		}
 		} catch (Exception e) {
@@ -212,7 +210,7 @@ public class BaseTopItemParser implements ITopItemParser {
 	}
 
 	public static void main(String[] args){
-		BaseTopItemParser parser = new BaseTopItemParser();
+		BaseTopItemParser parser = new BaseTopItemParser("data/");
 		List<String> urls = new ArrayList<String>();
 		urls.add("http://tech.163.com/16/0626/09/BQFOIBRU00097U81.html");
 //		urls.add("http://www.cyzone.cn/a/20080729/39758.html");

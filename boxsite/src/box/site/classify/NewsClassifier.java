@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import box.site.PageContentGetter;
 import box.site.model.TopItem;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
@@ -53,7 +52,6 @@ public class NewsClassifier {
 	private Set<String>  comSet = new HashSet<String>();
 	private Map<Integer,Classifier>	classifyMap = new HashMap<Integer,Classifier>();
 	JiebaSegmenter segmenter = new JiebaSegmenter();
-	private PageContentGetter contentGetter = new PageContentGetter();
 	private Classifier classifier;
 	
 	public NewsClassifier(){

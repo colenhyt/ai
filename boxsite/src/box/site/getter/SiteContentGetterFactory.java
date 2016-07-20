@@ -27,6 +27,10 @@ public class SiteContentGetterFactory {
 	}
 	
 	public static ISiteContentGetter createGetter(String sitekey){
+		return SiteContentGetterFactory.createGetter(sitekey,null);
+	}
+	
+	public static ISiteContentGetter createGetter(String sitekey,String dnaPath){
 		ISiteContentGetter getter = null;
 		sitekey = convert(sitekey);
 		try {
@@ -37,10 +41,12 @@ public class SiteContentGetterFactory {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("could not find class for "+sitekey);
 		}
-		if (getter==null)
-			getter = new BasicSiteContentGetter();
+		if (getter==null){
+			getter = new BasicSiteContentGetter(dnaPath);
+		}
 		return getter;
 	}
 	

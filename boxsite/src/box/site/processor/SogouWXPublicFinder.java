@@ -51,7 +51,7 @@ public class SogouWXPublicFinder implements IItemFinder {
 		for (Wxpublic wp:wps){
 			items.add(JSON.toJSONString(wp));
 		}
-		page.putField("items", items);
+		page.putField("sites", items);
 		
 		String param = URLStrHelper.getParamValue(page.getRequest().getUrl(), "query");
 		//2. find paging urls:

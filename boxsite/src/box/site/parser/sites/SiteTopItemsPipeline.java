@@ -24,13 +24,14 @@ import us.codecraft.webmagic.utils.FilePersistentBase;
 
 public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipeline {
     private Logger log = LoggerFactory.getLogger(getClass());
-    private BaseTopItemParser parser = new BaseTopItemParser();
+    private BaseTopItemParser parser;
 	ImgGetterThread imgGetter = new ImgGetterThread();
 	private ProcessManager processMgr;
     private String rootPath = null;
 
 	public SiteTopItemsPipeline(){
 		rootPath = PageManager.getInstance().getRootPath();
+		parser = new BaseTopItemParser(PageManager.getInstance().dnaPath);
 		Thread thread = new Thread(imgGetter);
 		processMgr = ProcessManager.getInstance();
 		processMgr.init();

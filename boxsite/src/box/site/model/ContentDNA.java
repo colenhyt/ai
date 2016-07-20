@@ -48,8 +48,8 @@ public class ContentDNA implements Serializable{
 		this.sitekey = sitekey;
 	}
 	
-	public static ContentDNA read(String sitekey,String basicPath){
-		String file = basicPath+"dna/"+sitekey+".dna";
+	public static ContentDNA read(String sitekey,String dnaPath){
+		String file = dnaPath+sitekey+".dna";
 		String content = FileUtil.readFile(file); 
         ContentDNA  dna = JSON.parseObject(content,ContentDNA.class);
 		return dna;

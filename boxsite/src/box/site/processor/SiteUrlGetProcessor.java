@@ -34,7 +34,9 @@ import es.webref.model.PageRef;
 public class SiteUrlGetProcessor implements PageProcessor{
 	protected Logger  log = Logger.getLogger(getClass());
 	public String startUrl;
-	String domainName;
+	private String pagesPath;
+	String urlPath;
+	String sitekey;
 	public Set<String> doneDownloadurlSet;
 	private Site site;
 	private int CURRENT_DOWNLOAD_COUNT = 50;		//当次下载数量限制:
@@ -47,8 +49,12 @@ public class SiteUrlGetProcessor implements PageProcessor{
 			CURRENT_DOWNLOAD_COUNT = _maxCount;
 		
 		startUrl = _startUrl;
-		domainName = URLStrHelper.getHost(startUrl).toLowerCase();
+		sitekey = URLStrHelper.getHost(startUrl).toLowerCase();
 	
+		pagesPath = "data/pages/"+sitekey;
+		
+		urlPath = pagesPath+".urls";
+		
 		doneDownloadurlSet = new HashSet<String>();
 		
 		site = new Site();
@@ -84,6 +90,11 @@ public class SiteUrlGetProcessor implements PageProcessor{
 			charset = "utf-8";
 		}
 		 
+		//保存网页:
+		String fileName = page.getRequest().getUrl().hashCode()+".html";
+		String pagePath = pagesPath +"/"+fileName;
+		FileUtil.writeFile(pagePath, pageContent,charset);
+		
 		if (CURRENT_DOWNLOAD_COUNT>0&&doneDownloadurlSet.size()>=CURRENT_DOWNLOAD_COUNT){
 			log.warn("urls获取完成，当次获取数: "+doneDownloadurlSet.size());
 			spider.stop();
@@ -95,14 +106,25 @@ public class SiteUrlGetProcessor implements PageProcessor{
 		 List<String> links = page.getHtml().links().all();
 		 Set<String> newurls = new HashSet<String>();
 		 for (String url:links){
-			 if (url.toLowerCase().indexOf(domainName)<0) continue;
+			 if (url.toLowerCase().indexOf(sitekey)<0) continue;
 			 if (doneDownloadurlSet.contains(url)) continue;
 			 
 			 newurls.add(url);
 		 }
 		 requests.addAll(newurls);
 		
+		 FileUtil.writeFile(urlPath, JSON.toJSONString(doneDownloadurlSet));
+		 
 		page.addTargetRequests(requests);	
+		
+		//取urls:
+		Map<String,WebUrl> urls = getUrls(page);
+				
+		page.putField("Charset", charset);
+		page.putField("PageUrls", urls);
+		page.putField("PageContent", pageContent);
+		page.putField("Url", page.getRequest().getUrl());
+		page.putField("DomainName", sitekey);
 		
 		try {
 			Thread.sleep(500);
@@ -118,5 +140,21 @@ public class SiteUrlGetProcessor implements PageProcessor{
 		// TODO Auto-generated method stub
 		return site;
 	}
+
+	public Map<String,WebUrl> getUrls(Page page){
+			Map<String,WebUrl> urls = new HashMap<String,WebUrl>();
+			Elements els = page.getHtml().getDocument().getElementsByTag("a");
+			for (Element e:els){
+				String link = e.attr("href");
+				if (link.toLowerCase().indexOf(sitekey)<0) continue;
+				String text = e.text();
+				WebUrl url = new WebUrl();
+				url.setText(text);
+				url.setUrl(link);
+				urls.put(url.getUrl(),url);
+			}
+			
+			return urls;
+		}
 
 }

@@ -14,9 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
-import box.site.PageContentGetter;
 import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
@@ -40,8 +38,7 @@ public class ProcessManager extends MgrBase {
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
 	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
-	private PageContentGetter contentGetter = new PageContentGetter();
-    private BaseTopItemParser parser = new BaseTopItemParser();
+    private BaseTopItemParser parser;
 	ImgGetterThread imgGetter = new ImgGetterThread();
 
 	public static ProcessManager getInstance() {
@@ -56,6 +53,8 @@ public class ProcessManager extends MgrBase {
 		
 		inited = true;	
 		running = true;
+		
+		parser = new BaseTopItemParser(dnaPath);
 		
 		List<File> folders = FileUtil.getFolders(pagesPath);
 		for (File folder:folders){
@@ -141,7 +140,7 @@ public class ProcessManager extends MgrBase {
 	
 		//spider:
 		Set<String> sites = new HashSet<String>();
-		sites.add("http://www.tmtpost.com");
+//		sites.add("http://www.tmtpost.com");
 //		sites.add("http://www.leiphone.com");
 //		sites.add("http://www.huxiu.com");
 //		sites.add("http://www.iheima.com/");
@@ -156,14 +155,16 @@ public class ProcessManager extends MgrBase {
 //		sites.add("http://tech.163.com");
 //		sites.add("http://tech.qq.com/");
 //		sites.add("http://tech.sina.com.cn/");
-		sites.add("http://it.sohu.com");
+//		sites.add("http://it.sohu.com");
 //		sites.add("http://tech.ifeng.com/");
 //		sites.add("http://www.geekpark.net/");
-		sites.add("http://techcrunch.cn/");
+//		sites.add("http://techcrunch.cn/");
 		
 		
 //		sites.add("http://www.ebrun.com/");
 		
+		String content = FileUtil.readFile(rootPath+"source.sites");
+		sites = (Set<String>)JSON.parseObject(content,HashSet.class);
 		log.warn("spiders start,sites:"+sites.size());
 		runningSpiderCount = sites.size();
 		for (String site:sites){
@@ -341,9 +342,9 @@ public class ProcessManager extends MgrBase {
 
 	public static void main(String[] args) {
 		ProcessManager.getInstance().init();
-		ProcessManager.getInstance().tesSimHash();
+//		ProcessManager.getInstance().tesSimHash();
 //		ProcessManager.getInstance().process();
-//		ProcessManager.getInstance().processSpiders();
+		ProcessManager.getInstance().processSpiders();
 //		List<TopItem> items =ProcessManager.getInstance().processClassfiy();
 //		ProcessManager.getInstance().processListUrls(items);
 	}

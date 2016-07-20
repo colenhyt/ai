@@ -17,20 +17,21 @@
  */
 package cn.edu.hfut.dmic.htmlbot.contentextractor;
 
-import cn.edu.hfut.dmic.htmlbot.DomPage;
-import cn.edu.hfut.dmic.htmlbot.HtmlBot;
-import cn.edu.hfut.dmic.htmlbot.util.GaussSmooth;
-import cn.edu.hfut.dmic.htmlbot.util.JsoupHelper;
-import cn.edu.hfut.dmic.htmlbot.util.TextUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.NodeVisitor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import cn.edu.hfut.dmic.htmlbot.DomPage;
+import cn.edu.hfut.dmic.htmlbot.HtmlBot;
+import cn.edu.hfut.dmic.htmlbot.util.GaussSmooth;
+import cn.edu.hfut.dmic.htmlbot.util.JsoupHelper;
+import cn.edu.hfut.dmic.htmlbot.util.TextUtils;
 
 /**
  * Created by a on 2014/11/2.
@@ -179,6 +180,23 @@ public class ContentExtractor {
             sb.append(tNode.text().trim() + "\n");
         }
         return sb.toString();
+    }
+    
+    public List<String> getContentTextList(){
+    	ArrayList<String> nodelist = new ArrayList<String>();
+        for (int i = 0; i < tNodeList.size(); i++) {
+            TextNode tNode = tNodeList.get(i);
+            double gEtpr = gaussEtprList.get(i);
+            if (gEtpr > threshold) {
+                if (tNode.text().indexOf("于妈方的应对是递交了n个剧，说不对啊，这些情节又不是你独有的，凭什么告我侵权？你告我换孩子，换孩子又不是你独有的，在你之前的xxxx剧里都有啊。你的情节设定没有独创性（独创性：是指作品是由作者独立创作的，是作者独立思考和劳动的产物）")>=0){
+                	int t = 100;
+                }            	
+                //由于空格字符，不取node.text(),用toString();
+                String str = tNode.text().trim();
+            	nodelist.add(str);
+            }
+        }   	
+        return nodelist;
     }
     
     public String getContent() {

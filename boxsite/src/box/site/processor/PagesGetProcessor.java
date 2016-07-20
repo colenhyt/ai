@@ -33,7 +33,7 @@ import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
-public class SitePageGetProcessor implements PageProcessor{
+public class PagesGetProcessor implements PageProcessor{
 	protected Logger  log = Logger.getLogger(getClass());
 	private MultiPageTask mainThread;
 	int queryCount;
@@ -53,7 +53,7 @@ public class SitePageGetProcessor implements PageProcessor{
 	int maxpagecount;
 	private ISiteContentGetter urlsGetter;
 	
-	public SitePageGetProcessor(MultiPageTask task,String _startUrl,int _maxCount){
+	public PagesGetProcessor(MultiPageTask task,String _startUrl,int _maxCount){
 		mainThread = task;
 		
 		currCount = 0;
@@ -155,7 +155,7 @@ public class SitePageGetProcessor implements PageProcessor{
 		System.out.println(bb);
 		
 		url = "http://tech.163.com/";
-		SitePageGetProcessor process = new SitePageGetProcessor(null,url,20);
+		PagesGetProcessor process = new PagesGetProcessor(null,url,20);
 		Spider.create(process).addPipeline(new SiteURLsPipeline()).run();
 		
 		//String content = FileUtil.readFile("data/pages/36kr.com/1322533216.html");
@@ -177,80 +177,13 @@ public class SitePageGetProcessor implements PageProcessor{
 		}
 		 
 		//保存网页:
-		if (!page.getRequest().getUrl().equalsIgnoreCase(startUrl)){
-			String fileName = page.getRequest().getUrl().hashCode()+".html";
-			String pagePath = pagesPath +"/"+fileName;
-			FileUtil.writeFile(pagePath, pageContent,charset);			
-		}
+		String fileName = page.getRequest().getUrl().hashCode()+".html";
+		String pagePath = pagesPath +"/"+fileName;
+		FileUtil.writeFile(pagePath, pageContent,charset);
 		
-		if (CURRENT_DOWNLOAD_COUNT>0&&currCount>=CURRENT_DOWNLOAD_COUNT){
-			log.warn("页面下载完成，当次下载页面数: "+currCount);
-			if (mainThread!=null)
-				mainThread.finishCallback(sitekey);
-			else
-				System.exit(0);
-			return;			
-		}
-		
-		if (maxpagecount>0){
-			List<File> files = FileUtil.getFiles(pagesPath);
-			queryCount = files.size();
-			if (queryCount>=maxpagecount){
-				log.warn("页面下载完成，总共有页面 "+queryCount);
-				mainThread.finishCallback(sitekey);
-				return;
-			}
-		}
-		
-		List<String> requests = new ArrayList<String>();
-		List<String> links = urlsGetter.findItemUrls(page);
-		 Set<String> newurls = new HashSet<String>();
-		 for (String url:links){
-			 if (url.toLowerCase().indexOf(sitekey)<0) continue;
-			 if (doneDownloadurlSet.contains(url)) continue;
-			 if (allDownloadUrlSet.contains(url)) continue;
-			 newurls.add(url);
-		 }	
-		 allDownloadUrlSet.addAll(newurls);
-		 requests.addAll(newurls);
-		 queryCount += newurls.size();
-		
-		if (notDownloadurlsSet.size()>0){
-			requests.addAll(notDownloadurlsSet);
-			queryCount += notDownloadurlsSet.size();
-			notDownloadurlsSet.clear();
-		}
-		
-		//找到合法url,并塞入下载链接:
-//		if (queryCount<maxpagecount){
-//			//找页内urls:
-//			 List<String> links = page.getHtml().links().all();
-//			 Set<String> newurls = new HashSet<String>();
-//			 for (String url:links){
-//				 if (url.toLowerCase().indexOf(domainName)<0) continue;
-//				 if (allDownloadUrls.contains(url)) continue;
-//				 
-//				 newurls.add(url);
-//			 }
-//			 allDownloadUrls.addAll(newurls);
-//			 requests.addAll(newurls);
-//			 queryCount += newurls.size();
-//		}
-		
-		 FileUtil.writeFile(urlPath, JSON.toJSONString(allDownloadUrlSet));
 		 
-		page.addTargetRequests(requests);	
+//		page.addTargetRequests(requests);	
 		
-		//取urls:
-		Map<String,WebUrl> urls = getUrls(page);
-		
-		
-		page.putField("Charset", charset);
-		page.putField("PageUrls", urls);
-		page.putField("PageContent", pageContent);
-		page.putField("Url", page.getRequest().getUrl());
-		page.putField("DomainName", sitekey);
-	//	log.warn("get page "+urls.size()+",pageCount:"+queryCount);
 		
 		try {
 			Thread.sleep(500);
@@ -271,56 +204,6 @@ public class SitePageGetProcessor implements PageProcessor{
 		}else
 			links = page.getHtml().links().regex(regUrl).all();
 		return links;
-	}
-	
-	public void parseFromPage(String urlstr,String charset){
-		String fileName = urlstr.hashCode()+".html";
-		String pagePath = pagesPath +"/"+fileName;	
-		String content = FileUtil.readFile(pagePath, charset);
-		Request request = new Request(urlstr);
-		Page page = new Page();
-        page.setRawText(content);
-        page.setRequest(request);
-        page.setUrl(new PlainText(urlstr));
-	}
-	
-	private boolean isReg(String url){
-		if (urlRegs.size()<=0)
-			return true;
-		
-		for (String reg:urlRegs){
-			if (url.matches(reg))
-			 return true;
-		}
-		return false;
-	}
-	public Map<String,WebUrl> getUrls(Page page){
-		Map<String,WebUrl> urls = new HashMap<String,WebUrl>();
-		List<PageRef> refs = new ArrayList<PageRef>();
-		
-		Elements els = page.getHtml().getDocument().getElementsByTag("a");
-		for (Element e:els){
-			String link = e.attr("href");
-			if (link.toLowerCase().indexOf(sitekey)<0) continue;
-			if (!isReg(link)) continue;
-			String text = e.text();
-			if (text==null||text.trim().length()<=0) continue;
-			
-//			log.warn("link "+link+",text:"+text);
-			
-			WebUrl url = new WebUrl();
-			url.setText(text);
-			url.setUrl(link);
-			urls.put(url.getUrl(),url);
-			
-//			PageRef ref = new PageRef(url.getUrl(),text);
-//			refs.add(ref);
-		}
-		
-//		Map<String,Vector<PageRef>> maprefs = HTMLInfoSupplier.findSortUrls(refs);
-//		log.warn(maprefs.toString());
-		
-		return urls;
 	}
 	
 	@Override

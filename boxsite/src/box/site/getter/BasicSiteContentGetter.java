@@ -12,8 +12,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.Request;
-import box.site.PageContentGetter;
 import box.site.model.ContentDNA;
 import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
@@ -23,15 +21,20 @@ import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.TagDNA;
 import es.util.url.URLStrHelper;
 
-public class BasicSiteContentGetter implements ISiteContentGetter{
+public class BasicSiteContentGetter extends BasicContentGetter implements ISiteContentGetter{
 	protected Logger  log = Logger.getLogger(getClass()); 
-	HTMLInfoSupplier infoSupp = new HTMLInfoSupplier();
 	protected String itemHtmlContent,itemPureContent;
 	Set<String> sitekeys = new HashSet<String>();
 	protected String sitekey = null;
+	private String dnaPath;
 	protected ContentDNA dna;
 
 	public BasicSiteContentGetter(){
+		this(null);
+	}
+	
+	public BasicSiteContentGetter(String _dnaPath){
+		dnaPath = _dnaPath;
 		sitekeys.add("163.com");
 		sitekeys.add("sina.com.cn");
 		sitekeys.add("qq.com");
@@ -60,7 +63,7 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 		List<String> links = new ArrayList<String>();
 		
 		if (dna==null){
-			dna = ContentDNA.read(sitekey, "data/");
+			dna = ContentDNA.read(sitekey, dnaPath);
 		}
 		
 		if (dna!=null){
@@ -93,7 +96,7 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 		sitekey = URLStrHelper.getHost(url).toLowerCase();
 		
 		if (dna==null){
-			dna = ContentDNA.read(sitekey, "data/");
+			dna = ContentDNA.read(sitekey, dnaPath);
 		}
 		
 		if (dna==null)
@@ -120,7 +123,7 @@ public class BasicSiteContentGetter implements ISiteContentGetter{
 		}		
 
 		
-		String textContent = PageContentGetter.getContent(pageContent);
+		String textContent = BasicSiteContentGetter.getContent(pageContent);
 		if (textContent==null||textContent.trim().length()<30)
 			return false;
 		

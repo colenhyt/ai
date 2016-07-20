@@ -49,7 +49,10 @@ public class SiteDNAParser {
 //		PostPageGetter pageGetter = new PostPageGetter(DownloadContext.getSpiderContext().getUserAgent());
 //		HttpPage p = pageGetter.getHttpPage("http://news.ifeng.com/", HttpClients.createDefault());
 //		OriHttpPage p2 = new OriHttpPage(p.getUrlStr(),p.getContent(),null,p.getCharSet());
-		getter.queryPageDNA("http://news.ifeng.com/");
+		//getter.queryPageDNA("http://news.ifeng.com/");
+		String str = "A";
+		String reg = URLStrHelper.regStr(str);
+		System.out.println(reg+":"+str.matches(reg));
 	}
 	public SiteDNAParser(){
 		userAgent = DownloadContext.getSpiderContext().getUserAgent();

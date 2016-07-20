@@ -3,7 +3,16 @@ package box.db;
 import java.util.Date;
 
 public class Wxpublic {
+	String sogouUrl;
 	
+	public String getSogouUrl() {
+		return sogouUrl;
+	}
+
+	public void setSogouUrl(String sogouUrl) {
+		this.sogouUrl = sogouUrl;
+	}
+
 	public String toString(){
 		return this.getWxname()+",微信:"+this.getWxhao();
 	}

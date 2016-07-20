@@ -13,6 +13,7 @@ import box.util.DateHelper;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
+import easyshop.html.jericho.Attribute;
 import easyshop.html.jericho.Element;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
@@ -118,6 +119,8 @@ public class SougouPageDealer implements IPageDealer{
 		for (int i=0;i<list.size();i++)
 		{
 			Element e = list.get(i);
+			Attribute attri = e.getAttributes().get("href");
+			
 			String strOpenid = e.getAttributes().getValue("href");
 			if (strOpenid.length()>0)
 				strOpenid = strOpenid.substring(strOpenid.indexOf(openUrlKey)+openUrlKey.length());
@@ -150,6 +153,7 @@ public class SougouPageDealer implements IPageDealer{
 			
 			Wxpublic wp = new Wxpublic();
 			wp.setWxhao(haoStr);
+			wp.setSogouUrl(attri.getValue());
 			wp.setOpenid(strOpenid);
 			wp.setWxname(nameStr);
 			wp.setStatus(0);

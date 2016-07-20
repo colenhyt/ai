@@ -1,10 +1,6 @@
 package box.mgr;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import us.codecraft.webmagic.Spider;
-import box.site.getter.BasicSiteContentGetter;
-import box.site.getter.ISiteContentGetter;
-import box.site.getter.SiteContentGetterFactory;
 import box.site.model.ContentDNA;
+import box.site.model.WebUrl;
+import box.site.processor.SiteURLsPipeline;
 import box.site.processor.SiteUrlGetProcessor;
 import cn.hd.util.FileUtil;
 import cn.hd.util.PageDownloader;
@@ -42,14 +37,14 @@ public class SiteDNAManager extends MgrBase {
 	public static void main(String[] args) {
 		SiteDNAManager.getInstance().init();
 	
-		List<File> dnafiles = FileUtil.getFiles("dna/");
-		for (File file:dnafiles){
-			String content = FileUtil.readFile(file);
-			List<String> urls = (List<String>)JSON.parse(content);
-			String url = "http://www."+file.getName().substring(0,file.getName().indexOf(".json"));
-			SiteDNAManager.getInstance().addSiteItemUrlReg(url, urls.get(0));
-		}
-		
+//		List<File> dnafiles = FileUtil.getFiles("dna/");
+//		for (File file:dnafiles){
+//			String content = FileUtil.readFile(file);
+//			List<String> urls = (List<String>)JSON.parse(content);
+//			String url = "http://www."+file.getName().substring(0,file.getName().indexOf(".json"));
+//			SiteDNAManager.getInstance().addSiteItemUrlReg(url, urls.get(0));
+//		}
+		SiteDNAManager.getInstance().queryTestUrls("http://www.56135.com");
 		//SiteDNAManager.getInstance().addItemTagDNA(url, dnastr, tagtype);
 	}
 	
@@ -70,8 +65,9 @@ public class SiteDNAManager extends MgrBase {
 		List<String> urls = new ArrayList<String>();
 		String content = FileUtil.readFile(pagesPath+sitekey+".urls");
 		if (content.trim().length()>0){
-			List<String> urls2 = (List<String>)JSON.parse(content);
-			int c = urls2.size()>10?10:urls2.size();
+			List<String> urls2 = (List<String>)JSON.parseObject(content);
+			int c = urls2.size()>20?20:urls2.size();
+			int cc = 0;
 			for (int i=0;i<c;i++){
 				urls.add(urls2.get(i));
 			}
@@ -119,8 +115,25 @@ public class SiteDNAManager extends MgrBase {
 		if (content==null)
 			return null;
 		
-		TagDNA tagDna = JSON.parseObject(dnaStr,TagDNA.class);
+		String[] strs = dnaStr.split(";");
+		
+		TagDNA tagDna = new TagDNA();
 		tagDna.setType(tagType);
+		if (tagType==TagDNA.TAG_TYPE_TAG){
+			tagDna.setTag(strs[0]);
+		}else if (tagType==TagDNA.TAG_TYPE_TAG_KEY){
+			tagDna.setTag(strs[0]);
+			tagDna.setKeyword(strs[1]);
+		}else if (tagType==TagDNA.TAG_TYPE_TAG1START_AND_TAG2END){
+			tagDna.setStartTagStr(strs[0]);
+			tagDna.setEndTagStr(strs[1]);
+		}else if (tagType==TagDNA.TAG_TYPE_TAG_AND_PROP||tagType==TagDNA.TAG_TYPE_TAG_AND_PROP_KEY){
+			tagDna.setTag(strs[0]);
+			tagDna.setPropName(strs[1]);
+			tagDna.setPropValue(strs[2]);
+			if (strs.length>3)
+				tagDna.setKeyword(strs[3]);
+		}
 		infoSupp.init(content);
 		String context = infoSupp.getContentByTagDna(tagDna);		
 		if (context==null||context.trim().length()<=0){
