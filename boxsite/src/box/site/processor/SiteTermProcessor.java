@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
@@ -19,14 +17,9 @@ import org.jsoup.nodes.Document;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.PlainText;
 import box.site.model.WebUrl;
-import cn.edu.hfut.dmic.htmlbot.DomPage;
-import cn.edu.hfut.dmic.htmlbot.HtmlBot;
-import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
 import com.huaban.analysis.jieba.JiebaSegmenter;
@@ -35,6 +28,7 @@ import com.huaban.analysis.jieba.SegToken;
 
 import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
+import es.util.FileUtil;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;

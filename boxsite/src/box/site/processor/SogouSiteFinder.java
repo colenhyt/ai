@@ -10,17 +10,16 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSON;
-
 import us.codecraft.webmagic.Page;
 import box.mgr.SiteManager;
 import box.site.SiteContentGetter;
 import box.site.SiteDataManager;
 import box.site.model.Website;
+
+import com.alibaba.fastjson.JSON;
+
 import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
-import es.util.http.PostPageGetter;
-import es.util.url.URLStrHelper;
 
 public class SogouSiteFinder implements IItemFinder {
 	protected Logger  log = Logger.getLogger(getClass());

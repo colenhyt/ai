@@ -10,13 +10,14 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 import box.site.model.WebUrl;
-import cn.hd.util.FileUtil;
 import cn.hd.util.RedisConfig;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-public class MgrBase extends java.util.TimerTask {
+import es.util.FileUtil;
+
+public class MgrBase {
 	public static final String DATA_WEBSITE_DNA = "data_website_dna";
 	private Boolean isStart = false;
 
@@ -87,24 +88,6 @@ public class MgrBase extends java.util.TimerTask {
 		
 	}
 	
-	@Override
-	public void run() {
-		this.process();
-		
-	}
-
-
-	public void start(){
-		if (isStart) return;
-		
-		log.info("Manager start....");
-		
-		isStart = true;
-		
-		java.util.Timer timer = new java.util.Timer(true);  
-		timer.schedule(this, 2000,2000);   		
-	}
-
 	protected Map<String,WebUrl> _getFileUrls(String filePath,String sitekey){
 		File urlfile = new File(filePath);
 		if (!urlfile.exists()) return null;

@@ -2,7 +2,6 @@ package box.site.getter;
 
 import java.util.List;
 
-import easyshop.html.TagDNA;
 import us.codecraft.webmagic.Page;
 
 public interface ISiteContentGetter {
@@ -13,6 +12,6 @@ public interface ISiteContentGetter {
 	
 	public String getItemPureContent();
 	
-	public boolean parseItem(String url,String pageContent);
+	public boolean parseItem(String sitekey,String pageContent);
 	
 }

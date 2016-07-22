@@ -6,15 +6,15 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSON;
-
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 import box.site.db.SiteService;
 import box.site.model.WebsiteDNA;
 import box.site.model.Websitekeys;
 import cn.hd.util.RedisClient;
 import cn.hd.util.RedisConfig;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
+
+import com.alibaba.fastjson.JSON;
 
 public class DataThread extends Thread {
 	private RedisClient		jedisClient;

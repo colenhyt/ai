@@ -16,6 +16,8 @@ import java.util.List;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
 
+import es.util.FileUtil;
+
 public class SimHash {
 
     private String tokens;

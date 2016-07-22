@@ -1,22 +1,25 @@
 package cn.hd.util;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import box.db.Wxpublic;
 import box.weixin.SougouPageDealer;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;  
-import com.gargoylesoftware.htmlunit.WebClient;  
-import com.gargoylesoftware.htmlunit.html.*;  
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlDivision;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 import es.util.url.URLStrHelper;
-
-import org.junit.Assert;  
-import org.junit.Test;  
-  
-
-
-
-import java.util.Iterator;  
-import java.util.List; 
 
 public class HtmlUnitTest {
 	private SougouPageDealer sogouDealer = new SougouPageDealer();

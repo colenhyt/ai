@@ -1,9 +1,7 @@
 package box.site.classify;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -33,12 +31,13 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import cc.mallet.types.Labeling;
-import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
+
+import es.util.FileUtil;
 
 public class NewsClassifier {
 	protected Logger  log = Logger.getLogger(getClass()); 

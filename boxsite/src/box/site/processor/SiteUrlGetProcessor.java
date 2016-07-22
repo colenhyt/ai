@@ -1,6 +1,5 @@
 package box.site.processor;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,23 +12,17 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.selector.PlainText;
-import box.mgr.ProcessManager;
 import box.site.model.WebUrl;
-import box.site.parser.sites.MultiPageTask;
-import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
 import es.download.flow.DownloadContext;
+import es.util.FileUtil;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
-import es.webref.model.PageRef;
 
 public class SiteUrlGetProcessor implements PageProcessor{
 	protected Logger  log = Logger.getLogger(getClass());

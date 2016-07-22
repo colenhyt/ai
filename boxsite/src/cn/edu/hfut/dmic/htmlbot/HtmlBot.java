@@ -18,10 +18,10 @@
 
 package cn.edu.hfut.dmic.htmlbot;
 
+import java.io.IOException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 
 /**
  * Created by a on 2014/11/2.

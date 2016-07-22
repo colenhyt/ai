@@ -16,9 +16,8 @@ import box.site.model.ContentDNA;
 import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.edu.hfut.dmic.htmlbot.contentextractor.ContentExtractor;
-import cn.hd.util.FileUtil;
-import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.TagDNA;
+import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
 public class BasicSiteContentGetter extends BasicContentGetter implements ISiteContentGetter{
@@ -92,9 +91,7 @@ public class BasicSiteContentGetter extends BasicContentGetter implements ISiteC
 	}
 
 	@Override
-	public boolean parseItem(String url,String pageContent) {
-		sitekey = URLStrHelper.getHost(url).toLowerCase();
-		
+	public boolean parseItem(String sitekey,String pageContent) {
 		if (dna==null){
 			dna = ContentDNA.read(sitekey, dnaPath);
 		}
@@ -108,7 +105,6 @@ public class BasicSiteContentGetter extends BasicContentGetter implements ISiteC
 			infoSupp.init(pageContent);
 			htmlContext = infoSupp.getContentByTagDnas(tagDnas);
 		}else {
-			String sitekey = URLStrHelper.getHost(url).toLowerCase();
 			if (sitekeys.contains(sitekey)){
 				htmlContext = getSpecSiteContent(pageContent);
 			}
@@ -244,7 +240,8 @@ public class BasicSiteContentGetter extends BasicContentGetter implements ISiteC
 		ISiteContentGetter getter = SiteContentGetterFactory.createGetter("36kr.com");
 		for (File file:files){
 			String content = FileUtil.readFile(file);
-			boolean a = getter.parseItem("http://36kr.com/newsflashes",content);
+			String sitekey = "36kr.com";
+			boolean a = getter.parseItem(sitekey,content);
 			System.out.println(getter.getItemHtmlContent());			
 		}
 

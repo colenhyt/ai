@@ -1,10 +1,5 @@
 package box.site.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,8 +8,8 @@ import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
 
-import cl.util.FileUtil;
 import easyshop.html.TagDNA;
+import es.util.FileUtil;
 
 public class ContentDNA implements Serializable{
 	public Set<String> getItemUrlRegs() {

@@ -1,26 +1,15 @@
 package box.site.parser.sites;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import box.mgr.PageManager;
-import box.mgr.ProcessManager;
-import box.site.model.TopItem;
-import box.site.model.WebUrl;
-import es.util.FileUtil;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.utils.FilePersistentBase;
+import box.mgr.PageManager;
+import box.mgr.ProcessManager;
+import box.site.model.TopItem;
 
 public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipeline {
     private Logger log = LoggerFactory.getLogger(getClass());

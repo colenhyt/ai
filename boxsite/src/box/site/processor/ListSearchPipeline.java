@@ -11,7 +11,6 @@ import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 import us.codecraft.webmagic.utils.FilePersistentBase;
-import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
 

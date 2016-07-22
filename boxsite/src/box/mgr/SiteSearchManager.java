@@ -11,15 +11,12 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import us.codecraft.webmagic.Spider;
-import box.site.processor.ListSearchPipeline;
-import box.site.processor.ListSearchProcessor;
 import box.site.processor.MultiSearchTask;
 import box.site.processor.ProcessCallback;
-import cl.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
 
+import es.util.FileUtil;
 import es.util.string.StringHelper;
 
 public class SiteSearchManager extends MgrBase implements ProcessCallback{

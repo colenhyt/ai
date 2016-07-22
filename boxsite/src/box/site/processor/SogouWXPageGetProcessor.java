@@ -16,12 +16,12 @@ import box.db.Wxpublic;
 import box.site.getter.WXPublicArticleGetter;
 import box.site.parser.sites.MultiPageTask;
 import box.weixin.SougouPageDealer;
-import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
 
 import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
+import es.util.FileUtil;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 

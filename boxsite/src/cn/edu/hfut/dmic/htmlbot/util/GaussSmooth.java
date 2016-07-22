@@ -19,7 +19,6 @@
 package cn.edu.hfut.dmic.htmlbot.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by a on 2014/11/2.

@@ -2,10 +2,8 @@ package box.site.getter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import us.codecraft.webmagic.Page;
-import box.site.model.ContentDNA;
 import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.edu.hfut.dmic.htmlbot.contentextractor.ContentExtractor;
@@ -49,9 +47,7 @@ public class cfkr_comGetter extends BasicSiteContentGetter {
 	}
 
 	@Override
-	public boolean parseItem(String url,String pageContent) {
-		sitekey = URLStrHelper.getHost(url).toLowerCase();
-		
+	public boolean parseItem(String sitekey,String pageContent) {
 		String startKey = "props=";
 		int start = pageContent.indexOf(startKey);
 		int end = pageContent.indexOf(",locationnal=",start);

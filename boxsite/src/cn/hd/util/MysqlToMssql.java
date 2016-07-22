@@ -2,6 +2,8 @@ package cn.hd.util;
 
 import java.io.File;
 
+import es.util.FileUtil;
+
 /**
  * 
  * <p>Title: MysqlToMssql.java</p>

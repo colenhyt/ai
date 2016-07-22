@@ -22,13 +22,13 @@ import box.site.getter.ISiteContentGetter;
 import box.site.getter.SiteContentGetterFactory;
 import box.site.model.WebUrl;
 import box.site.parser.sites.MultiPageTask;
-import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import easyshop.html.HTMLInfoSupplier;
 import es.download.flow.DownloadContext;
+import es.util.FileUtil;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;

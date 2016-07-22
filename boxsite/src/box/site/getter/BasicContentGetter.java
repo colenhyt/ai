@@ -11,9 +11,9 @@ import org.jsoup.select.Elements;
 import cn.edu.hfut.dmic.htmlbot.DomPage;
 import cn.edu.hfut.dmic.htmlbot.HtmlBot;
 import cn.edu.hfut.dmic.htmlbot.contentextractor.ContentExtractor;
-import cn.hd.util.FileUtil;
 import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.TagDNA;
+import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
 public class BasicContentGetter {

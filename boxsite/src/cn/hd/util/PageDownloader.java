@@ -3,12 +3,12 @@ package cn.hd.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import es.download.flow.DownloadContext;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
+import es.download.flow.DownloadContext;
 
 public class PageDownloader implements Task{
 	HttpClientDownloader clientDownloader = new HttpClientDownloader();

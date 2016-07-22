@@ -7,12 +7,13 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSON;
-
 import us.codecraft.webmagic.Page;
 import box.mgr.SiteManager;
 import box.site.SiteContentGetter;
 import box.site.model.Website;
+
+import com.alibaba.fastjson.JSON;
+
 import es.util.url.URLStrHelper;
 
 public class BdSiteFinder implements IItemFinder {

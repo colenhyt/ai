@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
 
-import cn.hd.util.MybatisSessionFactory;  
+import cn.hd.util.MybatisSessionFactory;
 
 
 /**

@@ -1,10 +1,5 @@
 package box.site.getter;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.ObjectInputStream;
-
 import org.apache.log4j.Logger;
 
 public class SiteContentGetterFactory {

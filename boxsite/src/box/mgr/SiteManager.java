@@ -23,12 +23,12 @@ import box.site.model.Websitekeys;
 import box.site.model.Websiteterms;
 import box.site.model.Websitewords;
 import box.site.model.Wordrelation;
-import cn.hd.util.FileUtil;
 import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import es.util.FileUtil;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 

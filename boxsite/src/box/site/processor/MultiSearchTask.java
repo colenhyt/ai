@@ -1,8 +1,7 @@
 package box.site.processor;
 
-import box.mgr.ProcessManager;
-import box.mgr.SiteSearchManager;
 import us.codecraft.webmagic.Spider;
+import box.mgr.SiteSearchManager;
 
 public class MultiSearchTask implements Runnable,ProcessCallback {
 	private String siteStr;

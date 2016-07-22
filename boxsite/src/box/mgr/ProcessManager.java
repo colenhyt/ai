@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.fastjson.JSON;
-
 import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
@@ -22,6 +20,9 @@ import box.site.parser.sites.BaseTopItemParser;
 import box.site.parser.sites.ImgGetterThread;
 import box.site.parser.sites.MultiPageTask;
 import cn.hd.util.SimHash;
+
+import com.alibaba.fastjson.JSON;
+
 import es.util.FileUtil;
 
 public class ProcessManager extends MgrBase {

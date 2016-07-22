@@ -9,16 +9,14 @@ import java.util.Set;
 
 import us.codecraft.webmagic.Spider;
 import box.site.model.ContentDNA;
-import box.site.model.WebUrl;
-import box.site.processor.SiteURLsPipeline;
 import box.site.processor.SiteUrlGetProcessor;
-import cn.hd.util.FileUtil;
 import cn.hd.util.PageDownloader;
 
 import com.alibaba.fastjson.JSON;
 
 import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.TagDNA;
+import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
 public class SiteDNAManager extends MgrBase {
@@ -44,8 +42,11 @@ public class SiteDNAManager extends MgrBase {
 //			String url = "http://www."+file.getName().substring(0,file.getName().indexOf(".json"));
 //			SiteDNAManager.getInstance().addSiteItemUrlReg(url, urls.get(0));
 //		}
-		SiteDNAManager.getInstance().queryTestUrls("http://www.56135.com");
-		//SiteDNAManager.getInstance().addItemTagDNA(url, dnastr, tagtype);
+//		SiteDNAManager.getInstance().queryTestUrls("http://www.56135.com");
+		String url = "http://weixin.qq.com";
+		String dnastr = "div;class;rich_media_content";
+		int tagtype = TagDNA.TAG_TYPE_TAG_AND_PROP;
+		SiteDNAManager.getInstance().addItemTagDNA(url, dnastr, tagtype);
 	}
 	
 	public void init(){
@@ -107,7 +108,9 @@ public class SiteDNAManager extends MgrBase {
 	public String addItemTagDNA(String testUrl,String dnaStr,int tagType){
 		String sitekey = URLStrHelper.getHost(testUrl).toLowerCase();
 		String content = null;
-		content = FileUtil.readFile(pagesPath+sitekey+"/"+testUrl.hashCode()+".html");
+		String path = pagesPath+sitekey+"/"+testUrl.hashCode()+".html";
+		path = "data/-242464285.html";
+		content = FileUtil.readFile(path);
 		if (content==null||content.trim().length()<0){
 			content = downloader.download(testUrl);
 		}

@@ -19,11 +19,11 @@ import box.site.getter.ISiteContentGetter;
 import box.site.getter.SiteContentGetterFactory;
 import box.site.model.TopItem;
 import box.site.parser.ITopItemParser;
-import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
 
 import easyshop.html.HTMLInfoSupplier;
+import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
 public class BaseTopItemParser implements ITopItemParser {
@@ -161,7 +161,7 @@ public class BaseTopItemParser implements ITopItemParser {
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
 		
 		ISiteContentGetter getter = siteDNAMap.get(sitekey);
-		boolean parsed = getter.parseItem(url,pageContent);
+		boolean parsed = getter.parseItem(sitekey,pageContent);
 		if (!parsed){
 			log.warn("could not get html content "+url.hashCode());
 			return null;
