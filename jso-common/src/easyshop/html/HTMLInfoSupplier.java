@@ -1,6 +1,7 @@
 package easyshop.html;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +36,7 @@ import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
 
 
-public class HTMLInfoSupplier {
+public class HTMLInfoSupplier implements Serializable{
 	private String encoding=Constants.CHARTSET_DEFAULT;
 	private Source totalJerio;
 	private String strContent;
@@ -103,7 +104,8 @@ public class HTMLInfoSupplier {
 		this.strContent= strContent;
 		this.totalJerio=new Source(strContent);
 		
-		jsoupDoc = Jsoup.parse(this.strContent);		
+		jsoupDoc = Jsoup.parse(this.strContent);	
+		init();
 	}
 	
 	public void init(String _urlstr,byte[] content,String encode){
@@ -1138,32 +1140,6 @@ public class HTMLInfoSupplier {
 		return true;
 	}
 	
-	public List<Element> getElementsByKeyTexts(String tagName,List<String> keyTexts){
-		List<Element> list=null;
-		if (tagName.equalsIgnoreCase("div"))
-			list=divElements;
-		else if (tagName.equalsIgnoreCase("table"))
-			list=tableElements;
-		else if (tagName.equalsIgnoreCase("tr"))
-			list=trElements;
-		else
-			list=totalJerio.findAllElements(tagName);
-		
-		List<Element> elements=new ArrayList<Element>();
-		
-		for (Iterator it=list.iterator();it.hasNext();) {
-			Element tag = (Element) it.next();
-			if (tag.getContentText()!=null&&tag.getContentText().length()>0){
-			String pureText=HTMLContentHelper.getPureText(tag.getContentText()).trim();
-			if (keyTexts==null||StringHelper.containsAll(pureText, keyTexts)){
-				elements.add(tag);
-			}
-			}
-		}
-		
-		return elements;
-	}
-	
 	private static boolean containsKeys(String content,Vector<String> keys,Vector<String> nowords){
 		if (keys!=null) {
 			for (String key:keys){
@@ -1440,15 +1416,14 @@ public class HTMLInfoSupplier {
 	return urls;		
 	}
 	
-	public List<PageRef> getUrls(String domainName){
-        List<PageRef> urls=new ArrayList();
+	public List<String> getUrls2(String domainName){
+        List<String> urls=new ArrayList();
         for (Iterator it=linkTags.iterator();it.hasNext();) {
         	StartTag tag = (StartTag)it.next();
         	String href=tag.getAttributes().getValue("href");
             String url=URLStrHelper.legalUrl(urlStr,href);
             if (url!=null&&(domainName==null||url.indexOf(domainName)>0)){
-            	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText(),this.encoding);
-            	urls.add(new PageRef(url,refWord));	   
+            	urls.add(url);	   
             }
             	
         }
@@ -1815,33 +1790,89 @@ public class HTMLInfoSupplier {
 		return urls;		
 	}
 
+	public List<Element> getElementsByKeyTexts(String tagName,List<String> keyTexts){
+		List<Element> list=null;
+		if (tagName.equalsIgnoreCase("div"))
+			list=divElements;
+		else if (tagName.equalsIgnoreCase("table"))
+			list=tableElements;
+		else if (tagName.equalsIgnoreCase("tr"))
+			list=trElements;
+		else
+			list=totalJerio.findAllElements(tagName);
+		
+		List<Element> elements=new ArrayList<Element>();
+		
+		for (Iterator it=list.iterator();it.hasNext();) {
+			Element tag = (Element) it.next();
+			if (tag.getContentText()!=null&&tag.getContentText().length()>0){
+			String pureText=HTMLContentHelper.getPureText(tag.getContentText()).trim();
+			if (keyTexts==null||StringHelper.containsAll(pureText, keyTexts)){
+				elements.add(tag);
+			}
+			}
+		}
+		
+		return elements;
+	}
+
+	public List<org.jsoup.nodes.Element> getElementsByKeyTexts(Document doc,String tagName,List<String> keyTexts){
+		Elements els=null;
+		if (tagName==null)
+			els = doc.getAllElements();
+		else
+			els = doc.getElementsByTag(tagName);
+		
+		List<org.jsoup.nodes.Element> elements=new ArrayList<org.jsoup.nodes.Element>();
+		
+		for (Iterator it=els.iterator();it.hasNext();) {
+			org.jsoup.nodes.Element tag = (org.jsoup.nodes.Element) it.next();
+			if (tag.text()==null||tag.text().trim().length()<=0)continue;
+			String attri = tag.attr("class");
+			if (attri.equalsIgnoreCase("article-content")){
+				int t = 10;
+			}
+			if (keyTexts==null||StringHelper.containsAll(tag.text(), keyTexts)){
+				elements.add(tag);
+			}
+		}
+		
+		return elements;
+	}
+
+	public List<PageRef> getUrls(String domainName){
+	    List<PageRef> urls=new ArrayList();
+	    for (Iterator it=linkTags.iterator();it.hasNext();) {
+	    	StartTag tag = (StartTag)it.next();
+	    	String href=tag.getAttributes().getValue("href");
+	        String url=URLStrHelper.legalUrl(urlStr,href);
+	        if (url!=null&&(domainName==null||url.indexOf(domainName)>0)){
+	        	String refWord=URLStrHelper.getAnchorText(tag.getElement().getContentText(),this.encoding);
+	        	urls.add(new PageRef(url,refWord));	   
+	        }
+	        	
+	    }
+	return urls;		
+	}
+
 	//获取按同类聚合并根据数量多少进行排序的URL集合:
-	public static Map<String,Vector<PageRef>> findSortUrls(List<PageRef> refs){
-		Map<String,Vector<PageRef>>  urlDirMap = new HashMap<String,Vector<PageRef>>();
-		for (PageRef ref:refs){
-			String dna = URLStrHelper.getUrlRex(ref.getUrlStr());
-			Vector<PageRef> dirUrls = urlDirMap.get(dna);
+	public static Map<String,Vector<String>> findRegUrls(List<String> refs){
+		Map<String,Vector<String>>  urlDirMap = new HashMap<String,Vector<String>>();
+		for (String ref:refs){
+			String regUrl = URLStrHelper.getUrlRex(ref);
+			Vector<String> dirUrls = urlDirMap.get(regUrl);
 			if (dirUrls==null){
-				dirUrls = new Vector<PageRef>();
-				urlDirMap.put(dna, dirUrls);
+				dirUrls = new Vector<String>();
+				urlDirMap.put(regUrl, dirUrls);
 			}
-			boolean isBrother = true;
-			for (PageRef ref2:dirUrls){
-				if (!URLStrHelper.isBrotherUrl(ref2.getUrlStr(), ref.getUrlStr())){
-					isBrother = false;
-					break;
-				}
-			}
-			if (isBrother){
-				dirUrls.add(ref);				
-			}
+			dirUrls.add(ref);				
 		}
 	
 		 //通过ArrayList构造函数把map.entrySet()转换成list 
-		List<Map.Entry<String,Vector<PageRef>>> mappingList = new ArrayList<Map.Entry<String,Vector<PageRef>>>(urlDirMap.entrySet()); 
+		List<Map.Entry<String,Vector<String>>> mappingList = new ArrayList<Map.Entry<String,Vector<String>>>(urlDirMap.entrySet()); 
 		  //通过比较器实现比较排序 
-		  Collections.sort(mappingList, new Comparator<Map.Entry<String,Vector<PageRef>>>(){ 
-		   public int compare(Map.Entry<String,Vector<PageRef>> mapping1,Map.Entry<String,Vector<PageRef>> mapping2){ 
+		  Collections.sort(mappingList, new Comparator<Map.Entry<String,Vector<String>>>(){ 
+		   public int compare(Map.Entry<String,Vector<String>> mapping1,Map.Entry<String,Vector<String>> mapping2){ 
 		    return mapping1.getValue().size()> mapping2.getValue().size()?1:0; 
 		   } 
 		  }); 

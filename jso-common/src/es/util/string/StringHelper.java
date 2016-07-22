@@ -56,15 +56,22 @@ public class StringHelper {
 	
 	//全部包含list中的词
 	public static boolean containsAll(String str,List<String> strs){
-		String[] ss=strs.toArray(new String[strs.size()]);
-		return containsAll(str,ss);
+		for (String str0:strs){
+			if (str.indexOf(str0)<0) {
+//				System.out.println(str0);
+				return false;
+			}
+		}
+		return true;		
 	}	
 	
 	//全部包含数组中的词
 	public static boolean containsAll(String str,String[] strs){
 		for (int i=0;i<strs.length;i++){
-			if (str.indexOf(strs[i])<0) 
+			if (str.indexOf(strs[i])<0) {
+				System.out.println(strs[i]);
 				return false;
+			}
 		}
 		return true;		
 	}	

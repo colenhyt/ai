@@ -51,8 +51,8 @@ public class FileUtil {
 	 */
 	public static void writeFile(String path, String content,String encode) {
 		checkAndMakeParentDirecotry(path);
-       File f = new File(path);
-       writeFile(f, content,encode);
+	       File f = new File(path);
+	       writeFile(f, content,encode);
 	}
 	/**
 	 * 写文件
@@ -104,7 +104,6 @@ public class FileUtil {
 			}
 
 		} else {
-			//System.err.println("File Does not exist:"+file.getAbsolutePath());
 		}
 
 		return output;
@@ -161,6 +160,52 @@ public class FileUtil {
         return lines;
     }
 
+	//按行读取文件:
+	public static List<String> readFileWithLine(String fileName) {
+		List<String> contents = new ArrayList<String>();
+		 FileReader reader;
+		try {
+			reader = new FileReader(fileName);
+	         BufferedReader br = new BufferedReader(reader);
+	         
+	         String str = null;
+	        
+	         while((str = br.readLine()) != null) {
+	        	 contents.add(str);
+	         }
+	        
+	         br.close();
+	         reader.close();
+	     } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return contents;
+	}
+	
+
+	/**
+	 * 获取目录下某个后缀所有文件
+	 * @param folder
+	 * @return
+	 */
+	public static List<File> getFiles(String folder,String ext){
+		File file=new File(folder);
+		List<File> files=new ArrayList<File>();
+		if (file.exists()) {
+			File[] sonFiles=file.listFiles();
+			if (sonFiles!=null && sonFiles.length>0) {
+				for (int i = 0; i < sonFiles.length; i++) {
+					if (!sonFiles[i].isDirectory()&&sonFiles[i].getName().lastIndexOf("."+ext)>0) {
+						files.add(sonFiles[i]);
+					}
+				}
+			}
+		}
+		return files;
+	}	
+	
 	/**
 	 * 获取目录下所有文件
 	 * @param folder
@@ -368,14 +413,12 @@ public class FileUtil {
 		zipInputStream.close();  
 	}
 	public static void main(String[] args) {
-		List<String> str = FileUtil.readFileByLines("config.properties");
-		System.out.println(str);
-//		try {
-//			upzip();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			upzip();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public static void checkAndMakeParentDirecotry(String fullName) {
 	    int index = fullName.lastIndexOf("/");

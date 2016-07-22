@@ -421,42 +421,19 @@ public class URLStrHelper {
     	return true;
     }
     
-    public static String _strReg(String str){
-    	Vector<String> substr = new Vector<String>();
-    	String splitStr = "";
-    	String speStr = "";
-    	if (str.matches("[0-9]+")){
-    		substr.add("[0-9]+");
-    	}else if (str.indexOf("-")>0){
-			String[] sps = str.split("[-]");
-			splitStr = "-";
-			for (int i=0;i<sps.length;i++){
-				String sp = sps[i];
-				String ss = _strReg(sp);
-				substr.add(ss);
-			}
-    	}else if (str.indexOf("_")>0){
-			String[] sps = str.split("[_]");
-			splitStr = "_";
-			for (int i=0;i<sps.length;i++){
-				String sp = sps[i];
-				String ss = _strReg(sp);
-				substr.add(ss);
-			}
-		}else
-			substr.add(str);
-    	
-    	for (int i=0;i<substr.size();i++){
-    		if (i>0)
-    			speStr += splitStr;
-    		speStr += substr.get(i);
-    	}
-    	return speStr;
-    }
-    
     //得到正则表达式形式url
-    public static String getUrlRex(String urlStr){
+    public static String getUrlRex(String urlStr2){
+    	if (urlStr2.indexOf("conference.cyzone.cn")>0){
+    		int tt = 10;
+    	}
+    	String urlStr = urlStr2;
+    	String start = urlStr.substring(0,urlStr.indexOf("/", urlStr.indexOf("//")+2));
+    	urlStr = urlStr.substring(start.length());
+    	if (urlStr.startsWith("/"))
+    		urlStr = urlStr.substring(1);
     	String[] parts = urlStr.split("[/]");
+    	if (parts.length<=0)
+    		return start;
     	String lastp = parts[parts.length-1];
     	if (lastp.indexOf("?")>0){
     		lastp = lastp.substring(0,lastp.indexOf("?"));
@@ -464,26 +441,27 @@ public class URLStrHelper {
     	//有文件名
 		String[] ss = lastp.split("[.]");
     	if (ss.length>1){
-    		ss[0] = _strReg(ss[0]);
+    		ss[0] = regStr(ss[0]);
     		parts[parts.length-1] = (ss[0]+"."+ss[1]);
     	}
     	
     	//?,_,-
     	Vector<String> keys = new Vector<String>();
+    	keys.add(start);			//首个不参与
     	for (int i=0;i<parts.length-1;i++){
-    		String part = _strReg(parts[i]);
+    		String part = regStr(parts[i]);
     		keys.add(part);
     	}
     	keys.add(parts[parts.length-1]);
     	
-    	String urlKey = "";
+    	String regUrl = "";
     	for (int i=0;i<keys.size();i++){
     		if (i>0)
-    			urlKey += "/";
-    		urlKey += keys.get(i);
+    			regUrl += "/";
+    		regUrl += keys.get(i);
     	}
-    	urlKey += ".*";
-    	return urlKey;
+//    	System.out.println(urlStr2+":"+regUrl);
+    	return regUrl;
     }
     
     public static boolean isBrotherUrl(String urlStr1,String urlStr2){
@@ -740,6 +718,74 @@ public class URLStrHelper {
 		return urlKey;
 	}
 
+	//string 转换为正则表达式形式string
+	public static String regStr(String str){
+		Vector<String> substr = new Vector<String>();
+		String splitStr = "";
+		String speStr = "";
+		if (str.matches("[0-9]+")){
+			if (str.length()==1)
+				substr.add("[0-9]");
+			else
+				substr.add("[0-9]+");
+		}else if (str.matches("[A-Z]+")) {
+			if (str.length()==1)
+				substr.add("[A-Z]");
+			else
+				substr.add("[A-Z]+");			
+		}else if (str.matches("[a-z]+")) {
+			if (str.length()==1)
+				substr.add("[a-z]");
+			else
+				substr.add("[a-z]+");			
+		}else if (str.matches("[a-zA-Z]+")) {
+			if (str.length()==1)
+				substr.add("[a-zA-Z]");
+			else
+				substr.add("[a-zA-Z]+");			
+		}else if (str.indexOf("-")>0){
+			String[] sps = str.split("[-]");
+			splitStr = "-";
+			for (int i=0;i<sps.length;i++){
+				String sp = sps[i];
+				String ss = regStr(sp);
+				substr.add(ss);
+			}
+		}else if (str.indexOf("_")>0){
+			String[] sps = str.split("[_]");
+			splitStr = "_";
+			for (int i=0;i<sps.length;i++){
+				String sp = sps[i];
+				String ss = regStr(sp);
+				substr.add(ss);
+			}
+		}else
+			substr.add(str);
+		
+		for (int i=0;i<substr.size();i++){
+			if (i>0)
+				speStr += splitStr;
+			speStr += substr.get(i);
+		}
+		return speStr;
+	}
+
+	public static String[] getPartsWithoutParam(String urlStr){
+		List<String> list=URLConstructor.parse(urlStr);
+		String lastp = list.get(list.size()-1);
+		if (lastp.indexOf("?")>0){
+			lastp = lastp.substring(0,lastp.indexOf("?"));
+		}
+		if (list.size()>1){
+	    	list.remove(list.size()-1);
+			String[] ss = lastp.split("[.]");
+			for (int i=0;i<ss.length;i++){
+				list.add(ss[i]);
+			}
+		}
+		return (String[])list.toArray(new String[list.size()]);
+	}
+
 	public static String _strSpec(String str){
 		Vector<String> substr = new Vector<String>();
 		String splitStr = "";
@@ -771,21 +817,5 @@ public class URLStrHelper {
 			speStr += substr.get(i);
 		}
 		return speStr;
-	}
-
-	public static String[] getPartsWithoutParam(String urlStr){
-		List<String> list=URLConstructor.parse(urlStr);
-		String lastp = list.get(list.size()-1);
-		if (lastp.indexOf("?")>0){
-			lastp = lastp.substring(0,lastp.indexOf("?"));
-		}
-		if (list.size()>1){
-	    	list.remove(list.size()-1);
-			String[] ss = lastp.split("[.]");
-			for (int i=0;i<ss.length;i++){
-				list.add(ss[i]);
-			}
-		}
-		return (String[])list.toArray(new String[list.size()]);
 	}    
 }
