@@ -1,24 +1,19 @@
-package cl.util;
+package cn.hd.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
@@ -55,6 +50,7 @@ public class FileUtil {
 	 * @param content
 	 */
 	public static void writeFile(String path, String content,String encode) {
+		checkAndMakeParentDirecotry(path);
 	       File f = new File(path);
 	       writeFile(f, content,encode);
 	}
@@ -64,6 +60,7 @@ public class FileUtil {
 	 * @param content
 	 */
 	public static void writeFile(String path, String content) {
+		checkAndMakeParentDirecotry(path);
 	       File f = new File(path);
 	       writeFile(f, content,"utf-8");
 	}
@@ -107,7 +104,6 @@ public class FileUtil {
 			}
 
 		} else {
-			System.err.println("Does not exist！");
 		}
 
 		return output;
@@ -131,6 +127,30 @@ public class FileUtil {
 	}
 
 
+	//按行读取文件:
+	public static List<String> readFileWithLine(String fileName) {
+		List<String> contents = new ArrayList<String>();
+		 FileReader reader;
+		try {
+			reader = new FileReader(fileName);
+	         BufferedReader br = new BufferedReader(reader);
+	         
+	         String str = null;
+	        
+	         while((str = br.readLine()) != null) {
+	        	 contents.add(str);
+	         }
+	        
+	         br.close();
+	         reader.close();
+	     } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return contents;
+	}
+	
 	/**
 	 * 获取目录下所有文件
 	 * @param folder
@@ -344,5 +364,15 @@ public class FileUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public static void checkAndMakeParentDirecotry(String fullName) {
+	    int index = fullName.lastIndexOf("/");
+	    if (index > 0) {
+	        String path = fullName.substring(0, index);
+	        File file = new File(path);
+	        if (!file.exists()) {
+	            file.mkdirs();
+	        }
+	    }
 	}
 }
