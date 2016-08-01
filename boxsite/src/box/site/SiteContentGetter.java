@@ -25,7 +25,7 @@ import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
 import easyshop.html.jericho.Element;
-import es.download.flow.DownloadContext;
+import es.util.SpiderConfigProxy;
 import es.util.http.PostPageGetter;
 import es.util.word.WordToken;
 
@@ -51,7 +51,7 @@ public class SiteContentGetter extends Thread {
 		siteService.DBCommit();
 	}
 	public SiteContentGetter(){
-		userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		initHttpClient();
 		pageGetter = new PostPageGetter(userAgent);
 		segmenter = new JiebaSegmenter();

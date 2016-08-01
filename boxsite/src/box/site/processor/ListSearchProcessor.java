@@ -15,8 +15,8 @@ import box.mgr.SiteManager;
 
 import com.alibaba.fastjson.JSON;
 
-import es.download.flow.DownloadContext;
 import es.util.FileUtil;
+import es.util.SpiderConfigProxy;
 import es.util.url.URLStrHelper;
 
 public class ListSearchProcessor implements PageProcessor{
@@ -108,7 +108,7 @@ public class ListSearchProcessor implements PageProcessor{
 		domainName = URLStrHelper.getHost(startUrl).toLowerCase();
 		site = new Site();
 		site.setCharset("utf-8");
-		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		String userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		site.addHeader("User-Agent", userAgent);
 		site.addStartUrl(startUrl);
 	}

@@ -19,7 +19,7 @@ import box.site.model.Website;
 import com.alibaba.fastjson.JSON;
 
 import easyshop.html.HTMLInfoSupplier;
-import es.download.flow.DownloadContext;
+import es.util.SpiderConfigProxy;
 
 public class SogouSiteFinder implements IItemFinder {
 	protected Logger  log = Logger.getLogger(getClass());
@@ -31,7 +31,7 @@ public class SogouSiteFinder implements IItemFinder {
 	private String userAgent;
 
 	public SogouSiteFinder(){
-		userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		
 	}
 	

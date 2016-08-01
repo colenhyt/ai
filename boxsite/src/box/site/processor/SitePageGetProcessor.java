@@ -27,8 +27,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import easyshop.html.HTMLInfoSupplier;
-import es.download.flow.DownloadContext;
 import es.util.FileUtil;
+import es.util.SpiderConfigProxy;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
@@ -138,7 +138,7 @@ public class SitePageGetProcessor implements PageProcessor{
 		allDownloadUrlSet.add(startUrl);
 		
 		site = new Site();
-		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		String userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		site.addHeader("User-Agent", userAgent);
 		Set<Integer> codes = new HashSet<Integer>();
 		codes.add(200);

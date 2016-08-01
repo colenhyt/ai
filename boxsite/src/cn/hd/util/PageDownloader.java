@@ -8,7 +8,7 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
-import es.download.flow.DownloadContext;
+import es.util.SpiderConfigProxy;
 
 public class PageDownloader implements Task{
 	HttpClientDownloader clientDownloader = new HttpClientDownloader();
@@ -16,7 +16,7 @@ public class PageDownloader implements Task{
 
 	public PageDownloader(){
 		site = new Site();
-		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		String userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		site.addHeader("User-Agent", userAgent);
 		Set<Integer> codes = new HashSet<Integer>();
 		codes.add(200);

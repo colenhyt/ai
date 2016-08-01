@@ -5,7 +5,7 @@ var g_type = 0;
 var g_newscats = [
 "综合","业界","热点","政策","八卦","观点","访谈","专题","创新","产品","设计","运营","大公司",
 "股价","人物","公司","项目","移动","O2O","电商","大数据","风投","融资","创业","管理","游戏",
-"汽车","VR","直播","网红","厂商","无效"
+"汽车","VR","直播","网红","厂商","经营","效率","电脑","手机","科技","硬件","极客","无效"
 ];
 
 function querySitekeys()
@@ -84,7 +84,7 @@ function queryUrlsRst(data)
 	     var id = cat+"_"+data[i].id;
 	     
 		 if (cat==data[i].cat)
-		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"' checked><label for='"+id+"'>"+g_newscats[k]+"</label>";
+		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"' checked><label style='color:blue;font-weight:bold;font-size:120%' for='"+id+"'>"+g_newscats[k]+"</label>";
 		 else
 		  content += "<input type='radio' name='url_"+data[i].id+"' id='"+id+"' value='"+cat+"'><label for='"+id+"'>"+g_newscats[k]+"</label> ";
 		  

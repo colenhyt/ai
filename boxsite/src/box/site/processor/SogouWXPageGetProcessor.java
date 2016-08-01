@@ -20,8 +20,8 @@ import box.weixin.SougouPageDealer;
 import com.alibaba.fastjson.JSON;
 
 import easyshop.html.HTMLInfoSupplier;
-import es.download.flow.DownloadContext;
 import es.util.FileUtil;
+import es.util.SpiderConfigProxy;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 
@@ -101,7 +101,7 @@ public class SogouWXPageGetProcessor implements PageProcessor{
 		}
 		
 		site = new Site();
-		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		String userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		site.addHeader("User-Agent", userAgent);
 		Set<Integer> codes = new HashSet<Integer>();
 		codes.add(200);

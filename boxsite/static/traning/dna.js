@@ -2,6 +2,12 @@
 function queryTestUrls(){
  var url = getPar("url");
  
+  	var content = "<div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>";
+  	content +="<div style='text-align:center' id='orderlist_msg'><br>装载中....</div>";
+ 
+ 	var tag = document.getElementById("siteurls");
+ 	tag.innerHTML = content;
+ 	
 	var dataParam = "url="+url;
 	try    {
 		$.ajax({type:"post",url:"dna.jsp",data:dataParam,success:function(data){
@@ -37,6 +43,7 @@ function queryUrlsRst(data)
 	 	content += "<option value='2' selected>TAG_PROP</option>"
 	 	content += "<option value='3'>TAG_PROP_KEY</option>"
 	 	content += "<option value='4'>STARTTAG_ENDTAG</option>"
+	 	content += "<option value='5'>TAG_AND_PROPS</option>"
 	 	content += "</select>";
 	 	content += "<input type='text' id='tag_"+url+"' size=20>";
 	 	content += "<input type='button' onclick=\"addTagDna('"+url+"')\" value='提交'> ";
@@ -82,13 +89,7 @@ function addTagDna(url)
 	
 	var tagtype = tag0.options.selectedIndex;
 	var tag = document.getElementById("tag_"+url);
-	var str= tag.value.split(",");
-	var dna = {};
-	for (var i=0;i<str.length;i++){
-	  var tt = str[i].split(":");
-	  dna[tt[0]] = tt[1]; 
-	}
-	var dnaStr = JSON.stringify(dna);
+	var dnaStr= tag.value;
 	var dataParam = "url="+url+"&tagtype="+tagtype+"&tagdna="+dnaStr;
 	
 	try    {

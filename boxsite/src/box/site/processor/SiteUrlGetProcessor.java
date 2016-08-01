@@ -19,8 +19,8 @@ import box.site.model.WebUrl;
 
 import com.alibaba.fastjson.JSON;
 
-import es.download.flow.DownloadContext;
 import es.util.FileUtil;
+import es.util.SpiderConfigProxy;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 
@@ -51,7 +51,7 @@ public class SiteUrlGetProcessor implements PageProcessor{
 		doneDownloadurlSet = new HashSet<String>();
 		
 		site = new Site();
-		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		String userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		site.addHeader("User-Agent", userAgent);
 		Set<Integer> codes = new HashSet<Integer>();
 		codes.add(200);

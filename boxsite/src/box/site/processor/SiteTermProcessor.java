@@ -27,8 +27,8 @@ import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
 
 import easyshop.html.HTMLInfoSupplier;
-import es.download.flow.DownloadContext;
 import es.util.FileUtil;
+import es.util.SpiderConfigProxy;
 import es.util.string.StringHelper;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
@@ -104,7 +104,7 @@ public class SiteTermProcessor implements PageProcessor{
 		}
 		
 		site = new Site();
-		String userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		String userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		site.addHeader("User-Agent", userAgent);
 		Set<Integer> codes = new HashSet<Integer>();
 		codes.add(200);

@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import box.util.IPageDealer;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
-import easyshop.html.nutch.NutchHTMLProxy;
 import easyshop.model.ProductItem;
 import es.model.ItemPage;
 import es.util.url.URLStrFormattor;
@@ -76,16 +75,16 @@ public class JDPageDealer implements IPageDealer{
 	
 	private List<PageRef> parseCat_findItemUrls()
 	{
-		PageRef[] links=NutchHTMLProxy.get().gePageRefs(page.getUrlStr(), page.getContent(), page.getCharSet());
 		List<PageRef> usefulUrls = new ArrayList<PageRef>();
-		for (int i=0;i<links.length;i++)
-		{
-			String url = links[i].getUrlStr();
-			String itemKey = dict.getItemKey(url);
-			if (!mapItemKeys.containsKey(itemKey)&&dict.isItem(url)){
-				usefulUrls.add(links[i]);
-			}
-		}
+//		PageRef[] links=NutchHTMLProxy.get().gePageRefs(page.getUrlStr(), page.getContent(), page.getCharSet());
+//		for (int i=0;i<links.length;i++)
+//		{
+//			String url = links[i].getUrlStr();
+//			String itemKey = dict.getItemKey(url);
+//			if (!mapItemKeys.containsKey(itemKey)&&dict.isItem(url)){
+//				usefulUrls.add(links[i]);
+//			}
+//		}
 		return usefulUrls;
 	}
 	

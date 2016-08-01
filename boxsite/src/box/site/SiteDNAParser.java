@@ -27,7 +27,7 @@ import com.huaban.analysis.jieba.SegToken;
 import easyshop.downloadhelper.HttpPage;
 import easyshop.downloadhelper.OriHttpPage;
 import easyshop.html.HTMLInfoSupplier;
-import es.download.flow.DownloadContext;
+import es.util.SpiderConfigProxy;
 import es.util.http.PostPageGetter;
 import es.util.url.URLStrHelper;
 import es.webref.model.PageRef;
@@ -56,7 +56,7 @@ public class SiteDNAParser {
 		System.out.println(reg+":"+str.matches(reg));
 	}
 	public SiteDNAParser(){
-		userAgent = DownloadContext.getSpiderContext().getUserAgent();
+		userAgent = SpiderConfigProxy.getSpiderContext().getUserAgent();
 		dnaPageMap = new HashMap<String,WebpageDNA>();
 		initHttpClient();
 		pageGetter = new PostPageGetter(userAgent);
