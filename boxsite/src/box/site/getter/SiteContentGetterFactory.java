@@ -27,6 +27,7 @@ public class SiteContentGetterFactory {
 	
 	public static ISiteContentGetter createGetter(String sitekey,String dnaPath){
 		ISiteContentGetter getter = null;
+		String oriSitekey = sitekey;
 		sitekey = convert(sitekey);
 		try {
 			Class clazz = Class.forName("box.site.getter."+sitekey+"Getter");
@@ -42,6 +43,7 @@ public class SiteContentGetterFactory {
 		if (getter==null){
 			getter = new BasicSiteContentGetter(dnaPath);
 		}
+		getter.setSitekey(oriSitekey);
 		return getter;
 	}
 	

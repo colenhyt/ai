@@ -5,6 +5,13 @@ public class WebUrl {
 	private String text;
 	private int id;
 	private int cat;
+	private String catStr;
+	public String getCatStr() {
+		return catStr;
+	}
+	public void setCatStr(String catStr) {
+		this.catStr = catStr;
+	}
 	public int getCat() {
 		return cat;
 	}

@@ -19,6 +19,7 @@ import box.site.model.User;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
 import box.site.parser.sites.ImgGetter;
+import box.site.processor.SiteTermProcessor;
 import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -48,8 +49,9 @@ public class PageManager extends MgrBase{
 
 	public static void main(String[] args) {
 		PageManager.getInstance().init();
-		PageManager.getInstance().getNews(10, 192492392);
-		//PageManager.getInstance().resetTrainingurls();
+//		PageManager.getInstance().getNews(10, 192492392);
+//		PageManager.getInstance().resetTrainingurls();
+		PageManager.getInstance().findPagesMainContentAndTerms();
 		int itemid = 0;
 		int dir = 1;
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
@@ -480,6 +482,37 @@ public class PageManager extends MgrBase{
 		}
 	}
 	
+	public void findPagesMainContentAndTerms(){
+		BaseTopItemParser parser= new BaseTopItemParser(super.dnaPath);
+		SiteTermProcessor processor = null;
+		for (String sitekey:allSiteUrlsMap.keySet()){
+			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
+			String url = "http://www."+sitekey;
+			processor = new SiteTermProcessor(url,10);
+			for (WebUrl item:siteUrlsMap.values()){
+				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
+				String pageContent = FileUtil.readFile(path);
+				TopItem topitem = parser.parse(item.getUrl(), pageContent);
+				if (topitem!=null){
+					Map<String,Integer> termsMap = new HashMap<String,Integer>();
+					processor.getWordTerms(topitem.getContent(), termsMap);
+					
+					  //通过比较器实现比较排序 
+					List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
+				  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
+				   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
+					   return mapping2.getValue().compareTo(mapping1.getValue()); 
+				   } 
+				  }); 
+				  String termPath = super.rootPath+"/terms/"+sitekey+"/";
+					String fileName = termPath +item.getUrl().hashCode()+".terms";
+					FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
+					log.warn(sitekey+"/"+item.getUrl().hashCode()+" get terms "+termsMap.size());
+				}else
+					log.warn("could not parse item: "+item.getUrl().hashCode());
+			}
+		}		
+	}
 	public void resetTrainingurls(){
 		for (String sitekey:allSiteUrlsMap.keySet()){
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
@@ -502,6 +535,7 @@ public class PageManager extends MgrBase{
 		for (WebUrl url:urls2){
 			WebUrl item = siteUrlsMap.get(url.getUrl());
 			item.setCat(url.getCat());
+			item.setCatStr(url.getCatStr());
 			siteUrlsMap.put(url.getUrl(),item);
 		}
 		

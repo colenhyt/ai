@@ -248,5 +248,10 @@ public class BasicSiteContentGetter extends BasicContentGetter implements ISiteC
 		//List<String> urls = getter.findItemUrls(page);
 	}
 
+	@Override
+	public void setSitekey(String _sitekey) {
+		sitekey = _sitekey;
+	}
+
 
 }

@@ -12,6 +12,8 @@ public interface ISiteContentGetter {
 	
 	public String getItemPureContent();
 	
+	public void setSitekey(String _sitekey);
+	
 	public boolean parseItem(String sitekey,String pageContent);
 	
 }
