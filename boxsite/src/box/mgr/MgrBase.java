@@ -41,6 +41,7 @@ public class MgrBase {
 	protected String viewPath = rootPath+"views/";
 	protected String dictPath = rootPath+"dict/";
 	protected String imgPath = rootPath+"pics/";
+	protected String termPath = rootPath+"terms/";
 	public String dnaPath = rootPath+"dna/";
 	protected String sitePath = rootPath+"sites/";
 
@@ -73,6 +74,7 @@ public class MgrBase {
 			dnaPath = rootPath+"dna/";
 			sitePath = rootPath+"sites/";
 			viewPath = rootPath+"views/";
+			termPath = rootPath+"terms/";
 		}
 		String cfgstr0 = cfgObj.getString("redisCfg");
 		if (cfgstr0!=null)

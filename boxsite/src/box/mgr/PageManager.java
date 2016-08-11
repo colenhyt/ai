@@ -398,6 +398,8 @@ public class PageManager extends MgrBase{
 			Set<WebUrl> notUrls = new HashSet<WebUrl>();
 			for (WebUrl url:urls.values()){
 				if (isAll||url.getCat()<=0){
+					 String termPath = super.termPath+sitekey+"/"+url.getUrl().hashCode()+".terms";
+					 String content = FileUtil.readFile(termPath);
 					notUrls.add(url);
 				}
 			}
@@ -504,7 +506,7 @@ public class PageManager extends MgrBase{
 					   return mapping2.getValue().compareTo(mapping1.getValue()); 
 				   } 
 				  }); 
-				  String termPath = super.rootPath+"/terms/"+sitekey+"/";
+				  String termPath = super.termPath+sitekey+"/";
 					String fileName = termPath +item.getUrl().hashCode()+".terms";
 					FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
 					log.warn(sitekey+"/"+item.getUrl().hashCode()+" get terms "+termsMap.size());
