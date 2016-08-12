@@ -6,6 +6,13 @@ public class WebUrl {
 	private int id;
 	private int cat;
 	private String catStr;
+	private String termsStr;
+	public String getTermsStr() {
+		return termsStr;
+	}
+	public void setTermsStr(String termsStr) {
+		this.termsStr = termsStr;
+	}
 	public String getCatStr() {
 		return catStr;
 	}

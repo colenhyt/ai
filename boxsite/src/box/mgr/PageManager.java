@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
@@ -23,6 +24,7 @@ import box.site.processor.SiteTermProcessor;
 import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import easyshop.html.HTMLInfoSupplier;
@@ -51,9 +53,10 @@ public class PageManager extends MgrBase{
 		PageManager.getInstance().init();
 //		PageManager.getInstance().getNews(10, 192492392);
 //		PageManager.getInstance().resetTrainingurls();
-		PageManager.getInstance().findPagesMainContentAndTerms();
-		int itemid = 0;
-		int dir = 1;
+		PageManager.getInstance().findPagesMainContentAndTerms("techcrunch.cn");
+		PageManager.getInstance().findPagesMainContentAndTerms("techweb.com.cn");//,techcrunch.cn,techweb.com.cn
+//		PageManager.getInstance().findPagesMainContentAndTerms("sootoo.com");
+
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
 //		itemid = -2053154274 ; //		,-1873341786
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
@@ -400,6 +403,18 @@ public class PageManager extends MgrBase{
 				if (isAll||url.getCat()<=0){
 					 String termPath = super.termPath+sitekey+"/"+url.getUrl().hashCode()+".terms";
 					 String content = FileUtil.readFile(termPath);
+						JSONArray ss = JSON.parseArray(content);
+						String termStr = "";
+						if (ss!=null){
+						int count = ss.size()<15?ss.size():15;
+						for (int i=0;i<count;i++){
+							JSONObject obj = (JSONObject)ss.get(i);
+							termStr += obj.getString("key")+":"+obj.getInteger("value")+";";
+							if (i%9==8)
+								termStr += "<br>";
+						}	
+						}
+						url.setTermsStr(termStr);
 					notUrls.add(url);
 				}
 			}
@@ -484,10 +499,9 @@ public class PageManager extends MgrBase{
 		}
 	}
 	
-	public void findPagesMainContentAndTerms(){
+	public void findPagesMainContentAndTerms(String sitekey){
 		BaseTopItemParser parser= new BaseTopItemParser(super.dnaPath);
 		SiteTermProcessor processor = null;
-		for (String sitekey:allSiteUrlsMap.keySet()){
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
 			String url = "http://www."+sitekey;
 			processor = new SiteTermProcessor(url,10);
@@ -513,7 +527,6 @@ public class PageManager extends MgrBase{
 				}else
 					log.warn("could not parse item: "+item.getUrl().hashCode());
 			}
-		}		
 	}
 	public void resetTrainingurls(){
 		for (String sitekey:allSiteUrlsMap.keySet()){
@@ -635,6 +648,38 @@ public class PageManager extends MgrBase{
 		
 		String key = catid+"_"+datePath;
 		return key;
+	}
+
+	public void findPagesMainContentAndTerms(){
+		BaseTopItemParser parser= new BaseTopItemParser(super.dnaPath);
+		SiteTermProcessor processor = null;
+		for (String sitekey:allSiteUrlsMap.keySet()){
+			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
+			String url = "http://www."+sitekey;
+			processor = new SiteTermProcessor(url,10);
+			for (WebUrl item:siteUrlsMap.values()){
+				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
+				String pageContent = FileUtil.readFile(path);
+				TopItem topitem = parser.parse(item.getUrl(), pageContent);
+				if (topitem!=null){
+					Map<String,Integer> termsMap = new HashMap<String,Integer>();
+					processor.getWordTerms(topitem.getContent(), termsMap);
+					
+					  //通过比较器实现比较排序 
+					List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
+				  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
+				   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
+					   return mapping2.getValue().compareTo(mapping1.getValue()); 
+				   } 
+				  }); 
+				  String termPath = super.termPath+sitekey+"/";
+					String fileName = termPath +item.getUrl().hashCode()+".terms";
+					FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
+					log.warn(sitekey+"/"+item.getUrl().hashCode()+" get terms "+termsMap.size());
+				}else
+					log.warn("could not parse item: "+item.getUrl().hashCode());
+			}
+		}		
 	}
 	
 }
