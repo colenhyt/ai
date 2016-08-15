@@ -50,6 +50,7 @@ public class NewsClassifier {
 	private Set<String>  peopleSet = new HashSet<String>();
 	private Set<String>  comSet = new HashSet<String>();
 	public Map<String,Set<String>> catKeywords = new HashMap<String,Set<String>>();
+	public Map<String,Integer> catIds = new HashMap<String,Integer>();
 	private Map<Integer,Classifier>	classifyMap = new HashMap<Integer,Classifier>();
 	JiebaSegmenter segmenter = new JiebaSegmenter();
 	private Classifier classifier;
@@ -68,6 +69,7 @@ public class NewsClassifier {
 		
 		String keyContent = FileUtil.readFile("data/catkeys.txt");
 		String[] keyStrs = keyContent.split("\n");
+		int catid = 1;
 		for (String keyStr:keyStrs){
 			String[] strs = keyStr.split(":");
 			Set<String> words = new HashSet<String>();
@@ -75,6 +77,8 @@ public class NewsClassifier {
 			for (String a:aa){
 				words.add(a);
 			}
+			catIds.put(strs[0], catid);
+			catid++;
 			if (words.size()>0)
 				catKeywords.put(strs[0], words);
 		}
@@ -275,6 +279,14 @@ public class NewsClassifier {
 				titleAccur += 0.5;
 		}
 		return titleAccur;
+	}
+	
+	public int testClassify2(TopItem item){
+		String key = this.getTitleKey(item.getCtitle());
+		if (key!=null&&catIds.containsKey(key)){
+			return catIds.get(key);
+		}
+		return -1;
 	}
 	
 	public int testClassify(TopItem item){

@@ -194,7 +194,7 @@ public class BaseTopItemParser implements ITopItemParser {
 //		catids.add(41);
 //		catids.add(51);
 //		int r1 = random.nextInt(6);
-		int catid = 0;
+		int catid = newsClassifier.testClassify2(titem);
 //		catid = newsClassifier.testClassify(titem);
 //		if (catid<=0){
 //		}

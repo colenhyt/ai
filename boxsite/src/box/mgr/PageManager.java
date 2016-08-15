@@ -544,8 +544,10 @@ public class PageManager extends MgrBase{
 		for (String sitekey:allSiteUrlsMap.keySet()){
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
 			for (WebUrl item:siteUrlsMap.values()){
-				String key = classify.getTitleKey(item.getText());
-				item.setCatStr(key);
+				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
+				String pageContent = FileUtil.readFile(path);
+				TopItem topitem = parser.parse(item.getUrl(), pageContent);
+				item.setCat(topitem.getCat());
 			}
 			File urlfile = new File(pagesPath+sitekey+"_urls.json");
 			FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));			
