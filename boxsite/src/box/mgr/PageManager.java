@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
 import box.news.NewsRecommender;
+import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.model.User;
 import box.site.model.WebUrl;
@@ -53,10 +53,10 @@ public class PageManager extends MgrBase{
 		PageManager.getInstance().init();
 //		PageManager.getInstance().getNews(10, 192492392);
 //		PageManager.getInstance().resetTrainingurls();
-		PageManager.getInstance().findPagesMainContentAndTerms("techcrunch.cn");
-		PageManager.getInstance().findPagesMainContentAndTerms("techweb.com.cn");//,techcrunch.cn,techweb.com.cn
+//		PageManager.getInstance().findPagesMainContentAndTerms("techcrunch.cn");
+//		PageManager.getInstance().findPagesMainContentAndTerms("sina.com.cn");//,techcrunch.cn,techweb.com.cn
 //		PageManager.getInstance().findPagesMainContentAndTerms("sootoo.com");
-
+		PageManager.getInstance().resetCatUrlsByTitle();
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
 //		itemid = -2053154274 ; //		,-1873341786
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
@@ -533,6 +533,19 @@ public class PageManager extends MgrBase{
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
 			for (WebUrl item:siteUrlsMap.values()){
 				item.setCat(0);
+			}
+			File urlfile = new File(pagesPath+sitekey+"_urls.json");
+			FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));			
+		}
+	}
+	
+	public void resetCatUrlsByTitle(){
+		NewsClassifier classify = new NewsClassifier();
+		for (String sitekey:allSiteUrlsMap.keySet()){
+			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
+			for (WebUrl item:siteUrlsMap.values()){
+				String key = classify.getTitleKey(item.getText());
+				item.setCatStr(key);
 			}
 			File urlfile = new File(pagesPath+sitekey+"_urls.json");
 			FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));			

@@ -49,6 +49,7 @@ public class NewsClassifier {
 	private String trainingPath ="data/training";
 	private Set<String>  peopleSet = new HashSet<String>();
 	private Set<String>  comSet = new HashSet<String>();
+	public Map<String,Set<String>> catKeywords = new HashMap<String,Set<String>>();
 	private Map<Integer,Classifier>	classifyMap = new HashMap<Integer,Classifier>();
 	JiebaSegmenter segmenter = new JiebaSegmenter();
 	private Classifier classifier;
@@ -63,6 +64,19 @@ public class NewsClassifier {
 		if (content.trim().length()>0){
 			List<String> companyList = (List<String>)JSON.parse(content);
 			comSet.addAll(companyList);
+		}
+		
+		String keyContent = FileUtil.readFile("data/catkeys.txt");
+		String[] keyStrs = keyContent.split("\n");
+		for (String keyStr:keyStrs){
+			String[] strs = keyStr.split(":");
+			Set<String> words = new HashSet<String>();
+			String[] aa = strs[1].split(",");
+			for (String a:aa){
+				words.add(a);
+			}
+			if (words.size()>0)
+				catKeywords.put(strs[0], words);
 		}
 		
 		File classifyFile = new File(trainingPath+"news.classifier");
@@ -210,6 +224,17 @@ public class NewsClassifier {
 		}		
 	}
 	
+	public String getTitleKey(String title){
+		for (String key:catKeywords.keySet()){
+			Set<String> words = catKeywords.get(key);
+			for (String word:words){
+				if (title.toLowerCase().indexOf(word.toLowerCase())>0)
+					return key;
+			}
+		}
+		return null;
+	}
+	
 	private InstanceList initPipe(int catid,TopItem item){
 		Pipe instancePipe = new SerialPipes (new Pipe[] {
 				new Target2Label (),							  // Target String -> class label
@@ -292,7 +317,7 @@ public class NewsClassifier {
 	
 	public static void main(String[] args) {
 		NewsClassifier classifier = new NewsClassifier();
-		classifier.trainingClassifiers();
+//		classifier.trainingClassifiers();
 	}
 
 }
