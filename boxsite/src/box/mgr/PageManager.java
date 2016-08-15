@@ -547,7 +547,8 @@ public class PageManager extends MgrBase{
 				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
 				String pageContent = FileUtil.readFile(path);
 				TopItem topitem = parser.parse(item.getUrl(), pageContent);
-				item.setCat(topitem.getCat());
+				if (topitem!=null)
+					item.setCat(topitem.getCat());
 			}
 			File urlfile = new File(pagesPath+sitekey+"_urls.json");
 			FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));			
