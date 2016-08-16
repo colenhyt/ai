@@ -36,6 +36,8 @@ import cc.mallet.types.Label;
 import cc.mallet.types.Labeling;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
@@ -101,36 +103,77 @@ public class NewsClassifier {
 //		}  
 	}
 	
+	public void moveTrainingPages(){
+		String path = "data/pages/";
+		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
+		List<File> files = FileUtil.getFiles(path);
+		for (File f:files){
+			if (f.getName().indexOf(".json")<0)continue;
+			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
+			String urlsContent = FileUtil.readFile(f);
+			if (urlsContent!=null&&urlsContent.trim().length()>0){
+				log.warn("push training data: "+sitekey);
+				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
+				for (String url:urls.keySet()){
+					JSONObject json = urls.get(url);
+					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
+					if (item.getCat()<=0) continue;
+					String fileName = item.getUrl().hashCode()+".html";
+					String fileP = path+sitekey+"/"+fileName;
+					File ff = new File(fileP);
+					if (!ff.exists()) continue;
+					String pageContent = FileUtil.readFile(fileP);
+					TopItem titem = parser.parse(item.getUrl(), pageContent);
+					if (titem==null) {
+						log.warn("could not find html context for: "+item.getUrl());
+						continue;
+					}
+					String pureContext = titem.getContent();
+					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
+				}
+			}
+		}		
+	}
+	
+	public void moveTrainingTerms(){
+		//搬移已分类page到training path:
+		List<File> files = FileUtil.getFiles("data/pages/");
+		for (File f:files){
+			if (f.getName().indexOf(".json")<0)continue;
+			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
+			String urlsContent = FileUtil.readFile(f);
+			if (urlsContent!=null&&urlsContent.trim().length()>0){
+				log.warn("push training data: "+sitekey);
+				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
+				for (String url:urls.keySet()){
+					JSONObject json = urls.get(url);
+					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
+					if (item.getCat()<=0) continue;
+					String fileName = item.getUrl().hashCode()+".terms";
+					String fileP = "data/terms/"+sitekey+"/"+fileName;
+					File ff = new File(fileP);
+					if (!ff.exists()) continue;
+					String pageContent = FileUtil.readFile(fileP);
+					JSONArray ss = JSON.parseArray(pageContent);
+					String termStr = "";
+					int count2 = 30;	//取前30个关键词
+					if (ss!=null){
+					int count = ss.size()<count2?ss.size():count2;
+					for (int i=0;i<count;i++){
+						JSONObject obj = (JSONObject)ss.get(i);
+						termStr += obj.getString("key")+",";
+					}	
+					}
+					String pureContext = termStr;
+					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
+				}
+			}
+		}		
+	}
+	
 	public void trainingClassifiers(){
 		//搬移已分类page到training path:
-		String path = "data/pages/";
-//		List<File> files = FileUtil.getFiles(path);
-//		for (File f:files){
-//			if (f.getName().indexOf(".json")<0)continue;
-//			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-//			String urlsContent = FileUtil.readFile(f);
-//			if (urlsContent!=null&&urlsContent.trim().length()>0){
-//				log.warn("push training data: "+sitekey);
-//				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
-//				for (String url:urls.keySet()){
-//					JSONObject json = urls.get(url);
-//					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-//					if (item.getCat()<=0) continue;
-//					String fileName = item.getUrl().hashCode()+".html";
-//					String fileP = path+sitekey+"/"+fileName;
-//					File ff = new File(fileP);
-//					if (!ff.exists()) continue;
-//					String pageContent = FileUtil.readFile(fileP);
-//					List<String> cc = contentGetter.getHtmlContent(item.getUrl(), pageContent);
-//					if (cc==null) {
-//						log.warn("could not find html context for: "+item.getUrl());
-//						continue;
-//					}
-//					String pureContext = cc.get(0);
-//					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
-//				}
-//			}
-//		}
+
 		Pipe instancePipe = new SerialPipes (new Pipe[] {
 				new Target2Label (),							  // Target String -> class label
 				new Input2CharSequence (),				  // Data File -> String containing contents
@@ -344,13 +387,14 @@ public class NewsClassifier {
 	
 	public static void main(String[] args) {
 		NewsClassifier classifier = new NewsClassifier();
-		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
-		String sitekey = "sina.com.cn";
-		WebUrl item  = new WebUrl();
-		item.setUrl("http://tech.sina.com.cn/i/2016-06-21/doc-ifxtfrrf0763600.shtml");
-		String path = "data/pages/"+sitekey+"/"+item.getUrl().hashCode()+".html";
-		String pageContent = FileUtil.readFile(path);
-		TopItem topitem = parser.parse(item.getUrl(), pageContent);		
+		classifier.moveTrainingPages();
+//		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
+//		String sitekey = "sina.com.cn";
+//		WebUrl item  = new WebUrl();
+//		item.setUrl("http://tech.sina.com.cn/i/2016-06-21/doc-ifxtfrrf0763600.shtml");
+//		String path = "data/pages/"+sitekey+"/"+item.getUrl().hashCode()+".html";
+//		String pageContent = FileUtil.readFile(path);
+//		TopItem topitem = parser.parse(item.getUrl(), pageContent);		
 //		classifier.trainingClassifiers();
 	}
 
