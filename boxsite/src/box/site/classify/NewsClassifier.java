@@ -135,39 +135,27 @@ public class NewsClassifier {
 		}		
 	}
 	
-	public void moveTrainingTerms(){
+	public void mregeTrainingTerms(){
 		//搬移已分类page到training path:
-		List<File> files = FileUtil.getFiles("data/pages/");
-		for (File f:files){
-			if (f.getName().indexOf(".json")<0)continue;
-			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-			String urlsContent = FileUtil.readFile(f);
-			if (urlsContent!=null&&urlsContent.trim().length()>0){
-				log.warn("push training data: "+sitekey);
-				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
-				for (String url:urls.keySet()){
-					JSONObject json = urls.get(url);
-					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-					if (item.getCat()<=0) continue;
-					String fileName = item.getUrl().hashCode()+".terms";
-					String fileP = "data/terms/"+sitekey+"/"+fileName;
-					File ff = new File(fileP);
-					if (!ff.exists()) continue;
-					String pageContent = FileUtil.readFile(fileP);
+		List<File> folders = FileUtil.getFolders("data/training/");
+		for (File f:folders){
+			List<File> files = FileUtil.getFiles(f.getAbsolutePath());
+			log.warn("push training data: "+f.getName());
+			Map<String,Integer> termsMap = new HashMap<String,Integer>();
+			for (File ff:files){
+					String pageContent = FileUtil.readFile(ff.getAbsoluteFile());
 					JSONArray ss = JSON.parseArray(pageContent);
-					String termStr = "";
-					int count2 = 30;	//取前30个关键词
-					if (ss!=null){
-					int count = ss.size()<count2?ss.size():count2;
-					for (int i=0;i<count;i++){
+					for (int i=0;i<ss.size();i++){
 						JSONObject obj = (JSONObject)ss.get(i);
-						termStr += obj.getString("key")+",";
-					}	
+						String key = obj.getString("key");
+						int count = obj.getInteger("value");
+    					if (termsMap.containsKey(key))
+    						termsMap.put(key, termsMap.get(key)+count);
+    					else
+    						termsMap.put(key, count);
 					}
-					String pureContext = termStr;
-					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
-				}
 			}
+			FileUtil.writeFile(trainingPath+"/"+f.getName()+".data",JSON.toJSONString(termsMap));
 		}		
 	}
 	
@@ -385,9 +373,45 @@ public class NewsClassifier {
 		return testCatid;
 	}
 	
+	public void moveTrainingTerms(){
+		//搬移已分类page到training path:
+		List<File> files = FileUtil.getFiles("data/pages/");
+		for (File f:files){
+			if (f.getName().indexOf(".json")<0)continue;
+			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
+			String urlsContent = FileUtil.readFile(f);
+			if (urlsContent!=null&&urlsContent.trim().length()>0){
+				log.warn("push training data: "+sitekey);
+				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
+				for (String url:urls.keySet()){
+					JSONObject json = urls.get(url);
+					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
+					if (item.getCat()<=0) continue;
+					String fileName = item.getUrl().hashCode()+".terms";
+					String fileP = "data/terms/"+sitekey+"/"+fileName;
+					File ff = new File(fileP);
+					if (!ff.exists()) continue;
+					String pageContent = FileUtil.readFile(fileP);
+					JSONArray ss = JSON.parseArray(pageContent);
+					String termStr = "";
+					int count2 = 30;	//取前30个关键词
+					if (ss!=null){
+					int count = ss.size()<count2?ss.size():count2;
+					for (int i=0;i<count;i++){
+						JSONObject obj = (JSONObject)ss.get(i);
+						termStr += obj.getString("key")+",";
+					}	
+					}
+					String pureContext = pageContent;
+					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
+				}
+			}
+		}		
+	}
+
 	public static void main(String[] args) {
 		NewsClassifier classifier = new NewsClassifier();
-		classifier.moveTrainingPages();
+		classifier.mregeTrainingTerms();
 //		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
 //		String sitekey = "sina.com.cn";
 //		WebUrl item  = new WebUrl();
