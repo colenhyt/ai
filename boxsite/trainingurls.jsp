@@ -16,6 +16,11 @@ int typeid = 0;
 if (typestr!=null){
  typeid = Integer.valueOf(typestr);;
 }
+String catstr = request.getParameter("catid");
+int catid = -1;
+if (catstr!=null){
+ catid = Integer.valueOf(catstr);
+}
 
 PageManager.getInstance().init();
 
@@ -28,6 +33,8 @@ else if (typeid==1)
  jsonstr = PageManager.getInstance().addTrainingurls(sitekey,siteurls);
 else if (typeid==2)
  jsonstr = PageManager.getInstance().getSitekeys();
+else if (typeid==3)
+ jsonstr = PageManager.getInstance().getSiteTrainingUrls(sitekey,catid);
 
 response.getWriter().print(jsonstr);
 %>
