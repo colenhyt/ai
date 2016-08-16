@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,6 +15,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import box.site.model.TopItem;
+import box.site.model.WebUrl;
+import box.site.parser.sites.BaseTopItemParser;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.NaiveBayesTrainer;
@@ -49,8 +52,9 @@ public class NewsClassifier {
 	private String trainingPath ="data/training";
 	private Set<String>  peopleSet = new HashSet<String>();
 	private Set<String>  comSet = new HashSet<String>();
-	public Map<String,Set<String>> catKeywords = new HashMap<String,Set<String>>();
+	public Map<String,List<String>> catKeywords = new HashMap<String,List<String>>();
 	public Map<String,Integer> catIds = new HashMap<String,Integer>();
+	public Map<Integer,String> catStrs = new HashMap<Integer,String>();
 	private Map<Integer,Classifier>	classifyMap = new HashMap<Integer,Classifier>();
 	JiebaSegmenter segmenter = new JiebaSegmenter();
 	private Classifier classifier;
@@ -72,13 +76,15 @@ public class NewsClassifier {
 		int catid = 1;
 		for (String keyStr:keyStrs){
 			String[] strs = keyStr.split(":");
-			Set<String> words = new HashSet<String>();
+			List<String> words = new ArrayList<String>();
+			catIds.put(strs[0], catid);
+			catStrs.put(catid, strs[0]);
+			catid++;
+			if (strs.length<2) continue;
 			String[] aa = strs[1].split(",");
 			for (String a:aa){
 				words.add(a);
 			}
-			catIds.put(strs[0], catid);
-			catid++;
 			if (words.size()>0)
 				catKeywords.put(strs[0], words);
 		}
@@ -229,10 +235,13 @@ public class NewsClassifier {
 	}
 	
 	public String getTitleKey(String title){
-		for (String key:catKeywords.keySet()){
-			Set<String> words = catKeywords.get(key);
+		
+		for (int i=1;i<=catIds.size();i++){
+			String key = catStrs.get(i);
+			if (!catKeywords.containsKey(key))continue;
+			List<String> words = catKeywords.get(key);
 			for (String word:words){
-				if (title.toLowerCase().indexOf(word.toLowerCase())>0)
+				if (title.toLowerCase().indexOf(word.toLowerCase())>=0)
 					return key;
 			}
 		}
@@ -282,10 +291,16 @@ public class NewsClassifier {
 	}
 	
 	public int testClassify2(TopItem item){
+		if (item.getUrl().equals("http://tech.sina.com.cn/it/2016-06-24/doc-ifxtmweh2490652.shtml")){
+			int a = 10;
+			a++;
+		}
 		String key = this.getTitleKey(item.getCtitle());
 		if (key!=null&&catIds.containsKey(key)){
+			//log.warn(item.getCtitle()+" 类别 :"+key+","+catIds.get(key));
 			return catIds.get(key);
 		}
+//		log.warn("未找到分类:"+item.getCtitle()+","+item.getUrl());
 		return -1;
 	}
 	
@@ -329,6 +344,13 @@ public class NewsClassifier {
 	
 	public static void main(String[] args) {
 		NewsClassifier classifier = new NewsClassifier();
+		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
+		String sitekey = "sina.com.cn";
+		WebUrl item  = new WebUrl();
+		item.setUrl("http://tech.sina.com.cn/i/2016-06-21/doc-ifxtfrrf0763600.shtml");
+		String path = "data/pages/"+sitekey+"/"+item.getUrl().hashCode()+".html";
+		String pageContent = FileUtil.readFile(path);
+		TopItem topitem = parser.parse(item.getUrl(), pageContent);		
 //		classifier.trainingClassifiers();
 	}
 

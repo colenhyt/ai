@@ -540,16 +540,23 @@ public class PageManager extends MgrBase{
 	}
 	
 	public void resetCatUrlsByTitle(){
-		NewsClassifier classify = new NewsClassifier();
 		for (String sitekey:allSiteUrlsMap.keySet()){
+			if (!sitekey.equalsIgnoreCase("ikanchai.com"))continue;
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
+			int totalCount = siteUrlsMap.size();
+			int catCount = 0;
 			for (WebUrl item:siteUrlsMap.values()){
 				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
 				String pageContent = FileUtil.readFile(path);
 				TopItem topitem = parser.parse(item.getUrl(), pageContent);
-				if (topitem!=null)
+				if (topitem!=null){
 					item.setCat(topitem.getCat());
+					if (topitem.getCat()>0){
+						catCount++;
+					}
+				}
 			}
+			log.warn("总数量 "+totalCount+",分类数量"+catCount);
 			File urlfile = new File(pagesPath+sitekey+"_urls.json");
 			FileUtil.writeFile(urlfile, JSON.toJSONString(siteUrlsMap));			
 		}

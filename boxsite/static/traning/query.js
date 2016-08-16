@@ -3,9 +3,12 @@ var g_sitekey = "";
 var g_type = 0;
 
 var g_newscats = [
-"综合","业界","热点","政策","八卦","观点","访谈","专题","创新","产品","设计","运营","大公司",
-"股价","人物","公司","项目","移动","O2O","电商","大数据","风投","融资","创业","管理","游戏",
-"汽车","VR","直播","网红","厂商","经营","效率","电脑","手机","科技","硬件","极客","无效"
+"政策",
+"汽车","VR","直播","电脑","手机","硬件","极客","移动","游戏","O2O","电商","大数据","软件",
+"风投","融资","股价","创业","创新","互联网金融","互联网设计","互联网运营",
+"经营","专题","互联网","运营商","公司","人物",
+"效率","管理","科技",
+"无效"
 ];
 
 function querySitekeys()
@@ -68,7 +71,9 @@ function queryUrlsRst(data)
 	  if (i%2==0)
 	    color = "white";
 	 content += "<tr style='font-size:23px;padding-top:5px;background:"+color+"'>"
-	 content += "<td width=680><a href='news.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
+	 content += "<td width=680><a href='news.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a>";
+	 content += "<br>"+data[i].termsStr;
+	 content += "</td>";
 //	 content += "<td width=680><a href='dnagetter.html?url="+data[i].url+"' target=_blank>"+data[i].text+"</a></td>"
 	 content += "<td><div style='font-size:21px'>"
 	 
@@ -109,12 +114,14 @@ function defineUrlCat()
 	 var tags = document.getElementsByName("url_"+id);
 	 var cat = 0;
 	 for (var j=0;j<tags.length;j++){
-		 if (tags[j].checked)
+		 if (tags[j].checked){
 		   cat = tags[j].value;
+		  }
 	  }
 	  if (cat>0){
 		  g_currurls[i].cat = cat;
-		  var item = {cat:g_currurls[i].cat,url:g_currurls[i].url};
+		  var catStr = g_newscats[parseInt(cat-1)];
+		  var item = {cat:g_currurls[i].cat,url:g_currurls[i].url,catStr:catStr};
 		  catUrls.push(item);
 	  }
 	}
