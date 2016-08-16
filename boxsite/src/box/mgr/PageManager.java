@@ -53,10 +53,11 @@ public class PageManager extends MgrBase{
 		PageManager.getInstance().init();
 //		PageManager.getInstance().getNews(10, 192492392);
 //		PageManager.getInstance().resetTrainingurls();
+//		PageManager.getInstance().resetCatUrlsByTitle();
 //		PageManager.getInstance().findPagesMainContentAndTerms("techcrunch.cn");
-//		PageManager.getInstance().findPagesMainContentAndTerms("sina.com.cn");//,techcrunch.cn,techweb.com.cn
+		PageManager.getInstance().findPagesMainContentAndTerms("sina.com.cn");//,techcrunch.cn,techweb.com.cn
 //		PageManager.getInstance().findPagesMainContentAndTerms("sootoo.com");
-		PageManager.getInstance().resetCatUrlsByTitle();
+//		PageManager.getInstance().resetCatUrlsByTitle();
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
 //		itemid = -2053154274 ; //		,-1873341786
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
@@ -382,6 +383,19 @@ public class PageManager extends MgrBase{
 		return retstr;
 	}
 	
+	public String getSiteTrainingUrls(String sitekey,int catid){
+		Map<String,WebUrl> urls = allSiteUrlsMap.get(sitekey);
+		if (urls!=null){
+			Set<WebUrl> notUrls = new HashSet<WebUrl>();
+			for (WebUrl url:urls.values()){
+				if (url.getCat()==catid)
+					notUrls.add(url);
+			}
+			return JSON.toJSONString(notUrls);
+		}
+		return null;
+	}
+	
 	public String getSiteTrainingUrls(String sitekey){
 		Map<String,WebUrl> urls = allSiteUrlsMap.get(sitekey);
 		if (urls!=null){
@@ -511,7 +525,7 @@ public class PageManager extends MgrBase{
 				TopItem topitem = parser.parse(item.getUrl(), pageContent);
 				if (topitem!=null){
 					Map<String,Integer> termsMap = new HashMap<String,Integer>();
-					processor.getWordTerms(topitem.getContent(), termsMap);
+					processor.getWordTerms(topitem.getContent(), termsMap,2);
 					
 					  //通过比较器实现比较排序 
 					List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
@@ -541,7 +555,7 @@ public class PageManager extends MgrBase{
 	
 	public void resetCatUrlsByTitle(){
 		for (String sitekey:allSiteUrlsMap.keySet()){
-			if (!sitekey.equalsIgnoreCase("ikanchai.com"))continue;
+			if (!sitekey.equalsIgnoreCase("sina.com.cn"))continue;
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
 			int totalCount = siteUrlsMap.size();
 			int catCount = 0;
@@ -686,7 +700,7 @@ public class PageManager extends MgrBase{
 				TopItem topitem = parser.parse(item.getUrl(), pageContent);
 				if (topitem!=null){
 					Map<String,Integer> termsMap = new HashMap<String,Integer>();
-					processor.getWordTerms(topitem.getContent(), termsMap);
+					processor.getWordTerms(topitem.getContent(), termsMap,1);
 					
 					  //通过比较器实现比较排序 
 					List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 

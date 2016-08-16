@@ -195,13 +195,13 @@ public class BaseTopItemParser implements ITopItemParser {
 //		catids.add(51);
 //		int r1 = random.nextInt(6);
 		int catid = -1;
-//		catid = newsClassifier.testClassify2(titem);
+		catid = newsClassifier.testClassify2(titem);
 //		catid = newsClassifier.testClassify(titem);
 //		if (catid<=0){
 //		}
 //		log.warn("classify catid: "+catid+":"+url);
 		
-//		titem.setCat(catid);
+		titem.setCat(catid);
 		titem.setCrDate(new Date());
 		String urlDate = getSiteUrlDate(url);
 		long  ctime = _formateTime(urlDate);

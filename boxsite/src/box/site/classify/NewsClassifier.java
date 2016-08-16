@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -142,6 +144,7 @@ public class NewsClassifier {
 			List<File> files = FileUtil.getFiles(f.getAbsolutePath());
 			log.warn("push training data: "+f.getName());
 			Map<String,Integer> termsMap = new HashMap<String,Integer>();
+			List<Map.Entry<String,Integer>> mappingList = null;
 			for (File ff:files){
 					String pageContent = FileUtil.readFile(ff.getAbsoluteFile());
 					JSONArray ss = JSON.parseArray(pageContent);
@@ -154,14 +157,22 @@ public class NewsClassifier {
     					else
     						termsMap.put(key, count);
 					}
+					mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
+					  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
+					   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
+						   return mapping2.getValue().compareTo(mapping1.getValue()); 
+					   } 
+					  }); 					
 			}
-			FileUtil.writeFile(trainingPath+"/"+f.getName()+".data",JSON.toJSONString(termsMap));
+			String mapStr = "";
+			for (Map.Entry<String,Integer> ss:mappingList){
+				mapStr += ss.getKey()+":"+ss.getValue()+"\n";
+			}
+			FileUtil.writeFile(trainingPath+"/"+f.getName()+".data",mapStr);
 		}		
 	}
 	
 	public void trainingClassifiers(){
-		//搬移已分类page到training path:
-
 		Pipe instancePipe = new SerialPipes (new Pipe[] {
 				new Target2Label (),							  // Target String -> class label
 				new Input2CharSequence (),				  // Data File -> String containing contents
@@ -411,6 +422,7 @@ public class NewsClassifier {
 
 	public static void main(String[] args) {
 		NewsClassifier classifier = new NewsClassifier();
+//		classifier.moveTrainingTerms();
 		classifier.mregeTrainingTerms();
 //		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
 //		String sitekey = "sina.com.cn";

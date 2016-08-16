@@ -136,7 +136,7 @@ public class SiteTermProcessor implements PageProcessor{
 			List<File> files = FileUtil.getFiles(folder.getAbsolutePath());
 			for (File f:files){
 				String content = FileUtil.readFile(f);
-				getWordTerms(content,termsMap);
+				getWordTerms(content,termsMap,1);
 			}
 			
 			  //通过比较器实现比较排序 
@@ -235,7 +235,7 @@ public class SiteTermProcessor implements PageProcessor{
 		return urls;
 	}
 	
-	public void getWordTerms(String word,Map<String,Integer> termsMap){
+	public void getWordTerms(String word,Map<String,Integer> termsMap,int minLength){
 		//切割分词:
 		List<SegToken> segToken = segmenter.process(word, SegMode.INDEX);
 		for (SegToken token:segToken){
@@ -254,7 +254,7 @@ public class SiteTermProcessor implements PageProcessor{
 			//字符过滤:
 			String w1 = filter(w);
 			
-			if (w1.trim().length()<=0) continue;
+			if (w1.trim().length()<minLength) continue;	//最小长度限制
 			
 			if (termsMap.containsKey(w1))
 				termsMap.put(w1, termsMap.get(w1).intValue()+1);
@@ -272,7 +272,7 @@ public class SiteTermProcessor implements PageProcessor{
 		for (String word:words){
 //			log.warn("words "+word);
 			if (word==null||word.trim().length()<=0) continue;
-			getWordTerms(word,termsMap);
+			getWordTerms(word,termsMap,1);
 		}
 		return termsMap;
 	}

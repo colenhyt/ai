@@ -20,6 +20,7 @@ function querySitekeys()
 	var keystr = cfeval(data.responseText);
 	
 	var content = ""
+	//未分类
 	for (var i=0;i<keystr.length;i++){
 	var key = keystr[i];
 	 content += "<a href=\"javascript:queryUrls('"+key+"',0)\">"+key+"</a> ";
@@ -29,6 +30,7 @@ function querySitekeys()
 	var tag = document.getElementById("keysdiv");
 	tag.innerHTML = content;
 	
+	//已分类
 	content = "";
 	for (var i=0;i<keystr.length;i++){
 	var key = keystr[i];
@@ -39,11 +41,23 @@ function querySitekeys()
 	tag = document.getElementById("trainingkeysdiv");
 	tag.innerHTML = content;
 	
+	//分类名:
+	content = "";
+	if (g_sitekey=="")
+	 g_sitekey = "sina.com.cn";
+	 for (var k=0;k<g_newscats.length;k++){
+	  var cat = k+1;
+	  content += "<a href=\"javascript:queryUrls('"+g_sitekey+"',3,"+cat+")\">"+g_newscats[k]+"</a> ";
+	  if (i>0&&i%8==0)
+	   content += "<br>";
+	 }
+	 tag = document.getElementById("catworddiv");
+	tag.innerHTML = content;
 }
 
 querySitekeys();
 
-function queryUrls(sitekey,type)
+function queryUrls(sitekey,type,catid)
 {
 	var dataParam = "sitekey="+sitekey;
 	if (type!=null) {
@@ -51,6 +65,8 @@ function queryUrls(sitekey,type)
 	 }
 	  
 	dataParam += "&type="+g_type;
+	if (catid!=null)
+	dataParam += "&catid="+catid;
 	  
 	g_sitekey = sitekey;
 	try    {
