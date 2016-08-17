@@ -1,7 +1,9 @@
 package box.site.classify;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.TokenSequenceLowercase;
 import cc.mallet.pipe.TokenSequenceRemoveStopwords;
 import cc.mallet.pipe.iterator.FileIterator;
-import cc.mallet.pipe.iterator.UnlabeledFileIterator;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
@@ -53,7 +54,7 @@ public class NewsClassifier {
 	public final static int CAT_COMPANY = 4;
 	public final static int CAT_PEOPLE = 5;
 	public final static int CAT_STARTUP = 6;	
-	private String trainingPath ="data/training";
+	private String trainingPath ="data/training/";
 	private Set<String>  peopleSet = new HashSet<String>();
 	private Set<String>  comSet = new HashSet<String>();
 	public Map<String,List<String>> catKeywords = new HashMap<String,List<String>>();
@@ -94,15 +95,15 @@ public class NewsClassifier {
 		}
 		
 		File classifyFile = new File(trainingPath+"news.classifier");
-//		try {
-//			FileInputStream fis = new FileInputStream(classifyFile);
-//           ObjectInputStream ois = new ObjectInputStream(fis);  
-//           classifier = (Classifier) ois.readObject(); 
-//           ois.close();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}  
+		try {
+			FileInputStream fis = new FileInputStream(classifyFile);
+           ObjectInputStream ois = new ObjectInputStream(fis);  
+           classifier = (Classifier) ois.readObject(); 
+           ois.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
 	}
 	
 	public void moveTrainingPages(){
@@ -202,32 +203,30 @@ public class NewsClassifier {
 		TopItem item = new TopItem();
 		item.setContent("李彦宏马云");
 		
-		Iterator<Instance> i2 = new StringIterator (item.getContent(), null);
-		Iterator<Instance> iterator0 = 
-				classifier.getInstancePipe().newIteratorFrom(i2);
-		
-//		InstanceList ilist2 = initPipe(21,item);
-//		ilist2.
-//		double acc1 = classifier.getAccuracy(ilist2);
-		
-		while (iterator0.hasNext()) {
-			Instance instance = iterator0.next();
-			Labeling labeling = 
-					classifier.classify(instance).getLabeling();
-			log.warn("class:"+1);
-		}
+		Pipe pp = classifier.getInstancePipe();
+//		this.testClassify(item);
+//		Iterator<Instance> i2 = new StringIterator (item.getContent(), null);
+//		Iterator<Instance> iterator0 = 
+//				classifier.getInstancePipe().newIteratorFrom(i2);
+//		
+//		while (iterator0.hasNext()) {
+//			Instance instance = iterator0.next();
+//			Labeling labeling = 
+//					classifier.classify(instance).getLabeling();
+//			log.warn("class:"+1);
+//		}
 		
 //		log.warn("classify:"+ acc1);
 		
 		
-		File[] directories = new File[1];
-		List<File> files = FileUtil.getFolders("C:\\boxsite\\data\\training\\2");
-//		for (int i = 0; i < files.size(); i++) {
-			directories[0] = new File("C:\\boxsite\\data\\2");
-//		}
-		Iterator<Instance> fileIterator = new UnlabeledFileIterator (directories);
-		Iterator<Instance> iterator = 
-			classifier.getInstancePipe().newIteratorFrom(fileIterator);
+//		File[] directories = new File[1];
+////		List<File> files = FileUtil.getFolders("C:\\boxsite\\data\\training\\2");
+////		for (int i = 0; i < files.size(); i++) {
+////			directories[0] = new File("C:\\boxsite\\data\\2");
+////		}
+//		Iterator<Instance> fileIterator = new UnlabeledFileIterator (directories);
+//		Iterator<Instance> iterator = 
+//			classifier.getInstancePipe().newIteratorFrom(fileIterator);
 		
 		// Write classifications to the output file
 		PrintStream out = null;
@@ -238,25 +237,25 @@ public class NewsClassifier {
 		// Stop growth on the alphabets. If this is not done and new
 		// features are added, the feature and classifier parameter
 		// indices will not match.  
-		classifier.getInstancePipe().getDataAlphabet().stopGrowth();
-		classifier.getInstancePipe().getTargetAlphabet().stopGrowth();
+//		classifier.getInstancePipe().getDataAlphabet().stopGrowth();
+//		classifier.getInstancePipe().getTargetAlphabet().stopGrowth();
 		
-		while (iterator.hasNext()) {
-			Instance instance = iterator.next();
-			
-			Labeling labeling = 
-				classifier.classify(instance).getLabeling();
-
-			StringBuilder output = new StringBuilder();
-			output.append(instance.getName());
-
-			for (int location = 0; location < labeling.numLocations(); location++) {
-				output.append("\t" + labeling.labelAtLocation(location));
-				output.append("\t" + labeling.valueAtLocation(location));
-			}
-
-			out.println(output);
-		}
+//		while (iterator.hasNext()) {
+//			Instance instance = iterator.next();
+//			
+//			Labeling labeling = 
+//				classifier.classify(instance).getLabeling();
+//
+//			StringBuilder output = new StringBuilder();
+//			output.append(instance.getName());
+//
+//			for (int location = 0; location < labeling.numLocations(); location++) {
+//				output.append("\t" + labeling.labelAtLocation(location));
+//				output.append("\t" + labeling.valueAtLocation(location));
+//			}
+//
+//			out.println(output);
+//		}
 		
 //		initPipe(2,item)
 //		double acc2 = classifier.getAccuracy(ilists[1]);
@@ -354,7 +353,9 @@ public class NewsClassifier {
 			Iterator<Instance> iterator0 = 
 					classifier.getInstancePipe().newIteratorFrom(i2);
 			
-			if (iterator0.hasNext()) {
+			Pipe pp = classifier.getInstancePipe();
+			
+			while (iterator0.hasNext()) {
 				Instance instance = iterator0.next();
 				Labeling labeling = 
 						classifier.classify(instance).getLabeling();
@@ -422,16 +423,18 @@ public class NewsClassifier {
 
 	public static void main(String[] args) {
 		NewsClassifier classifier = new NewsClassifier();
-//		classifier.moveTrainingTerms();
-		classifier.mregeTrainingTerms();
-//		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
-//		String sitekey = "sina.com.cn";
-//		WebUrl item  = new WebUrl();
-//		item.setUrl("http://tech.sina.com.cn/i/2016-06-21/doc-ifxtfrrf0763600.shtml");
-//		String path = "data/pages/"+sitekey+"/"+item.getUrl().hashCode()+".html";
-//		String pageContent = FileUtil.readFile(path);
-//		TopItem topitem = parser.parse(item.getUrl(), pageContent);		
+//		classifier.moveTrainingPages();
 //		classifier.trainingClassifiers();
+//		classifier.moveTrainingTerms();
+//		classifier.mregeTrainingTerms();
+		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
+		String sitekey = "sina.com.cn";
+		WebUrl item  = new WebUrl();
+		item.setUrl("http://tech.sina.com.cn/i/2016-06-21/doc-ifxtfrrf0763600.shtml");
+		String path = "data/pages/"+sitekey+"/"+item.getUrl().hashCode()+".html";
+		String pageContent = FileUtil.readFile(path);
+		TopItem topitem = parser.parse(item.getUrl(), pageContent);		
+		classifier.testClassify(topitem);
 	}
 
 }

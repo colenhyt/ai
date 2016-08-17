@@ -115,11 +115,13 @@ public class CharSequence2GBKTokenSequence extends Pipe implements Serializable
 	private void writeObject (ObjectOutputStream out) throws IOException {
 		out.writeInt(CURRENT_SERIAL_VERSION);
 		out.writeObject(lexer);
+		out.writeObject(segmenter);
 	}
 	
 	private void readObject (ObjectInputStream in) throws IOException, ClassNotFoundException {
 		int version = in.readInt ();
 		lexer = (CharSequenceLexer) in.readObject();
+		segmenter = (JiebaSegmenter)in.readObject();
 	}
 
 
