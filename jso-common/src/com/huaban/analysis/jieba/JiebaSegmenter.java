@@ -1,5 +1,6 @@
 package com.huaban.analysis.jieba;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map;
 import com.huaban.analysis.jieba.viterbi.FinalSeg;
 
 
-public class JiebaSegmenter {
+public class JiebaSegmenter implements Serializable{
     private static WordDictionary wordDict = WordDictionary.getInstance();
     private static FinalSeg finalSeg = FinalSeg.getInstance();
 

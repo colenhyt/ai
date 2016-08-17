@@ -142,6 +142,7 @@ public class HTMLInfoSupplier implements Serializable{
 		divElements=totalJerio.findAllElements("div");
 	}
 	
+	
 	public static List<String> getMainTerms(Document doc){
 		List<String> words = new ArrayList<String>();
 		Elements all = doc.getAllElements();
