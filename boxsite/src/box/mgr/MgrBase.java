@@ -32,10 +32,10 @@ public class MgrBase {
 	public RedisConfig redisCfg;
 	public JSONObject cfgObj;
 	public int maxStockAmount = 100000000;
-	protected String rootPath = "d:/boxsite/data/";
+	public String rootPath = "d:/boxsite/data/";
 	protected String userFilePath = rootPath+"users.json";
 	protected String pagesPath = rootPath+"pages/";
-	protected String traniningpath = rootPath+"training/";
+	public String traniningpath = rootPath+"training/";
 	protected String itemPath = rootPath+"items/";
 	protected String listPath = rootPath+"list/";
 	protected String viewPath = rootPath+"views/";

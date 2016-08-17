@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
@@ -53,9 +54,9 @@ public class PageManager extends MgrBase{
 		PageManager.getInstance().init();
 //		PageManager.getInstance().getNews(10, 192492392);
 //		PageManager.getInstance().resetTrainingurls();
-//		PageManager.getInstance().resetCatUrlsByTitle();
+		PageManager.getInstance().resetCatUrlsByTitle();
 //		PageManager.getInstance().findPagesMainContentAndTerms("techcrunch.cn");
-		PageManager.getInstance().findPagesMainContentAndTerms("sina.com.cn");//,techcrunch.cn,techweb.com.cn
+//		PageManager.getInstance().findPagesMainContentAndTerms("sina.com.cn");//,techcrunch.cn,techweb.com.cn
 //		PageManager.getInstance().findPagesMainContentAndTerms("sootoo.com");
 //		PageManager.getInstance().resetCatUrlsByTitle();
 //		PageManager.getInstance()._findNewsitems(51, itemid, dir, -1);
@@ -97,7 +98,7 @@ public class PageManager extends MgrBase{
 		
 		sitekeys = new HashSet<String>();
 		
-		parser = new BaseTopItemParser(dnaPath);
+//		parser = new BaseTopItemParser(dnaPath);
 		
 		String userContent = FileUtil.readFile(userFilePath);
 		if (userContent.trim().length()>0){
@@ -401,7 +402,7 @@ public class PageManager extends MgrBase{
 		if (urls!=null){
 			Set<WebUrl> notUrls = new HashSet<WebUrl>();
 			for (WebUrl url:urls.values()){
-				if (url.getCat()>0)
+				if (url.getCat()>0&&url.getCatStr()==null)
 					notUrls.add(url);
 			}
 			return JSON.toJSONString(notUrls);
@@ -414,21 +415,27 @@ public class PageManager extends MgrBase{
 		if (urls!=null){
 			Set<WebUrl> notUrls = new HashSet<WebUrl>();
 			for (WebUrl url:urls.values()){
-				if (isAll||url.getCat()<=0){
-					 String termPath = super.termPath+sitekey+"/"+url.getUrl().hashCode()+".terms";
-					 String content = FileUtil.readFile(termPath);
-						JSONArray ss = JSON.parseArray(content);
-						String termStr = "";
-						if (ss!=null){
-						int count = ss.size()<15?ss.size():15;
-						for (int i=0;i<count;i++){
-							JSONObject obj = (JSONObject)ss.get(i);
-							termStr += obj.getString("key")+":"+obj.getInteger("value")+";";
-							if (i%9==8)
-								termStr += "<br>";
-						}	
-						}
-						url.setTermsStr(termStr);
+				if (isAll||url.getCat()<=0||(url.getCatStr()!=null&&url.getCatStr().equals("000"))){
+//					String path = super.pagesPath+sitekey+"/"+url.getUrl().hashCode()+".html";
+//					String pageContent = FileUtil.readFile(path);
+//					TopItem topitem = parser.parse(url.getUrl(), pageContent);
+//					if (topitem!=null){
+//						url.setCat(topitem.getCat());
+//					}
+//					 String termPath = super.termPath+sitekey+"/"+url.getUrl().hashCode()+".terms";
+//					 String content = FileUtil.readFile(termPath);
+//						JSONArray ss = JSON.parseArray(content);
+//						String termStr = "";
+//						if (ss!=null){
+//						int count = ss.size()<15?ss.size():15;
+//						for (int i=0;i<count;i++){
+//							JSONObject obj = (JSONObject)ss.get(i);
+//							termStr += obj.getString("key")+":"+obj.getInteger("value")+";";
+//							if (i%9==8)
+//								termStr += "<br>";
+//						}	
+//						}
+//						url.setTermsStr(termStr);
 					notUrls.add(url);
 				}
 			}
@@ -513,35 +520,6 @@ public class PageManager extends MgrBase{
 		}
 	}
 	
-	public void findPagesMainContentAndTerms(String sitekey){
-		BaseTopItemParser parser= new BaseTopItemParser(super.dnaPath);
-		SiteTermProcessor processor = null;
-			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
-			String url = "http://www."+sitekey;
-			processor = new SiteTermProcessor(url,10);
-			for (WebUrl item:siteUrlsMap.values()){
-				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
-				String pageContent = FileUtil.readFile(path);
-				TopItem topitem = parser.parse(item.getUrl(), pageContent);
-				if (topitem!=null){
-					Map<String,Integer> termsMap = new HashMap<String,Integer>();
-					processor.getWordTerms(topitem.getContent(), termsMap,2);
-					
-					  //通过比较器实现比较排序 
-					List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
-				  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
-				   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
-					   return mapping2.getValue().compareTo(mapping1.getValue()); 
-				   } 
-				  }); 
-				  String termPath = super.termPath+sitekey+"/";
-					String fileName = termPath +item.getUrl().hashCode()+".terms";
-					FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
-					log.warn(sitekey+"/"+item.getUrl().hashCode()+" get terms "+termsMap.size());
-				}else
-					log.warn("could not parse item: "+item.getUrl().hashCode());
-			}
-	}
 	public void resetTrainingurls(){
 		for (String sitekey:allSiteUrlsMap.keySet()){
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
@@ -560,11 +538,13 @@ public class PageManager extends MgrBase{
 			int totalCount = siteUrlsMap.size();
 			int catCount = 0;
 			for (WebUrl item:siteUrlsMap.values()){
+				if (item.getCat()>0) continue;
 				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
 				String pageContent = FileUtil.readFile(path);
 				TopItem topitem = parser.parse(item.getUrl(), pageContent);
 				if (topitem!=null){
 					item.setCat(topitem.getCat());
+					item.setCatStr("000");
 					if (topitem.getCat()>0){
 						catCount++;
 					}
@@ -717,6 +697,36 @@ public class PageManager extends MgrBase{
 					log.warn("could not parse item: "+item.getUrl().hashCode());
 			}
 		}		
+	}
+
+	public void findPagesMainContentAndTerms(String sitekey){
+		BaseTopItemParser parser= new BaseTopItemParser(super.dnaPath);
+		SiteTermProcessor processor = null;
+			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
+			String url = "http://www."+sitekey;
+			processor = new SiteTermProcessor(url,10);
+			for (WebUrl item:siteUrlsMap.values()){
+				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
+				String pageContent = FileUtil.readFile(path);
+				TopItem topitem = parser.parse(item.getUrl(), pageContent);
+				if (topitem!=null){
+					Map<String,Integer> termsMap = new HashMap<String,Integer>();
+					processor.getWordTerms(topitem.getContent(), termsMap,2);
+					
+					  //通过比较器实现比较排序 
+					List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
+				  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
+				   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
+					   return mapping2.getValue().compareTo(mapping1.getValue()); 
+				   } 
+				  }); 
+				  String termPath = super.termPath+sitekey+"/";
+					String fileName = termPath +item.getUrl().hashCode()+".terms";
+					FileUtil.writeFile(fileName, JSON.toJSONString(mappingList));
+					log.warn(sitekey+"/"+item.getUrl().hashCode()+" get terms "+termsMap.size());
+				}else
+					log.warn("could not parse item: "+item.getUrl().hashCode());
+			}
 	}
 	
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import box.mgr.PageManager;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
@@ -65,6 +66,8 @@ public class NewsClassifier {
 	private Classifier classifier;
 	
 	public NewsClassifier(){
+		trainingPath = PageManager.getInstance().traniningpath;
+		String rootPath = PageManager.getInstance().rootPath;
 		String content = FileUtil.readFile(trainingPath+"people.json");
 		if (content.trim().length()>0){
 			List<String> peopleList = (List<String>)JSON.parse(content);
@@ -76,7 +79,7 @@ public class NewsClassifier {
 			comSet.addAll(companyList);
 		}
 		
-		String keyContent = FileUtil.readFile("data/catkeys.txt");
+		String keyContent = FileUtil.readFile(rootPath+"catkeys.txt");
 		String[] keyStrs = keyContent.split("\n");
 		int catid = 1;
 		for (String keyStr:keyStrs){
@@ -275,6 +278,10 @@ public class NewsClassifier {
 		}		
 	}
 	
+	public String getCatStr(int catid){
+		return catStrs.get(catid);
+	}
+	
 	public String getTitleKey(String title){
 		
 		for (int i=1;i<=catIds.size();i++){
@@ -365,8 +372,16 @@ public class NewsClassifier {
 				for (int location = 0; location < labeling.numLocations(); location++) {
 					Label label = labeling.labelAtLocation(location);
 					double value = labeling.valueAtLocation(location);
+					float dd = Double.valueOf(value).floatValue();
+//					log.warn(label.toString()+":"+value);
+//					System.out.printf(label.toString()+":%.30f \n",value);
+					if (label.toString().indexOf("16")>0){
+						int tt = 10;
+					}
 					if (catValue<=0||value>catValue){
+//						System.out.printf("%.30f, %.30f \n",catValue,value);
 						catLabel = label;
+						catValue = value;
 					}
 				}				
 				if (catLabel!=null){
@@ -384,8 +399,8 @@ public class NewsClassifier {
 			log.warn("item classify failed:"+e.getMessage());
 			e.printStackTrace();
 		}
-		log.warn("def cat:"+testCatid);
-		log.warn(item.getContent());
+//		log.warn("def cat:"+testCatid);
+//		log.warn(item.getContent());
 		return testCatid;
 	}
 	
