@@ -192,7 +192,7 @@ public class NewsClassifier {
 			int catid = Integer.valueOf(f.getName());
 			
 			// Create an empty list of the training instances
-			String directories = trainingPath+"/"+catid;
+			String directories = trainingPath+catid;
 			ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
 	
 //			InstanceList[] ilists = ilist.split (new double[] {.8, .2});
@@ -371,8 +371,10 @@ public class NewsClassifier {
 				}				
 				if (catLabel!=null){
 					String strLabel = catLabel.toString();
-					String[] strs = strLabel.split("/");
-					String post = strs[strs.length-1];	
+					int startIndex = strLabel.lastIndexOf("/");
+					if (strLabel.lastIndexOf("\\")>0)
+						startIndex = strLabel.lastIndexOf("\\");
+					String post = strLabel.substring(startIndex+1);
 					if (post.matches("[0-9]+"))
 						testCatid = Integer.valueOf(post);
 				}
@@ -382,6 +384,8 @@ public class NewsClassifier {
 			log.warn("item classify failed:"+e.getMessage());
 			e.printStackTrace();
 		}
+		log.warn("def cat:"+testCatid);
+		log.warn(item.getContent());
 		return testCatid;
 	}
 	
