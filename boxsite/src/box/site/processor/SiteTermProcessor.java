@@ -41,6 +41,7 @@ public class SiteTermProcessor implements PageProcessor{
 	JiebaSegmenter segmenter;
 	String domainName;
 	Set<String>	stoplistWords;
+	Set<String>	cityWords;
 	Set<String>	filterlistWords;
 	private String siteTermsPath;
 	private String sitePagesPath;
@@ -266,9 +267,8 @@ public class SiteTermProcessor implements PageProcessor{
 	
 	public void getWordTerms(String word,Map<String,Integer> termsMap,int minLength){
 		//切割分词:
-		List<SegToken> segToken = segmenter.process(word, SegMode.INDEX);
-		for (SegToken token:segToken){
-			String w = token.word;
+		List<String> segToken = segmenter.sentenceProcess(word);
+		for (String w:segToken){
 			if (w==null||w.trim().length()<=0) continue;
 			
 			//不记录数字

@@ -370,7 +370,6 @@ public class NewsClassifier {
 		//搬移已分类page到training path:
 		List<File> folders = FileUtil.getFolders("data/training/");
 		SiteTermProcessor processor = new SiteTermProcessor("http://www.sohu.com",10);
-		int i = 0;
 		for (File f:folders){
 			String catStr = f.getName();
 			List<File> files = FileUtil.getFiles(f.getAbsolutePath());
@@ -387,12 +386,15 @@ public class NewsClassifier {
 			   } 
 			  }); 			
 			String wordContent = "";
+			int i = 0;
 			for (Map.Entry<String,Integer> item:mappingList){
-				wordContent += item.getKey()+":"+item.getValue()+"\n";
+				wordContent += item.getKey()+",";
+				i++;
+//				if (i%10==9)
+//					wordContent += "\n";
 			}
 			if (wordContent.length()>0){
 				FileUtil.writeFile("data/training/"+catStr+".data",wordContent);
-				i++;
 			}
 		}
 				
@@ -441,6 +443,16 @@ public class NewsClassifier {
 		NewsClassifier classifier = new NewsClassifier();
 		classifier.moveTrainingWords();
 		
+//		JiebaSegmenter segmenter = new JiebaSegmenter();
+//		String sentence = FileUtil.readFile("data/pages2/163.com/2477114.data");
+//		List<SegToken> segToken = segmenter.process(sentence, SegMode.INDEX);
+//		List<String> strs = new ArrayList<String>();
+//		for (SegToken s:segToken){
+//			strs.add(s.word);
+//		}
+//		List<String> tokens = segmenter.sentenceProcess(sentence);
+//		System.out.println(JSON.toJSONString(tokens.size()));
+//		System.out.println(JSON.toJSONString(strs.size()));
 //	      WordCount wc0=new WordCount();
 //	        wc0.wordCount("data/news/files","data/news/frequency");
 ////	        //create matrix
