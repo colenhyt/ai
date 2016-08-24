@@ -1,9 +1,7 @@
 package box.site.classify;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +14,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.jdom2.input.SAXBuilder;
 
 import box.mgr.PageManager;
 import box.site.model.TopItem;
@@ -47,9 +51,6 @@ import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
 
 import es.util.FileUtil;
-import es.util.tfidf.FeatureSelect;
-import es.util.tfidf.WordCount;
-import es.util.tfidf.WordDocMatrix;
 
 public class NewsClassifier {
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -112,6 +113,44 @@ public class NewsClassifier {
 //		}  
 	}
 	
+	public void findSogouPageTerms(){
+		String path = "D:\\搜狗词库\\1个月搜狗新闻数据\\";
+		String writePath = "data/pages2/";
+		List<File> files = FileUtil.getFiles(path);
+		try {
+			for (File f:files){
+	          //读取prop.xml资源
+				String text = FileUtil.readFile(f,"gbk");
+				text = "<root>"+text+"</root>";
+			       Document   doc = DocumentHelper.parseText(text);
+	        //获取根元素(prop)
+	          Element root = doc.getRootElement();		
+	          List<Element> messList = root.elements("doc");
+	          for (Element ee:messList){
+	        	  List<Element> e0 = ee.elements("url");
+	        	  String url = e0.get(0).getText();
+	        	  if (url.indexOf("it.sohu.com")>0)
+	        	  {
+		        	  List<Element> e1 = ee.elements("contenttitle");
+		        	  List<Element> e2 = ee.elements("content");
+		        	  List<Element> e3 = ee.elements("docno");
+		        	  String contenttitle = e1.get(0).getText();
+		        	  String content = e2.get(0).getText();
+		        	  String docno = e3.get(0).getText();
+		        	  if (content.trim().length()>0){
+		        		  String context = contenttitle+","+content;
+		        		  FileUtil.writeFile("data/sogou/"+url.hashCode()+".data", context);
+		        		  
+		        	  }
+	        	  }
+	        	  log.warn(url);
+	          }
+			}
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public void moveTrainingPages(){
 		String path = "data/pages/";
 		String writePath = "data/pages2/";
@@ -441,7 +480,7 @@ public class NewsClassifier {
 		int a = str.hashCode();
 		//-892462432
 		NewsClassifier classifier = new NewsClassifier();
-		classifier.moveTrainingWords();
+		classifier.findSogouPageTerms();
 		
 //		JiebaSegmenter segmenter = new JiebaSegmenter();
 //		String sentence = FileUtil.readFile("data/pages2/163.com/2477114.data");
