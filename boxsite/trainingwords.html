@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+  <link href="dist/css/zui.css" rel="stylesheet">
+		<title>trading words</title>
+	</head>
+  <script src="dist/js/jquery-2.0.3.js"></script>
+  <script src="dist/js/zui.min.js"></script>
+  <script src="dist/js/json2.js"></script>
+  <script src="static/js/util.js"></script>
+  <style type="text/css">
+  body{font-size:20px;}
+    </style>
+</head>
+<body>
+        <table style='width:1500px;align:center'>
+          <tr>
+          <td>
+          <input type='button' value='一级词' onclick='defineWordLevel(1)' style='position:fixed;left:900px;top:300px'>
+          <input type='button' value='二级词' onclick='defineWordLevel(2)' style='position:fixed;left:1020px;top:300px'>
+          <input type='button' value='三级词' onclick='defineWordLevel(3)' style='position:fixed;left:1140px;top:300px'>
+          </td>
+          </tr>
+          </table>
+
+         <table style='width:1500px;align:center'>
+          <tr><td>
+          <div id="catstr">
+          </div>
+          </td>
+          </tr>
+          <tr><td>
+          <div id="words">
+          </div>
+          </td>
+          </tr>
+          </table>
+     	</body>	
+  <script src="static/traning/trainwords.js"></script>
+    	
+</html>
