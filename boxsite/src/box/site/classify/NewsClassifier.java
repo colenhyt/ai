@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,9 +21,10 @@ import box.mgr.PageManager;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
+import box.site.processor.SiteTermProcessor;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
-import cc.mallet.classify.NaiveBayesTrainer;
+import cc.mallet.classify.DecisionTreeTrainer;
 import cc.mallet.pipe.Input2CharSequence;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.PrintInputAndTarget;
@@ -47,6 +47,9 @@ import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import com.huaban.analysis.jieba.SegToken;
 
 import es.util.FileUtil;
+import es.util.tfidf.FeatureSelect;
+import es.util.tfidf.WordCount;
+import es.util.tfidf.WordDocMatrix;
 
 public class NewsClassifier {
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -97,25 +100,27 @@ public class NewsClassifier {
 				catKeywords.put(strs[0], words);
 		}
 		
-		File classifyFile = new File(trainingPath+"news.classifier");
-		try {
-			FileInputStream fis = new FileInputStream(classifyFile);
-           ObjectInputStream ois = new ObjectInputStream(fis);  
-           classifier = (Classifier) ois.readObject(); 
-           ois.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
+		File classifyFile = new File(trainingPath+"news_dt.classifier");
+//		try {
+//			FileInputStream fis = new FileInputStream(classifyFile);
+//           ObjectInputStream ois = new ObjectInputStream(fis);  
+//           classifier = (Classifier) ois.readObject(); 
+//           ois.close();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}  
 	}
 	
 	public void moveTrainingPages(){
 		String path = "data/pages/";
+		String writePath = "data/pages2/";
 		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
 		List<File> files = FileUtil.getFiles(path);
 		for (File f:files){
 			if (f.getName().indexOf(".json")<0)continue;
 			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
+			if (!sitekey.equals("sina.com.cn")) continue;
 			String urlsContent = FileUtil.readFile(f);
 			if (urlsContent!=null&&urlsContent.trim().length()>0){
 				log.warn("push training data: "+sitekey);
@@ -123,19 +128,12 @@ public class NewsClassifier {
 				for (String url:urls.keySet()){
 					JSONObject json = urls.get(url);
 					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-					if (item.getCat()<=0) continue;
-					String fileName = item.getUrl().hashCode()+".html";
-					String fileP = path+sitekey+"/"+fileName;
+					String fileName = item.getUrl().hashCode()+".data";
+					String fileP = "data/pages2/"+sitekey+"/"+fileName;
 					File ff = new File(fileP);
 					if (!ff.exists()) continue;
-					String pageContent = FileUtil.readFile(fileP);
-					TopItem titem = parser.parse(item.getUrl(), pageContent);
-					if (titem==null) {
-						log.warn("could not find html context for: "+item.getUrl());
-						continue;
-					}
-					String pureContext = titem.getContent();
-					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
+					String pureContext = FileUtil.readFile(fileP);
+					FileUtil.writeFile("data/training/"+getCatStr(item.getCat())+"/"+item.getUrl().hashCode()+".data",pureContext);
 				}
 			}
 		}		
@@ -197,73 +195,13 @@ public class NewsClassifier {
 			// Create an empty list of the training instances
 			String directories = trainingPath+catid;
 			ilist.addThruPipe (new FileIterator (directories, FileIterator.STARTING_DIRECTORIES));
-	
-//			InstanceList[] ilists = ilist.split (new double[] {.8, .2});
-			// Create a classifier trainer, and use it to create a classifier
 		}
-		ClassifierTrainer naiveBayesTrainer = new NaiveBayesTrainer ();	
+		ClassifierTrainer naiveBayesTrainer = new DecisionTreeTrainer ();	
 		Classifier classifier = naiveBayesTrainer.train (ilist);
 		TopItem item = new TopItem();
 		item.setContent("李彦宏马云");
-		
-		Pipe pp = classifier.getInstancePipe();
-//		this.testClassify(item);
-//		Iterator<Instance> i2 = new StringIterator (item.getContent(), null);
-//		Iterator<Instance> iterator0 = 
-//				classifier.getInstancePipe().newIteratorFrom(i2);
-//		
-//		while (iterator0.hasNext()) {
-//			Instance instance = iterator0.next();
-//			Labeling labeling = 
-//					classifier.classify(instance).getLabeling();
-//			log.warn("class:"+1);
-//		}
-		
-//		log.warn("classify:"+ acc1);
-		
-		
-//		File[] directories = new File[1];
-////		List<File> files = FileUtil.getFolders("C:\\boxsite\\data\\training\\2");
-////		for (int i = 0; i < files.size(); i++) {
-////			directories[0] = new File("C:\\boxsite\\data\\2");
-////		}
-//		Iterator<Instance> fileIterator = new UnlabeledFileIterator (directories);
-//		Iterator<Instance> iterator = 
-//			classifier.getInstancePipe().newIteratorFrom(fileIterator);
-		
-		// Write classifications to the output file
-		PrintStream out = null;
 
-			out = System.out;
-
-		// gdruck@cs.umass.edu
-		// Stop growth on the alphabets. If this is not done and new
-		// features are added, the feature and classifier parameter
-		// indices will not match.  
-//		classifier.getInstancePipe().getDataAlphabet().stopGrowth();
-//		classifier.getInstancePipe().getTargetAlphabet().stopGrowth();
-		
-//		while (iterator.hasNext()) {
-//			Instance instance = iterator.next();
-//			
-//			Labeling labeling = 
-//				classifier.classify(instance).getLabeling();
-//
-//			StringBuilder output = new StringBuilder();
-//			output.append(instance.getName());
-//
-//			for (int location = 0; location < labeling.numLocations(); location++) {
-//				output.append("\t" + labeling.labelAtLocation(location));
-//				output.append("\t" + labeling.valueAtLocation(location));
-//			}
-//
-//			out.println(output);
-//		}
-		
-//		initPipe(2,item)
-//		double acc2 = classifier.getAccuracy(ilists[1]);
-//		log.warn("classify:"+ acc2);
-		String filename = trainingPath+"/news.classifier";
+		String filename = trainingPath+"/news_dt.classifier";
 		log.warn("build classfier:"+ filename);
 		//保存:
 		try {
@@ -355,6 +293,7 @@ public class NewsClassifier {
 	public int testClassify(TopItem item){
 		double accur = 0;
 		int testCatid = -1;
+		double catValue = 0;
 		try {
 			Iterator<Instance> i2 = new StringIterator (item.getContent(), null);
 			Iterator<Instance> iterator0 = 
@@ -368,7 +307,6 @@ public class NewsClassifier {
 						classifier.classify(instance).getLabeling();
 				
 				Label catLabel = null;
-				double catValue = 0;
 				for (int location = 0; location < labeling.numLocations(); location++) {
 					Label label = labeling.labelAtLocation(location);
 					double value = labeling.valueAtLocation(location);
@@ -399,11 +337,67 @@ public class NewsClassifier {
 			log.warn("item classify failed:"+e.getMessage());
 			e.printStackTrace();
 		}
-//		log.warn("def cat:"+testCatid);
-//		log.warn(item.getContent());
+		log.warn("def cat:"+this.getCatStr(testCatid));
+		System.out.printf("%.20f \n", catValue);
+		log.warn(item.getCtitle());
+//		log.warn(item.getUrl());
+//		log.warn(item.getUrl().hashCode());
 		return testCatid;
 	}
 	
+	public void nameCatWithSVM(){
+		String path = "C:\\boxlib\\document-processor-master\\test\\";
+		String labelstr = FileUtil.readFile(path+"labels.txt");
+		Map<Integer,String> labelmap = new HashMap<Integer,String>();
+		String[] labels = labelstr.split("\n");
+		for (String label:labels){
+			String[] ll = label.split("\\s+");
+			labelmap.put(Integer.valueOf(ll[0]), ll[1]);
+		}
+		String namestr = FileUtil.readFile(path+"names.list");
+		String predictstr = FileUtil.readFile(path+"predict.txt");
+		String[] pres = predictstr.split("\n");
+		String[] pres2 = new String[pres.length];
+		for (int i=0;i<pres.length;i++){
+			String ss = pres[i];
+			int cat = Double.valueOf(ss).intValue();
+			String str = labelmap.get(cat);
+			pres2[i] = str;
+		}
+		
+	}
+	public void moveTrainingWords(){
+		//搬移已分类page到training path:
+		List<File> folders = FileUtil.getFolders("data/training/");
+		SiteTermProcessor processor = new SiteTermProcessor("http://www.sohu.com",10);
+		int i = 0;
+		for (File f:folders){
+			String catStr = f.getName();
+			List<File> files = FileUtil.getFiles(f.getAbsolutePath());
+			Map<String,Integer> termsMap = new HashMap<String,Integer>();
+			for (File file:files){
+				String content = FileUtil.readFile(file);
+				processor.getWordTerms(content, termsMap,2);
+			}
+			  //通过比较器实现比较排序 
+				List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
+			  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
+			   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
+				   return mapping2.getValue().compareTo(mapping1.getValue()); 
+			   } 
+			  }); 			
+			String wordContent = "";
+			for (Map.Entry<String,Integer> item:mappingList){
+				wordContent += item.getKey()+":"+item.getValue()+"\n";
+			}
+			if (wordContent.length()>0){
+				FileUtil.writeFile("data/training/"+catStr+".data",wordContent);
+				i++;
+			}
+		}
+				
+	}
+
 	public void moveTrainingTerms(){
 		//搬移已分类page到training path:
 		List<File> files = FileUtil.getFiles("data/pages/");
@@ -441,19 +435,49 @@ public class NewsClassifier {
 	}
 
 	public static void main(String[] args) {
+		String str = "http://tech.sina.com.cn/i/2016-06-29/doc-ifxtsatm0995788.shtml";
+		int a = str.hashCode();
+		//-892462432
 		NewsClassifier classifier = new NewsClassifier();
+		classifier.moveTrainingWords();
+		
+//	      WordCount wc0=new WordCount();
+//	        wc0.wordCount("data/news/files","data/news/frequency");
+////	        //create matrix
+//	        WordDocMatrix wm=new WordDocMatrix();
+//	        wm.createMatrix("data/news/frequency", "data/news/matrix");
+////	        create features
+//		FeatureSelect fs = new FeatureSelect("data/news/db/");
+////	        FS fs=new FS();
+//	        fs.createFeatures("data/news/frequency", "data/news/matrix","data/news/features");
+	        
+//	     	
+//	        //create vector space with features:
+//	        TVSM sm0 = new TVSM();
+//	        File feaFile = new File("data/news/features");
+//	        sm0.initFeatures(feaFile);
+//	        // inst.printFeature();
+//	        File freqFile = new File("data/news/frequency");
+//	        
+//	        if (!freqFile.exists()) {
+//	            System.out.println("文件不存在，程序退出.");
+//	            System.exit(2);
+//	        }
+//	        sm0.buildDVM(freqFile);
+//	        sm0.unionVector();	        
+	 		
+//		classifier.moveTrainingWords();
 //		classifier.moveTrainingPages();
 //		classifier.trainingClassifiers();
 //		classifier.moveTrainingTerms();
 //		classifier.mregeTrainingTerms();
-		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
-		String sitekey = "sina.com.cn";
-		WebUrl item  = new WebUrl();
-		item.setUrl("http://tech.sina.com.cn/i/2016-06-21/doc-ifxtfrrf0763600.shtml");
-		String path = "data/pages/"+sitekey+"/"+item.getUrl().hashCode()+".html";
-		String pageContent = FileUtil.readFile(path);
-		TopItem topitem = parser.parse(item.getUrl(), pageContent);		
-		classifier.testClassify(topitem);
+//		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
+//		String sitekey = "sina.com.cn";
+//		WebUrl item  = new WebUrl();
+//		item.setUrl("http://tech.sina.com.cn/i/2016-06-29/doc-ifxtsatm0995788.shtml");
+//		String path = "data/pages/"+sitekey+"/"+item.getUrl().hashCode()+".html";
+//		String pageContent = FileUtil.readFile(path);
+//		TopItem topitem = parser.parse(item.getUrl(), pageContent);		
 	}
 
 }

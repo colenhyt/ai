@@ -524,6 +524,7 @@ public class PageManager extends MgrBase{
 		for (String sitekey:allSiteUrlsMap.keySet()){
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
 			for (WebUrl item:siteUrlsMap.values()){
+				item.setCatStr(null);
 				item.setCat(0);
 			}
 			File urlfile = new File(pagesPath+sitekey+"_urls.json");
@@ -532,13 +533,14 @@ public class PageManager extends MgrBase{
 	}
 	
 	public void resetCatUrlsByTitle(){
+		parser = new BaseTopItemParser(dnaPath);
 		for (String sitekey:allSiteUrlsMap.keySet()){
-			if (!sitekey.equalsIgnoreCase("sina.com.cn"))continue;
+			if (!sitekey.equalsIgnoreCase("163.com"))continue;
 			Map<String,WebUrl> siteUrlsMap = allSiteUrlsMap.get(sitekey);
 			int totalCount = siteUrlsMap.size();
 			int catCount = 0;
 			for (WebUrl item:siteUrlsMap.values()){
-				if (item.getCat()>0) continue;
+				if (item.getCat()>0&&item.getCatStr()==null) continue;
 				String path = super.pagesPath+sitekey+"/"+item.getUrl().hashCode()+".html";
 				String pageContent = FileUtil.readFile(path);
 				TopItem topitem = parser.parse(item.getUrl(), pageContent);

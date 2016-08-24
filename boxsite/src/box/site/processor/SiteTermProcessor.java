@@ -91,14 +91,18 @@ public class SiteTermProcessor implements PageProcessor{
 		
 		segmenter = new JiebaSegmenter();
 		stoplistWords = new HashSet<String>();
-		List<String> cc = FileUtil.readFileWithLine("stoplist.txt");
-		for (String w:cc){
-			stoplistWords.add(w);
+		List<File> stopfiles = FileUtil.getFiles("data/stopwords");
+		for (File file:stopfiles){
+			List<String> cc = FileUtil.readFileWithLine(file.getAbsolutePath());
+			for (String w:cc){
+				stoplistWords.add(w);
+			}			
 		}
+
 		
 		
 		filterlistWords = new HashSet<String>();
-		cc = FileUtil.readFileWithLine("filterlist.txt");
+		List<String> cc = FileUtil.readFileWithLine("filterlist.txt");
 		for (String w:cc){
 			filterlistWords.add(w);
 		}
@@ -233,6 +237,31 @@ public class SiteTermProcessor implements PageProcessor{
 			urls.put(url.getUrl(),url);
 		}
 		return urls;
+	}
+	
+	public void getWordTerms0(String word,List<String> termsList,int minLength){
+		//切割分词:
+		List<SegToken> segToken = segmenter.process(word, SegMode.INDEX);
+		for (SegToken token:segToken){
+			String w = token.word;
+			if (w==null||w.trim().length()<=0) continue;
+			
+			//不记录数字
+			if (StringHelper.isNumber(w)) continue;
+			//不记录过长词:
+			if (w.trim().length()>25){
+				log.warn("发现过长词 :"+w);
+				continue;
+			}
+			//去掉常用停用词:
+			if (stoplistWords.contains(w)) continue;
+			//字符过滤:
+			String w1 = filter(w);
+			
+			if (w1.trim().length()<minLength) continue;	//最小长度限制
+			
+			termsList.add(w1.trim());
+		}			
 	}
 	
 	public void getWordTerms(String word,Map<String,Integer> termsMap,int minLength){

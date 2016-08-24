@@ -143,8 +143,10 @@ public class BasicSiteContentGetter extends BasicContentGetter implements ISiteC
 			DomPage domPage2 = HtmlBot.getDomPageByHtml(e.toString());
 		    ContentExtractor contentExtractor = new ContentExtractor(domPage2);
 			String cc = contentExtractor.getText();
-			String end2 = cc.substring(cc.length()-20);
-			if (endText.equals(end2)){
+			String end2 = null;
+			if (cc.length()>20)
+				end2 = cc.substring(cc.length()-20);
+			if (end2!=null&&endText.equals(end2)){
 				endDivEs.add(e);
 			}
 		}
