@@ -1,4 +1,3 @@
-var g_currurls = {};
 var g_sitekey = "";
 var g_type = 0;
 
@@ -25,6 +24,11 @@ function printCatstrs()
 	 }
 	 tag = document.getElementById("catstr");
 	tag.innerHTML = content;
+	
+	tag = document.getElementById("catselect");
+	for (var k=0;k<g_newscats.length;k++){
+    tag.options.add(new Option(g_newscats[k],g_newscats[k])); //这个兼容IE与firefox  
+    }
 }
 
 printCatstrs();
@@ -33,6 +37,14 @@ function queryWords(catstr)
 {
 	var dataParam = "&cat="+catstr;
 	  
+	var tag = document.getElementById("catselect");
+	for (var i=0;i<tag.options.length;i++){
+	  if (tag.options[i].value==catstr){
+	   tag.options[i].selected = true;
+	   break;
+	  }
+	}
+	
 	g_cat = catstr;
 	
 	try    {
@@ -61,7 +73,6 @@ function queryWordsRst(data)
 	content += "</table>";
 	tag.innerHTML = content;
 	
-	g_currurls = data;
 }
 
 function defineWordLevel(wordLevel)
@@ -74,12 +85,16 @@ function defineWordLevel(wordLevel)
 		  }
 	  }
 	
+	var tag = document.getElementById("catselect");
+	var ii = tag.selectedIndex;
+	var scatstr = tag.options[ii].value;
+	
 	var strurls = JSON.stringify(catWords);
-	var dataParam = "type=2&cat="+g_cat+"&level="+wordLevel+"&catwords="+strurls;
+	var dataParam = "type=2&cat="+scatstr+"&level="+wordLevel+"&catwords="+strurls;
 	
 	try    {
 		$.ajax({type:"post",url:"/boxsite/trainingwords.jsp",data:dataParam,success:function(data){
-		 queryWordsRst(data);
+		 queryWords(g_cat);
 		}});
 	}   catch  (e)   {
 	   return false;
