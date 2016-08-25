@@ -156,6 +156,17 @@ public class BaseTopItemParser implements ITopItemParser {
 						
 	}
 	
+	public String filterTitle(String url,String _title){
+		String title = _title;
+		String sitekey = URLStrHelper.getHost(url).toLowerCase();
+		if (siteTitleEndWord.containsKey(sitekey)){
+			String endKey = siteTitleEndWord.get(sitekey);
+			if (title.indexOf(endKey)>0)
+				title = title.substring(0,title.indexOf(endKey));
+		}	
+		return title;
+	}
+	
 	@Override
 	public TopItem parse(String url,String pageContent) {
 		String sitekey = URLStrHelper.getHost(url).toLowerCase();
