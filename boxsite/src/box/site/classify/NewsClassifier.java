@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,8 +18,6 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.jdom2.input.SAXBuilder;
 
 import box.mgr.PageManager;
 import box.site.model.CatWord;
@@ -64,13 +61,12 @@ public class NewsClassifier {
 	private String trainingPath ="data/training/";
 	private Set<String>  peopleSet = new HashSet<String>();
 	private Set<String>  comSet = new HashSet<String>();
-	public Map<String,List<String>> catKeywords = new HashMap<String,List<String>>();
 	public Map<String,Integer> catIds = new HashMap<String,Integer>();
 	public Map<Integer,String> catStrs = new HashMap<Integer,String>();
 	private Map<Integer,Classifier>	classifyMap = new HashMap<Integer,Classifier>();
 	JiebaSegmenter segmenter = new JiebaSegmenter();
 	private Classifier classifier;
-	private Map<String,Map<String,CatWord>> catWordMaps = new HashMap<String,Map<String,CatWord>>();
+	private Map<String,Set<String>> catWordMaps = new HashMap<String,Set<String>>();
 	
 	public NewsClassifier(){
 		trainingPath = PageManager.getInstance().traniningpath;
@@ -89,58 +85,16 @@ public class NewsClassifier {
 		List<File> wordFiles = FileUtil.getFiles(trainingPath,"words");
 		for (File f:wordFiles){
 			String mapstr = FileUtil.readFile(f);
-			Map<String,CatWord> maps = new HashMap<String,CatWord>();
+			Set<String> wordset = new HashSet<String>();
 			if (mapstr.trim().length()>0){
-				mapstr = mapstr.replace("\n", "");
-				Map<String,JSONObject> data = (Map<String,JSONObject>)JSON.parse(mapstr);
-				for (String key:data.keySet()){
-					JSONObject itemd = data.get(key);
-					maps.put(key, (CatWord)JSON.parseObject(itemd.toJSONString(), CatWord.class));
+				String[] words = mapstr.split(",");
+				for (String word:words){
+					if (word.trim().length()<=0) continue;
+					wordset.add(word);
 				}
 			}	
-			String name = f.getName().substring(0,f.getName().indexOf(".words"));
-			catWordMaps.put(name, maps);
-		}
-		
-		String keyContent = FileUtil.readFile(rootPath+"catkeys.txt");
-		String[] keyStrs = keyContent.split("\n");
-		int catid = 1;
-		for (String keyStr:keyStrs){
-			String[] strs = keyStr.split(":");
-			List<String> words = new ArrayList<String>();
-			String catstr = strs[0];
-			catIds.put(catstr, catid);
-			catStrs.put(catid, catstr);
-			catid++;
-			if (strs.length<2) continue;
-			String[] aa = strs[1].split(",");
-			for (String a:aa){
-				words.add(a);
-			}
-			Map<String,CatWord> catMap = catWordMaps.get(catstr);
-			if (catMap==null){
-				catMap = new HashMap<String,CatWord>();
-				catWordMaps.put(catstr, catMap);
-			}
-			for (String a:aa){
-				if (catMap.containsKey(a)) continue;
-				CatWord  catword = new CatWord();
-				catword.setCatstr(catstr);
-				catword.setLevel(1);
-				catword.setWord(a);
-				catMap.put(a, catword);
-			}			
-			
-			if (words.size()>0)
-				catKeywords.put(strs[0], words);
-		}
-		for (String keycat:catWordMaps.keySet()){
-			Map<String,CatWord> catMap = catWordMaps.get(keycat);
-			String catstr = "";
-			for (String catword:catMap.keySet()){
-				catstr += catword+",";
-			}
-			FileUtil.writeFile(trainingPath+keycat+".txt", catstr);
+			String name = f.getName().substring(0,f.getName().indexOf(".txt"));
+			catWordMaps.put(name, wordset);
 		}
 		
 		File classifyFile = new File(trainingPath+"news_dt.classifier");
@@ -323,9 +277,8 @@ public class NewsClassifier {
 		
 		for (int i=1;i<=catIds.size();i++){
 			String key = catStrs.get(i);
-			if (!catKeywords.containsKey(key))continue;
-			List<String> words = catKeywords.get(key);
-			for (String word:words){
+			Set<String> wordset = catWordMaps.get(key);
+			for (String word:wordset){
 				if (title.toLowerCase().indexOf(word.toLowerCase())>=0)
 					return key;
 			}
@@ -382,11 +335,6 @@ public class NewsClassifier {
 		}
 		
 		String key = this.getTitleKey(item.getCtitle());
-		if (key!=null&&catIds.containsKey(key)){
-			//log.warn(item.getCtitle()+" 类别 :"+key+","+catIds.get(key));
-			return catIds.get(key);
-		}
-//		log.warn("未找到分类:"+item.getCtitle()+","+item.getUrl());
 		return -1;
 	}
 	
