@@ -14,6 +14,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import box.news.NewsRecommender;
 import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
@@ -256,7 +258,22 @@ public class PageManager extends MgrBase{
 		return null;
 	}
 	
-	public String getNewsCount(int catid,int itemid,int dir){
+	public String getNewsCount(HttpServletRequest request){
+		String catstr = request.getParameter("cat");
+		int catid = Integer.valueOf(catstr);
+		
+		String itemidstr = request.getParameter("itemid");
+		int itemid = 0;
+		if (itemidstr!=null&&!itemidstr.equals("undefined")){
+			 itemid = Integer.valueOf(itemidstr);
+		}
+		
+		String dirstr = request.getParameter("dir");
+		
+		int dir = 1;
+		if (dirstr!=null)
+			 dir = Integer.valueOf(dirstr);
+		
 	  int newsCount = 0;
 	  List<TopItem> retitems = _findNewsitems(catid,itemid,dir,-1);
 	  if (retitems!=null)
@@ -354,7 +371,32 @@ public class PageManager extends MgrBase{
 		return retitems;
 	}
 	
-	public String getNewslist(long clientSessionid,int catid,int itemid,int dir,int count){
+	public String getNewslist(HttpServletRequest request){
+		long clientSessionid = -1;
+		String sessionstr = request.getParameter("sessionid");
+		if (sessionstr!=null&&sessionstr.matches("[0-9]+"))
+			clientSessionid = Long.valueOf(sessionstr);
+		
+		String catstr = request.getParameter("cat");
+		int catid = Integer.valueOf(catstr);
+		
+		String itemidstr = request.getParameter("itemid");
+		int itemid = 0;
+		if (itemidstr!=null&&itemidstr.matches("[0-9]+")){
+			 itemid = Integer.valueOf(itemidstr);
+		}
+		
+		String dirstr = request.getParameter("dir");
+		
+		int dir = 1;
+		if (dirstr!=null)
+			 dir = Integer.valueOf(dirstr);
+		
+		String countstr = request.getParameter("count");
+		int count = -1;
+		if (countstr!=null)
+			 count = Integer.valueOf(countstr);
+		
 		if (catid<0)
 			return null;
 		

@@ -59,6 +59,8 @@ public class NewsClassifier {
 	private Set<String>  comSet = new HashSet<String>();
 	public Map<String,Integer> catIds = new HashMap<String,Integer>();
 	public Map<Integer,String> catStrs = new HashMap<Integer,String>();
+	public Map<String,String> catKeyStrMap = new HashMap<String,String>();
+	public Map<String,Integer> catIdMap = new HashMap<String,Integer>();
 	private Map<Integer,Classifier>	classifyMap = new HashMap<Integer,Classifier>();
 	JiebaSegmenter segmenter = new JiebaSegmenter();
 	private Classifier classifier;
@@ -93,7 +95,20 @@ public class NewsClassifier {
 			catWordMaps.put(name, wordset);
 		}
 		
-		File classifyFile = new File(trainingPath+"news_dt.classifier");
+		String catkeysContent = FileUtil.readFile("data/catkeys.txt");
+		String[] catkeyline = catkeysContent.split("\n");
+		for (String str:catkeyline){
+		 String[] ss = str.split(":");
+		 String[] words = ss[1].split(",");
+		 for (String word:words){
+			 catKeyStrMap.put(word, ss[0]);
+		 }
+		}
+		String catcontent = FileUtil.readFile("data/cats.txt");
+		catIdMap = (Map<String,Integer>)JSON.parseObject(catcontent,HashMap.class);
+		
+		int  t= 10;
+		//File classifyFile = new File(trainingPath+"news_dt.classifier");
 //		try {
 //			FileInputStream fis = new FileInputStream(classifyFile);
 //           ObjectInputStream ois = new ObjectInputStream(fis);  
@@ -132,86 +147,6 @@ public class NewsClassifier {
       		  FileUtil.writeFile("data/sogou/"+name+".titles", titles);
 			}
 	}
-	public void moveTrainingTitles(){
-		String path = "data/pages/";
-		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
-		List<File> files = FileUtil.getFiles(path);
-		Map<String,String> titleMaps = new HashMap<String,String>();
-		for (File f:files){
-			if (f.getName().indexOf(".json")<0)continue;
-			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-//			if (!sitekey.equals("sina.com.cn"))continue;
-			String urlsContent = FileUtil.readFile(f);
-			log.warn("push training title: "+sitekey);
-			Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
-			for (String url:urls.keySet()){
-				JSONObject json = urls.get(url);
-				WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-				String title = parser.filterTitle(url, item.getText());
-				String key = this.getTitleKey(title);
-				String str = titleMaps.get(key);
-				str = str==null?title:str+title;
-				str += "\n";
-				titleMaps.put(key, str);
-			}
-		}
-		SiteTermProcessor processor = new SiteTermProcessor("http://www.sohu.com",10);
-		for (String catstr:titleMaps.keySet()){
-//			Map<String,Integer> termsMap = new HashMap<String,Integer>();
-//			String titleContent = titleMaps.get(catstr);
-//			processor.getWordTerms(titleContent, termsMap, 2);
-//			
-//			List<Map.Entry<String,Integer>> mappingList = null;
-//			mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
-//			  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
-//			   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
-//				   return mapping2.getValue().compareTo(mapping1.getValue()); 
-//			   } 
-//			  }); 	
-			String mapStr = titleMaps.get(catstr);
-//			for (Map.Entry<String,Integer> ss:mappingList){
-//				mapStr += ss.getKey()+",";
-//			}
-			FileUtil.writeFile(trainingPath+"/"+catstr+".title",mapStr);			  
-		}
-		int a = 10;
-	}
-	
-	public void mregeTrainingTerms(){
-		//搬移已分类page到training path:
-		List<File> folders = FileUtil.getFolders("data/training/");
-		for (File f:folders){
-			List<File> files = FileUtil.getFiles(f.getAbsolutePath());
-			log.warn("push training data: "+f.getName());
-			Map<String,Integer> termsMap = new HashMap<String,Integer>();
-			List<Map.Entry<String,Integer>> mappingList = null;
-			for (File ff:files){
-					String pageContent = FileUtil.readFile(ff.getAbsoluteFile());
-					JSONArray ss = JSON.parseArray(pageContent);
-					for (int i=0;i<ss.size();i++){
-						JSONObject obj = (JSONObject)ss.get(i);
-						String key = obj.getString("key");
-						int count = obj.getInteger("value");
-    					if (termsMap.containsKey(key))
-    						termsMap.put(key, termsMap.get(key)+count);
-    					else
-    						termsMap.put(key, count);
-					}
-					mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
-					  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
-					   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
-						   return mapping2.getValue().compareTo(mapping1.getValue()); 
-					   } 
-					  }); 					
-			}
-			String mapStr = "";
-			for (Map.Entry<String,Integer> ss:mappingList){
-				mapStr += ss.getKey()+":"+ss.getValue()+"\n";
-			}
-			FileUtil.writeFile(trainingPath+"/"+f.getName()+".data",mapStr);
-		}		
-	}
-	
 	public void trainingClassifiers(){
 		Pipe instancePipe = new SerialPipes (new Pipe[] {
 				new Target2Label (),							  // Target String -> class label
@@ -252,10 +187,6 @@ public class NewsClassifier {
 			throw new IllegalArgumentException ("Couldn't write classifier to filename "+
 												filename);
 		}		
-	}
-	
-	public String getCatStr(int catid){
-		return catStrs.get(catid);
 	}
 	
 	public String getTitleKey(String title){
@@ -351,14 +282,22 @@ public class NewsClassifier {
 		log.warn("total "+total+":cat:"+catCount);	
 	}
 	
-	public int testClassify2(TopItem item){
+	public int testClassifyByTitle(TopItem item){
 		if (item.getUrl().equals("http://tech.sina.com.cn/it/2016-06-24/doc-ifxtmweh2490652.shtml")){
 			int a = 10;
 			a++;
 		}
 		
-		String key = this.getTitleKey(item.getCtitle());
-		return -1;
+		String word = this.getTitleKey(item.getCtitle());
+		String catKey = catKeyStrMap.get(word);
+		Integer catid = catIdMap.get(catKey);
+		int cat = -1;
+		if (catid==null){
+			cat = catIdMap.get("综合");			//无法分类，归为综合类
+		}else if (!catKey.equals("科技")){		//除科技外，其他都归类
+			cat = catid;
+		}
+		return cat;
 	}
 	
 	public int testClassify(TopItem item){
@@ -408,8 +347,6 @@ public class NewsClassifier {
 			log.warn("item classify failed:"+e.getMessage());
 			e.printStackTrace();
 		}
-		log.warn("def cat:"+this.getCatStr(testCatid));
-		System.out.printf("%.20f \n", catValue);
 		log.warn(item.getCtitle());
 //		log.warn(item.getUrl());
 //		log.warn(item.getUrl().hashCode());
@@ -437,158 +374,6 @@ public class NewsClassifier {
 		}
 		
 	}
-	public void movePagesTitle(){
-		//搬移已分类page到training path:
-		List<File> files = FileUtil.getFiles("data/pages/");
-		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
-		for (File f:files){
-			if (f.getName().indexOf(".json")<0)continue;
-			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-			String urlsContent = FileUtil.readFile(f);			
-			List<String> titles = new ArrayList<String>();
-			if (urlsContent!=null&&urlsContent.trim().length()>0){
-				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
-				for (String url:urls.keySet()){
-					JSONObject json = urls.get(url);
-					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-					titles.add(parser.filterTitle(url,item.getText()));
-				}
-				String titleContent = "";
-				for (String t:titles){
-					titleContent += t+"\n";
-				}
-				log.warn("push page title: "+sitekey+":"+titles.size());
-				FileUtil.writeFile("data/pages2/"+sitekey+".titles",titleContent);
-			}
-		}
-				
-	}
-
-	public void moveTrainingTerms(){
-		//搬移已分类page到training path:
-		List<File> files = FileUtil.getFiles("data/pages/");
-		for (File f:files){
-			if (f.getName().indexOf(".json")<0)continue;
-			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-			String urlsContent = FileUtil.readFile(f);
-			if (urlsContent!=null&&urlsContent.trim().length()>0){
-				log.warn("push training data: "+sitekey);
-				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
-				for (String url:urls.keySet()){
-					JSONObject json = urls.get(url);
-					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-					if (item.getCat()<=0) continue;
-					String fileName = item.getUrl().hashCode()+".terms";
-					String fileP = "data/terms/"+sitekey+"/"+fileName;
-					File ff = new File(fileP);
-					if (!ff.exists()) continue;
-					String pageContent = FileUtil.readFile(fileP);
-					JSONArray ss = JSON.parseArray(pageContent);
-					String termStr = "";
-					int count2 = 30;	//取前30个关键词
-					if (ss!=null){
-					int count = ss.size()<count2?ss.size():count2;
-					for (int i=0;i<count;i++){
-						JSONObject obj = (JSONObject)ss.get(i);
-						termStr += obj.getString("key")+",";
-					}	
-					}
-					String pureContext = pageContent;
-					FileUtil.writeFile(trainingPath+"/"+item.getCat()+"/"+item.getUrl().hashCode()+".data",pureContext);
-				}
-			}
-		}		
-	}
-
-	public void moveCatWords(){
-			//搬移已分类page到training path:
-			SiteTermProcessor processor = new SiteTermProcessor("http://www.sohu.com",10);
-				String path = "data/pages2/iheima.com.titles";
-					String content = FileUtil.readFile(path);
-					String[] titleContents = content.split("\n");
-					String wordContent = "";
-				for (int i=0;i<titleContents.length;i++){
-					String tt = titleContents[i];
-					List<String> list = new ArrayList<String>();
-					processor.getWordTerms0(tt, list,2);
-					for (String ww:list){
-						wordContent += ww+ ",";
-					}
-					if (list.size()>0)
-						wordContent += "\n";
-					
-					int k = i%500;
-					if (i>0&&(k==0||i==titleContents.length-1)&&wordContent.length()>0){
-						FileUtil.writeFile("data/training/iheima.tdata"+i,wordContent);
-						wordContent = "";
-					}					
-				}
-				
-
-					
-		}
-
-	public void moveTrainingPages(){
-		String path = "data/pages/";
-		String writePath = "data/pages2/";
-		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
-		List<File> files = FileUtil.getFiles(path);
-		for (File f:files){
-			if (f.getName().indexOf(".json")<0)continue;
-			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-			if (!sitekey.equals("sina.com.cn")) continue;
-			String urlsContent = FileUtil.readFile(f);
-			if (urlsContent!=null&&urlsContent.trim().length()>0){
-				log.warn("push training data: "+sitekey);
-				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
-				for (String url:urls.keySet()){
-					JSONObject json = urls.get(url);
-					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-					String fileName = item.getUrl().hashCode()+".data";
-					String fileP = "data/pages2/"+sitekey+"/"+fileName;
-					File ff = new File(fileP);
-					if (!ff.exists()) continue;
-					String pureContext = FileUtil.readFile(fileP);
-					FileUtil.writeFile("data/training/"+getCatStr(item.getCat())+"/"+item.getUrl().hashCode()+".data",pureContext);
-				}
-			}
-		}		
-	}
-
-	public void moveTrainingWords(){
-			//搬移已分类page到training path:
-			List<File> folders = FileUtil.getFolders("data/training/");
-			SiteTermProcessor processor = new SiteTermProcessor("http://www.sohu.com",10);
-			for (File f:folders){
-				String catStr = f.getName();
-				List<File> files = FileUtil.getFiles(f.getAbsolutePath());
-				Map<String,Integer> termsMap = new HashMap<String,Integer>();
-				for (File file:files){
-					String content = FileUtil.readFile(file);
-					processor.getWordTerms(content, termsMap,2);
-				}
-				  //通过比较器实现比较排序 
-					List<Map.Entry<String,Integer>> mappingList = new ArrayList<Map.Entry<String,Integer>>(termsMap.entrySet()); 
-				  Collections.sort(mappingList, new Comparator<Map.Entry<String,Integer>>(){ 
-				   public int compare(Map.Entry<String,Integer> mapping1,Map.Entry<String,Integer> mapping2){ 
-					   return mapping2.getValue().compareTo(mapping1.getValue()); 
-				   } 
-				  }); 			
-				String wordContent = "";
-				int i = 0;
-				for (Map.Entry<String,Integer> item:mappingList){
-					wordContent += item.getKey()+",";
-					i++;
-	//				if (i%10==9)
-	//					wordContent += "\n";
-				}
-				if (wordContent.length()>0){
-					FileUtil.writeFile("data/training/"+catStr+".data",wordContent);
-				}
-			}
-					
-		}
-
 	public static void main(String[] args) {
 		String str = "http://tech.sina.com.cn/i/2016-06-29/doc-ifxtsatm0995788.shtml";
 		int a = str.hashCode();
