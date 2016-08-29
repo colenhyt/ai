@@ -120,16 +120,20 @@ newslist.prototype = {
     if (!g_currcat)
       g_currcat = 1;
     var lasttag = document.getElementById('navlist'+g_currcat);
+    if (lasttag!=null)
     lasttag.style.backgroundColor = "";
     
     var currtag = document.getElementById('navlist'+catid);
-    currtag.style.display = "inline-block";
-    currtag.style.backgroundColor = "#0095BB";
+    if (currtag!=null){
+     currtag.style.display = "inline-block";
+     currtag.style.backgroundColor = "#0095BB";
+    }
     
     g_currcat = catid;
     
-        var ul= document.getElementById('thelist');
-        ul.innerHTML = "";
+    var ul= document.getElementById('thelist');
+    if (ul!=null)
+     ul.innerHTML = "";
     
     var items = this.data[catid];
     if (items!=null&&items.length>0){
