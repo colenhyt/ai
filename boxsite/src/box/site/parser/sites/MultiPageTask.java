@@ -8,13 +8,11 @@ import box.site.processor.SiteURLsPipeline;
 public class MultiPageTask implements Runnable {
 	private String url;
 	private int count = 0;
-	private ProcessManager mgr;
 	private Spider spider;
 
-	public MultiPageTask(ProcessManager _mgr,String urlstr,int c){
+	public MultiPageTask(String urlstr,int c){
 		count = c;
 		url = urlstr;
-		mgr = _mgr;
 		
 		SitePageGetProcessor p1 = new SitePageGetProcessor(this,url,count);
       spider = Spider.create(p1);
@@ -26,7 +24,7 @@ public class MultiPageTask implements Runnable {
 	public void finishCallback(String sitekey){
 		spider.stop();
 		spider.close();
-		mgr.spiderFinished(sitekey);
+		ProcessManager.getInstance().spiderFinished(sitekey);
 //		Thread.currentThread().stop();
 	}
 	

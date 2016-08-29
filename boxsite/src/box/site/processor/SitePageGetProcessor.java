@@ -221,22 +221,6 @@ public class SitePageGetProcessor implements PageProcessor{
 			notDownloadurlsSet.clear();
 		}
 		
-		//找到合法url,并塞入下载链接:
-//		if (queryCount<maxpagecount){
-//			//找页内urls:
-//			 List<String> links = page.getHtml().links().all();
-//			 Set<String> newurls = new HashSet<String>();
-//			 for (String url:links){
-//				 if (url.toLowerCase().indexOf(domainName)<0) continue;
-//				 if (allDownloadUrls.contains(url)) continue;
-//				 
-//				 newurls.add(url);
-//			 }
-//			 allDownloadUrls.addAll(newurls);
-//			 requests.addAll(newurls);
-//			 queryCount += newurls.size();
-//		}
-		
 		 FileUtil.writeFile(urlPath, JSON.toJSONString(allDownloadUrlSet));
 		 
 		page.addTargetRequests(requests);	

@@ -58,7 +58,6 @@ public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipelin
 				imgGetter.push(url, item.getHtmlContent());
 			}
 			
-			ProcessManager.getInstance().pushNewItem(item);
 			//PageManager.getInstance().pushNewItem(item);
 		}
 	}

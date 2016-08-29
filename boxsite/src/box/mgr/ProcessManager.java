@@ -119,8 +119,10 @@ public class ProcessManager extends MgrBase {
 		
 		log.warn("all sites spiders finished,sleep..");
 		
-		//处理该频次新增topitem:
-		boolean hasNew = processListUrls(newTopitemList);
+		//实时处理该频次新增topitem:
+		if (newTopitemList.size()>0){
+			boolean hasNew = processListUrls(newTopitemList);
+		}
 		
 		//运转间隔
 		final int PROCESS_DURATION = 5 * 1000;		//1小时:60 * 60 * 1000;
@@ -169,7 +171,7 @@ public class ProcessManager extends MgrBase {
 		log.warn("spiders start,sites:"+sites.size());
 		runningSpiderCount = sites.size();
 		for (String site:sites){
-			MultiPageTask task = new MultiPageTask(this,site,300);
+			MultiPageTask task = new MultiPageTask(site,50);
 			Thread t2=new Thread(task);
 			t2.start();
 		}
