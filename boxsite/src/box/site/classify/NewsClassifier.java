@@ -11,16 +11,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 
 import box.mgr.PageManager;
-import box.site.model.CatWord;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
@@ -82,7 +78,7 @@ public class NewsClassifier {
 			comSet.addAll(companyList);
 		}
 		
-		List<File> wordFiles = FileUtil.getFiles(trainingPath,"words");
+		List<File> wordFiles = FileUtil.getFiles(trainingPath,"txt");
 		for (File f:wordFiles){
 			String mapstr = FileUtil.readFile(f);
 			Set<String> wordset = new HashSet<String>();
@@ -90,7 +86,7 @@ public class NewsClassifier {
 				String[] words = mapstr.split(",");
 				for (String word:words){
 					if (word.trim().length()<=0) continue;
-					wordset.add(word);
+					wordset.add(word.trim());
 				}
 			}	
 			String name = f.getName().substring(0,f.getName().indexOf(".txt"));
@@ -116,35 +112,24 @@ public class NewsClassifier {
 			for (File f:files){
 	          //读取prop.xml资源
 				String text = FileUtil.readFile(f,"gbk");
-				text = "<root>"+text+"</root>";
-				try {
-			       Document   doc = DocumentHelper.parseText(text);
-		        //获取根元素(prop)
-		          Element root = doc.getRootElement();		
-		          List<Element> messList = root.elements("doc");
-		          for (Element ee:messList){
-		        	  List<Element> e0 = ee.elements("url");
-		        	  String url = e0.get(0).getText();
+				String[] docs = text.split("</doc>");
+				String titles = "";
+				for (String doc:docs){
+					if (doc.indexOf("<url>")<0||doc.indexOf("<contenttitle>")<0)continue;
+					if (doc.indexOf("<content>")<0||doc.indexOf("<docno>")<0)continue;
+		        	  String url = doc.substring(doc.indexOf("<url>")+"<url>".length(),doc.indexOf("</url>"));
 		        	  if (url.indexOf("it.sohu.com")<0) continue;
-		        	  List<Element> e1 = ee.elements("contenttitle");
-		        	  List<Element> e2 = ee.elements("content");
-		        	  List<Element> e3 = ee.elements("docno");
-		        	  String contenttitle = e1.get(0).getText();
-		        	  String content = e2.get(0).getText();
-		        	  String docno = e3.get(0).getText();
-		        	  if (content.trim().length()>0){
+		        	  String contenttitle =doc.substring(doc.indexOf("<contenttitle>")+"<contenttitle>".length(),doc.indexOf("</contenttitle>"));
+		        	  String content = doc.substring(doc.indexOf("<content>")+"<content>".length(),doc.indexOf("</content>"));
+		        	  String docno = doc.substring(doc.indexOf("<docno>")+"<docno>".length(),doc.indexOf("</docno>"));
+		        	  if (contenttitle.trim().length()>0&&content.trim().length()>0){
+		        		  titles += contenttitle+"\n";
 		        		  String context = contenttitle+"||"+content;
-		        		  FileUtil.writeFile("data/sogou/"+url.hashCode()+".data", context);
-		        		  
+			        	  log.warn(url);					
 		        	  }
-		        	  log.warn(url);
-		          }
-				} catch (DocumentException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-					log.error("wrong format xml ");
-					continue;
 				}
+				String name = f.getName().substring(0,f.getName().indexOf(".txt"));
+      		  FileUtil.writeFile("data/sogou/"+name+".titles", titles);
 			}
 	}
 	public void moveTrainingTitles(){
@@ -275,8 +260,7 @@ public class NewsClassifier {
 	
 	public String getTitleKey(String title){
 		
-		for (int i=1;i<=catIds.size();i++){
-			String key = catStrs.get(i);
+		for (String key:catWordMaps.keySet()){
 			Set<String> wordset = catWordMaps.get(key);
 			for (String word:wordset){
 				if (title.toLowerCase().indexOf(word.toLowerCase())>=0)
@@ -326,6 +310,43 @@ public class NewsClassifier {
 				titleAccur += 0.5;
 		}
 		return titleAccur;
+	}
+	
+	public void testSogouTitlesCat(){
+		Map<String,Set<String>> catTitles = new HashMap<String,Set<String>>();
+		List<File> files = FileUtil.getFiles("data/sogou", "titles");
+		int total = 0;
+		int catCount = 0;
+		for (File f:files){
+			String content = FileUtil.readFile(f);
+			String[] titles = content.split("\n");
+			for (String title:titles){
+				if (title.equals("微软将发布Ｈｙｐｅｒ－Ｖ虚拟软件　比原定８月提前２月"))
+					log.warn(""+title);
+				String catkey = this.getTitleKey(title);
+				total++;
+				if (catkey==null) {
+					catkey = "综合";
+					continue;
+				}
+				catCount++;
+				Set<String> tt = catTitles.get(catkey);
+				if (tt==null){
+					tt = new HashSet<String>();
+					catTitles.put(catkey, tt);
+				}
+				tt.add(title);
+			}
+		}
+		for (String key:catTitles.keySet()){
+			Set<String> titles = catTitles.get(key);
+			String cc = "";
+			for (String t:titles){
+				cc += t+ "\n";
+			}
+			FileUtil.writeFile("data/sogou/cat/"+key+".titles", cc);
+		}
+		log.warn("total "+total+":cat:"+catCount);	
 	}
 	
 	public int testClassify2(TopItem item){
@@ -477,6 +498,64 @@ public class NewsClassifier {
 		}		
 	}
 
+	public void moveCatWords(){
+			//搬移已分类page到training path:
+			SiteTermProcessor processor = new SiteTermProcessor("http://www.sohu.com",10);
+				String catStr = "综合";
+				Map<String,Integer> termsMap = new HashMap<String,Integer>();
+				String path = "data/sogou/cat/综合.titles";
+					String content = FileUtil.readFile(path);
+					String[] titleContents = content.split("\n");
+					String wordContent = "";
+				for (int i=0;i<titleContents.length;i++){
+					String tt = titleContents[i];
+					List<String> list = new ArrayList<String>();
+					processor.getWordTerms0(tt, list,2);
+					for (String ww:list){
+						wordContent += ww+ ",";
+					}
+					if (list.size()>0)
+						wordContent += "\n";
+					
+					int k = i%500;
+					if (i>0&&(k==0||i==titleContents.length-1)&&wordContent.length()>0){
+						FileUtil.writeFile("data/training/"+catStr+".tdata"+i,wordContent);
+						wordContent = "";
+					}					
+					i++;
+				}
+				
+
+					
+		}
+
+	public void moveTrainingPages(){
+		String path = "data/pages/";
+		String writePath = "data/pages2/";
+		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
+		List<File> files = FileUtil.getFiles(path);
+		for (File f:files){
+			if (f.getName().indexOf(".json")<0)continue;
+			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
+			if (!sitekey.equals("sina.com.cn")) continue;
+			String urlsContent = FileUtil.readFile(f);
+			if (urlsContent!=null&&urlsContent.trim().length()>0){
+				log.warn("push training data: "+sitekey);
+				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
+				for (String url:urls.keySet()){
+					JSONObject json = urls.get(url);
+					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
+					String fileName = item.getUrl().hashCode()+".data";
+					String fileP = "data/pages2/"+sitekey+"/"+fileName;
+					File ff = new File(fileP);
+					if (!ff.exists()) continue;
+					String pureContext = FileUtil.readFile(fileP);
+					FileUtil.writeFile("data/training/"+getCatStr(item.getCat())+"/"+item.getUrl().hashCode()+".data",pureContext);
+				}
+			}
+		}		
+	}
+
 	public void moveTrainingWords(){
 			//搬移已分类page到training path:
 			List<File> folders = FileUtil.getFolders("data/training/");
@@ -511,39 +590,12 @@ public class NewsClassifier {
 					
 		}
 
-	public void moveTrainingPages(){
-		String path = "data/pages/";
-		String writePath = "data/pages2/";
-		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
-		List<File> files = FileUtil.getFiles(path);
-		for (File f:files){
-			if (f.getName().indexOf(".json")<0)continue;
-			String sitekey = f.getName().substring(0,f.getName().indexOf("_urls.json"));
-			if (!sitekey.equals("sina.com.cn")) continue;
-			String urlsContent = FileUtil.readFile(f);
-			if (urlsContent!=null&&urlsContent.trim().length()>0){
-				log.warn("push training data: "+sitekey);
-				Map<String,JSONObject> urls = JSON.parseObject(urlsContent,HashMap.class);
-				for (String url:urls.keySet()){
-					JSONObject json = urls.get(url);
-					WebUrl item = JSON.parseObject(json.toJSONString(),WebUrl.class);
-					String fileName = item.getUrl().hashCode()+".data";
-					String fileP = "data/pages2/"+sitekey+"/"+fileName;
-					File ff = new File(fileP);
-					if (!ff.exists()) continue;
-					String pureContext = FileUtil.readFile(fileP);
-					FileUtil.writeFile("data/training/"+getCatStr(item.getCat())+"/"+item.getUrl().hashCode()+".data",pureContext);
-				}
-			}
-		}		
-	}
-
 	public static void main(String[] args) {
 		String str = "http://tech.sina.com.cn/i/2016-06-29/doc-ifxtsatm0995788.shtml";
 		int a = str.hashCode();
 		//-892462432
 		NewsClassifier classifier = new NewsClassifier();
-//		classifier.moveTrainingTitles();
+		classifier.testSogouTitlesCat();
 //		String text = FileUtil.readFile("C:\\boxlib\\news_tensite_xml.dat");
 //		text = "<root>"+text+"</root>";
 //		try {

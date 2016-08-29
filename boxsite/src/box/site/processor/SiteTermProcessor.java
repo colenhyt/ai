@@ -126,8 +126,11 @@ public class SiteTermProcessor implements PageProcessor{
 //		for (String url1:urls){
 //			processor.parseFromPage(url,"gb2312");
 //		}
-		
-		processor.processTrainingDataTerms();
+		String tt = "当ＭＳＮ可以被搜索，ＱＱ何去何从";
+		List<String> list = new ArrayList<String>();
+		processor.getWordTerms0(tt, list,2);
+		System.out.println(JSON.toJSON(list));
+//		processor.processTrainingDataTerms();
 		
 	}
 	
@@ -242,9 +245,8 @@ public class SiteTermProcessor implements PageProcessor{
 	
 	public void getWordTerms0(String word,List<String> termsList,int minLength){
 		//切割分词:
-		List<SegToken> segToken = segmenter.process(word, SegMode.INDEX);
-		for (SegToken token:segToken){
-			String w = token.word;
+		List<String> segToken = segmenter.sentenceProcess(word);
+		for (String w:segToken){
 			if (w==null||w.trim().length()<=0) continue;
 			
 			//不记录数字
