@@ -7,7 +7,7 @@ var g_newscats = [
 "风投","融资","股价","创业","创新","互联网金融","互联网设计","互联网运营",
 "经营","专题","互联网","运营商","公司","人物",
 "效率","管理","科技",
-"无效"
+"无效","综合"
 ];
 
 var g_cat = null;
@@ -49,7 +49,7 @@ function queryWords(catstr)
 	
 	try    {
 		$.ajax({type:"post",url:"trainingwords.jsp",data:dataParam,success:function(data){
-		 queryWordsRst(cfeval(data));
+		 queryWordsRst((data));
 		}});
 	}   catch  (e)   {
 	   return false;
@@ -62,12 +62,15 @@ function queryWordsRst(data)
 	var content = "<table width=900>";
 	 content += "<tr style='font-size:25px;padding-top:5px;'>";
 	 content += "<td>";
-	for (var i=0;i<data.length;i++){
-	 content += "<input type='checkbox' name='wordword' id='0_"+data[i]+"' value='"+data[i]+"'><label for='0_"+data[i]+"'>"+data[i]+"</label> ";
-	 if (i>0&&i%12==0)
-	   content += "<br>";
-	 
+	 var titlewords = data.split("\n");
+	 for (var j=0;j<titlewords.length;j++){
+	   var words = titlewords[j].split(",");
+	for (var i=0;i< words.length;i++){
+	var kk = j*i+i;
+	 content += "<input type='checkbox' name='wordword' id='"+kk+"_"+words[i]+"' value='"+words[i]+"'><label for='"+kk+"_"+words[i]+"'>"+words[i]+"</label> ";
 	}
+	   content += "<br>";
+	 }
 	 content += "</td>";
 	 content += "<tr>";
 	content += "</table>";
