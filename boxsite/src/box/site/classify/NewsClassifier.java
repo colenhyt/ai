@@ -312,12 +312,13 @@ public class NewsClassifier {
 		return titleAccur;
 	}
 	
-	public void testSogouTitlesCat(){
+	public void testTitlesCat(){
 		Map<String,Set<String>> catTitles = new HashMap<String,Set<String>>();
-		List<File> files = FileUtil.getFiles("data/sogou", "titles");
+		List<File> files = FileUtil.getFiles("data/pages2", "titles");
 		int total = 0;
 		int catCount = 0;
 		for (File f:files){
+			if (f.getName().indexOf("iheima")<0)continue;
 			String content = FileUtil.readFile(f);
 			String[] titles = content.split("\n");
 			for (String title:titles){
@@ -341,10 +342,11 @@ public class NewsClassifier {
 		for (String key:catTitles.keySet()){
 			Set<String> titles = catTitles.get(key);
 			String cc = "";
+			log.warn("key:"+key);
 			for (String t:titles){
-				cc += t+ "\n";
+				log.warn(t);
 			}
-			FileUtil.writeFile("data/sogou/cat/"+key+".titles", cc);
+//			FileUtil.writeFile("data/sogou/cat/"+key+".titles", cc);
 		}
 		log.warn("total "+total+":cat:"+catCount);	
 	}
@@ -501,9 +503,7 @@ public class NewsClassifier {
 	public void moveCatWords(){
 			//搬移已分类page到training path:
 			SiteTermProcessor processor = new SiteTermProcessor("http://www.sohu.com",10);
-				String catStr = "综合";
-				Map<String,Integer> termsMap = new HashMap<String,Integer>();
-				String path = "data/sogou/cat/综合.titles";
+				String path = "data/pages2/iheima.com.titles";
 					String content = FileUtil.readFile(path);
 					String[] titleContents = content.split("\n");
 					String wordContent = "";
@@ -519,10 +519,9 @@ public class NewsClassifier {
 					
 					int k = i%500;
 					if (i>0&&(k==0||i==titleContents.length-1)&&wordContent.length()>0){
-						FileUtil.writeFile("data/training/"+catStr+".tdata"+i,wordContent);
+						FileUtil.writeFile("data/training/iheima.tdata"+i,wordContent);
 						wordContent = "";
 					}					
-					i++;
 				}
 				
 
@@ -595,7 +594,7 @@ public class NewsClassifier {
 		int a = str.hashCode();
 		//-892462432
 		NewsClassifier classifier = new NewsClassifier();
-		classifier.testSogouTitlesCat();
+		classifier.testTitlesCat();
 //		String text = FileUtil.readFile("C:\\boxlib\\news_tensite_xml.dat");
 //		text = "<root>"+text+"</root>";
 //		try {

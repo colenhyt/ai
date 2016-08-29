@@ -97,8 +97,8 @@ public class CatWordsManager extends MgrBase {
 		}
 		
 		List<String> words = new ArrayList<String>();
-		catstr = "综合";
-		String content = FileUtil.readFile(traniningpath+catstr+".tdata4000");
+		catstr = "iheima";
+		String content = FileUtil.readFile(traniningpath+catstr+".tdata");
 		String[] strs = content.split(",");
 		for (String str:strs){
 			if (str.trim().length()<0)continue;
