@@ -2,37 +2,15 @@
 <%@ page import="com.alibaba.fastjson.*"%> 
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
-String catstr = request.getParameter("cat");
-String itemidstr = request.getParameter("itemid");
 String typestr = request.getParameter("type");
-String dirstr = request.getParameter("dir");
-String countstr = request.getParameter("count");
-String sessionstr = request.getParameter("sessionid");
-long sessionid = -1;
-if (sessionstr!=null)
-  sessionid = Long.valueOf(sessionstr);
-  
-int dir = 1;
-if (dirstr!=null)
- dir = Integer.valueOf(dirstr);
- 
-int itemid = 0;
-if (itemidstr!=null&&!itemidstr.equals("undefined")){
- itemid = Integer.valueOf(itemidstr);
-}
-
-int count = -1;
-if (countstr!=null)
- count = Integer.valueOf(countstr);
 
 PageManager.getInstance().init();
 
 String jsonstr = "";
-int catid = Integer.valueOf(catstr);
 if (typestr==null)
-  jsonstr = PageManager.getInstance().getNewslist(sessionid,catid,itemid,dir,count);
+  jsonstr = PageManager.getInstance().getNewslist(request);
  else
-  jsonstr = PageManager.getInstance().getNewsCount(catid,itemid,dir);
+  jsonstr = PageManager.getInstance().getNewsCount(request);
 
 response.getWriter().print(jsonstr);
 %>
