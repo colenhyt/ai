@@ -41,6 +41,8 @@ public class ProcessManager extends MgrBase {
 	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
     private BaseTopItemParser parser;
 	ImgGetterThread imgGetter = new ImgGetterThread();
+	private String srcFile;
+	private int process_waiting_sec = 0;
 
 	public static ProcessManager getInstance() {
 		if (uniqueInstance == null) {
@@ -50,10 +52,23 @@ public class ProcessManager extends MgrBase {
 	}
 
 	public void init(){
+		String[] args = new String[1];
+		args[0] = "source.sites";
+		this.init(args);
+	}
+	
+	public void init(String[] args){
 		if (inited) return;
 		
 		inited = true;	
 		running = true;
+		
+		
+		srcFile = args[0];
+		if (args.length>1)
+			process_waiting_sec = Integer.valueOf(args[1])*60*1000;	//间隔时间
+		else
+			process_waiting_sec = 60 * 60 * 1000;	//缺省1小时
 		
 		parser = new BaseTopItemParser(dnaPath);
 		
@@ -127,7 +142,7 @@ public class ProcessManager extends MgrBase {
 		//运转间隔
 		final int PROCESS_DURATION = 5 * 1000;		//1小时:60 * 60 * 1000;
 		try {
-			Thread.sleep(PROCESS_DURATION);
+			Thread.sleep(process_waiting_sec);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -143,30 +158,8 @@ public class ProcessManager extends MgrBase {
 	
 		//spider:
 		Set<String> sites = new HashSet<String>();
-//		sites.add("http://www.tmtpost.com");
-//		sites.add("http://www.leiphone.com");
-//		sites.add("http://www.huxiu.com");
-//		sites.add("http://www.iheima.com/");
-//		sites.add("http://www.pintu360.com/");
-//		sites.add("http://www.ikanchai.com/");
-//		sites.add("http://www.iyiou.com/");
-//		sites.add("http://www.techweb.com.cn/");
-//		sites.add("http://www.ifanr.com/");
-//		sites.add("http://www.cyzone.cn/");
-//		sites.add("http://www.sootoo.com/");
 		
-//		sites.add("http://tech.163.com");
-//		sites.add("http://tech.qq.com/");
-//		sites.add("http://tech.sina.com.cn/");
-//		sites.add("http://it.sohu.com");
-//		sites.add("http://tech.ifeng.com/");
-//		sites.add("http://www.geekpark.net/");
-//		sites.add("http://techcrunch.cn/");
-		
-		
-//		sites.add("http://www.ebrun.com/");
-		
-		String content = FileUtil.readFile(rootPath+"source.sites");
+		String content = FileUtil.readFile(rootPath+srcFile);
 		sites = (Set<String>)JSON.parseObject(content,HashSet.class);
 		log.warn("spiders start,sites:"+sites.size());
 		runningSpiderCount = sites.size();
@@ -344,12 +337,9 @@ public class ProcessManager extends MgrBase {
 	}
 
 	public static void main(String[] args) {
-		ProcessManager.getInstance().init();
-//		ProcessManager.getInstance().tesSimHash();
+		ProcessManager.getInstance().init(args);
 //		ProcessManager.getInstance().process();
 		ProcessManager.getInstance().processSpiders();
-//		List<TopItem> items =ProcessManager.getInstance().processClassfiy();
-//		ProcessManager.getInstance().processListUrls(items);
 	}
 
 }
