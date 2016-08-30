@@ -121,30 +121,31 @@ public class NewsClassifier {
 	}
 	
 	public void findSogouPageTerms(){
-		String path = "C:\\boxlib\\SogouCS.reduced";
-		String writePath = "data/pages2/";
+		String path = "C:\\boxlib\\news_sohusite";
 		List<File> files = FileUtil.getFiles(path);
 			for (File f:files){
 	          //读取prop.xml资源
-				String text = FileUtil.readFile(f,"gbk");
+				String text = FileUtil.readFile(f);
 				String[] docs = text.split("</doc>");
 				String titles = "";
 				for (String doc:docs){
 					if (doc.indexOf("<url>")<0||doc.indexOf("<contenttitle>")<0)continue;
 					if (doc.indexOf("<content>")<0||doc.indexOf("<docno>")<0)continue;
 		        	  String url = doc.substring(doc.indexOf("<url>")+"<url>".length(),doc.indexOf("</url>"));
-		        	  if (url.indexOf("it.sohu.com")<0) continue;
+		        	  if (url.indexOf("http://it.sohu.com")<0) continue;
 		        	  String contenttitle =doc.substring(doc.indexOf("<contenttitle>")+"<contenttitle>".length(),doc.indexOf("</contenttitle>"));
 		        	  String content = doc.substring(doc.indexOf("<content>")+"<content>".length(),doc.indexOf("</content>"));
 		        	  String docno = doc.substring(doc.indexOf("<docno>")+"<docno>".length(),doc.indexOf("</docno>"));
 		        	  if (contenttitle.trim().length()>0&&content.trim().length()>0){
-		        		  titles += contenttitle+"\n";
-		        		  String context = contenttitle+"||"+content;
+		        		  int key = url.hashCode();
+		        		  titles += contenttitle+";"+key+"\n";
+		        		  String contentStr = contenttitle+","+content;
+		        		  FileUtil.writeFile("data/sogou/sohusite_data/"+key+".data", contentStr);
 			        	  log.warn(url);					
 		        	  }
 				}
 				String name = f.getName().substring(0,f.getName().indexOf(".txt"));
-      		  FileUtil.writeFile("data/sogou/"+name+".titles", titles);
+      		  FileUtil.writeFile("data/sogou/sohusite_titles/"+name+".titles", titles);
 			}
 	}
 	public void trainingClassifiers(){
@@ -245,14 +246,16 @@ public class NewsClassifier {
 	
 	public void testTitlesCat(){
 		Map<String,Set<String>> catTitles = new HashMap<String,Set<String>>();
-		List<File> files = FileUtil.getFiles("data/pages2", "titles");
+		List<File> files = FileUtil.getFiles("C:\\boxsite\\data\\sogou\\sohusite_titles", "titles");
 		int total = 0;
 		int catCount = 0;
+		Map<Integer,String> codeKeymap = new HashMap<Integer,String>();
 		for (File f:files){
-			if (f.getName().indexOf("iheima")<0)continue;
 			String content = FileUtil.readFile(f);
 			String[] titles = content.split("\n");
-			for (String title:titles){
+			for (String t:titles){
+				String[] ts = t.split(";");
+				String title = ts[0];
 				if (title.equals("微软将发布Ｈｙｐｅｒ－Ｖ虚拟软件　比原定８月提前２月"))
 					log.warn(""+title);
 				String catkey = this.getTitleKey(title);
@@ -261,6 +264,7 @@ public class NewsClassifier {
 					catkey = "综合";
 					continue;
 				}
+				codeKeymap.put(Integer.valueOf(ts[1]), catkey);
 				catCount++;
 				Set<String> tt = catTitles.get(catkey);
 				if (tt==null){
@@ -279,6 +283,7 @@ public class NewsClassifier {
 			}
 //			FileUtil.writeFile("data/sogou/cat/"+key+".titles", cc);
 		}
+		FileUtil.writeFile("data/sogou/sohusite_title.cat", JSON.toJSONString(codeKeymap));
 		log.warn("total "+total+":cat:"+catCount);	
 	}
 	
