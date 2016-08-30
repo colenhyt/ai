@@ -190,6 +190,31 @@ public class NewsClassifier {
 		}		
 	}
 	
+	public void catPagesAndMove(){
+		List<File> urls = FileUtil.getFiles("data/pages","json");
+		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
+		Set<String> sitekeys = new HashSet<String>();
+		sitekeys.add("tmtpost.com");
+//		sitekeys.add("techweb.com.cn");
+		//pintu360.com
+		
+		for (File urlF:urls){
+			String sitekey = urlF.getName().substring(0,urlF.getName().indexOf("_urls.json"));
+			if (!sitekeys.contains(sitekey))continue;
+			log.warn("start "+sitekey);
+			String urlContent = FileUtil.readFile(urlF);
+			
+			Map<String,JSONObject> urlMaps = (Map<String,JSONObject>)JSON.parseObject(urlContent,HashMap.class);
+			for (String url:urlMaps.keySet()){
+				String content = FileUtil.readFile("data/pages/"+sitekey+"/"+url.hashCode()+".html");
+				if (content.trim().length()<0)continue;
+				TopItem item = parser.parse(url, content);
+				if (item==null) continue;
+				String catkey = this.getTitleKey(item.getCtitle());
+				FileUtil.writeFile("data/training/"+catkey+"/"+url.hashCode()+".data", item.getContent());
+			}
+		}
+	}
 	public String getTitleKey(String title){
 		
 		for (String key:catWordMaps.keySet()){
@@ -384,7 +409,7 @@ public class NewsClassifier {
 		int a = str.hashCode();
 		//-892462432
 		NewsClassifier classifier = new NewsClassifier();
-		classifier.testTitlesCat();
+		classifier.catPagesAndMove();
 //		String text = FileUtil.readFile("C:\\boxlib\\news_tensite_xml.dat");
 //		text = "<root>"+text+"</root>";
 //		try {
