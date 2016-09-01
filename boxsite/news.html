@@ -19,7 +19,7 @@
 	position:fixed;
 	top:0; left:0;
 	width:98%;
-	height:50px;
+	height:60px;
 	margin-left:5px;
 	background-color:#FFFFFF;
 	padding:0;
@@ -36,20 +36,23 @@
 }
 </style>
 </head>
-<body onload='initShareSDK()'>
+<body>
 <div id="header2">
  <table style='width:100%;margin-top:10px'><tr>
  <td stype='margin-left:20px;width:30%'>
  <a id='backnav' href="javascript:history.go(-1)"><</a>
  </td>
  <td style='text-align:right'>
-<img src="static/img/favor.png" width=28 height=28 onclick='g_news.add2Favor()'>
- <a id='backnav2' href="javascript:showShareMenuClickHandler()">...</a>
+<img src="static/img/favor.png" width=23 height=23 onclick='g_news.add2Favor()'>
  </td>
- </tr></table>
-<hr style="height:1px;border:none;border-top:1px solid #555555;margin-top:10px" />
+ </tr>
+ <tr><td colspan="2">
+<hr style="height:1px;border:none;border-top:1px solid #555555;margin-top:1px" />
+ </td>
+ </tr>
+ </table>
 </div>
-<div id="content" style="padding-top:60px">
+<div id="content" style="padding-top:60px;width:98%">
 <div style='width:100px;height:100px;align:center' id='orderlist_wait'><img src='static/img/w1.gif'></div>
 </div>
 
