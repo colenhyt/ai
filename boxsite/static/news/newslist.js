@@ -307,16 +307,16 @@ newslistview.prototype = {
     	    shorttitle = shorttitle.substring(0,20)+"..";   
     	var content = "";
     	content += "<div onclick=\"window.open('"+link+"','_self')\">";
-    	content += "<span style='font-size:150%;font-weight:bold'>"
+    	content += "<span style='font-weight:bold'>"
     	content += "<a href='"+link+"'>"+shorttitle+"</a>"
     	content += "</span><br>";
-    	content += "<span style='font-size:50%'>";
+    	content += "<span style='font-size:80%'>";
     	content += g_sitekeys[item.sitekey]+" "+timeStr;
     	content += "</span>"
+    	content += "<hr id='listhr'/>";
     	content += "</div>"; 	
     	var li= document.createElement("li"); 
         li.innerHTML= content;  
-        li.style.height = "90px";
         li.id = item.id;  
     	return li;
  	},
