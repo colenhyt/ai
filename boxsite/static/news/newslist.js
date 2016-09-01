@@ -42,6 +42,10 @@ newslist.prototype = {
    }else
      g_currcat = 1;
      
+    if (g_currcat<=0||g_currcat>g_newscats.length){
+     g_currcat = 1;
+    }
+    
     var from = getPar("from");
     
    var content = "";
