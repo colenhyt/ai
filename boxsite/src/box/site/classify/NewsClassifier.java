@@ -190,28 +190,18 @@ public class NewsClassifier {
 		}		
 	}
 	
-	public void catPagesAndMove(){
-		List<File> urls = FileUtil.getFiles("data/pages","json");
-		BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
-		Set<String> sitekeys = new HashSet<String>();
-		sitekeys.add("tmtpost.com");
-//		sitekeys.add("techweb.com.cn");
-		//pintu360.com
+	public void catTestPagesAndMove(){
+		String cattstr = FileUtil.readFile("data/sogou/sohusite_title.cat");
+		Map<Integer,String> catmaps = (Map<Integer,String>)JSON.parseObject(cattstr,HashMap.class);
 		
-		for (File urlF:urls){
-			String sitekey = urlF.getName().substring(0,urlF.getName().indexOf("_urls.json"));
-			if (!sitekeys.contains(sitekey))continue;
-			log.warn("start "+sitekey);
-			String urlContent = FileUtil.readFile(urlF);
-			
-			Map<String,JSONObject> urlMaps = (Map<String,JSONObject>)JSON.parseObject(urlContent,HashMap.class);
-			for (String url:urlMaps.keySet()){
-				String content = FileUtil.readFile("data/pages/"+sitekey+"/"+url.hashCode()+".html");
-				if (content.trim().length()<0)continue;
-				TopItem item = parser.parse(url, content);
-				if (item==null) continue;
-				String catkey = this.getTitleKey(item.getCtitle());
-				FileUtil.writeFile("data/training/"+catkey+"/"+url.hashCode()+".data", item.getContent());
+		List<File> files = FileUtil.getFiles("data/sogou/sohusite_data");
+		for (File f:files){
+			String name = f.getName().substring(0,f.getName().indexOf(".data"));
+			int url = Integer.valueOf(name);
+			String catkey = catmaps.get(url);
+			if (catkey!=null){
+				String cc = FileUtil.readFile(f);
+				FileUtil.writeFile("data/test/"+catkey+"/"+f.getName(), cc);
 			}
 		}
 	}
@@ -404,12 +394,38 @@ public class NewsClassifier {
 		}
 		
 	}
+	public void catPagesAndMove(){
+			List<File> urls = FileUtil.getFiles("data/pages","json");
+			BaseTopItemParser parser = new BaseTopItemParser("data/dna/");
+			Set<String> sitekeys = new HashSet<String>();
+			sitekeys.add("tmtpost.com");
+	//		sitekeys.add("techweb.com.cn");
+			//pintu360.com
+			
+			for (File urlF:urls){
+				String sitekey = urlF.getName().substring(0,urlF.getName().indexOf("_urls.json"));
+				if (!sitekeys.contains(sitekey))continue;
+				log.warn("start "+sitekey);
+				String urlContent = FileUtil.readFile(urlF);
+				
+				Map<String,JSONObject> urlMaps = (Map<String,JSONObject>)JSON.parseObject(urlContent,HashMap.class);
+				for (String url:urlMaps.keySet()){
+					String content = FileUtil.readFile("data/pages/"+sitekey+"/"+url.hashCode()+".html");
+					if (content.trim().length()<0)continue;
+					TopItem item = parser.parse(url, content);
+					if (item==null) continue;
+					String catkey = this.getTitleKey(item.getCtitle());
+					FileUtil.writeFile("data/training/"+catkey+"/"+url.hashCode()+".data", item.getContent());
+				}
+			}
+		}
+
 	public static void main(String[] args) {
 		String str = "http://tech.sina.com.cn/i/2016-06-29/doc-ifxtsatm0995788.shtml";
 		int a = str.hashCode();
 		//-892462432
 		NewsClassifier classifier = new NewsClassifier();
-		classifier.catPagesAndMove();
+		classifier.catTestPagesAndMove();
 //		String text = FileUtil.readFile("C:\\boxlib\\news_tensite_xml.dat");
 //		text = "<root>"+text+"</root>";
 //		try {
