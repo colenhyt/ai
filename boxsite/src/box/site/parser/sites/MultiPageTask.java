@@ -16,8 +16,8 @@ public class MultiPageTask implements Runnable {
 		
 		SitePageGetProcessor p1 = new SitePageGetProcessor(this,url,count);
       spider = Spider.create(p1);
-      spider.addPipeline(new SiteURLsPipeline());
-//      spider.addPipeline(new SiteTopItemsPipeline());
+//      spider.addPipeline(new SiteURLsPipeline());
+      spider.addPipeline(new SiteTopItemsPipeline());
 //		spider = Spider.create(p1).addPipeline(new SiteURLsPipeline());		
 	}
 
