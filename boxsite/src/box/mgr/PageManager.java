@@ -166,10 +166,8 @@ public class PageManager extends MgrBase{
 			for (File datepath:subitemPaths){
 				List<File> itemfiles = FileUtil.getFiles(datepath.getAbsolutePath());
 				for (File itemF:itemfiles){
-					long timeName = Long.valueOf(itemF.getName().substring(0,itemF.getName().indexOf(".")));
 					String content = FileUtil.readFile(itemF);
 					List<Integer> itemids = (List<Integer>)JSON.parseObject(content, ArrayList.class);
-					List<TopItem> itemidlist = new ArrayList<TopItem>();
 					for (Integer itemid:itemids){
 						String itemPath = super.itemPath+catid+"/"+itemid+".item";
 						String itemStr = FileUtil.readFile(itemPath);
@@ -178,10 +176,6 @@ public class PageManager extends MgrBase{
 						catItemIdMap.put(item.getContentTime(), item.getId());
 						catTimeItemMap.put(item.getId(), item.getContentTime());
 					}					
-//					for (int itemid:itemidlist){
-//						catItemIdMap.put(timeName, itemid);
-//						catTimeItemMap.put(itemid, timeName);
-//					}
 				}
 			}
 		}
@@ -262,8 +256,6 @@ public class PageManager extends MgrBase{
 	}
 	
 	public String getNewsCount(HttpServletRequest request){
-		init();
-		
 		String catstr = request.getParameter("cat");
 		int catid = Integer.valueOf(catstr);
 		
@@ -377,8 +369,6 @@ public class PageManager extends MgrBase{
 	}
 	
 	public String getNewslist(HttpServletRequest request){
-		init();
-		
 		long clientSessionid = -1;
 		String sessionstr = request.getParameter("sessionid");
 		if (sessionstr!=null&&sessionstr.matches("[0-9]+"))
@@ -494,7 +484,7 @@ public class PageManager extends MgrBase{
 	//定期扫最新的latest:
 	@Override
 	public void process(){
-		log.warn("load latest list");
+		log.warn("load latest newslist");
 		List<File> files = FileUtil.getFiles(listPath);
 		for (File f:files){
 			if (!f.getName().endsWith(".latest")) continue;
@@ -502,18 +492,28 @@ public class PageManager extends MgrBase{
 			List<String> liststr = (List<String>)JSON.parse(lcontent);
 			for (String str:liststr){
 				String[] parts = str.split("/");
-				int catid = Integer.parseInt(parts[4]);
-				String keystr = catid+"_"+parts[5];
-				String filestr = keystr+"_"+parts[6];
+				int size = parts.length;
+				int catid = Integer.parseInt(parts[size-3]);
+				String keystr = catid+"_"+parts[size-2];
+				String filestr = keystr+"_"+parts[size-1];
 				if (loadedList.contains(filestr)) continue;
-				long itTime = Long.valueOf(parts[6]);
 				String listcontent = FileUtil.readFile(str);
+				if (listcontent.trim().length()<=0) continue;
+				log.warn("load latestlist :"+str);
+				loadedList.add(filestr);
 				List<Integer> newlist = (List<Integer>)JSON.parse(listcontent);
 				Map<Long,Integer> catItemIdMap = timeSortedCatsItemIdMap.get(catid);
 				Map<Integer,Long> catTimeMap = catItemIdTimeMap.get(catid);
 				for (int itemid:newlist){
-					catItemIdMap.put(itTime, itemid);
-					catTimeMap.put(itemid, itTime);
+//					catItemIdMap.put(itTime, itemid);
+//					catTimeMap.put(itemid, itTime);
+					String itemPath = super.itemPath+catid+"/"+itemid+".item";
+					String itemStr = FileUtil.readFile(itemPath);
+					if (itemStr.trim().length()<=0) continue;
+					TopItem item = (TopItem)JSON.parseObject(itemStr,TopItem.class);
+					catItemIdMap.put(item.getContentTime(), item.getId());
+					catTimeMap.put(item.getId(), item.getContentTime());					
+					
 				}
 			}
 					
