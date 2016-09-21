@@ -168,9 +168,13 @@ public class PageManager extends MgrBase{
 				for (File itemF:itemfiles){
 					long timeName = Long.valueOf(itemF.getName().substring(0,itemF.getName().indexOf(".")));
 					String content = FileUtil.readFile(itemF);
+					List<Integer> itemids = (List<Integer>)JSON.parseObject(content, ArrayList.class);
 					List<TopItem> itemidlist = new ArrayList<TopItem>();
-					StringUtil.json2List(content, itemidlist, TopItem.class);
-					for (TopItem item:itemidlist){
+					for (Integer itemid:itemids){
+						String itemPath = super.itemPath+catid+"/"+itemid+".item";
+						String itemStr = FileUtil.readFile(itemPath);
+						if (itemStr.trim().length()<=0) continue;
+						TopItem item = (TopItem)JSON.parseObject(itemStr,TopItem.class);
 						catItemIdMap.put(item.getContentTime(), item.getId());
 						catTimeItemMap.put(item.getId(), item.getContentTime());
 					}					
