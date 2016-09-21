@@ -39,7 +39,7 @@ public class PageManager extends MgrBase{
 	private Set<String>	sitekeys;
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = Collections.synchronizedMap(new HashMap<String,Map<String,WebUrl>>());
 //	private Map<String,List<TopItem>> viewListItemsMap = Collections.synchronizedMap(new HashMap<String,List<TopItem>>());
-	private Map<Integer,Map<Long,Integer>> timeSortedCatsItemIdMap;
+	private Map<Integer,Map<Long,Integer>> 		timeSortedCatsItemIdMap = Collections.synchronizedMap(new HashMap<Integer,Map<Long,Integer>>());
 	private Map<Integer,Map<Integer,Long>>  catItemIdTimeMap = Collections.synchronizedMap(new HashMap<Integer,Map<Integer,Long>>());
 	private Map<Integer,TopItem> viewItemsMap = Collections.synchronizedMap(new HashMap<Integer,TopItem>());
 	private Map<Long, User>   userMap = Collections.synchronizedMap(new HashMap<Long,User>());
@@ -147,7 +147,6 @@ public class PageManager extends MgrBase{
 		}
 		
 		//load item time list:
-		timeSortedCatsItemIdMap = Collections.synchronizedMap(new HashMap<Integer,Map<Long,Integer>>());
 		List<File> catfs2 = FileUtil.getFolders(listPath);
 		for (File f:catfs2){
 			if (!f.getName().matches("[0-9]+"))continue;
@@ -259,6 +258,8 @@ public class PageManager extends MgrBase{
 	}
 	
 	public String getNewsCount(HttpServletRequest request){
+		init();
+		
 		String catstr = request.getParameter("cat");
 		int catid = Integer.valueOf(catstr);
 		
@@ -372,6 +373,8 @@ public class PageManager extends MgrBase{
 	}
 	
 	public String getNewslist(HttpServletRequest request){
+		init();
+		
 		long clientSessionid = -1;
 		String sessionstr = request.getParameter("sessionid");
 		if (sessionstr!=null&&sessionstr.matches("[0-9]+"))
@@ -399,8 +402,6 @@ public class PageManager extends MgrBase{
 		
 		if (catid<0)
 			return null;
-		
-		init();
 		
 		//推荐分类
 		if (catid==NEWS_CAT_REC){

@@ -164,7 +164,7 @@ public class ProcessManager extends MgrBase {
 		log.warn("spiders start,sites:"+sites.size());
 		runningSpiderCount = sites.size();
 		for (String site:sites){
-			MultiPageTask task = new MultiPageTask(site,50);
+			MultiPageTask task = new MultiPageTask(site,2);
 			Thread t2=new Thread(task);
 			t2.start();
 		}

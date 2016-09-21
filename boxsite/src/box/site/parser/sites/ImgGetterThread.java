@@ -24,7 +24,7 @@ public class ImgGetterThread implements Runnable{
 				urls.clear();
 			}
 			try {
-				System.out.println("img getter wait...");
+//				System.out.println("img getter wait...");
 				Thread.sleep(8000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

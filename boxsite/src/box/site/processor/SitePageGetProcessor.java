@@ -18,6 +18,7 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.PlainText;
+import box.mgr.ProcessManager;
 import box.site.getter.ISiteContentGetter;
 import box.site.getter.SiteContentGetterFactory;
 import box.site.model.WebUrl;
@@ -67,7 +68,8 @@ public class SitePageGetProcessor implements PageProcessor{
 		
 		SiteContentGetterFactory getterFac = new SiteContentGetterFactory();
 		
-		urlsGetter = getterFac.createGetter(sitekey);
+		String dnaPath = ProcessManager.getInstance().dnaPath;
+		urlsGetter = getterFac.createGetter(sitekey,dnaPath);
 		
 		pagesPath = "data/pages/"+sitekey;
 		
