@@ -4,8 +4,6 @@
 <%
 String typestr = request.getParameter("type");
 
-PageManager.getInstance().init();
-
 String jsonstr = "";
 if (typestr==null)
   jsonstr = PageManager.getInstance().getNewslist(request);
