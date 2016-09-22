@@ -174,7 +174,11 @@ public class BaseTopItemParser implements ITopItemParser {
 		ISiteContentGetter getter = siteDNAMap.get(sitekey);
 		boolean parsed = getter.parseItem(sitekey,pageContent);
 		if (!parsed){
-			log.warn("could not get html content "+url.hashCode());
+			log.warn("parse item failed: "+url);
+			return null;
+		}
+		if (getter.getItemPureContent()==null||getter.getItemPureContent().trim().length()<=0){
+			log.warn("could not get html content "+url);
 			return null;
 		}
 		

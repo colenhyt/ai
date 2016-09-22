@@ -80,7 +80,8 @@ public class NewsClassifier {
 			comSet.addAll(companyList);
 		}
 		
-		List<File> wordFiles = FileUtil.getFiles(trainingPath,"txt");
+		String keypath = rootPath+"catkeys/";
+		List<File> wordFiles = FileUtil.getFiles(keypath,"txt");
 		for (File f:wordFiles){
 			String mapstr = FileUtil.readFile(f);
 			Set<String> wordset = new HashSet<String>();
