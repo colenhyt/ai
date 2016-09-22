@@ -484,7 +484,6 @@ public class PageManager extends MgrBase{
 	//定期扫最新的latest:
 	@Override
 	public void process(){
-		log.warn("load latest newslist");
 		List<File> files = FileUtil.getFiles(listPath);
 		for (File f:files){
 			if (!f.getName().endsWith(".latest")) continue;
@@ -499,11 +498,11 @@ public class PageManager extends MgrBase{
 				if (loadedList.contains(filestr)) continue;
 				String listcontent = FileUtil.readFile(str);
 				if (listcontent.trim().length()<=0) continue;
-				log.warn("load latestlist :"+str);
 				loadedList.add(filestr);
 				List<Integer> newlist = (List<Integer>)JSON.parse(listcontent);
 				Map<Long,Integer> catItemIdMap = timeSortedCatsItemIdMap.get(catid);
 				Map<Integer,Long> catTimeMap = catItemIdTimeMap.get(catid);
+				log.warn("load latestlist :"+str+",count:"+newlist.size());
 				for (int itemid:newlist){
 //					catItemIdMap.put(itTime, itemid);
 //					catTimeMap.put(itemid, itTime);

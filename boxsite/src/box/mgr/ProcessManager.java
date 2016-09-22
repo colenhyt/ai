@@ -52,21 +52,15 @@ public class ProcessManager extends MgrBase {
 	}
 
 	public void init(){
-		String[] args = new String[1];
-		args[0] = "source.sites";
-		this.init(args);
-	}
-	
-	public void init(String[] args){
 		if (inited) return;
 		
 		inited = true;	
 		running = true;
 		
 		
-		srcFile = args[0];
-		if (args.length>1)
-			process_waiting_sec = Integer.valueOf(args[1])*60*1000;	//间隔时间
+		srcFile = super.sourceFile;
+		if (super.processThreadWaitTime>1)
+			process_waiting_sec = Integer.valueOf(super.processThreadWaitTime)*60*1000;	//间隔时间
 		else
 			process_waiting_sec = 60 * 60 * 1000;	//缺省1小时
 		
@@ -164,7 +158,7 @@ public class ProcessManager extends MgrBase {
 		log.warn("spiders start,sites:"+sites.size());
 		runningSpiderCount = sites.size();
 		for (String site:sites){
-			MultiPageTask task = new MultiPageTask(site,2);
+			MultiPageTask task = new MultiPageTask(site,super.pageCount);
 			Thread t2=new Thread(task);
 			t2.start();
 		}
@@ -337,7 +331,7 @@ public class ProcessManager extends MgrBase {
 	}
 
 	public static void main(String[] args) {
-		ProcessManager.getInstance().init(args);
+		ProcessManager.getInstance().init();
 //		ProcessManager.getInstance().process();
 		ProcessManager.getInstance().processSpiders();
 	}

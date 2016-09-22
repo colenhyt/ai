@@ -43,6 +43,9 @@ public class MgrBase {
 	protected String imgPath = rootPath+"pics/";
 	protected String termPath = rootPath+"terms/";
 	public String dnaPath = rootPath+"dna/";
+	public String sourceFile = "source.sites";
+	public int pageCount = 0;
+	public int processThreadWaitTime = 0;
 	protected String sitePath = rootPath+"sites/";
 
 	public MgrBase(){
@@ -61,6 +64,12 @@ public class MgrBase {
 			}
 		}
 		cfgObj = JSON.parseObject(cfgstr);
+		if (cfgObj.containsKey("sourceFile"))
+			sourceFile = cfgObj.getString("sourceFile");
+		if (cfgObj.containsKey("pageCount"))
+			pageCount = cfgObj.getInteger("pageCount");
+		if (cfgObj.containsKey("processThreadWaitTime"))
+			processThreadWaitTime = cfgObj.getIntValue("processThreadWaitTime");
 		String rpath = cfgObj.getString("rootPath");
 		if (rpath!=null){
 			rootPath = rpath;
