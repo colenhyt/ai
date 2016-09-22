@@ -45,6 +45,7 @@ public class WordDocMatrix {
                         ArrayList<Short> al=new ArrayList<Short>(docnumber);
                         for(int i=0;i<docnumber;i++)
                             al.add((short)0);
+                        System.out.println(filename+":"+pair[1]);
                         al.set(filename, Short.parseShort(pair[1]));
                         matrix.put(pair[0], al);
                     }else{

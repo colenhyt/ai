@@ -36,7 +36,7 @@ public class FS {
         int index=0;
         while(index++<n && iter.hasNext()){
             Entry<String,Double> entry=iter.next();
-            System.out.println(entry.getKey()+"  "+entry.getValue());
+//            System.out.println(entry.getKey()+"  "+entry.getValue());
             features.add(entry.getKey());
         }
     }
@@ -61,7 +61,7 @@ public class FS {
     public void createFeatures(String _freqFilesPath,String matrixPath,String featurePath){
     	this.freqFilesPath = _freqFilesPath;
 
-        featureSelect(matrixPath,6,2);
+        featureSelect(matrixPath,30,28);
         try{    
             File file=new File(featurePath);
             file.createNewFile();

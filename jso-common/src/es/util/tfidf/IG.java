@@ -91,7 +91,7 @@ public class IG {
             }
             double ig = entropy + pw * d1 + (1.0 - pw) * d2;
             map.put(word, ig);
-            System.out.printf(word+": %.20f \n",ig);
+//            System.out.printf(word+": %.20f \n",ig);
         }
     }
     

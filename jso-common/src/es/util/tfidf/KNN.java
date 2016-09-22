@@ -104,31 +104,53 @@ public class KNN {
     }
     
     public static void main(String[] args){
-        WordCount wc=new WordCount();
-        //word count and al freq:
-        File file=new File("orisun/unknown");
-        if(!file.exists()){
-            System.out.println("文件不存在，程序退出.");
-            System.exit(2);
-        }
-        wc.wordCount(file,"orisun");
+    	//training:
+    	//word count and freq files:
+//        WordCount wc0=new WordCount();
+//        wc0.wordCount("orisun/corpus","orisun/frequency");
+        //create matrix
+        WordDocMatrix wm=new WordDocMatrix();
+        wm.createMatrix("orisun/frequency", "orisun/matrix");
+        //create features
+//        FS fs=new FS();
+//        fs.createFeatures("orisun/frequency", "orisun/matrix","orisun/features");
+//     	
+//        //create vector space with features:
+//        TVSM sm0 = new TVSM();
+//        File feaFile = new File("orisun/features");
+//        sm0.initFeatures(feaFile);
+//        // inst.printFeature();
+//        File freqFile = new File("orisun/frequency");
+//        
+//        if (!freqFile.exists()) {
+//            System.out.println("文件不存在，程序退出.");
+//            System.exit(2);
+//        }
+//        sm0.buildDVM(freqFile);
+//        sm0.unionVector();
+       
         
-        AVSM sm=new AVSM();
-        File feaFile=new File("orisun/features"); 
-        sm.initFeatures(feaFile);
-        //inst.printFeature();
-        File freqFile=new File("orisun/unknown");
-        sm.buildDVM(freqFile);
-        if(!freqFile.exists()){
-            System.out.println("文件不存在，程序退出.");
-            System.exit(2);
-        }
-        
-        KNN inst=new KNN();
-        File uvFile=new File("orisun/dvm2/unknown");
-        inst.initUV(uvFile);
-        File tvFiles=new File("orisun/dvm");
-        inst.calDist(tvFiles);
-        inst.knn(3);
+//        //testing:
+//        WordCount wc=new WordCount();
+//        //word count and al freq:
+//        wc.wordCount("orisun/unknown","orisun");
+//        
+//        AVSM sm=new AVSM();
+//        feaFile=new File("orisun/features"); 
+//        sm.initFeatures(feaFile);
+//        //inst.printFeature();
+//        freqFile=new File("orisun/unknown");
+//        sm.buildDVM(freqFile);
+//        if(!freqFile.exists()){
+//            System.out.println("文件不存在，程序退出.");
+//            System.exit(2);
+//        }
+//        
+//        KNN inst=new KNN();
+//        File uvFile=new File("orisun/dvm2/unknown");
+//        inst.initUV(uvFile);
+//        File tvFiles=new File("orisun/dvm");
+//        inst.calDist(tvFiles);
+//        inst.knn(3);
     }
 }
