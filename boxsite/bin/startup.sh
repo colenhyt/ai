@@ -19,6 +19,26 @@ for file in $BOXLIB_HOME/jso-common/lib/*.jar
 do
  JSOCOMMOM_LIB=$JSOCOMMOM_LIB":"$file;
 done
+for file in $BOXLIB_HOME/jso-common/lib/httpclient/*.jar
+do
+ JSOCOMMOM_LIB=$JSOCOMMOM_LIB":"$file;
+done
+for file in $BOXLIB_HOME/jso-common/lib/apache/*.jar
+do
+ JSOCOMMOM_LIB=$JSOCOMMOM_LIB":"$file;
+done
+for file in $BOXLIB_HOME/jso-common/lib/dbcp/*.jar
+do
+ JSOCOMMOM_LIB=$JSOCOMMOM_LIB":"$file;
+done
+for file in $BOXLIB_HOME/jso-common/lib/parser/*.jar
+do
+ JSOCOMMOM_LIB=$JSOCOMMOM_LIB":"$file;
+done
+for file in $BOXLIB_HOME/jso-common/lib/utils/*.jar
+do
+ JSOCOMMOM_LIB=$JSOCOMMOM_LIB":"$file;
+done
 
 MALLET_LIB=""
 for file in $BOXLIB_HOME/mallet-2.0.6/lib/*.jar
@@ -32,18 +52,17 @@ do
  WEBMAGIC_LIB=$WEBMAGIC_LIB":"$file;
 done
 
-CLSPATH=$BOXSITE_HOME/WEB-INF/classes
-CLSPATH=$BOXSITE_LIB":"$JSOCOMMON_LIB":"$MALLET_LIB":"$WEBMAGIC_LIB
+CLSPATH=$BOXSITE_LIB":"$BOXSITE_HOME/WEB-INF/classes
+CLSPATH=$CLSPATH":"$JSOCOMMON_LIB":"$MALLET_LIB":"$WEBMAGIC_LIB
 CLSPATH=$CLSPATH":"$BOXLIB_HOME/jso-common/bin
 CLSPATH=$CLSPATH":"$BOXLIB_HOME/mallet-2.0.6/class
 CLSPATH=$CLSPATH":"$BOXLIB_HOME/webmagic/bin
-CLSPATH=$CLSPATH":"$BOXSITE_HOME/WEB-INF/classes
 
 #echo $CLSPATH
 
 export CLASSPATH=$CLASSPATH:$CLSPATH
 
-echo $CLASSPATH
+#echo $CLASSPATH
 
 BOXSITE_MEMORY=1G
 BOXSITE_ENCODING=UTF-8
