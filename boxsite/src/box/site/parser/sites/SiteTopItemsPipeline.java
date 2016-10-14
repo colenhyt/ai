@@ -25,15 +25,13 @@ public class SiteTopItemsPipeline extends FilePersistentBase  implements Pipelin
 		processMgr = ProcessManager.getInstance();
 		processMgr.init();
 
-		thread.start();
+//		thread.start();
 	}
 	
 	@Override
 	public void process(ResultItems resultItems, Task task) {
-		String sitekey = (String)resultItems.get("DomainName");
 		String pageContent = (String)resultItems.get("PageContent");
 		String url = (String)resultItems.get("Url");
-		String charset = (String)resultItems.get("Charset");
 		TopItem item = parser.parse(url, pageContent);
 		if (item==null){
 			log.warn("page parse failed:"+url);

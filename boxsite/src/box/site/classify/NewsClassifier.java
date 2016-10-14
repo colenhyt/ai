@@ -98,7 +98,7 @@ public class NewsClassifier {
 		
 		String catkeysContent = FileUtil.readFile(rootPath+"catkeys.txt");
 		if (catkeysContent.length()<=0){
-			log.error("not catkeys file found,could not start spider");
+			log.error("not catkeys words found,could not start spider");
 			return;
 		}
 		String[] catkeyline = catkeysContent.split("\n");
@@ -110,6 +110,11 @@ public class NewsClassifier {
 		 }
 		}
 		String catcontent = FileUtil.readFile(rootPath+"cats.txt");
+		if (catcontent.length()<=0){
+			log.error("cats.txt not found,startup failed");
+			return;
+		}
+		
 		catIdMap = (Map<String,Integer>)JSON.parseObject(catcontent,HashMap.class);
 		
 		int  t= 10;

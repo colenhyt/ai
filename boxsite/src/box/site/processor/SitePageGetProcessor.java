@@ -71,21 +71,14 @@ public class SitePageGetProcessor implements PageProcessor{
 		String dnaPath = ProcessManager.getInstance().dnaPath;
 		urlsGetter = getterFac.createGetter(sitekey,dnaPath);
 		
-		pagesPath = "data/pages/"+sitekey;
+		pagesPath = ProcessManager.getInstance().pagesPath+sitekey;
 		
-			
 		List<File> files = FileUtil.getFiles(pagesPath);
 		queryCount = files.size();
 		
 		urlRegs = new HashSet<String>();
-		String regpath = "dna/" + sitekey+".json";
-		String regc = FileUtil.readFile(regpath);
-		if (regc!=null&&regc.trim().length()>0){
-			List<String> regs = (List<String>)JSON.parse(regc);
-			urlRegs.addAll(regs);
-		}
 		
-		String weburlpath = "data/pages/" + sitekey+"_urls.json";
+		String weburlpath = pagesPath+"_urls.json";
 		String weburlc = FileUtil.readFile(weburlpath);
 		if (weburlc!=null&&weburlc.trim().length()>0){
 			Map<String,JSONObject> jsonstr = (Map<String,JSONObject>)JSON.parseObject(weburlc, HashMap.class);

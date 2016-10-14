@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import box.site.classify.NewsClassifier;
 import box.site.model.TopItem;
 import box.site.model.WebUrl;
 import box.site.parser.sites.BaseTopItemParser;
@@ -52,9 +51,10 @@ public class ProcessManager extends MgrBase {
 	public void init(){
 		if (inited) return;
 		
+		log.warn("process init");
+		
 		inited = true;	
 		running = true;
-		
 		
 		srcFile = super.sourceFile;
 		if (super.processThreadWaitTime>1)

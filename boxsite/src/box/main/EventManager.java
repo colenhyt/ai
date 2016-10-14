@@ -25,7 +25,7 @@ public class EventManager extends java.util.TimerTask{
 	public void start(){
 		if (isStart) return;
 		
-		log.info("EventManager start....");
+		log.warn("EventManager start....");
 		
 		isStart = true;
 		
@@ -38,4 +38,10 @@ public class EventManager extends java.util.TimerTask{
 		// TODO Auto-generated method stub
 		PageManager.getInstance().process();
 	}
+	
+	public static void main(String[] args) {
+		EventManager.getInstance().start();
+//		ProcessManager.getInstance().process();
+//		ProcessManager.getInstance().processSpiders();
+	}	
 }

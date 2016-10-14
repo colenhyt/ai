@@ -70,12 +70,6 @@ public class PagesGetProcessor implements PageProcessor{
 		queryCount = files.size();
 		
 		urlRegs = new HashSet<String>();
-		String regpath = "dna/" + sitekey+".json";
-		String regc = FileUtil.readFile(regpath);
-		if (regc!=null&&regc.trim().length()>0){
-			List<String> regs = (List<String>)JSON.parse(regc);
-			urlRegs.addAll(regs);
-		}
 		
 		String weburlpath = "data/pages/" + sitekey+"_urls.json";
 		String weburlc = FileUtil.readFile(weburlpath);

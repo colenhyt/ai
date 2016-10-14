@@ -34,13 +34,13 @@ public class MgrBase {
 	public int maxStockAmount = 100000000;
 	public String rootPath = "d:/boxsite/data/";
 	protected String userFilePath = rootPath+"users.json";
-	protected String pagesPath = rootPath+"pages/";
+	public String pagesPath = rootPath+"pages/";
 	public String traniningpath = rootPath+"training/";
 	protected String itemPath = rootPath+"items/";
 	protected String listPath = rootPath+"list/";
 	protected String viewPath = rootPath+"views/";
 	protected String dictPath = rootPath+"dict/";
-	protected String imgPath = rootPath+"pics/";
+	public String imgPath = rootPath+"pics/";
 	protected String termPath = rootPath+"terms/";
 	public String dnaPath = rootPath+"dna/";
 	public String sourceFile = "source.sites";

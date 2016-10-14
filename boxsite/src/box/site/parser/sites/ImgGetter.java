@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import box.mgr.PageManager;
 import es.util.FileUtil;
 import es.util.url.URLStrHelper;
 
@@ -23,7 +24,7 @@ public class ImgGetter {
 	public static String filePath(String sitekey,String httpUrl){
 		String fileName = httpUrl.substring(httpUrl.lastIndexOf("/"));
 		fileName = httpUrl.hashCode()+ fileName.substring(fileName.lastIndexOf("."));
-		return "pics/"+sitekey+"/"+fileName;		
+		return PageManager.getInstance().imgPath+sitekey+"/"+fileName;		
 	}
 	
 	public void getHtmlPicture(String sitekey,String httpUrl) {
