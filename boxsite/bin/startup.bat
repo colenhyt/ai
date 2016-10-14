@@ -18,6 +18,21 @@ set JSO-COMMOM_LIB=
 for /f "delims=" %%a in ('dir /b "%BOXLIB_HOME%\jso-common\lib\*.jar"') do (
 set "JSO-COMMOM_LIB=!JSO-COMMOM_LIB!;%BOXLIB_HOME%\jso-commom\lib\%%a"
 )
+for /f "delims=" %%a in ('dir /b "%BOXLIB_HOME%\jso-common\lib\httpclient\*.jar"') do (
+set "JSO-COMMOM_LIB=!JSO-COMMOM_LIB!;%BOXLIB_HOME%\jso-commom\lib\httpclient\%%a"
+)
+for /f "delims=" %%a in ('dir /b "%BOXLIB_HOME%\jso-common\lib\apache\*.jar"') do (
+set "JSO-COMMOM_LIB=!JSO-COMMOM_LIB!;%BOXLIB_HOME%\jso-commom\lib\apache\%%a"
+)
+for /f "delims=" %%a in ('dir /b "%BOXLIB_HOME%\jso-common\lib\dbcp\*.jar"') do (
+set "JSO-COMMOM_LIB=!JSO-COMMOM_LIB!;%BOXLIB_HOME%\jso-commom\lib\dbcp\%%a"
+)
+for /f "delims=" %%a in ('dir /b "%BOXLIB_HOME%\jso-common\lib\parser\*.jar"') do (
+set "JSO-COMMOM_LIB=!JSO-COMMOM_LIB!;%BOXLIB_HOME%\jso-commom\lib\parser\%%a"
+)
+for /f "delims=" %%a in ('dir /b "%BOXLIB_HOME%\jso-common\lib\utils\*.jar"') do (
+set "JSO-COMMOM_LIB=!JSO-COMMOM_LIB!;%BOXLIB_HOME%\jso-commom\lib\utils\%%a"
+)
 
 set MALLET_LIB=
 for /f "delims=" %%a in ('dir /b "%BOXLIB_HOME%\mallet-2.0.6\lib\*.jar"') do (
@@ -29,21 +44,21 @@ for /f "delims=" %%a in ('dir /b "%BOXLIB_HOME%\webmagic\lib\*.jar"') do (
 set "WEBMAGIC_LIB=!WEBMAGIC_LIB!;%BOXLIB_HOME%\webmagic\lib\%%a"
 )
 
-rem echo %WEBMAGIC_LIB%
+rem echo %JSO-COMMOM_LIB%
 
-set CLASSPATH=%BOXLIB_HOME%\webmagic\bin
-set "CLASSPATH=%CLASSPATH%;%BOXLIB_HOME%\jso-common\bin"
-set "CLASSPATH=%CLASSPATH%;%BOXLIB_HOME%\mallet-2.0.6\class"
 set "CLASSPATH=%CLASSPATH%;%BOXSITE_HOME%\WEB-INF\classes"
-set "CLASSPATH=%CLASSPATH%;%JSO-COMMOM_LIB%"
-set "CLASSPATH=%CLASSPATH%;%WEBMAGIC_LIB%"
-set "CLASSPATH=%CLASSPATH%;%MALLET_LIB%"
 set "CLASSPATH=%CLASSPATH%;%BOXSITE_LIB%"
+set "CLASSPATH=%CLASSPATH%;%BOXLIB_HOME%\mallet-2.0.6\class"
+set "CLASSPATH=%CLASSPATH%;%MALLET_LIB%"
+set "CLASSPATH=%CLASSPATH%;%BOXLIB_HOME%\webmagic\bin"
+set "CLASSPATH=%CLASSPATH%;%WEBMAGIC_LIB%"
+set "CLASSPATH=%CLASSPATH%;%BOXLIB_HOME%\jso-common\bin"
+set "CLASSPATH=%CLASSPATH%;%JSO-COMMOM_LIB%"
 
 set BOXSITE_MEMORY=1G
 set BOXSITE_ENCODING=UTF-8
 
-rem echo classpath:"%CLASSPATH%"
+echo classpath:"%CLASSPATH%"
 
 set CLASS=box.mgr.ProcessManager
 
