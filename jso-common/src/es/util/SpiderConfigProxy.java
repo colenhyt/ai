@@ -23,17 +23,11 @@ public class SpiderConfigProxy {
     static SpiderContext context;
     
     private static Properties props(){
-        String propsFile="config/spider.properties";
+        String propsFile="config/Spider.properties";
         Properties props = null;
         try
         {
-        	FileInputStream propsIn = null;
-    		URL  res = Thread.currentThread().getContextClassLoader().getResource("/");
-			if (res!=null){
-				propsIn = new FileInputStream(res.getPath()+propsFile);
-			}else {
-				propsIn = new FileInputStream(propsFile);
-			}
+        	FileInputStream propsIn = new FileInputStream(propsFile);
             props = new Properties();
             props.load(propsIn);
             propsIn.close();
