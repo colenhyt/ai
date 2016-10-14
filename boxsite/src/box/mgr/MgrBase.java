@@ -49,7 +49,7 @@ public class MgrBase {
 	protected String sitePath = rootPath+"sites/";
 
 	public MgrBase(){
-		String path = "src/";
+		String path = "config/";
 		URL  res = Thread.currentThread().getContextClassLoader().getResource("/");
 		String cfgstr = FileUtil.readFile(path + "config.properties");
 		if (cfgstr == null || cfgstr.trim().length() <= 0) {

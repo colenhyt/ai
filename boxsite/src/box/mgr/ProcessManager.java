@@ -35,9 +35,7 @@ public class ProcessManager extends MgrBase {
 	//最新批次topitems:
 	private List<TopItem> newTopitemList = Collections.synchronizedList(new ArrayList<TopItem>());
 	private Map<Integer,Map<String,String>>	pageSimHashMap = Collections.synchronizedMap(new HashMap<Integer,Map<String,String>>());
-	private NewsClassifier newsClassifier = new NewsClassifier();
 	private Map<String,Map<String,WebUrl>> allSiteUrlsMap = new HashMap<String,Map<String,WebUrl>>();
-	private Map<Integer,TopItem> processItemsMap = new HashMap<Integer,TopItem>();
 	private Map<String,Set<String>> savedUrlsMap = new HashMap<String,Set<String>>();
     private BaseTopItemParser parser;
 	ImgGetterThread imgGetter = new ImgGetterThread();
@@ -126,12 +124,15 @@ public class ProcessManager extends MgrBase {
 		
 		if (runningSpiderCount>0) return;
 		
-		log.warn("all sites spiders finished,sleep..");
 		
 		//实时处理该频次新增topitem:
+		log.warn("current found items: "+newTopitemList.size());
+		
 		if (newTopitemList.size()>0){
 			boolean hasNew = processListUrls(newTopitemList);
 		}
+		
+		log.warn("all sites spiders finished,sleep..");
 		
 		//运转间隔
 		final int PROCESS_DURATION = 5 * 1000;		//1小时:60 * 60 * 1000;

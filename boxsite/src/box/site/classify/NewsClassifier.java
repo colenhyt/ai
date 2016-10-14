@@ -96,7 +96,11 @@ public class NewsClassifier {
 			catWordMaps.put(name, wordset);
 		}
 		
-		String catkeysContent = FileUtil.readFile("data/catkeys.txt");
+		String catkeysContent = FileUtil.readFile(rootPath+"catkeys.txt");
+		if (catkeysContent.length()<=0){
+			log.error("not catkeys file found,could not start spider");
+			return;
+		}
 		String[] catkeyline = catkeysContent.split("\n");
 		for (String str:catkeyline){
 		 String[] ss = str.split(":");
@@ -105,7 +109,7 @@ public class NewsClassifier {
 			 catKeyStrMap.put(word, ss[0]);
 		 }
 		}
-		String catcontent = FileUtil.readFile("data/cats.txt");
+		String catcontent = FileUtil.readFile(rootPath+"cats.txt");
 		catIdMap = (Map<String,Integer>)JSON.parseObject(catcontent,HashMap.class);
 		
 		int  t= 10;
